@@ -6,17 +6,17 @@
   "author": "Dominik Wyss",
   "private": false,
   "scripts": {
-    "dev": "quasar dev",
+    "dev": "QENV=development quasar dev",
     "prod": "QENV=production quasar built",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
-    "@quasar/qenv" : "1.0.3",
+    "@quasar/extras": "^1.9.5",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
     "js-cookie": "^2.2.1",
+    "qenv": "1.0.3",
     "quasar": "^1.0.0",
     "vue-fragment": "^1.5.1",
     "vue-i18n": "^8.0.0",

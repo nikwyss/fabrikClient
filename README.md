@@ -5,6 +5,7 @@ A demokratiefabrik Vue-js Client installed and configured by Quasar-CLI
 ## Install the dependencies
 ```bash
 npm install
+quasar upgrade
 ```
 
 ## Environment Variables
