@@ -92,36 +92,36 @@ export default {
     mixins: [ContentTreeMixin],
 
     computed: {
-        pros: function(){
+        pros: function() {
             let pros = this.contenttree.structure.children.filter(
                 item => this.contenttree.entries[item.id].content.type == 'PRO')
             return(pros)
         },
-        cons: function(){
+        cons: function() {
             let cons = this.contenttree.structure.children.filter(
                 item => this.contenttree.entries[item.id].content.type == 'CONTRA')
             return(cons)
         },
-        maxrows: function(){
+        maxrows: function() {
             // return maximal item number
             // add one empty card
             return(Math.max(this.pros.length+1,this.cons.length+1))
         },
-        random_column_order: function(){
+        random_column_order: function() {
             // Return 0 or 1
             console.assert(this.container.container)
             return(this.container.container.RANDOM_LEFTRIGHT_ASSIGNMENT)
         },
-        column_args: function(){
+        column_args: function() {
             console.assert(this.random_column_order!==undefined)
             let both = [this.cons, this.pros]
             return([both[Number(this.random_column_order==0)], both[Number(this.random_column_order==1)]])
         },
-        column_titles: function(){
+        column_titles: function() {
             let both = ["Contra", "Pro"]
             return([both[Number(this.random_column_order==0)], both[Number(this.random_column_order==1)]])
         },
-        column_types: function(){
+        column_types: function() {
             let both = ["CONTRA", "PRO"]
             return([both[Number(this.random_column_order==0)], both[Number(this.random_column_order==1)]])
         }
@@ -133,27 +133,27 @@ export default {
             // REDIRECT TO ARGUMENT PAGE
             this.$router.replace({name: 'assembly_home_stepper', 
                 params: {
-                    assembly_identifier: this.assembly.identifier,
-                    container_id: this.container.id
+                    assemblyIdentifier: this.assembly.identifier,
+                    containerID: this.container.id
                     }
             })
         },
 
-        get_content_entry: function(row,side){
+        get_content_entry: function(row,side) {
 
             // randomly choose left/right sides for pro and con arguments
             let args = this.column_args[side]
     
             // left or right colum
-            if(row > args.length){
+            if(row > args.length) {
                 // no argument available for this position: return placeholder
                 return(null)
             }
 
             // return content
-            let content_id = args[row-1].id
-            console.log(content_id)
-            return(this.contenttree.entries[content_id])
+            let contentID = args[row-1].id
+            console.log(contentID)
+            return(this.contenttree.entries[contentID])
         }
     }
 }

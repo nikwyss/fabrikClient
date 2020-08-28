@@ -56,13 +56,13 @@ export default {
   name: 'TextsheetCard',
   props: ['container','contenttree', 'item', 'acl', 'standalone', 'heading_number', 'questions', 'comments'],
   components: { Fragment, ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
-  data: function(){
+  data: function() {
     return({
         show_discussion: false
     })
   },
   computed: {
-    header_class: function(){
+    header_class: function() {
       switch (this.item.content.type) {
         case 'SECTION':
           return('text-h5')
@@ -73,7 +73,7 @@ export default {
       }
     },
 
-    starting_content_node: function(){
+    starting_content_node: function() {
       var node = {children: this.comments}
       return(node)
     }
@@ -88,10 +88,10 @@ export default {
       console.log("redirect to pros_and_cons_index")
 
       // REDIRECT TO ARGUMENT PAGE
-      var identifier = this.$route.params.assembly_identifier
+      var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'TEXTSHEET', params: {
-        assembly_identifier: identifier,
-        container_id: this.container.id }})
+        assemblyIdentifier: identifier,
+        containerID: this.container.id }})
     },
 
     openArgument: function() {
@@ -102,11 +102,11 @@ export default {
 
       // REDIRECT TO ARGUMENT PAGE
       console.log(this.item)
-      var identifier = this.$route.params.assembly_identifier
+      var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'TEXTSHEET_CONTENT', params: {
-        assembly_identifier: identifier,
-        container_id: this.container.id,
-        content_id: item.content.id
+        assemblyIdentifier: identifier,
+        containerID: this.container.id,
+        contentID: item.content.id
       }})
     }
   }

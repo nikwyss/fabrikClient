@@ -11,7 +11,7 @@
         <!-- DELETE -->
         <ContentEditor
             v-if="acl.includes('contribute')"
-            :container_id="container.id"
+            :containerID="container.id"
             :model="obj.content"
             :parent_id="obj.content.parent_id"
             @zoom-to-content="$emit('zoomToContent')"
@@ -121,10 +121,10 @@ export default {
     },
 
     computed: {
-      track_changes_icon: function(){
+      track_changes_icon: function() {
         return(this.track_changes ? "mdi-bookmark-remove" : "mdi-bookmark-plus-outline")
       },
-      track_changes_color: function(){
+      track_changes_color: function() {
         return(this.track_changes ? "brown-9" : "grey-6")
       }
     },
@@ -159,10 +159,10 @@ export default {
     // TODO: move deleteentry to contenttre.js
     deleteEntry(content, justification) {
       console.log("deleteEntry")
-      let container_id = this.$route.params.container_id
-      var identifier = this.$route.params.assembly_identifier
+      let containerID = this.$route.params.containerID
+      var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier);
-      let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container/' + container_id + '/content/' + content.id
+      let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container/' + containerID + '/content/' + content.id
       var data = {'justification': justification}
       ApiService.delete(url, data).then(
         response => {
@@ -170,11 +170,11 @@ export default {
             var msg = null
 
             // ON SUCCESS RESPONSE
-            if(response.data.OK){
+            if(response.data.OK) {
 
               // update the whole tree
               this.add_or_update_contenttree({
-                container_id: container_id,
+                containerID: containerID,
                 contenttree: response.data.contenttree})
 
               // Zoom to parent entry (if catched)
@@ -205,19 +205,19 @@ export default {
       return (!has_error)
     },
 
-    switchTrackChanges: function(){
+    switchTrackChanges: function() {
       this.track_changes = !this.track_changes
       // TODO: IMPLEMENT
       //this.$emit('setTrackChanges', this.node, this.track_changes)
 
       var msg = ''
-      if(this.track_changes){
+      if(this.track_changes) {
         msg = "You become notified about activities on this place"
       }else{
         msg = "Notifcation is disabled"
       }        
 
-      // if(response.data.OK){
+      // if(response.data.OK) {
       // this.$q.notify({
       //   type: response.data.OK ? 'info' : 'error',
       //   message: `${response.data.MESSAGE}`

@@ -3,7 +3,7 @@ import { RouteConfig } from 'vue-router'
 import UserContentDefault from 'src/pages/UserContent/Default'
 import plugin_routes from 'src/plugins/routes.js'
 
-const routes: RouteConfig[] = [
+const routes = [
 
   {
     path: '/',
@@ -17,7 +17,7 @@ const routes: RouteConfig[] = [
   },
 
   {
-    path: '/:assembly_identifier/container/:container_id',
+    path: '/:assemblyIdentifier/container/:containerID',
     name: 'container',
     component: UserContentDefault,
     meta: {
@@ -26,7 +26,7 @@ const routes: RouteConfig[] = [
     },
   },
   {
-    path: '/:assembly_identifier/container/:container_id/:content_id',
+    path: '/:assemblyIdentifier/container/:containerID/:contentID',
     name: 'content',
     component: UserContentDefault,
     meta: {
@@ -36,14 +36,14 @@ const routes: RouteConfig[] = [
   }
 ]
 
-const final_routes_with_placeholder: RouteConfig[] = [
+const final_routes_with_placeholder = [
 
   {
-    path: '/:assembly_identifier/',
+    path: '/:assemblyIdentifier/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: 'home', name: 'assembly_home', component: () => import('pages/Assembly/AssemblyHome.vue') },
-      { path: 'step/:container_id', name: 'assembly_home_stepper', component: () => import('pages/Assembly/AssemblyHome.vue') }
+      { path: 'step/:containerID', name: 'assembly_home_stepper', component: () => import('pages/Assembly/AssemblyHome.vue') }
     ]
   },
 

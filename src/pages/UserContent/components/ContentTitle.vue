@@ -24,7 +24,7 @@ import ContentToolbar from "src/pages/UserContent/components/ContentToolbar";
 
 export default {
     name: "ContentTreeEntryTitle",
-    props: ["obj", "node", "acl", "expanded", "currently_selected_content_id", 
+    props: ["obj", "node", "acl", "expanded", "currently_selected_contentID", 
         "container"],
     components: {ContentToolbar},
 
@@ -34,18 +34,18 @@ export default {
     //     }
     // },
     computed: {
-        // bgColor: function(){
+        // bgColor: function() {
         //     let mod = this.content.level % this.colors.length
         //     let color = this.colors[mod]
         //     return("background-color:" + color)
         // },
-        content: function(){
+        content: function() {
             return(this.obj.content)
         },
-        progression: function(){
+        progression: function() {
             return(this.obj.progression)
         },
-        real_expanded: function(){
+        real_expanded: function() {
             return(this.expanded || this.node.children.length==0)
         }
     }

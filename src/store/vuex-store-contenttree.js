@@ -13,26 +13,26 @@ var state = {
 
 const getters = {
 
-    get_contenttree: (state) => (container_id) => {
+    get_contenttree: (state) => (containerID) => {
         // return state.things.find(thing => thing.id === id)
-        // if(!("contenttree" in state)){
+        // if(!("contenttree" in state)) {
         //     state.contenttree = {}
         // }
 
-        if(!(container_id in state.contenttree)){
+        if(!(containerID in state.contenttree)) {
             return(null)
         }
-        return(state.contenttree[container_id])
+        return(state.contenttree[containerID])
     },
 
-    get_default_expanded_branches_from_store: (state) => ({container_id, starting_content_id}) => {
+    get_default_expanded_branches_from_store: (state) => ({containerID, startingContentID}) => {
         // return state.things.find(thing => thing.id === id)
-        // if(!("expanded_branches" in state)){
+        // if(!("expanded_branches" in state)) {
         //     state.expanded_branches = {}
         // }
 
-        let key = container_id + "-" + starting_content_id
-        if(!(key in state.expanded_branches)){
+        let key = containerID + "-" + startingContentID
+        if(!(key in state.expanded_branches)) {
             return(null)
         }
 
@@ -41,29 +41,29 @@ const getters = {
 }
 
 const actions = {
-    add_or_update_contenttree({commit}, {container_id, contenttree}) {
-        commit('add_or_update_content', {container_id, contenttree});
+    add_or_update_contenttree({commit}, {containerID, contenttree}) {
+        commit('add_or_update_content', {containerID, contenttree});
     },
 
-    update_contents({commit}, {modified_contents}){
-        commit('update_contents', {modified_contents});
+    update_contents({commit}, {modifiedContents}) {
+        commit('update_contents', {modifiedContents});
     },
 
-    update_expanded_branches({commit}, {container_id, starting_content_id, expanded}){
+    update_expanded_branches({commit}, {containerID, startingContentID, expanded}) {
         // console.log(expanded)    
-        commit('update_expanded_branches', {container_id, starting_content_id, expanded});
+        commit('update_expanded_branches', {containerID, startingContentID, expanded});
     }
 }
 
 const mutations = {
 
-    add_or_update_content(state, {container_id, contenttree}) {
+    add_or_update_content(state, {containerID, contenttree}) {
         
         // keep list of opened contents (if previously available)
         console.log("update contenttree")
-        if(container_id in state.contenttree){
-            let expanded = state.contenttree[container_id].expanded_by_default
-            if(expanded){
+        if(containerID in state.contenttree) {
+            let expanded = state.contenttree[containerID].expanded_by_default
+            if(expanded) {
                 console.log("restore list of expanded entries")
                 content.expanded_by_default = expanded
             }
@@ -71,23 +71,23 @@ const mutations = {
 
         // THIS makes the change reactive!!
         console.log("new copy saved...")
-        Vue.set(state.contenttree, container_id, contenttree)
+        Vue.set(state.contenttree, containerID, contenttree)
     },
 
-    update_contents(state, {modified_contents}) {
+    update_contents(state, {modifiedContents}) {
         // in case content or progression changes (without changing hierarchy...)
         // THIS would make the change reactive!!)
         // TODO: not sure if used..
-        for(let content_id in modified_contents){
-            let modified_content = modified_contents[content_id]
-            let container_id = modified_content.content.container_id
-            state.contenttree[container_id].entries[modified_content.content.id] = modified_content;
+        for(let contentID in modifiedContents) {
+            let modifiedContent = modifiedContents[contentID]
+            let containerID = modifiedContent.content.containerID
+            state.contenttree[containerID].entries[modifiedContent.content.id] = modifiedContent;
         }
     },
 
-    update_expanded_branches(state, {container_id, starting_content_id, expanded}) {
+    update_expanded_branches(state, {containerID, startingContentID, expanded}) {
         // in case content or progression changes (without changing hierarchy...)
-        let key = container_id + "-" + starting_content_id
+        let key = containerID + "-" + startingContentID
         console.log(expanded)
         state.expanded_branches[key] = expanded
     }

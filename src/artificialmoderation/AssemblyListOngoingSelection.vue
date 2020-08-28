@@ -78,7 +78,7 @@ export default{
 
     methods: {
         clickAssemblyLink: function () {
-            var route = {name: 'assembly_home', params: {assembly_identifier: this.public_assembly.identifier}}
+            var route = {name: 'assembly_home', params: {assemblyIdentifier: this.public_assembly.identifier}}
             console.assert(this.public_assembly)
             this.$router.push(route)
         }

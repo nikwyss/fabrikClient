@@ -95,7 +95,7 @@
 
                     <ContentEditor
                         v-if="acl.includes('contribute')"
-                        :container_id="container.id"
+                        :containerID="container.id"
                         :parent_id="prop.node.id"
                         @zoom-to-content="zoomToContent"
                         />
@@ -107,10 +107,10 @@
 
             <!-- Add a new top-level entry -->
             <ContentEditor  
-                :container_id="container.id"
+                :containerID="container.id"
                 v-if="acl.includes('contribute')"
                 @zoom-to-content=zoomToContent
-                :parent_id="starting_content_id"
+                :parent_id="startingContentID"
                                 class="full-width"
                  />
 
@@ -160,7 +160,7 @@ import ContentEditor from "./ContentEditor"
 export default {
     name: "ContentTree",
     mixins: [QTreeMixin],
-    props: ['contenttree', 'container', 'starting_content_id', 'custom_starting_node', 'acl', 'label', 'dense'],
+    props: ['contenttree', 'container', 'startingContentID', 'custom_starting_node', 'acl', 'label', 'dense'],
     components: {ContentTitle, ContentEditor, Fragment}
 }
 </script>

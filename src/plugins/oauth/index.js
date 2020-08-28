@@ -52,16 +52,16 @@ export default {
         * oauth_callback  push notification to opener window
         * is normally called after login routine in popup window (Necessary since Vue-responsivity is flawed)
         */
-       forceVueUpdateOfOpener(){
+       forceVueUpdateOfOpener() {
           console.log("Try TO UPDATE OPENER")
           console.log(window)
           window.opener.forceVueUpdate()
         },
 
-        forceVueUpdate(){
+        forceVueUpdate() {
           console.log("Vue Update after authentication")
           var protected_url = this.$session.protected_url
-          if (this.$session.protected_url){
+          if (this.$session.protected_url) {
             console.log("Redirect to protected_url in temp")
             this.$session.protected_url = null
             window.location.href=protected_url
@@ -76,13 +76,6 @@ export default {
           // this.$session.initialize(this)
           //           this.oauth_callback()
           // this.$forceUpdate() // does not work. Useless?          
-          // // change key of root element to enforce refresh of all components.
-          // console.log(this.$root.key)
-          // this.$root.key='kkk'
-          // this.$root.key='ddd'
-          // console.log("AHA:  " + this.$root.authenticated)
-          // this.set(this.$root, 'authenticated', this.$root.authenticated)
-          // console.log(this.$root.authenticated)
         },
 
         onAxiosReject: function (error) {
@@ -122,7 +115,7 @@ export default {
                     error.config.retry = true
                     return (error.config)
                 }
-                
+
                 // There seems to be a need for a complete (re)login.
                 // retoken is not possible anymore (due to logout / or session expiration?)
                 console.log('cannot access refresh token')
@@ -130,7 +123,7 @@ export default {
                   { label: 'Homepage', color: 'white', handler: () => { this.$router.push('/') } }
                 ]
 
-                if (this.$root.authenticated){
+                if (this.$root.authenticated) {
                   LayoutEventBus.$emit('showAuthorizationError')
                 }else{
                   LayoutEventBus.$emit('showAuthenticationWarning')
@@ -152,16 +145,16 @@ export default {
        */
       retrieve_refreshed_token: async function() {
         console.log("START refresh token handling")
-    
+
         // VALIDATE DATA
         // re-read cookie values
         // TODO: dont know why I have to doo this...
         console.assert(this.$session.refresh_token)
         console.assert(this.$session.provider)
-    
+
         // empty jwt
         this.jwt = null
-    
+
         // Re-issue a token
         // try to re-issue an access_token by refresh token.
         let accessToken = await oAuthService.tokenRefresh(this.$session.provider, this.$session.refresh_token)
@@ -181,9 +174,9 @@ export default {
       }
     },
 
-    mounted: function(){
+    mounted: function() {
         // add only to root object
-        if(this.$root == this){
+        if(this.$root == this) {
           console.log("Added onAxiosReject Event Listener")
           // this.extend(onAxiosReject)
 
@@ -196,6 +189,7 @@ export default {
           
           // Force update Vue
           // TODO: not used, right? (have once be used after authentication...)
+          console.log("VueUpdate")
           window.forceVueUpdate = this.forceVueUpdate
         }
       }

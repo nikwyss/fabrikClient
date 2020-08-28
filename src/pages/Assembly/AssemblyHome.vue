@@ -152,42 +152,42 @@ export default {
     components: {ComponentContainerEditor},
     mixins: [AssemblyMixin],
     computed: {
-        max_steps: function(){
+        max_steps: function() {
             return(Object.keys(this.assembly_containers).length)
         },
 
-        sorted_containers: function(){
+        sorted_containers: function() {
             // Object.values(assembly_containers).sort((a, b) => a.container.order_position.localeCompare(b.container.order_position))
             console.log(this.assembly_containers)
             let sorted = Object.values(this.assembly_containers).sort((a, b) => a.container.order_position < b.container.order_position ? -1 : a.container.order_position > b.container.order_position ? 1 : 0)
             return(sorted)
         },
         step: {
-            get: function(){
-                return(this.get_current_container_id(this.assembly.identifier))
+            get: function() {
+                return(this.get_current_containerID(this.assembly.identifier))
             },
-            set: function(step){
-                this.set_current_container_id({assembly: this.assembly, container_id: step})
+            set: function(step) {
+                this.set_current_containerID({assembly: this.assembly, containerID: step})
             },
         },
-        ...mapGetters({get_current_container_id: 'assemblystore/get_current_container_id'})
+        ...mapGetters({get_current_containerID: 'assemblystore/get_current_containerID'})
     },
 
     methods: {
      
         clickBackToAssemblyListButton: function () {
-            this.set_current_assembly_identifier(null)
+            this.set_current_assemblyIdentifier(null)
             this.$router.push ({ name: 'assemblies' })
         },
         
         getStepTitle: function (item, key) {
             var title = item.container.title
 
-            if(item.container.disabled){
+            if(item.container.disabled) {
                 title +=  ' [DISABLED]'
             }
 
-            if("deleted" in item.container && item.container.deleted){
+            if("deleted" in item.container && item.container.deleted) {
                 title +=  ' [DELETED]'
             }
 
@@ -206,12 +206,12 @@ export default {
 
         clickPluginLink: function (item) {
             console.log("clickPluginLink")
-            var assembly_identifier = this.$route.params.assembly_identifier
-            var params = {assembly_identifier: assembly_identifier}
-            params["container_id"] = item.container.id
+            var assemblyIdentifier = this.$route.params.assemblyIdentifier
+            var params = {assemblyIdentifier: assemblyIdentifier}
+            params["containerID"] = item.container.id
             this.$router.push({name: item.container.type, params: params})
         },
-        ...mapActions({set_current_container_id: 'assemblystore/set_current_container_id'})
+        ...mapActions({set_current_containerID: 'assemblystore/set_current_containerID'})
     }
 }
 </script>

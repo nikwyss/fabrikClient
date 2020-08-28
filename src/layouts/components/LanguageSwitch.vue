@@ -30,7 +30,7 @@ export default {
     }
   },
 
-  mounted: function (){
+  mounted: function () {
     this.langOptions = [
         { value: 'en-us', label: this.$t('language.items.en-us.label') },
         { value: 'de-ch', label: this.$t('language.items.de-ch.label') },

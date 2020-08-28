@@ -2,28 +2,7 @@ import messages from 'src/i18n'
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 
-declare module 'vue/types/vue' {
-  interface Vue {
-    i18n: VueI18n;
-  }
-}
-
 Vue.use(VueI18n)
-
-/* How to import additional messages?
-// setLocale (locale) {
-//   import(`quasar/lang/${locale}`).then(({ default: messages }) => {
-//     this.$q.lang.set(messages)
-//   })  import(`src/i18n/${locale}`).then(({ default: messages}) => {
-//     this.$i18n.locale = locale
-//     this.$i18n.setLocaleMessage(locale, messages)
-//   })
-// }
-*/
-
-/* Access outsside components:
-import i18n from 'boot/i18n.js'i18n.t('translation.path')
-*/
 
 const i18n = new VueI18n({
   locale: 'de-ch',
@@ -34,11 +13,6 @@ const i18n = new VueI18n({
 export default ({ app }) => {
   // Set i18n instance on app
   app.i18n = i18n
-
-  // app.random_translator = function(var1, var2){
-  //   alert("KKK")
-  // }
-  
 }
 
 // if you need to import it from

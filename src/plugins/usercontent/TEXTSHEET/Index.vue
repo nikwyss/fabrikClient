@@ -100,13 +100,13 @@ export default {
             // REDIRECT TO ARGUMENT PAGE
             this.$router.replace({name: 'assembly_home_stepper', 
                 params: {
-                    assembly_identifier: this.assembly.identifier,
-                    container_id: this.container.id
+                    assemblyIdentifier: this.assembly.identifier,
+                    containerID: this.container.id
                     }
             })
         },
 
-        filter_textsheet_entries: function(nodes){
+        filter_textsheet_entries: function(nodes) {
             var TEXTSHEET_ENTRIES = ['PARAGRAPH', 'SECTION', 'SUBSECTION']
             var local_contenttree = this.contenttree
             let filtered = nodes.filter(

@@ -15,28 +15,28 @@ export default {
 
     /** 
      * Is there an active Assembly: 
-     * assembly_identifier is taken from the localstorage 
+     * assemblyIdentifier is taken from the localstorage 
      */
-    current_assembly_identifier: function () {
-      return (this.get_current_assembly_identifier)
+    current_assemblyIdentifier: function () {
+      return (this.get_current_assemblyIdentifier)
     },
 
-    assembly_identifier: function () {
-      return (this.$route.params.assembly_identifier)
+    assemblyIdentifier: function () {
+      return (this.$route.params.assemblyIdentifier)
     },
 
     assembly: function () {
-      console.log("ASSEMBLY GETTER" + this.assembly_identifier)
+      console.log("ASSEMBLY GETTER" + this.assemblyIdentifier)
       LayoutEventBus.$emit('showLoading')
 
-      if (!this.assembly_identifier) {
+      if (!this.assemblyIdentifier) {
         console.log("no identifier")
         return (null)
       }
 
       // has contentree already be cached in the vues store??
       var synced = false
-      var assembly = this.get_assembly(this.assembly_identifier)
+      var assembly = this.get_assembly(this.assemblyIdentifier)
       if (assembly) {
         // check sync state of local container version
         synced = this.checkAssemblyStatus(assembly)
@@ -46,49 +46,49 @@ export default {
         // re-load assembly
         // anyway: downt wait; return cache version. (dont wait until remote data are loaded...)
         console.log("The local copy of the assembly is outdated")
-        this.retrieveAssembly (this.assembly_identifier)
+        this.retrieveAssembly (this.assemblyIdentifier)
       }
 
       // update store: current_assembly
-      this.set_current_assembly_identifier(assembly)
+      this.set_current_assemblyIdentifier(assembly)
 
       // no cache version exists: load the full tree...
       return (assembly)
     },
 
-    assembly_containers: function(){
+    assembly_containers: function() {
       console.log("get assembly_containers")
 
-      if (!this.assembly_identifier) {
+      if (!this.assemblyIdentifier) {
         return (null)
       }
       console.assert(this.assembly)
-      console.assert(this.assembly_identifier)
-      return (this.get_assembly_containers(this.assembly_identifier))
+      console.assert(this.assemblyIdentifier)
+      return (this.get_assembly_containers(this.assemblyIdentifier))
     },
 
-    assembly_configuration: function(){
-      if (!this.assembly_identifier) {
+    assembly_configuration: function() {
+      if (!this.assemblyIdentifier) {
         return (null)
       }
       console.assert(this.assembly)
-      console.assert(this.assembly_identifier)
-      return (this.get_assembly_configuration(this.assembly_identifier))
+      console.assert(this.assemblyIdentifier)
+      return (this.get_assembly_configuration(this.assemblyIdentifier))
     },
 
-    assembly_progression: function(){
-      if (!this.assembly_identifier) {
+    assembly_progression: function() {
+      if (!this.assemblyIdentifier) {
         return (null)
       }
 
       console.assert(this.assembly)
-      console.assert(this.assembly_identifier)
-      return (this.get_assembly_progression(this.assembly_identifier))
+      console.assert(this.assemblyIdentifier)
+      return (this.get_assembly_progression(this.assemblyIdentifier))
     },
     
     ...mapGetters({
       get_assembly: 'assemblystore/get_assembly',
-      get_current_assembly_identifier: 'assemblystore/get_current_assembly_identifier',
+      get_current_assemblyIdentifier: 'assemblystore/get_current_assemblyIdentifier',
       get_assembly_containers: 'assemblystore/get_assembly_containers',
       get_assembly_progression: 'assemblystore/get_assembly_progression',
       get_assembly_configuration: 'assemblystore/get_assembly_configuration'
@@ -98,11 +98,11 @@ export default {
   methods: {
 
     // LOAD TREE
-    retrieveAssembly (assembly_identifier) {
+    retrieveAssembly (assemblyIdentifier) {
       console.log("Retrieve Assembly")
 
       // Load assembly from the resource server
-      console.assert(assembly_identifier)
+      console.assert(assemblyIdentifier)
 
       if(this.attempts_to_retrieve_an_assembly> 5) {
         // it is not possible to retrieve a valid assembly. Sorry.
@@ -111,7 +111,7 @@ export default {
       this.attempts_to_retrieve_an_assembly += 1
       console.log("Attempts: " + this.attempts_to_retrieve_an_assembly)
 
-      let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + assembly_identifier
+      let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + assemblyIdentifier
       ApiService.get(url).then (
         response => {
           // store it to vuex
@@ -156,11 +156,11 @@ export default {
 
     ...mapActions({
       add_or_update_assembly: 'assemblystore/add_or_update_assembly',
-      set_current_assembly_identifier: 'assemblystore/set_current_assembly_identifier'
+      set_current_assemblyIdentifier: 'assemblystore/set_current_assemblyIdentifier'
     })
   },
 
   mounted: function () {
-    // this.update_public_index()
+    // this.update_publicIndex()
   }
 }

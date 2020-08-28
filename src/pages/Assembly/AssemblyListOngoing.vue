@@ -15,11 +15,11 @@
         <ArtificialModeratorAssemblyListOngoing />
 
         <!-- SHOW LIST OF ONGOING ASSEMBLIES -->
-        <div v-if="get_public_index_ongoing_assemblies != null" class="full-width">
+        <div v-if="get_publicIndex_ongoing_assemblies != null" class="full-width">
            <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
             <q-card class="my-card" flat bordered
-                v-for="assembly of get_public_index_ongoing_assemblies" :key="assembly.identifier">
+                v-for="assembly of get_publicIndex_ongoing_assemblies" :key="assembly.identifier">
 
                 <q-parallax
                     :src="assembly.image"
@@ -47,7 +47,7 @@
 <script>
 import ArtificialModeratorAssemblyListOngoing from 'src/artificialmoderation/AssemblyListOngoing'
 import ArtificialModeratorAssemblyListOngoingSelection from 'src/artificialmoderation/AssemblyListOngoingSelection'
-import PublicIndex from "./mixins/public_index"
+import PublicIndex from "./mixins/publicIndex"
 
 export default {
 
@@ -56,9 +56,9 @@ export default {
     components: { ArtificialModeratorAssemblyListOngoing, ArtificialModeratorAssemblyListOngoingSelection },
 
     created() {
-        if(this.get_current_assembly_identifier){
+        if(this.get_current_assemblyIdentifier) {
             this.$router.push({name: 'assembly_home',
-                params: {assembly_identifier: this.get_current_assembly_identifier}})
+                params: {assemblyIdentifier: this.get_current_assemblyIdentifier}})
         }
     }
 }

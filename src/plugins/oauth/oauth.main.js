@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { oAuthService } from './oauth.api';
 import { ApiService } from '../../utils/xhr'
 import {get_cookie_value, set_cookie_value} from '../../utils/cookie.service'
@@ -6,26 +7,27 @@ import {get_cookie_value, set_cookie_value} from '../../utils/cookie.service'
 class oauthSession {
 
     // username
-    public username: string | null = null
+    static username = null
 
     // sub (subject id)
-    public sub: number | null = null
-    public protected_url: object | null = null
+    static sub = null
+    static protected_url = null
 
     // JWT Token
-    private _jwt: string | null = null;
-    get jwt(): boolean {
-      if (this._jwt === null) {
-        this._jwt = get_cookie_value('oauth_jwt')
+    static  _jwt = null;
+        
+    static get jwt() {
+      if (this. _jwt === null) {
+        this. _jwt = get_cookie_value('oauth _jwt')
       }
-      return (this._jwt)
+      return (this. _jwt)
     }
   
-    set jwt(value: string) {
+    set jwt (value) {
       console.log("update jwt cookie" + value)
 
       // TODO: not sure, whether jwt should be saved in cookies or only in runtime variable.
-      set_cookie_value('oauth_jwt', value)
+      set_cookie_value('oauth _jwt', value)
   
       // Add authorization prefix for all following xhr requests.
       // header for axios requests
@@ -33,52 +35,52 @@ class oauthSession {
       
       // TODO: both of the following two assignments are needed, although should be same referred variable, right? 
       // It seems to be a bug in the vue mixin functionality? (don t get this)
-      // this.jwt_runtime = oauth_jwt
-      // this.$root.jwt_runtime = oauth_jwt
+      // this.jwt_runtime = oauth _jwt
+      // this.$root.jwt_runtime = oauth _jwt
   
-      this._jwt = value
+      this. _jwt = value
     }
 
     // Refresh Token
-    get refresh_token (): string {
-      console.log("oauth_refresh_token token")    
+    get refresh_token () {
+      console.log("oauth_refresh_token token")
       let response = get_cookie_value ('oauth_refresh_token')
       return (response)
     }
 
 
-    set refresh_token (value: string) {
+    set refresh_token (value) {
       // TODO: Set cookie with refresh token: shall be valid for a long time (x-Days) 
       const durable = true;
       set_cookie_value ('oauth_refresh_token', value, durable)
     }
 
     // Provider
-    get provider(): boolean {
+    get provider() {
       return (get_cookie_value('oauth_provider'))
     }
-    set provider(value: string) {
+    set provider(value) {
       if (!value) { value = '' }
       const durable = true;
       set_cookie_value('oauth_provider', value, durable)
     }
   
     // Random State
-    get random_state(): boolean {
+    get random_state() {
       return (get_cookie_value('oauth_random_state'))
     }
-    set random_state(value: string) {
+    set random_state(value) {
       if (!value) { value = '' }
       set_cookie_value('oauth_random_state', value)
     }
   
     // is the user authenticated?
-    authenticated(): boolean {
+    authenticated() {
       return (!!(this.jwt) && (this.jwt.length > 0))
     }
   
     // is currently an authentication process goiing on?
-    ongoing(): boolean {
+    ongoing() {
       return (!!(this.random_state) && (this.random_state.length>0))
     }
    
@@ -88,17 +90,10 @@ class oauthSession {
      * If JWT is missing or expired => call refresh token
      * @returns {Promise<boolean>}
      */
-    async initialize(VueRoot): Promise<boolean> {
-  
-      // pre-loads Cookies and Local Storage
-      // TODO: is this still necessary?
-      // void (this.jwt)
-      // void (this.provider)
-      // void (this.refresh_token)
-      // void (this.random_state)
+    async initialize(VueRoot) {
   
       // force to reread jwt token from cookie.
-      this._jwt = null
+      this. _jwt = null
       
       // dont touch an ongoing authentication
       if (this.ongoing()) {
@@ -156,13 +151,13 @@ class oauthSession {
      * @param provider
      * @returns nothings
      **/
-    redirect_to_provider (protected_url=null, provider: string = 'DemokratieFabrik/fabrikAuth'): void {
+    redirect_to_provider (protected_url=null, provider = 'DemokratieFabrik/fabrikAuth'){
       // console.log("redirected to provider.." + provider)
       this.reset_everything()
       this.random_state = "HUXT" + Math.floor(Math.random() * 10000000 + 1000000)
       this.provider = provider
 
-      if(protected_url){
+      if(protected_url) {
         this.protected_url = protected_url
       }
       // Redirect...
@@ -171,9 +166,9 @@ class oauthSession {
   
     /**
      * Step 2: after receiving authentication code.
-     * @returns {Promise<void>}
+     * @returns {Promise}
      */
-    async authorize_by_authentication_code (callback): Promise<void> {
+    async authorize_by_authentication_code (callback) {
       // console.log("authorize by code.." + this.random_state)
   
       // Error Handling....
@@ -204,7 +199,7 @@ class oauthSession {
       var response = false
       try {
         var accessToken = await oAuthService.authorizeByAuthenticationCode(this.provider, authorization_code)
-        if(!accessToken){
+        if(!accessToken) {
           console.warn("No access token received 98df9")
           return(false)
         }
@@ -226,7 +221,7 @@ class oauthSession {
         }
       }
       
-      if(response && callback){
+      if(response && callback) {
         callback()
       }
 
@@ -237,7 +232,7 @@ class oauthSession {
     /**
      * Perform logout. reset all oAuth data (including cookie)
      */
-    async logout(callback): Promise<void> {
+    async logout(callback) {
       // console.log("logout called..")
 
       this.reset_everything()
@@ -245,9 +240,9 @@ class oauthSession {
       // Revoke refresh token (oAuth Server)
       if (this.refresh_token) {
         void oAuthService.tokenRevoke(this.provider, this.refresh_token)
-      }  
+      }
 
-      if(callback){
+      if(callback) {
         callback()
       }
     }
@@ -256,7 +251,7 @@ class oauthSession {
      * Reset all oAuth params to null
      * => force to re-login.
      */
-    reset_everything(): void {
+    reset_everything(){
       // console.log("reset everything...")
       this.jwt = null
       this.random_state = null
@@ -271,7 +266,7 @@ class oauthSession {
     //  * @private
     //  * TODO: move it beyond  oauth mixin..
     //  */
-    // notify (msg_body: string, msg_title: string = 'Authentication error', type:string = 'error'): void {
+    // notify (msg_body, msg_title = 'Authentication error', type:string = 'error'){
     //   this.reset_everything()
     //   this._flash.show({ status: type, title: msg_title, message: msg_body })
     //   this._router.push({ name: 'login_screen' })
@@ -285,7 +280,7 @@ class oauthSession {
      * @param provider
      * @param accessToken
      */
-    async _finalize_authentication_by_access_token (provider: string, accessToken: string): Promise<boolean> {
+    async _finalize_authentication_by_access_token (provider, accessToken) {
   
       // Validate parameters
       if (!accessToken) {

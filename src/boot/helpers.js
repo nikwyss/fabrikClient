@@ -10,7 +10,7 @@ export default boot(({ Vue }) => {
         /* Random Translator method. (tr <default>, trc <pluarization>)
         This allows to define multiple translations with exactly the same meaning.
         This shall bring variation in AM-instructions and feels a bit less robotic.
-        (when using this method, instead of just $t, then you have to add to the i18n libraray 
+        (when using this method, instead of just $t, then you have to add to the i18n libraray
           a list of strings instead simply a string.)
         */
        '$tr': function (key, param1) {
@@ -29,12 +29,11 @@ export default boot(({ Vue }) => {
         // return the translation at position <random>....
         let random = Math.floor(Math.random() * list_of_translations.length)
         key = `${key}[${random}]`
-        
+
         // translate it again...
         let final_translation = this.$i18n.t(key, param1, param2)
         return (final_translation)
-
       }
-  }
+    }
   })
 })

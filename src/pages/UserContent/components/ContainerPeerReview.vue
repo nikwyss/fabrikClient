@@ -228,7 +228,7 @@ import { Fragment } from 'vue-fragment'
 
 export default {
   name: "ContainerPeerReview",
-  props: ["container_id"],
+  props: ["containerID"],
   components: {Fragment},
   
   computed: {
@@ -246,7 +246,7 @@ export default {
     }
   },
 
-  mounted: function(){
+  mounted: function() {
     this.peerreview_small = true;
   }
 }

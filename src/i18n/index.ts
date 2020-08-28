@@ -57,7 +57,7 @@ export default {
 
 // //   // check cookie
 // //   var browserLocale = get_cookie_value('i18n')
-// //   if(browserLocale){
+// //   if(browserLocale) {
 // //     return(browserLocale)
 // //   } 
 
@@ -94,7 +94,7 @@ export default {
 //  * 1.) update runtime variable
 //  * 2.) update cookie
 //  */
-// export function set_new_locale(newLocale){
+// export function set_new_locale(newLocale) {
 //   console.assert(newLocale, 'locale string not transmitted')
 //   console.assert(supportedLocalesInclude(newLocale), 'locale string not allowed')
 //   i18n.locale = newLocale

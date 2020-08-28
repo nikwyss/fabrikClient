@@ -167,7 +167,7 @@ const ApiService = {
    */
   mountAxiosInterceptor(onRejected) {
     // if (!onFullfilled) {
-    // let onFullfilled = function(response){
+    // let onFullfilled = function(response) {
     //   return (response);
     // }
 

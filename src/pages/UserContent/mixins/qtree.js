@@ -19,28 +19,28 @@ export default {
 
     computed: {
 
-        container_id: function(){
+        containerID: function() {
             return(this.container.id)
         },
 
-        root_node_ids: function(){
-            if(this.starting_content_id){
+        root_node_ids: function() {
+            if(this.startingContentID) {
                 return(this.starting_content_node.children.map(x=> x.id))
             }
             return(this.contenttree.structure.children.map(x=> x.id))
         },
 
-        starting_content_node: function(){
+        starting_content_node: function() {
             console.log("get starting_content_node")
-            if(this.custom_starting_node){
+            if(this.custom_starting_node) {
                 return(this.custom_starting_node)
             }else{
-                console.assert(this.starting_content_id)
-                return(this.get_node_by_id(this.starting_content_id))
+                console.assert(this.startingContentID)
+                return(this.get_node_by_id(this.startingContentID))
             }
         },
 
-        total_nof_contents: function(){
+        total_nof_contents: function() {
             return(this.starting_content_node["nof_descendants"])
         },
 
@@ -48,13 +48,13 @@ export default {
     },
 
     methods: {
-        is_currently_expanded: function(node_id){
+        is_currently_expanded: function(node_id) {
             return(this.expanded.includes(node_id))
         },
 
-        collapse_all_children: function(parent_id){
+        collapse_all_children: function(parent_id) {
 
-            if (parent_id==null){
+            if (parent_id==null) {
                 return(this.expand_none())
             }
 
@@ -62,7 +62,7 @@ export default {
             var siblings = parent_node.children
 
             // remove siblings from expanded list
-            if(siblings.length>0){
+            if(siblings.length>0) {
                 let siblings_ids = siblings.map(x => x.id);
                 this.expanded = this.expanded.filter(
                     x => !siblings_ids.includes(x)
@@ -72,21 +72,21 @@ export default {
             return(true)
         },
 
-        expand_node: function(node_id){
+        expand_node: function(node_id) {
             this.expanded.push(node_id)
         },
 
-        expand_more: function(){
+        expand_more: function() {
             console.log("EXPAND MORE")
 
             /// expand all children of currently expanded nodes.
             var new_ids = []
             var child_ids = []
             let nodes = this.$refs.qtree.getExpandedNodes()
-            if (nodes){
-                for(let key in nodes){
+            if (nodes) {
+                for(let key in nodes) {
                     let node = nodes[key]
-                    if (node){
+                    if (node) {
                         child_ids = node.children.map(y => y.id)
                         new_ids = new_ids.concat(child_ids);
                     }
@@ -110,7 +110,7 @@ export default {
               })
         },
 
-        expand_none: function(){
+        expand_none: function() {
             console.log("expand_none")
             this.expanded = []
             this.updateExpanded()
@@ -124,7 +124,7 @@ export default {
             })
         },
 
-        calculate_default_expanded_branches: function (){
+        calculate_default_expanded_branches: function () {
             
             // get default values
             let node = this.starting_content_node
@@ -135,10 +135,10 @@ export default {
            return(branches)
         },
 
-        updateExpanded: function(){
+        updateExpanded: function() {
             this.update_expanded_branches({
-                container_id: this.container_id, 
-                starting_content_id: this.starting_content_id, 
+                containerID: this.containerID, 
+                startingContentID: this.startingContentID, 
                 expanded: this.expanded})
         },
 
@@ -156,7 +156,7 @@ export default {
             this.$refs.filter.focus()
         },
         
-        zoomToContent: function(content){
+        zoomToContent: function(content) {
             console.log("ZOOOM TO CONTENT")
 
             // collapsse all siblings to improve overview
@@ -173,7 +173,7 @@ export default {
             // scroll to newly entered content
             let anchorid = 'arg' + content.id
             var element = document.getElementById(anchorid);
-            if(element){
+            if(element) {
 
                 // See for better scrolling: https://quasar.dev/quasar-utils/scrolling-utils#Scrolling-to-an-element
 
@@ -183,24 +183,24 @@ export default {
         },
 
 
-        cachedNode: function(content_id){
+        cachedNode: function(contentID) {
             // With this getter the content data has to be loaded only once; 
             // and can be used in the tree.header as well as the tree.body templates. 
-            if (this.$options.temp_content_object===null || this.$options.temp_content_object.content.id != content_id){
-                this.$options.temp_content_object = this.contenttree.entries[content_id]
+            if (this.$options.temp_content_object===null || this.$options.temp_content_object.content.id != contentID) {
+                this.$options.temp_content_object = this.contenttree.entries[contentID]
             }
             return(this.$options.temp_content_object)
         },
 
-        get_node_by_branch: function(branch){
+        get_node_by_branch: function(branch) {
             console.log("get node by branch: " + branch)
 
             var parent_node = null
             let path = branch.split(":")
             var children = this.contenttree.structure.children
-            for(let key in path){
+            for(let key in path) {
                 let junction = Number(path[key])
-                if (!junction){
+                if (!junction) {
                     continue
                 }
                 parent_node = children.filter(c => c.id == junction)[0]
@@ -211,13 +211,13 @@ export default {
             return(parent_node)
         },
 
-        get_branch_by_id: function(node_id){
+        get_branch_by_id: function(node_id) {
             // console.log(this.$refs)
             // let node = this.$refs.qtree.getNodeByKey(node_id)
             // return(node.branch)
 
             // this.$refs.tree.getNodeByKey(node_id);
-            if(node_id===null){
+            if(node_id===null) {
                 return(null)
             }
             var obj = this.contenttree.entries[node_id]
@@ -225,7 +225,7 @@ export default {
             var parent_id = obj.content.parent_id
             var branch = ":" + node_id
             console.assert(obj)
-            while(parent_id!==null){
+            while(parent_id!==null) {
                 branch = ":" + parent_id + branch
                 obj = this.contenttree.entries[parent_id]
                 parent_id = obj.content.parent_id
@@ -234,13 +234,13 @@ export default {
             return(branch)
         },
 
-        get_node_by_id_via_branch: function(node_id){
+        get_node_by_id_via_branch: function(node_id) {
             console.log("get node by id via branch: " + node_id)
             // console.log(this.$refs)
             // let node = this.$refs.qtree.getNodeByKey(node_id)
             // return(node)
 
-            if(node_id===null){
+            if(node_id===null) {
                 return(this.contenttree.structure)
             }
 
@@ -249,11 +249,11 @@ export default {
             return(node)
         },
 
-        get_node_by_id: function(node_id){
+        get_node_by_id: function(node_id) {
             console.log("get node by id: " + node_id)
-            if("qtree" in this.$refs){
+            if("qtree" in this.$refs) {
                 let node = this.$refs.qtree.getNodeByKey(node_id)
-                if(node){
+                if(node) {
                     return(node)
                 }
             }
@@ -267,29 +267,29 @@ export default {
         }),
     },
 
-    created: function(){
+    created: function() {
 
         // set expanded branches
-        if(this.expanded === null){
+        if(this.expanded === null) {
             console.assert(this.contenttree)
           
             // first: check in 
-            this.expanded = this.get_default_expanded_branches_from_store({container_id: this.container_id, starting_content_id: this.starting_content_id})
+            this.expanded = this.get_default_expanded_branches_from_store({containerID: this.containerID, startingContentID: this.startingContentID})
         }
 
-        if(this.expanded===null){
+        if(this.expanded===null) {
             this.expanded = this.calculate_default_expanded_branches()
             console.log(this.expanded)
             this.update_expanded_branches({
-                container_id: this.container_id, 
-                starting_content_id: this.starting_content_id, 
+                containerID: this.containerID, 
+                startingContentID: this.startingContentID, 
                 expanded: this.expanded})
         }
         console.log(this.expanded)
 
     },
 
-    mounted: function(){
+    mounted: function() {
         console.log("finished loading")
         this.$emit("tree_is_mounted");
     }

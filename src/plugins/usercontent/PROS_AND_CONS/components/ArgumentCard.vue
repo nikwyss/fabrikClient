@@ -59,7 +59,7 @@
 
         <ContentEditor
             v-if="acl.includes('contribute')"
-            :container_id="container.id"
+            :containerID="container.id"
             :content_type="default_content_type"
             @zoom-to-content="openArgument"
             btnlabel="Add Argument"
@@ -89,10 +89,10 @@ export default {
       console.log("redirect to pros_and_cons_index")
 
       // REDIRECT TO ARGUMENT PAGE
-      var identifier = this.$route.params.assembly_identifier
+      var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'PROS_AND_CONS', params: {
-        assembly_identifier: identifier,
-        container_id: this.container.id }})
+        assemblyIdentifier: identifier,
+        containerID: this.container.id }})
     },
 
     openArgument: function(content) {
@@ -103,11 +103,11 @@ export default {
 
       // REDIRECT TO ARGUMENT PAGE
       console.log(this.content)
-      var identifier = this.$route.params.assembly_identifier
+      var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'PROS_AND_CONS_CONTENT', params: {
-        assembly_identifier: identifier,
-        container_id: this.container.container.id,
-        content_id: content.id
+        assemblyIdentifier: identifier,
+        containerID: this.container.container.id,
+        contentID: content.id
       }})
     }
   }

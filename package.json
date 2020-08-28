@@ -1,13 +1,14 @@
 {
   "name": "fabrikclient",
   "version": "0.0.1",
+  "license" : "GPL-3.0",
   "description": "A demokratiefabrik Vue-js Client",
   "productName": "fabrikClient",
   "author": "Dominik Wyss",
   "private": false,
   "scripts": {
     "dev": "QENV=development quasar dev",
-    "prod": "QENV=production quasar built",
+    "build_for_prod": "QENV=production quasar build",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },

@@ -63,18 +63,13 @@ export default{
     name: "ArtificialModeratorIndexPage",
     components: {ArtificialModerator},
 
-    data () {
-        return {
-        }
-    },
-
     computed: {
 
         ...mapGetters({
             IsThereAnAssemblyInPublicState: 'assemblystore/IsThereAnAssemblyInPublicState',
             IsThereAnAssemblyOngoing: 'assemblystore/IsThereAnAssemblyOngoing',
             IsThereNothingGoingOn: 'assemblystore/IsThereNothingGoingOn',
-            IsUserDelegateOfOngoingAssembly: 'assemblystore/IsUserDelegateOfOngoingAssembly'            
+            IsUserDelegateOfOngoingAssembly: 'assemblystore/IsUserDelegateOfOngoingAssembly'
         }),
 
         salutation: function() {

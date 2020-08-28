@@ -15,11 +15,11 @@
         <ArtificialModeratorAssemblyListShowcase />
 
         <!-- SOME PUBLIC ASSEMBLIES -->
-        <div v-if="get_public_index_published_assemblies != null" class="full-width">
+        <div v-if="get_publicIndex_published_assemblies != null" class="full-width">
            <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
             <q-card class="my-card" flat bordered 
-                    v-for="assembly of get_public_index_published_assemblies" 
+                    v-for="assembly of get_publicIndex_published_assemblies" 
                     :key="assembly.identifier">
 
                 <q-parallax :src="assembly.image" :height="150"/>
@@ -42,7 +42,7 @@
 
 import ArtificialModeratorAssemblyListShowcase from 'src/artificialmoderation/AssemblyListShowcase'
 import ArtificialModeratorAssemblyListShowcaseSelection from 'src/artificialmoderation/AssemblyListShowcaseSelection'
-import PublicIndex from "./mixins/public_index"
+import PublicIndex from "./mixins/publicIndex"
 
 export default {
 

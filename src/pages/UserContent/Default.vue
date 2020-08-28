@@ -30,7 +30,7 @@
             label="Offene Diskussion"
             :container="container" 
             :contenttree="contenttree" 
-            :starting_content_id="starting_content_id" />
+            :startingContentID="startingContentID" />
             
     </q-page>
 </template>

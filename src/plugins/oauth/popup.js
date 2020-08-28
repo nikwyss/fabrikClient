@@ -2,7 +2,7 @@
 
 var popupLibrary = {
 
-    FindLeftWindowBoundry(){
+    FindLeftWindowBoundry() {
         // In Internet Explorer window.screenLeft is the window's left boundry
         if (window.screenLeft)
         {

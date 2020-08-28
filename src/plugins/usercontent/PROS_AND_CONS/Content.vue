@@ -37,7 +37,7 @@
             label="Offene Diskussion"
             :container="container" 
             :contenttree="contenttree" 
-            :starting_content_id="starting_content_id" 
+            :startingContentID="startingContentID" 
         /> 
             
     </q-page>
@@ -59,7 +59,7 @@ export default {
 
     methods: {
         clickBackButton: function () {
-            this.$router.push({name: 'PROS_AND_CONS', params: {container_id: this.container_id}})
+            this.$router.push({name: 'PROS_AND_CONS', params: {containerID: this.containerID}})
         }
     }
 }

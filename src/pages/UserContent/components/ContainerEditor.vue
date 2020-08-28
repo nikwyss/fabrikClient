@@ -147,7 +147,7 @@ export default {
     },
     model: {
       type: Object,
-      default: function(){
+      default: function() {
         // EMPTY CONTAINER MODEL as default value
         return({
           id: null,
@@ -178,11 +178,11 @@ export default {
     };
   },
   computed: {
-    container_count: function(){
+    container_count: function() {
       return(this.assembly_containers ? Object.keys(this.assembly_containers).length+1: 0)
     },
 
-    order_position_options: function(){
+    order_position_options: function() {
       let options = [...Array(this.container_count).keys()]
       options = options.map(x => {var rObj = {}; rObj['label'] = (x); rObj['value'] = (x); return rObj;})
       return(options)
@@ -206,13 +206,13 @@ export default {
         has_error = true
       }
 
-      if (!this.localmodel['info']){
+      if (!this.localmodel['info']) {
         this.errorInfo = true
         this.errorMessageInfo = 'The field must not be empty!'
         has_error = true
       }
 
-      if (!this.localmodel['title']){
+      if (!this.localmodel['title']) {
         this.errorTitle = true
         this.errorMessageTitle = 'Please add a title!'
         has_error = true
@@ -220,19 +220,19 @@ export default {
       return (!has_error)
     },
 
-    save: function(localmodel){
+    save: function(localmodel) {
         console.log("Save Container")
         var identifier = this.assembly.identifier
         console.assert(identifier);
 
         // update fields
         console.log(this.localmodel)
-        if(!this.localmodel['order_position']){
+        if(!this.localmodel['order_position']) {
           this.localmodel['order_position'] = this.container_count + 1
         }
 
         let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container'
-        if(localmodel['id']){
+        if(localmodel['id']) {
           // MODIFY
           url += '/' + localmodel['id']
         }

@@ -37,7 +37,7 @@ export default {
     },
 
     mounted() {
-        if(this.ongoing){
+        if(this.ongoing) {
             console.log("ongoing authorization....39049382")
             LayoutEventBus.$emit('showLoading')
             const response = this.$session.authorize_by_authentication_code(this.authentication_ends)
@@ -46,7 +46,7 @@ export default {
 
     methods: {
 
-        authentication_ends: function(response){
+        authentication_ends: function(response) {
             // Update local data.
             // this is since the cookie plugin as well as the VUE.prototype $session is not reactive.
             this.$root.oauth_callback()
@@ -55,7 +55,7 @@ export default {
             this.ongoing = false
             this.loginerror = !this.$root.authenticated
             this.forceVueUpdateOfOpener()
-            if(this.$root.authenticated){
+            if(this.$root.authenticated) {
                 window.close()
             }
         }

@@ -105,7 +105,7 @@ import {SUPPORTED_LOCALES} from '../../../babel.config';
 
 export default {
   name: 'drawerDefault',
-  data : function(){
+  data : function() {
     return {
         langs: SUPPORTED_LOCALES,
         user_setting_notification_email: true,
@@ -115,7 +115,7 @@ export default {
   },
 
   methods: {
-    logout: function(){
+    logout: function() {
       this.$session.logout(this.$root.oauth_callback)
       let msg_title = 'SuccCessful Logout'
       let msg_body = 'You have been logged out successfully!'

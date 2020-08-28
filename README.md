@@ -25,6 +25,9 @@ npm run lint
 ### Build the app for production
 ```bash
 quasar build
+
+docker build -f DockerfileYarn -t fabrikclient .
+
 ```
 
 ### Customize the configuration

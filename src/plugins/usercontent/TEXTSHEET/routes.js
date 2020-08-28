@@ -2,10 +2,10 @@
 var routes = [
 
   {
-    path: '/:assembly_identifier/textsheet/:container_id/',
+    path: '/:assemblyIdentifier/textsheet/:containerID/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      // { path: ':content_id/', name: 'TEXTSHEET_CONTENT', component: () => import('./Content') },
+      // { path: ':contentID/', name: 'TEXTSHEET_CONTENT', component: () => import('./Content') },
       { path: '', name: 'TEXTSHEET', component: () => import('./Index') }
     ]
   }

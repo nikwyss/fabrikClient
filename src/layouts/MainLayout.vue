@@ -148,7 +148,7 @@ export default {
 
   watch: {
     // if route changes, hide TextLoading
-    $route (to, from){
+    $route (to, from) {
         this.hideLoadingGif()
         this.hideNotificationBanner()
     }
@@ -187,7 +187,7 @@ export default {
 
   computed: {
     is_assembly_page: function () {
-      return ( this.$route.name === 'assemblies' || !!this.$route.params.assembly_identifier)
+      return ( this.$route.name === 'assemblies' || !!this.$route.params.assemblyIdentifier)
     }
   }
 }

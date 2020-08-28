@@ -59,7 +59,7 @@ import { mapActions } from 'vuex'
 export default {
   name: 'ContentEditor',
   props: {
-    container_id: { type: Number },
+    containerID: { type: Number },
     parent_id: {
       type: Number,
       required: false
@@ -102,10 +102,10 @@ export default {
 
     saveContent: function(model) {
       console.log("Save content")
-      console.assert( this.$route.params.container_id)
-      var identifier = this.$route.params.assembly_identifier
+      console.assert( this.$route.params.containerID)
+      var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier)
-      var url =  process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container/' + this.$route.params.container_id
+      var url =  process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container/' + this.$route.params.containerID
       var create_action = true
       if (model.id) {
           // this is an update
@@ -124,18 +124,18 @@ export default {
           console.log("Model saved")
 
           // ERROR RESPONSE
-          if(response.data.OK){
+          if(response.data.OK) {
             console.log("data received")
 
             // update the whole tree
-            if ('contenttree' in response.data){
+            if ('contenttree' in response.data) {
             this.add_or_update_contenttree({
-              container_id:  this.container_id,
+              containerID:  this.containerID,
               contenttree: response.data.contenttree});
             }
             
             // Zoom to newly created entry
-            if ('content' in response.data){
+            if ('content' in response.data) {
               var editor = this;
               setTimeout(function() {
                 console.log("raise Zoomer CONTENT")
@@ -158,7 +158,7 @@ export default {
   },
 
   created: function () {
-    if (this.content_type){
+    if (this.content_type) {
       this.localmodel['type'] = this.content_type
     }
   }

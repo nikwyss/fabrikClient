@@ -16,18 +16,18 @@ export default defineComponent({
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { mapActions } from 'vuex'
 
 export default {
   name: 'App',
-  mounted: function () {
-    this.touch_random_seed()
-  },
   methods: {
     ...mapActions({
-      touch_random_seed: 'assemblystore/touch_random_seed'
+      touchRandomSeed: 'assemblystore/touchRandomSeed'
     })
+  },
+  mounted: function () {
+    this.touchRandomSeed()
   }
 }
 </script>

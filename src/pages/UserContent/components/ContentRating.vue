@@ -47,12 +47,12 @@ export default{
    },
     methods: {
 
-    setRating: function(rating){
+    setRating: function(rating) {
     console.log("set rating...")
     // Load container from scratch
     console.assert(rating !== null && rating !== undefined)
     console.assert(this.content.content.id)
-    var identifier = this.$route.params.assembly_identifier
+    var identifier = this.$route.params.assemblyIdentifier
     console.assert(identifier);
     this.progression_rating = rating
 
@@ -63,14 +63,14 @@ export default{
 
         response => {
           // store changed contents to vuex
-          if(response.data.OK){
+          if(response.data.OK) {
               console.log("rating received")
 
               // this.syncContainer({
               //     assembly: response.data.container,
               //     container: response.data.container})
               
-              this.update_contents({modified_contents: response.data.modified_contents})
+              this.update_contents({modifiedContents: response.data.modifiedContents})
           }
 
           this.$q.notify({
@@ -86,7 +86,7 @@ export default{
     }),
   },
 
-  mounted: function(){
+  mounted: function() {
     this.progression_rating = this.content && this.content.progression ? this.content.progression.rating : 0
   }
 }

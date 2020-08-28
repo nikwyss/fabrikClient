@@ -44,7 +44,7 @@ export default {
   },
 
   methods: {
-    close_drawer_right: function(){
+    close_drawer_right: function() {
       console.log("KKK")
       this.right = false;
     }
