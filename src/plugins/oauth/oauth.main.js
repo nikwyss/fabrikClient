@@ -15,30 +15,26 @@ class oauthSession {
 
     // JWT Token
     static  _jwt = null;
-        
-    static get jwt() {
-      if (this. _jwt === null) {
-        this. _jwt = get_cookie_value('oauth _jwt')
+
+    get jwt() {
+      console.log("get jwt value")
+      if (this._jwt === null) {
+        this._jwt = get_cookie_value('oauth_jwt')
       }
-      return (this. _jwt)
+      return (this._jwt)
     }
   
     set jwt (value) {
       console.log("update jwt cookie" + value)
 
       // TODO: not sure, whether jwt should be saved in cookies or only in runtime variable.
-      set_cookie_value('oauth _jwt', value)
-  
+      set_cookie_value('oauth_jwt', value)
+
       // Add authorization prefix for all following xhr requests.
       // header for axios requests
       ApiService.setHeader(value)
-      
-      // TODO: both of the following two assignments are needed, although should be same referred variable, right? 
-      // It seems to be a bug in the vue mixin functionality? (don t get this)
-      // this.jwt_runtime = oauth _jwt
-      // this.$root.jwt_runtime = oauth _jwt
-  
-      this. _jwt = value
+        
+      this._jwt = value
     }
 
     // Refresh Token
@@ -47,7 +43,6 @@ class oauthSession {
       let response = get_cookie_value ('oauth_refresh_token')
       return (response)
     }
-
 
     set refresh_token (value) {
       // TODO: Set cookie with refresh token: shall be valid for a long time (x-Days) 
@@ -93,7 +88,7 @@ class oauthSession {
     async initialize(VueRoot) {
   
       // force to reread jwt token from cookie.
-      this. _jwt = null
+      this._jwt = null
       
       // dont touch an ongoing authentication
       if (this.ongoing()) {
@@ -151,7 +146,7 @@ class oauthSession {
      * @param provider
      * @returns nothings
      **/
-    redirect_to_provider (protected_url=null, provider = 'DemokratieFabrik/fabrikAuth'){
+    redirect_to_provider (protected_url=null, provider = 'demokratiefabrik/fabrikAuth'){
       // console.log("redirected to provider.." + provider)
       this.reset_everything()
       this.random_state = "HUXT" + Math.floor(Math.random() * 10000000 + 1000000)
@@ -161,6 +156,7 @@ class oauthSession {
         this.protected_url = protected_url
       }
       // Redirect...
+      console.log("redirect to " + protected_url)
       oAuthService.redirectToProvider(this.provider, this.random_state)
     }
   
@@ -294,9 +290,12 @@ class oauthSession {
       console.assert(accessToken['refresh_token'])
       this.refresh_token = accessToken['refresh_token']
       this.random_state = null
-      this.jwt = accessToken['access_token'] // bidirectional => axios header... 
-      // console.log("successfull (re-)login..." + accessToken['access_token'])
+      this.jwt = accessToken['access_token']
+      console.log(this._jwt)
+
+      console.log("successfull (re-)login..." + accessToken['access_token'])
       console.assert(this.jwt)
+      console.log(this._jwt)
       return (true)
     }
 }

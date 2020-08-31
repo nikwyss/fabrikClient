@@ -4,7 +4,7 @@ A demokratiefabrik Vue-js Client installed and configured by Quasar-CLI
 
 ## Install the dependencies
 ```bash
-npm install
+yarn install
 quasar upgrade
 ```
 
@@ -18,17 +18,29 @@ quasar dev
 
 ### Lint the files
 ```bash
-npm run lint
+yarn esling --fix
 ```
+
+
+# DOCKER
+
+## Builds
+Autobuild is enabled. After each git/push a new docker build is generated.
+For manually builds, you may enter:
+
+> docker build -f Dockerfile -t demokratiefabrik/fabrikclient .
+> docker push demokratiefabrik/fabrikclient:latest
+(or push it via portainer)
+
+## Runs
+> docker run --publish 80:80 --detach --name fabrikClient demokratiefabrik/fabrikclient:latest
 
 
 ### Build the app for production
 ```bash
 quasar build
 
-docker build -f DockerfileYarn -t fabrikclient .
-
 ```
 
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+# run
+> docker run --publish 80:80 --detach --name fabrikClient demokratiefabrik/fabrikclient:latest

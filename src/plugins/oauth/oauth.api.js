@@ -48,7 +48,7 @@ const oAuthService = {
 
 
   /**
-   * Authorize at oAuth Server (DemokratieFabrik/fabrikAuth)
+   * Authorize at oAuth Server (demokratiefabrik/fabrikAuth)
    * @param provider
    * @param authorizationCode
    * @returns {Promise<void>}

@@ -55,6 +55,9 @@ exports["default"] = {
         }
     },
     auth: {
+        salutation_for_guests: 'Lieber Gast!',
+        login_button_label: 'Anmeldung',
+        login_button_text: "Klicken Sie auf 'Anmeldung', wenn Sie sich anmelden möchten. Eine Anmeldung ist notwendig, um sich aktiv in der Fabrik zu beteiligen.",
         registered_as: 'Angemeldet als {username}',
         not_registered: 'Anonymer Gast',
         goto_authentication_form: 'Zur Anmeldung',

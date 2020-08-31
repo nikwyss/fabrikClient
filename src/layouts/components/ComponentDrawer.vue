@@ -7,8 +7,8 @@
 
       <q-item tag="label" v-ripple>
         <q-item-section class="text-secondary">
-          <q-item-label>Dear Guest</q-item-label>
-          <q-item-label caption>Klicken Sie auf 'Anmeldung', wenn Sie sich anmelden möchten. Eine Anmeldung ist notwendig, um sich aktiv in der Fabrik zu beteiligen. </q-item-label>
+          <q-item-label v-t="'auth.salutation_for_guests'" />
+          <q-item-label caption  v-t="'auth.login_button_text'" />
         </q-item-section>
       </q-item>
 
@@ -22,7 +22,7 @@
           <q-icon name="mdi-login" />
         </q-item-section>
 
-        <q-item-section>Anmeldung</q-item-section>
+        <q-item-section v-t="'auth.login_button_label'"/>
       </q-item>
     </q-item-section>
 
