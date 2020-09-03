@@ -13,7 +13,7 @@ quasar upgrade
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+QENV=production quasar dev
 ```
 
 ### Lint the files
@@ -23,6 +23,7 @@ yarn esling --fix
 
 
 ### Build the app for production
+Note: is done automatically within the Dockerfile.
 ```bash
 quasar build
 
