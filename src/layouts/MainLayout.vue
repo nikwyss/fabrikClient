@@ -29,15 +29,15 @@
         <q-route-tab  name="home" icon="mdi-door" to="/" :label="$t('menu.items.home.label')">
           <q-tooltip :offset="menuOffset">{{$t('menu.items.home.tooltip')}}</q-tooltip>
         </q-route-tab>
+        <q-route-tab name="background" icon="mdi-help-circle-outline" to="/background" :label="$t('menu.items.background.label')">
+          <q-tooltip :offset="menuOffset" max-width="300px">{{ $t('menu.items.background.tooltip') }} </q-tooltip> 
+        </q-route-tab>
         <q-route-tab name="showcase" icon="mdi-eye-outline" to="/showcase" :label="$t('menu.items.showcase.label')">
           <q-tooltip :offset="menuOffset" max-width="300px">{{$t('menu.items.showcase.tooltip')}}</q-tooltip>
         </q-route-tab>
         <!-- :icon="$root.authenticated ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"  -->
         <q-route-tab name="assemblies" to="/assemblies" icon="mdi-lead-pencil" :label="$t('menu.items.assembly.label')" >
           <q-tooltip :offset="menuOffset" max-width="300px">{{$t('menu.items.assembly.tooltip')}}</q-tooltip>
-        </q-route-tab>
-        <q-route-tab name="background" icon="mdi-help-circle-outline" to="/background" :label="$t('menu.items.background.label')">
-          <q-tooltip :offset="menuOffset" max-width="300px">{{ $t('menu.items.background.tooltip') }} </q-tooltip> 
         </q-route-tab>
     </q-tabs>
     </div>

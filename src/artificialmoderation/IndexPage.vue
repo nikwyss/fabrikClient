@@ -9,7 +9,8 @@
     </ArtificialModerator>
 
     <!-- RIGHT SIDE:  -->
-    <ArtificialModerator  alignment="right" role="2" i18n_path_prefix="content.index" :ongoing_request="IsThereAnAssemblyOngoing === null">
+    <ArtificialModerator  alignment="right" role="2" i18n_path_prefix="content.index" 
+            :ongoing_request="IsThereAnAssemblyOngoing === null">
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
         <template v-if="$root.authenticated === false && IsThereAnAssemblyOngoing === true">

@@ -46,11 +46,11 @@ export default {
       },
       assembly: {
         label: 'Produktionsstätte',
-        tooltip: 'Hier finden unsere BürgerInnen-Konvents statt.'
+        tooltip: 'Hier finden unsere BürgerInnenversammlungen statt.'
       },
       showcase: {
         label: 'Schaufenster',
-        tooltip: 'Die Ergebnisse unserer BürgerInnen-Konvents werden hier veröffentlicht.'
+        tooltip: 'Die Ergebnisse unserer BürgerInnenversammlungen werden hier veröffentlicht.'
       },
       background: {
         label: 'Info-Point',
@@ -83,40 +83,50 @@ export default {
         delegates_redirect: 'Wir können gleich zum Thema kommen. Sind Sie bereit?',
         information_for_public_visitors: 'Auf dieser Webseite finden Sie spannende Ergebnisse von unseren Digitalen-Bürgerversammlungen. Schauen Sie sich bitte um!',
         factory_holiday: 'Wir haben zwar gerade Betriebsferien. Dennoch finden Sie auf dieser Seite viele Informationen über die Demokratiefabrik.',
-        authenticated_user_without_permission_for_ongoing_assembly: 'Wir sind aktuell gerade an der Durchführung eines BürgerInnen-Konvents. Sie finden auf dieser Webseite viele Informationen dazu.',
+        authenticated_user_without_permission_for_ongoing_assembly: 'Wir sind aktuell gerade an der Durchführung eines BürgerInnenversammlungen. Sie finden auf dieser Webseite viele Informationen dazu.',
 
         tooltip: {
           1: [
             // Tooltips for the first AM displayed on the page
-            'Ich bin {actor} und bin übrigens sehr froh, dass Sie hier sind.',
-            'Ich heisse {actor}'
+            'Ich bin {actor} und bin übrigens sehr froh, dass Sie hier sind.'
           ],
           2: [
             // Tooltips for AM with index:2
-            'Haben Sie Fragen, dann besuchen Sie bitte die Hilfe-Seite',
             'Ich bin {actor}',
-            'Ich heisse {actor}'
+            'Haben Sie Fragen, dann besuchen Sie bitte den Info-Point',
           ]
         }
       }
     },
 
     assemblies: {
-      h1: 'Aktuelle BürgerInnen-Konvents',
+      h1: 'Aktuelle BürgerInnenversammlungen',
       am: {
-        there_are_assemblies_ongoing: 'Wunderbar! Sie sind eingeladen sich an einem BürgerInnen-Konvent zu beteiligen.',
-        no_assemblies_accessible: 'Sie können sich aktuell an keinem BürgerInnen-Konvent beteiligen. Wer sich beteiligen darf und wer nicht, entschied das Los.',
-        invitation_to_authenticate: 'Sind Sie eine der 1000 eingeladenen Personen, die sich an einem BürgerInnen-Konvent beteiligen dürfen? Dann möchten wir Sie bitten sich anzumelden.',
+        there_are_assemblies_ongoing: 'Wunderbar! Sie sind eingeladen sich an einer BürgerInnenversammlung zu beteiligen.',
+        no_assemblies_accessible: 'Sie können sich aktuell an keiner BürgerInnenversammlung beteiligen. Wer sich beteiligen darf und wer nicht, entschied das Los.',
+        invitation_to_authenticate: 'Sind Sie eine der 1000 eingeladenen Personen, die sich an einer BürgerInnenversammlung beteiligen dürfen? Dann möchten wir Sie bitten sich anzumelden.',
         you_may_enter_this_assembly_for_the_first_time: 'Treten Sie ein: Es macht Spass und Sie leisten einen Beitrag für unsere Demokratie.'
       }
     },
 
     showcase: {
-      h1: 'Die Resultate unserer BügerInnen-Konvents',
+      h1: 'Die Resultate unserer BügerInnenversammlungen',
       am: {
-        no_assemblies_in_public_state: 'Zur gegebener Zeit, werden wir hier die Resultate unserer BürgerInnen-Konvents veröffentlichen. Wir versprechen einen unabhängigen Blick auf die Perspektive der Stimmbürger.',
-        there_are_assemblies_in_public_state: 'Wunderbar! Sie können hier schon die ersten Ergebnisse unserer Bürger-Konvents besichtigen.',
-        chip_please_enter: 'Bitte treten Sie ein.'
+        no_assemblies_in_public_state: `Zur gegebener Zeit, werden wir hier die Resultate unserer 
+          BürgerInnenversammlungen veröffentlichen. Wir versprechen Ihnen einen unabhängigen Blick 
+          aus der Perspektive des Stimmvolks.`,
+        there_are_assemblies_in_public_state: `Wunderbar! Sie können hier schon die ersten Ergebnisse 
+          unserer BürgerInnenversammlungen besichtigen.`,
+        chip_please_enter: 'Bitte treten Sie ein.',
+        tooltip: {
+          1: [
+            // Tooltips for the first AM displayed on the page
+            `Das von den Stimmbürgern erarbeitete Material ist ungemein hilfreich, wenn man sich selber ein Bild über ein politisches 
+            Thema machen will.`,
+            // Tooltips for the first AM displayed on the page
+            `Das warten lohnt sich auf jeden Fall. Besuchen Sie uns einfach später wieder.`
+          ]
+        }
       }
     },
 
@@ -183,7 +193,7 @@ export default {
         text: `Die Privatshpäre aller unserer TeilnehmerInnen und BesucherInnen ist uns wichtig. 
         Daher arbeiten wir auf der Plattform ausschliesslich mit Pseudonymen. Wir erfassen einzig 
         Personendaten (namentlich Email und allenfalls Handy-Nummer), welche für das Funktionieren 
-        der Plattform notwendig sind. Diese Daten werden sofort nach Beendigung des Bürgerinnen-Konvente
+        der Plattform notwendig sind. Diese Daten werden sofort nach Beendigung des Bürgerinnenversammlungen
         auf unseren Servern gelöscht. Die Daten werden allesamt auschliesslich in der Schweiz auf 
         hauseigenen Servern gehostet (d.h. Universität Bern). Zu keinem Zeitpunkt bekommen Drittpartein Zugriff 
         auf unsere Hardware, Software und Daten.`
@@ -191,13 +201,9 @@ export default {
 
       technologies: {
         label: 'Die Technologie, welche die Fabrik antreibt.',
-        text: `Die Privatshpäre aller unserer TeilnehmerInnen und BesucherInnen ist uns wichtig. 
-        Daher arbeiten wir auf der Plattform ausschliesslich mit Pseudonymen. Wir erfassen einzig 
-        Personendaten (namentlich Email und allenfalls Handy-Nummer), welche für das Funktionieren 
-        der Plattform notwendig sind. Diese Daten werden sofort nach Beendigung des Bürgerinnen-Konvente
-        auf unseren Servern gelöscht. Die Daten werden allesamt auschliesslich in der Schweiz auf 
-        hauseigenen Servern gehostet (d.h. Universität Bern). Zu keinem Zeitpunkt bekommen Drittpartein Zugriff 
-        auf unsere Hardware, Software und Daten.`
+        text: `Für den Aufbau der Demokratiefabrik setzen wir auf moderne Software-Architektur und breit 
+        angewendete Open-Source-Software. Sie finden im Folgenden eine kleine Auswahl der verwendeten
+        Technologien und Konzepte.`
       },
 
       am: {

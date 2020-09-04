@@ -2,7 +2,8 @@
 <div class="justify-center center" style="max-width:350px">
 
     <!-- RIGHT SIDE:  -->
-    <ArtificialModerator alignment="right" role="2"
+    <ArtificialModerator alignment="right" role="1"
+        i18n_path_prefix="content.showcase"
         amGroup='publicassemblyPage'
         :ongoing_request="IsThereAnAssemblyInPublicState === null">
 
