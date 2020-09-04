@@ -89,7 +89,7 @@ export default {
                 let msg_body = 'We could not make a connection to the service provider. Please try again!'
                 // this._flash.show({ status: 'error', title: msg_title, message: msg_body })
                 console.log("Network error")
-                console.warn(msg_title + ' ' + msg_body)
+                console.warn(`${msg_title} ${msg_body}`);
                 LayoutEventBus.$emit('showServiceError')
                 return(false)
 

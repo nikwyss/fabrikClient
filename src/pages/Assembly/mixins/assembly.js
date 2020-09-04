@@ -1,6 +1,7 @@
 import ApiService from "src/utils/xhr"
 import {mapGetters, mapActions} from 'vuex'
 import { LayoutEventBus } from 'src/layouts/components/eventbus.js'
+import Configuration from 'src/utils/configuration'
 
 export default {
 
@@ -110,8 +111,8 @@ export default {
       }
       this.attempts_to_retrieve_an_assembly += 1
       console.log("Attempts: " + this.attempts_to_retrieve_an_assembly)
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${assemblyIdentifier}`
 
-      let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + assemblyIdentifier
       ApiService.get(url).then (
         response => {
           // store it to vuex

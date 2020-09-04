@@ -55,6 +55,7 @@
 <script>
 import ApiService from 'src/utils/xhr'
 import { mapActions } from 'vuex'
+import Configuration from 'src/utils/configuration'
 
 export default {
   name: 'ContentEditor',
@@ -105,11 +106,11 @@ export default {
       console.assert( this.$route.params.containerID)
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier)
-      var url =  process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container/' + this.$route.params.containerID
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/container/${this.$route.params.containerID}`
       var create_action = true
       if (model.id) {
           // this is an update
-          url += '/content/' + model.id
+          url += `/content/{model.id}`
           create_action = false
       } else {
           create_action = true

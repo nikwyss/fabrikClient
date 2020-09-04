@@ -8,6 +8,8 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers')
+// const env = require('quasar-dotenv').config()
+// env: env,
 
 module.exports = configure(function (ctx) {
   return {
@@ -59,6 +61,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
+      // publicPath: 'app-extension-dotenv',
 
       // transpile: false,
 

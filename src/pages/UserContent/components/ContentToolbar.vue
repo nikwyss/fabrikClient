@@ -89,7 +89,7 @@
 
         <ContentRating
           v-if="acl.includes('contribute')"
-          name="'elRating' + obj.content.id"
+          name="`elRating${obj.content.id}`"
           :content="obj"
         />
 
@@ -162,7 +162,7 @@ export default {
       let containerID = this.$route.params.containerID
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier);
-      let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container/' + containerID + '/content/' + content.id
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/container/${containerID}/content/${content.id}`
       var data = {'justification': justification}
       ApiService.delete(url, data).then(
         response => {

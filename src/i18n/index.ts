@@ -66,9 +66,8 @@ export default {
 // //   if (browserLocale && supportedLocalesInclude(browserLocale)) {
 // //     return browserLocale
 // //   }
-
 // //   // take default language
-// //   return process.env.VUE_APP_I18N_LOCALE || "de"
+// //   return Configuration('I18N_LOCALE') || "de"
 // // }
 
 

@@ -1,14 +1,14 @@
 {
   "name": "fabrikclient",
   "version": "0.0.1",
-  "license" : "GPL-3.0",
+  "license": "GPL-3.0",
   "description": "A demokratiefabrik Vue-js Client",
   "productName": "fabrikClient",
   "author": "Dominik Wyss",
   "private": false,
   "scripts": {
-    "dev": "QENV=development quasar dev",
-    "build_for_prod": "QENV=production quasar build",
+    "dev": "quasar dev",
+    "build_docker_image": "docker build -f Dockerfile -t demokratiefabrik/fabrikclient .",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },
@@ -17,16 +17,18 @@
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
     "js-cookie": "^2.2.1",
-    "qenv": "1.0.3",
     "quasar": "^1.0.0",
     "vue-fragment": "^1.5.1",
     "vue-i18n": "^8.0.0",
     "vue-moment": "^4.1.0",
     "vuex-persistedstate": "^3.1.0"
   },
+  "POTENTIALLYUNUSED": {
+    "punycode": "^2.1.1"
+  },
   "devDependencies": {
     "@quasar/app": "^2.0.0",
-    "@quasar/quasar-app-extension-qenv": "^1.0.3",
+    "@quasar/quasar-app-extension-dotenv": "^1.0.5",
     "@types/node": "^10.17.15",
     "@typescript-eslint/eslint-plugin": "^3.3.0",
     "@typescript-eslint/parser": "^3.3.0",
@@ -38,7 +40,9 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "eslint-plugin-vue": "^6.1.2"
+    "eslint-plugin-vue": "^6.1.2",
+    "dotenv": "^8.2.0",
+    "quasar-dotenv": "^1.0.5"
   },
   "browserslist": [
     "ie >= 11",

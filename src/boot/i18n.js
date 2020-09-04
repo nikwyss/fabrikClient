@@ -34,7 +34,7 @@ export { i18n }
 
 // // locale: clocale,
 // // silentTranslationWarn: true,
-// // fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'de-CH',
+// // fallbackLocale: Configuration.value('ENV_I18N_FALLBACK_LOCALE') || 'de-CH',
 // // messages: loadLocaleMessages()
 
 // export default boot(({ app }) => {

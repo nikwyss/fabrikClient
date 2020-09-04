@@ -2,8 +2,8 @@
     <q-page class="doc_content">
 
 
-        <q-btn align="around" 
-            class="btn-fixed-width" color="brown-5" 
+        <q-btn align="around"
+            class="btn-fixed-width" color="brown-5"
             label="Back to the assembly home"
             icon="mdi-arrow-left"
             @click="gotoAssemblyHomeIndex()" />
@@ -37,7 +37,8 @@
                 </div>
 
             </div>
-            <div class="row justify-between" v-for="(nodeL1, keyL1)  in filter_textsheet_entries(contenttree.structure.children)" :key="'L1' + nodeL1.id">
+            <div class="row justify-between" v-for="(nodeL1, keyL1)  in filter_textsheet_entries(contenttree.structure.children)" 
+            :key="`L1${nodeL1.id}`">
                 <TextsheetCard 
                     :acl="assembly.acl" 
                     :level="1"
@@ -48,28 +49,29 @@
                     :container="container" 
                     :item="contenttree.entries[nodeL1.id]"/>
 
-                <div class="row justify-between" v-for="(nodeL2, keyL2) in filter_textsheet_entries(nodeL1.children)" :key="'L2' + nodeL2.id">
-                    <TextsheetCard 
-                        :acl="assembly.acl" 
+                <div class="row justify-between" v-for="(nodeL2, keyL2) in filter_textsheet_entries(nodeL1.children)" 
+                :key="`L2${nodeL2.id}`">
+                    <TextsheetCard
+                        :acl="assembly.acl"
                         :level="2"
                         :comments="filter_comment_entries(nodeL2.children)"
                         :questions="filter_question_entries(nodeL2.children)"
-                        :heading_number="(keyL1+1) + '.' + (keyL2+1)"
+                        :heading_number="`${(keyL1+1)}.${(keyL2+1)}`"
                         :container="container"
                         :contenttree="contenttree"
                         :item="contenttree.entries[nodeL2.id]"/>
 
-
-                    <div class="row justify-between" v-for="(nodeL3, keyL3)  in filter_textsheet_entries(nodeL2.children)" :key="'L3' + nodeL3.id">
-                        <TextsheetCard 
+                    <div class="row justify-between" v-for="(nodeL3, keyL3)  in filter_textsheet_entries(nodeL2.children)" 
+                            :key="`L3${nodeL3.id}`">
+                        <TextsheetCard
                             :acl="assembly.acl"
                             :comments="filter_comment_entries(nodeL3.children)"
                             :questions="filter_question_entries(nodeL3.children)"
                             :level="3"
-                            :heading_number="(keyL1+1) + '.' + (keyL2+1) + '.' + (keyL3+1)"
+                            :heading_number="`${(keyL1+1)}.${(keyL2+1)}.${(keyL3+1)}`"
                             :contenttree="contenttree"
                             :container="container"
-                            :item="contenttree.entries[nodeL3.id]"/>    
+                            :item="contenttree.entries[nodeL3.id]"/>
                     </div>
                 </div>
             </div>
@@ -94,7 +96,7 @@ export default {
     mixins: [ContentTreeMixin],
 
     methods: {
-        
+
         gotoAssemblyHomeIndex: function() {
 
             // REDIRECT TO ARGUMENT PAGE

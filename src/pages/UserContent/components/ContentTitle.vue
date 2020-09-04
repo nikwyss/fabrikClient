@@ -4,7 +4,7 @@
 }
 </style>
 <template>
-    <div :id="'arg' + node.id" class="full-width text-h6" >
+    <div :id="`arg${node.id}`" class="full-width text-h6" >
             <span v-on:click.stop v-if="real_expanded" style="float:right; " class="full-height">
                 <ContentToolbar
                     :acl="acl"

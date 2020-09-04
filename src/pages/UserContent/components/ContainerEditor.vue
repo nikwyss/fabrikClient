@@ -136,6 +136,7 @@
 import ApiService from "src/utils/xhr";
 import ContentTreeMixin from "../mixins/contenttree"
 import {mapActions} from 'vuex'
+import Configuration from 'src/utils/configuration'
 
 export default {
   name: "ContainerEditor",
@@ -222,19 +223,19 @@ export default {
 
     save: function(localmodel) {
         console.log("Save Container")
-        var identifier = this.assembly.identifier
-        console.assert(identifier);
+        console.assert(this.assembly.identifier);
+        console.log(this.localmodel)
 
         // update fields
-        console.log(this.localmodel)
         if(!this.localmodel['order_position']) {
           this.localmodel['order_position'] = this.container_count + 1
         }
 
-        let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container'
+        let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${this.assembly.identifier}/container`
         if(localmodel['id']) {
+
           // MODIFY
-          url += '/' + localmodel['id']
+          url += `/${localmodel['id']}`
         }
 
         ApiService.put(url, {container: localmodel}).then(
@@ -262,12 +263,9 @@ export default {
 
     delete: function (localmodel) {
         console.log("DELETE Container")
-        var identifier = this.assembly.identifier
-        console.assert(identifier)
-
-        // update fields
-        let url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/container'
-        url += '/' + this.localmodel['id']
+        console.assert(this.assembly.identifier)
+        let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${this.assembly.identifier}/container`
+        url += `/{this.localmodel['id']}`
 
         ApiService.delete(url).then(
             response => {

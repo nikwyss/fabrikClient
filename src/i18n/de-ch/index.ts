@@ -123,7 +123,7 @@ export default {
     background: {
       h1: 'Was Sie über die Demokratiefabrik zu wissen brauchen',
       digital_participation: {
-        label: 'Digitale Bürgerbeteiligung - Wie kann das funktionieren?',
+        label: 'Wieso digitale Bürgerbeteiligung funktionieren kann.',
         text: `Bürger*innen mittels Beteiligungsformaten wie Bürger*innenversammlungen stärker in
                politische Entscheidungen einzubeziehen, entspricht der Forderung von immer mehr
                politischen und akademischen Akteuren. Obwohl die digitale Transformation hierzu
@@ -136,7 +136,7 @@ export default {
       },
       
       team: {
-        label: 'Wer steckt hinter der Demokratiefabrik?',
+        label: 'Wer hinter der Demokratiefabrik steckt',
         text: `Involved in the projects are Prof. Marc Bühlmann, Marlène Gerber, Dominik Wyss, and
               Giada Gianola (all University of Berne). The project benefits from expert knowledge by
               Prof. André Bächtiger (University of Stuttgart) and Marc Klein (MIT Center for Collective Intelligence).`
@@ -188,9 +188,21 @@ export default {
         hauseigenen Servern gehostet (d.h. Universität Bern). Zu keinem Zeitpunkt bekommen Drittpartein Zugriff 
         auf unsere Hardware, Software und Daten.`
       },
+
+      technologies: {
+        label: 'Die Technologie, welche die Fabrik antreibt.',
+        text: `Die Privatshpäre aller unserer TeilnehmerInnen und BesucherInnen ist uns wichtig. 
+        Daher arbeiten wir auf der Plattform ausschliesslich mit Pseudonymen. Wir erfassen einzig 
+        Personendaten (namentlich Email und allenfalls Handy-Nummer), welche für das Funktionieren 
+        der Plattform notwendig sind. Diese Daten werden sofort nach Beendigung des Bürgerinnen-Konvente
+        auf unseren Servern gelöscht. Die Daten werden allesamt auschliesslich in der Schweiz auf 
+        hauseigenen Servern gehostet (d.h. Universität Bern). Zu keinem Zeitpunkt bekommen Drittpartein Zugriff 
+        auf unsere Hardware, Software und Daten.`
+      },
+
       am: {
         page_introduction: 'Sind Sie neugierig was die Demokratiefabrik genau ist oder haben Sie bereits eine konkrete Frage? Wir haben hier die wichtigsten Informationen zusammengetragen.',
-        open_questions: 'Blieben noch Fragen offen? Dann können Sie uns auch gerne per Email via info@demokratiefabrik.ch kontaktieren.',
+        open_questions: 'Blieben noch Fragen offen? Dann können Sie uns auch gerne per Email via demokratiefabrik@protonmail.com kontaktieren.',
         cmd_email_composer: 'Email verfassen'
       }
     }

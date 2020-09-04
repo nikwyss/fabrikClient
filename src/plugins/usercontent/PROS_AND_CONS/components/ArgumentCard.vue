@@ -32,7 +32,7 @@
         <q-btn flat color="primary" round icon="mdi-clipboard-edit"> Discuss & Rate</q-btn>
 
         <!-- <ContentRating
-          name="'elRating' + content.content.id"
+          name="`elRating${content.content.id}`"
           v-if="standalone && acl.includes('contribute')"
           :content="content"
         /> -->

@@ -147,7 +147,7 @@ export default {
             const filt = filter.toLowerCase()
             // return node.label && node.label.toLowerCase().indexOf(filt) > -1 && node.label.toLowerCase().indexOf('(*)') > -1
             let obj = this.contenttree.entries[node.id]
-            let searchable = obj.content.title + ' ' + obj.content.text
+            let searchable = `${obj.content.title} ${obj.content.text}`
             return searchable.toLowerCase().indexOf(filt) > -1
         },
         resetFilter () {
@@ -171,12 +171,10 @@ export default {
             this.expand_node(content.id)
 
             // scroll to newly entered content
-            let anchorid = 'arg' + content.id
+            let anchorid = `arg${content.id}`
             var element = document.getElementById(anchorid);
             if(element) {
-
                 // See for better scrolling: https://quasar.dev/quasar-utils/scrolling-utils#Scrolling-to-an-element
-
                 // DEFAULT SCROLL: goes too far down. TODO: correct this
                 element.scrollIntoView();
             }

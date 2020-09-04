@@ -60,7 +60,7 @@
                 :disabled="isDisabled(item)"
             >
 
-                <ComponentContainerEditor :key="'AE' + key"  v-if="assembly.acl.includes('manage') && step==key" :assembly="assembly" :model="item"/>
+                <ComponentContainerEditor :key="`AE${key}`"  v-if="assembly.acl.includes('manage') && step==key" :assembly="assembly" :model="item"/>
 
                 <!-- AGENDA ITEM -->
                 <q-card flat>

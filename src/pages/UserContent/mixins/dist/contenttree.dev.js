@@ -105,9 +105,8 @@ var _default = {
       var _this = this;
 
       console.log("Retrieve contenttree"); // Load container data (to check sync status)
-
       console.assert(this.assemblyIdentifier);
-      var url = process.env.VUE_APP_APISERVER_URL + '/assembly/' + this.assemblyIdentifier + '/container/' + this.containerID + '/contenttree/';
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${this.assemblyIdentifier}/container/${this.containerID}/contenttree/`
 
       _xhr["default"].get(url).then(function (response) {
         // update

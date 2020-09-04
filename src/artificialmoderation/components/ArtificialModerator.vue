@@ -92,7 +92,9 @@ export default {
 
     // Which is the displayed avatar of the AM-Actor?
     avatar: function () {
-      return (`img/actor${this.actor}.png`)
+
+      let path = require(`src/assets/actor${this.actor}.png`)
+      return (path )
     },
 
     /* Shall the avatar be extended by a tooltip? */

@@ -11,7 +11,7 @@ COPY . .
 
 # build stage
 FROM develop-stage as build-stage
-RUN QENV=production quasar build
+RUN quasar build
 
 # production stage
 FROM nginx:stable-alpine as production-stage
@@ -22,4 +22,8 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d
 
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+COPY start-server-nginx.sh /
+RUN chmod +x ./start-server-nginx.sh
+CMD ["./start-server-nginx.sh"]
+
+# CMD ["nginx", "-g", "daemon off;"]

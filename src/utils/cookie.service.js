@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie'
+import Configuration from 'src/utils/configuration'
 
 const nonull = function (val) {
   if (val === undefined || val === 'null' || val === '' || val === {}) {
@@ -17,7 +18,7 @@ export const get_cookie_value = function(name) {
 export const set_cookie_value = function (name, value, durable=false) {
   // TODO: DO we have to specify the domain?
   // get domain without protocol
-  // let domain = process.env.VUE_APP_DOMAIN.replace(/(^\w+:|^)\/\//, '');
+  // let domain = Configure.value('DOMAIN').replace(/(^\w+:|^)\/\//, '');
 
   const options = {
     // domain: domain,
@@ -25,8 +26,7 @@ export const set_cookie_value = function (name, value, durable=false) {
   }
 
   if (durable) {
-    // console.log(process.env.VUE_APP_OAUTH_REFRESH_TOKEN_EXPIRATION_DAYS)
-    options.expires = parseInt(process.env.VUE_APP_OAUTH_REFRESH_TOKEN_EXPIRATION_DAYS)
+    options.expires = parseInt(Configuration.value('ENV_OAUTH_REFRESH_TOKEN_EXPIRATION_DAYS'))
   }
   
   if (value) {

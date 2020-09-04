@@ -13,20 +13,22 @@
         <template v-slot:one>
             <div class="row items-center no-wrap full-height"  >
             <q-icon rounded stretch flat
-                :name="'mdi-emoticon-sad' + (progression_rating==1 ? '' : '-outline')"
+                :name="`mdi-emoticon-sad${(progression_rating==1 ? '' : '-outline')}`"
                 class="q-pd-md" size="md"/>
             </div>
         </template>
         <template v-slot:two>
             <div class="row items-center no-wrap" style="font-weight:bold;" >
             <q-icon rounded stretch flat
-                :name="'mdi-emoticon-neutral' + (progression_rating==2 ? '' : '-outline')"
+                :name="`mdi-emoticon-neutral${(progression_rating==2 ? '' : '-outline')}`"
                 class="q-pd-md" size="md"/>
             </div>
         </template>
         <template v-slot:three>
             <div class="row items-center no-wrap">
-            <q-icon rounded stretch flat :name="'mdi-emoticon-excited' + (progression_rating==3 ? '' : '-outline')" class="q-pa-none"  size="md"/>
+            <q-icon rounded stretch flat 
+            :name="`mdi-emoticon-excited${(progression_rating==3 ? '' : '-outline')}`"
+            class="q-pa-none"  size="md"/>
             </div>
         </template>
     </q-btn-toggle>
@@ -36,6 +38,7 @@
 
 import {mapActions} from 'vuex'
 import ApiService from "src/utils/xhr";
+import Configuration from 'src/utils/configuration'
 
 export default{
     name: "ContentRating",
@@ -56,7 +59,7 @@ export default{
     console.assert(identifier);
     this.progression_rating = rating
 
-    var url = process.env.VUE_APP_APISERVER_URL+'/assembly/' + identifier + '/content/' + this.content.content.id + '/rating/' + rating
+    let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/content/${this.content.content.id}/rating/${rating}`
     console.log(url)
     console.log("xhr request")
     ApiService.get(url).then(

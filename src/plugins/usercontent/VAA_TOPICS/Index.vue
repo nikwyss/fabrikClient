@@ -37,15 +37,16 @@
                 </div>
 
             </div>
-            <div class="row justify-between" v-for="(nodeL1, keyL1)  in contenttree.structure.children" :key="'L1' + nodeL1.id">
+            <div class="row justify-between" v-for="(nodeL1, keyL1)  in contenttree.structure.children"
+                    :key="`L1${nodeL1.id}`">
                 <TextsheetCard 
-                    :acl="assembly.acl" 
+                    :acl="assembly.acl"
                     :level="1"
                     :comments="filter_comment_entries(nodeL1.children)"
                     :questions="filter_question_entries(nodeL1.children)"
                     :heading_number="(keyL1+1)"
                     :contenttree="contenttree"
-                    :container="container" 
+                    :container="container"
                     :item="contenttree.entries[nodeL1.id]"/>
             </div>
 

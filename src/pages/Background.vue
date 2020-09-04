@@ -28,19 +28,6 @@
         </q-card> 
       </q-expansion-item>
 
-      <!-- ARTIFICIAL MODERATORS -->
-      <q-expansion-item
-        group="somegroup"
-        icon="mdi-sign-direction"
-        :label="$t('content.background.artificialmoderators.label')"
-        header-class="text-secondary rounded-borders bg-primarylight"
-      >
-        <q-card>
-          <q-card-section>
-            {{$t('content.background.artificialmoderators.text')}}
-          </q-card-section>
-        </q-card> 
-      </q-expansion-item>
 
       <!-- <q-separator /> -->
 
@@ -56,18 +43,22 @@
         </q-card>
       </q-expansion-item>
 
-      <!-- THE NEXT STEPS OF THE PROJECT -->
-      <q-expansion-item group="somegroup"
-        icon="mdi-shoe-print"
-        :label="$t('content.background.next_steps.label')"
-        header-class="text-secondary">
+
+      <!-- ARTIFICIAL MODERATORS -->
+      <q-expansion-item
+        group="somegroup"
+        icon="mdi-sign-direction"
+        :label="$t('content.background.artificialmoderators.label')"
+        header-class="text-secondary rounded-borders bg-primarylight"
+      >
         <q-card>
           <q-card-section>
-            {{$t('content.background.next_steps.text')}}
+            {{$t('content.background.artificialmoderators.text')}}
           </q-card-section>
-        </q-card>
+        </q-card> 
       </q-expansion-item>
 
+      
       <!-- TRANSPARENCY -->
       <q-expansion-item
         group="somegroup"
@@ -91,6 +82,39 @@
         <q-card>
           <q-card-section>
             {{$t('content.background.privacy.text')}}
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+
+
+      <!-- TECHNOLOGIES -->
+      <q-expansion-item
+        group="somegroup"
+        icon="mdi-hammer-screwdriver"
+        :label="$t('content.background.technologies.label')"
+        header-class="text-secondary"
+      >
+        <q-card>
+          <q-card-section>
+            {{$t('content.background.technologies.text')}}
+            <div class="full-width" align="center">
+            <q-img src="~assets/technologies.png" style="max-width: 400px;"   />
+            </div>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+
+
+      <!-- THE NEXT STEPS OF THE PROJECT -->
+      <q-expansion-item group="somegroup"
+        icon="mdi-shoe-print"
+        :label="$t('content.background.next_steps.label')"
+        header-class="text-secondary">
+        <q-card>
+          <q-card-section>
+            {{$t('content.background.next_steps.text')}}
           </q-card-section>
         </q-card>
       </q-expansion-item>
@@ -131,7 +155,7 @@ export default {
   methods: {
     clickSendEmail: function () {
       // TODO: take email from environment variables
-      const email = 'info@demokratiefabrik.ch'
+      const email = 'demokratiefabrik@protonmail.com'
       window.location.href = `mailto:${email}`
     }
   }

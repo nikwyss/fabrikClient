@@ -29,17 +29,12 @@ var oAuthService = {
    * redirects to authorize page...
    */
   redirectToProvider: function redirectToProvider(provider, randomState) {
-    // TODO: retrieve settings by providername
 
-    /* eslint-disable */
-    var available_providers = process.env['VUE_APP_OAUTH_PROFILES'];
-    console.assert(provider);
-    console.assert(provider in available_providers);
-    var configuration = available_providers[provider];
-    /* eslint-enable */
+    // Provider switch is not implemented yet.
+    console.assert(provider)
 
-    var clientId = configuration['VUE_APP_OAUTH_CLIENT_ID'];
-    var baseUrl = configuration['VUE_APP_OAUTH_BASE_URL'];
+    var clientId = Configuration.value('ENV_OAUTH_CLIENT_ID')
+    var baseUrl = Configuration.value('ENV_OAUTH_BASE_URL')
     console.assert(clientId);
     console.assert(baseUrl); // http://localhost:8000/o/authorize/?client_id=3wtT6b469YwVKPSfenC3M6KNSw2WL70sCNEWAAWq&response_type=code&state=random_state_string
 
