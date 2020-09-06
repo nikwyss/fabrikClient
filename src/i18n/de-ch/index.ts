@@ -79,7 +79,7 @@ export default {
         general_greeting: '{salutation} Wir sind @:am.actor.1 und @:am.actor.2 und freuen uns sehr, dass Sie die Demokratiefabrik besuchen.',
         salutation_for_authenticated: 'Guten Tag {username}!',
         salutation_for_guests: 'Guten Tag lieber Gast!',
-        invitation_to_authenticate: 'Sind Sie eine der 1000 ausgelosten Personen, die in die Demokratiefabrik eingeladen wurden? Dann möchten wir Sie bitten sich anzumelden.',
+        invitation_to_authenticate: 'Gehören Sie zu den 1000 für eine digitale Bürgerversammlung ausgelosten Teilnehmenden? Dann möchten wir Sie bitten sich anzumelden.',
         delegates_redirect: 'Wir können gleich zum Thema kommen. Sind Sie bereit?',
         information_for_public_visitors: 'Auf dieser Webseite finden Sie spannende Ergebnisse von unseren Digitalen-Bürgerversammlungen. Schauen Sie sich bitte um!',
         factory_holiday: 'Wir haben zwar gerade Betriebsferien. Dennoch finden Sie auf dieser Seite viele Informationen über die Demokratiefabrik.',
@@ -100,7 +100,7 @@ export default {
     },
 
     assemblies: {
-      h1: 'Aktuelle BürgerInnenversammlungen',
+      h1: 'Aktuelle BürgerInnenversammlung | Aktuelle BürgerInnenversammlungen',
       am: {
         there_are_assemblies_ongoing: 'Wunderbar! Sie sind eingeladen sich an einer BürgerInnenversammlung zu beteiligen.',
         no_assemblies_accessible: 'Sie können sich aktuell an keiner BürgerInnenversammlung beteiligen. Wer sich beteiligen darf und wer nicht, entschied das Los.',
@@ -110,7 +110,7 @@ export default {
     },
 
     showcase: {
-      h1: 'Die Resultate unserer BügerInnenversammlungen',
+      h1: 'Das Ergebnis unserer BügerInnenversammlung | Die Ergebnisse unserer BügerInnenversammlungen',
       am: {
         no_assemblies_in_public_state: `Zur gegebener Zeit, werden wir hier die Resultate unserer 
           BürgerInnenversammlungen veröffentlichen. Wir versprechen Ihnen einen unabhängigen Blick 
@@ -132,21 +132,30 @@ export default {
 
     background: {
       h1: 'Was Sie über die Demokratiefabrik zu wissen brauchen',
-      digital_participation: {
-        label: 'Wieso digitale Bürgerbeteiligung funktionieren kann.',
+      citizen_assemblies: {
+        label: 'Sinn und Zweck von (digitalen) BürgerInnenversammlungen',
         text: `Bürger*innen mittels Beteiligungsformaten wie Bürger*innenversammlungen stärker in
                politische Entscheidungen einzubeziehen, entspricht der Forderung von immer mehr
-               politischen und akademischen Akteuren. Obwohl die digitale Transformation hierzu
-               eigentlich zahlreiche Chancen bietet, ist aus verschiedenen Gründen das Angebot
-               digitaler Beteiligungsformate noch stark eingeschränkt. Im Rahmen des Projekts
+               politischen und akademischen Akteuren....`
+      },
+
+      digital_participation: {
+        label: 'Was Sie bei unserere digitalen Plattform erwartet.',
+        text: `Im Rahmen des Projekts
                wird ein digitales Beteiligungsformat entwickelt, das den Bürgerinnen und Bürgern
                ermöglicht, eigene Argumente und Überzeugungen in den Abstimmungs- und Wahldiskurs
                einzubringen. Damit soll nicht nur das Vertrauen in Online-Infrastruktur gestärkt,
-               sondern auch die Legitimität der direkten Demokratie erhöht werden.`
+               sondern auch die Legitimität der direkten Demokratie erhöht werden. Damit das gelingt
+               setzen wir auf zwei Neuerungen: Erstens, werden bei der Mitarbeit die BürgerInnen
+               von einem digitalen Moderatorenteam begleitet. Und besitzen die
+               Teilnehmenden in der Demokratiefabrik weitgehende Autonomie. Dabei werden die meisten
+               Entscheidungen in zufällig ausgelosten Kommittees gefällt. Damit erreichen wir
+               eine im Internet ansonsten selten anzutreffende Balance.
+`
       },
       
       team: {
-        label: 'Wer hinter der Demokratiefabrik steckt',
+        label: 'Wer sonst noch für die Demokratiefabrik verantwortlich ist',
         text: `Involved in the projects are Prof. Marc Bühlmann, Marlène Gerber, Dominik Wyss, and
               Giada Gianola (all University of Berne). The project benefits from expert knowledge by
               Prof. André Bächtiger (University of Stuttgart) and Marc Klein (MIT Center for Collective Intelligence).`
@@ -195,7 +204,7 @@ export default {
         Personendaten (namentlich Email und allenfalls Handy-Nummer), welche für das Funktionieren 
         der Plattform notwendig sind. Diese Daten werden sofort nach Beendigung des Bürgerinnenversammlungen
         auf unseren Servern gelöscht. Die Daten werden allesamt auschliesslich in der Schweiz auf 
-        hauseigenen Servern gehostet (d.h. Universität Bern). Zu keinem Zeitpunkt bekommen Drittpartein Zugriff 
+        hauseigenen Servern gehostet (d.h. Universität Bern). Zu keinem Zeitpunkt bekommen Drittparteien Zugriff 
         auf unsere Hardware, Software und Daten.`
       },
 
@@ -207,9 +216,15 @@ export default {
       },
 
       am: {
-        page_introduction: 'Sind Sie neugierig was die Demokratiefabrik genau ist oder haben Sie bereits eine konkrete Frage? Wir haben hier die wichtigsten Informationen zusammengetragen.',
-        open_questions: 'Blieben noch Fragen offen? Dann können Sie uns auch gerne per Email via demokratiefabrik@protonmail.com kontaktieren.',
-        cmd_email_composer: 'Email verfassen'
+        page_introduction: 'Wir haben auf dieser Seite die wichtigsten Informationen zur Demokratiefabrik zusammengetragen.',
+        open_questions: 'Blieben noch Fragen offen? Dann können Sie uns auch gerne via Email kontaktieren.',
+        cmd_email_composer: 'Email verfassen',
+        tooltip: {
+          2: [
+            // Tooltips for the second AM displayed on the page
+            `Ziemlich innovativ das Ganze. Finden Sie nicht?`
+          ]
+        }
       }
     }
   },

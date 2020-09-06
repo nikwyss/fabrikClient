@@ -2,7 +2,7 @@
 <div class="justify-center center" style="max-width:350px">
 
     <!-- LEFT  SIDE -->
-    <ArtificialModerator alignment="left" role="1" i18n_path_prefix="content.index">
+    <ArtificialModerator v-if="this.$root.authenticated !== undefined" alignment="left" role="1" i18n_path_prefix="content.index">
         <template>
         {{$t('content.index.am.general_greeting', {salutation: salutation})}}
         </template>
@@ -10,7 +10,7 @@
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator  alignment="right" role="2" i18n_path_prefix="content.index" 
-            :ongoing_request="IsThereAnAssemblyOngoing === null">
+            :ongoing_request="ongoing_request">
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
         <template v-if="$root.authenticated === false && IsThereAnAssemblyOngoing === true">
@@ -18,22 +18,22 @@
         </template>
 
         <!-- Already authenticated delegate -->
-        <template  v-else-if="$root.authenticated == true && IsUserDelegateOfOngoingAssembly === true">
-        {{$t('content.index.am.delegates_redirect')}}
+        <template  v-else-if="$root.authenticated === true && IsUserDelegateOfOngoingAssembly === true">
+        {{$t('content.index.am.delegates_redirect')}} 
         </template>
 
         <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
-        <template v-else-if="IsThereAnAssemblyInPublicState === true">
+        <template v-else-if="this.$root.authenticated !== undefined && IsThereAnAssemblyInPublicState === true">
         {{$t('content.index.am.information_for_public_visitors')}}
         </template>
 
-        <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
-        <template v-else-if="IsThereNothingGoingOn === true">
+        <!-- no assembly is PUBLIC -->
+        <template v-else-if="this.$root.authenticated !== undefined && IsThereNothingGoingOn === true">
         {{$t('content.index.am.factory_holiday')}}
         </template>
 
         <!-- authenticated user does not have permission to ongoing assembly-->
-        <template v-else>
+        <template v-else-if="this.$root.authenticated !== undefined">
         {{$t('content.index.am.authenticated_user_without_permission_for_ongoing_assembly')}}
         </template>
 
@@ -72,6 +72,10 @@ export default{
             IsThereNothingGoingOn: 'assemblystore/IsThereNothingGoingOn',
             IsUserDelegateOfOngoingAssembly: 'assemblystore/IsUserDelegateOfOngoingAssembly'
         }),
+
+        ongoing_request: function () {
+            return (this.IsThereAnAssemblyOngoing === null || this.$root.authenticated === undefined)
+        },
 
         salutation: function() {
             if (this.$root.authenticated) {

@@ -7,6 +7,13 @@ export default boot(({ Vue }) => {
     {
       methods: {
 
+        nLength: function (object1) {
+          if (object1===null){
+            return(0)
+          }
+          return (object1.length)
+        },
+
         /* Random Translator method. (tr <default>, trc <pluarization>)
         This allows to define multiple translations with exactly the same meaning.
         This shall bring variation in AM-instructions and feels a bit less robotic.
@@ -16,7 +23,7 @@ export default boot(({ Vue }) => {
        '$tr': function (key, param1) {
           let counter = 1
           return (this.$trc(key, counter, param1))
-      },
+        },
 
       '$trc': function (key, param1, param2) {
 

@@ -8,11 +8,10 @@
   <!-- <ArtificialModerator :text="['had']"> -->
   <Fragment>
     <div style="max-width:450px">
-      <q-chat-message class="artificialmoderation" size=7 :text="text" :sent="alignment=='right' ? false : true" :class="actorClass">
+      <q-chat-message align="left" size=7 :text="text" :sent="alignment=='right' ? false : true" :class="['artificialmoderation', actorClass]">
 
         <slot></slot>
 
-        <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
         <template v-if="ongoing_request">
           <q-spinner-dots size="2rem" />
         </template>
@@ -31,7 +30,8 @@
     </div>
 
     <!-- RESPONSE BAR -->
-    <div style="text-align:center; margin-top:50px; " class="full-width" v-if="!!$slots.actions" >
+    <div  :class="['artificialmoderation', actorClass, 'full-width']" :style="`text-align:${invAlignment}; padding-${invAlignment}:100px`" 
+        v-if="!!$slots.actions" >
         <slot name="actions"></slot>
     </div>
 
@@ -70,6 +70,11 @@ export default {
     => For each visitor and each component the allocation of actors to the Am-roles varies
     randomly. (However, the allocation remains constant over time, browser-instance and page-reloads.)
     */
+
+    invAlignment: function() {
+      return (this.alignment=='left' ? 'right': 'left')
+    },
+
     actor: function () {
 
       let crc = 0

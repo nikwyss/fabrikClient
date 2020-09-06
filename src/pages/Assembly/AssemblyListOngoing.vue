@@ -10,9 +10,12 @@
 <template>
     <q-page class="doc_content ">
 
-        <h1>{{$t('content.assemblies.h1')}}</h1>
+        <!-- <ArtificialModeratorAssemblyListOngoing />
 
-        <ArtificialModeratorAssemblyListOngoing />
+        <br />
+        <br /> -->
+
+        <h1>{{$tc('content.assemblies.h1', nLength(get_publicIndex_ongoing_assemblies))}}</h1>
 
         <!-- SHOW LIST OF ONGOING ASSEMBLIES -->
         <div v-if="get_publicIndex_ongoing_assemblies != null" class="full-width">
@@ -34,8 +37,8 @@
                 </q-card-section>
 
                   <!-- <q-card-section> -->
-                <q-card-section class="col-12">
-                    <ArtificialModeratorAssemblyListOngoingSelection :public_assembly="assembly" />
+                <q-card-section class="col-12 " align="right">
+                    <ArtificialModeratorAssemblyListOngoingSelection :ongoing_assembly="assembly" />
                 </q-card-section>
                 </q-card>
 
@@ -45,7 +48,7 @@
 </template>
 
 <script>
-import ArtificialModeratorAssemblyListOngoing from 'src/artificialmoderation/AssemblyListOngoing'
+// import ArtificialModeratorAssemblyListOngoing from 'src/artificialmoderation/AssemblyListOngoing'
 import ArtificialModeratorAssemblyListOngoingSelection from 'src/artificialmoderation/AssemblyListOngoingSelection'
 import PublicIndex from "./mixins/publicIndex"
 
@@ -53,7 +56,7 @@ export default {
 
     name: 'PageAssemblyList',
     mixins: [PublicIndex],
-    components: { ArtificialModeratorAssemblyListOngoing, ArtificialModeratorAssemblyListOngoingSelection },
+    components: { ArtificialModeratorAssemblyListOngoingSelection },
 
     created() {
         if(this.get_current_assemblyIdentifier) {

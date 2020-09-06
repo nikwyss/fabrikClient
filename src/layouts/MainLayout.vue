@@ -1,10 +1,32 @@
+
+<style scoped>
+
+.transitionlogo-enter,
+.transitionlogo-leave-to {
+  height: 40px;
+  opacity: 0;
+}
+
+.transitionlogo-leave,
+.transitionlogo-enter-to {
+  height: 120px;
+  opacity: 100;
+}
+
+.transitionlogo-enter-active,
+.transitionlogo-leave-active {
+  transition: all 0.5s;
+}
+
+</style>
 <template>
 <q-layout view="hHh Lpr lFf" class="rounded-borders">
   <q-header  class="text-primary shadow-1 bg-white" >
 
-    <q-toolbar class="absolute-top-right z-top">
 
-      <q-space />
+
+    <div class="fixed-top-right z-top" align="right" style="width:320px">
+    <q-toolbar style="width:320px">
 
       <!-- ACCOUNT CHIP -->
       <q-chip :icon="$root.authenticated ? 'mdi-account-circle-outline' : 'mdi-incognito'"
@@ -22,9 +44,25 @@
       <LanguageSwitch />
 
     </q-toolbar>
+    </div>
+
+  <div align="center" style="min-height:40px">
+
+      <transition name="transitionlogo">
+
+      <q-img 
+      v-if="expanded_logo"
+      :ratio="1"
+      style="max-width: 241px; max-height:120px;"
+      src="~assets/logoweb.png"
+      />
+
+      </transition>
+
+</div>
 
     <div align="center">
-      <q-img src="~assets/logo.png" style="max-width: 250px"/>
+
       <q-tabs>
         <q-route-tab  name="home" icon="mdi-door" to="/" :label="$t('menu.items.home.label')">
           <q-tooltip :offset="menuOffset">{{$t('menu.items.home.tooltip')}}</q-tooltip>
@@ -186,6 +224,11 @@ export default {
   },
 
   computed: {
+
+    expanded_logo: function () {
+      return (this.$route.name == 'home')
+    },
+
     is_assembly_page: function () {
       return ( this.$route.name === 'assemblies' || !!this.$route.params.assemblyIdentifier)
     }

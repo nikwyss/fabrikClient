@@ -10,7 +10,7 @@
 <template>
     <q-page class="doc_content ">
 
-        <h1>{{$t('content.showcase.h1')}}</h1>
+        <h1>{{$tc('content.showcase.h1', nLength(get_publicIndex_published_assemblies))}}</h1>
 
         <ArtificialModeratorAssemblyListShowcase />
 

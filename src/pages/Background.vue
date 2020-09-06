@@ -1,35 +1,34 @@
 <template>
   <q-page class="doc_content" >
 
+  <!-- RIGHT SIDE -->
+  <div align="right">
+  <ArtificialModerator alignment="left" role="1">
+      <template>
+      {{ $t('content.background.am.page_introduction') }}
+      </template>
+  </ArtificialModerator>
+  </div>
+
+  <br />
+  <br />
+
   <h1>{{$t('content.background.h1')}}</h1>
 
-    <!-- RIGHT SIDE -->
-    <div class="float-right">
-    <ArtificialModerator alignment="left"  style="margin-right:0px" role="1">
-        <template>
-        {{ $t('content.background.am.page_introduction') }}
-        </template>
-    </ArtificialModerator>
-    </div>
-  
   <q-list class="q-ma-xl q-pt-xl rounded-borders" style="clear: both">
       
-      <!-- ABOUT US / TEAM -->
-      <q-expansion-item
-        group="somegroup"
-        icon="mdi-account-group-outline"
-        :label="$t('content.background.team.label')"
-        header-class="text-secondary rounded-borders bg-primarylight"
-      >
+      <!-- CITIZEN ASSEMBLIES -->
+      <q-expansion-item group="somegroup" 
+          icon="mdi-account-supervisor-circle"
+          :label="$t('content.background.citizen_assemblies.label')"
+          header-class="text-secondary">
         <q-card>
           <q-card-section>
-            {{$t('content.background.team.text')}}
+            {{$t('content.background.citizen_assemblies.text')}}
           </q-card-section>
-        </q-card> 
+        </q-card>
       </q-expansion-item>
 
-
-      <!-- <q-separator /> -->
 
       <!-- DIGITAL PARTICIPATION -->
       <q-expansion-item group="somegroup" 
@@ -44,21 +43,6 @@
       </q-expansion-item>
 
 
-      <!-- ARTIFICIAL MODERATORS -->
-      <q-expansion-item
-        group="somegroup"
-        icon="mdi-sign-direction"
-        :label="$t('content.background.artificialmoderators.label')"
-        header-class="text-secondary rounded-borders bg-primarylight"
-      >
-        <q-card>
-          <q-card-section>
-            {{$t('content.background.artificialmoderators.text')}}
-          </q-card-section>
-        </q-card> 
-      </q-expansion-item>
-
-      
       <!-- TRANSPARENCY -->
       <q-expansion-item
         group="somegroup"
@@ -84,6 +68,37 @@
             {{$t('content.background.privacy.text')}}
           </q-card-section>
         </q-card>
+      </q-expansion-item>
+
+
+
+      <!-- ARTIFICIAL MODERATORS -->
+      <q-expansion-item
+        group="somegroup"
+        icon="mdi-sign-direction"
+        :label="$t('content.background.artificialmoderators.label')"
+        header-class="text-secondary rounded-borders bg-primarylight"
+      >
+        <q-card>
+          <q-card-section>
+            {{$t('content.background.artificialmoderators.text')}}
+          </q-card-section>
+        </q-card> 
+      </q-expansion-item>
+
+      
+      <!-- ABOUT US / TEAM -->
+      <q-expansion-item
+        group="somegroup"
+        icon="mdi-account-group-outline"
+        :label="$t('content.background.team.label')"
+        header-class="text-secondary rounded-borders bg-primarylight"
+      >
+        <q-card>
+          <q-card-section>
+            {{$t('content.background.team.text')}}
+          </q-card-section>
+        </q-card> 
       </q-expansion-item>
 
 
@@ -122,7 +137,7 @@
     </q-list>
 
     <!-- RIGHT SIDE -->
-    <ArtificialModerator alignment="right" role="2">
+    <ArtificialModerator alignment="right" role="2" i18n_path_prefix="content.background">
 
         <template>
           {{ $t('content.background.am.open_questions') }}

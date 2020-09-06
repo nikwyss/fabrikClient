@@ -82,7 +82,7 @@ export default {
             // enfoce that ApiService Wrapper is used, (and not pure Axios)
             console.log("XHR ERROR")
             ApiService.is_api_service_used_as_axios_wrapper(error.config)
-            
+
             // No remote connection established
             if (!error.response) {
                 let msg_title = 'Network Error'
@@ -137,44 +137,44 @@ export default {
           console.log("Unknown oauth request error")
           LayoutEventBus.$emit('showServiceError')
           return Promise.reject(error)
+        },
+
+        /**
+         * Refresh token routine: MAIN
+         * @returns {Promise<void>}
+         */
+        retrieve_refreshed_token: async function() {
+          console.log("START refresh token handling")
+
+          // VALIDATE DATA
+          // re-read cookie values
+          // TODO: dont know why I have to doo this...
+          console.assert(this.$session.refresh_token)
+          console.assert(this.$session.provider)
+
+          // empty jwt
+          this.jwt = null
+
+          // Re-issue a token
+          // try to re-issue an access_token by refresh token.
+          let accessToken = await oAuthService.tokenRefresh(this.$session.provider, this.$session.refresh_token)
+          if (!accessToken) {
+            // console.log("auth session invalid: reset and redirect to login..")
+            // let msg_title = 'Session Timeout'
+            // let msg_body = 'We could not continue your last login session. Please login again!'
+            // this._flash.show({ status: 'warning', title: msg_title, message: msg_body })
+            this.$session.reset_everything()
+            return (false)
+          }
+
+          // Convert to JWT
+          let success = await this.$session._finalize_authentication_by_access_token(this.$session.provider, accessToken)
+          console.assert(success)
+          return (true)
+        }
       },
 
-      /**
-       * Refresh token routine: MAIN
-       * @returns {Promise<void>}
-       */
-      retrieve_refreshed_token: async function() {
-        console.log("START refresh token handling")
-
-        // VALIDATE DATA
-        // re-read cookie values
-        // TODO: dont know why I have to doo this...
-        console.assert(this.$session.refresh_token)
-        console.assert(this.$session.provider)
-
-        // empty jwt
-        this.jwt = null
-
-        // Re-issue a token
-        // try to re-issue an access_token by refresh token.
-        let accessToken = await oAuthService.tokenRefresh(this.$session.provider, this.$session.refresh_token)
-        if (!accessToken) {
-          // console.log("auth session invalid: reset and redirect to login..")
-          // let msg_title = 'Session Timeout'
-          // let msg_body = 'We could not continue your last login session. Please login again!'
-          // this._flash.show({ status: 'warning', title: msg_title, message: msg_body })
-          this.$session.reset_everything()
-          return (false)
-        }
-
-        // Convert to JWT
-        let success = await this.$session._finalize_authentication_by_access_token(this.$session.provider, accessToken)
-        console.assert(success)
-        return (true)
-      }
-    },
-
-    mounted: function() {
+      mounted: function() {
         // add only to root object
         if(this.$root == this) {
           console.log("Added onAxiosReject Event Listener")
@@ -187,6 +187,10 @@ export default {
           this.$session.initialize(this)
           console.log("END MOUNT")
           
+          if (this.$root.authenticated === undefined){
+              this.$root.authenticated = false
+          }
+  
           // Force update Vue
           // TODO: not used, right? (have once be used after authentication...)
           console.log("VueUpdate")

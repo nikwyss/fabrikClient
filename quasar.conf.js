@@ -62,7 +62,9 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // publicPath: 'app-extension-dotenv',
-
+      uglifyOptions: {
+        compress: { drop_console: true }
+      },
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)

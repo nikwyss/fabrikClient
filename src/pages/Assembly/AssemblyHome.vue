@@ -26,7 +26,7 @@
 
                 <!-- v-if="!step" -->
             <q-chat-message
-                class="artificialmoderation"
+                class="artificialdmoderation"
                 size=8
                 avatar="~assets/actor1.png"
                 :text="[`Heute sind ${max_steps} Punkte auf Ihrer Agenda.`]"
@@ -103,7 +103,7 @@
 
                                     <!-- name="Moderatorin Sophie" -->
                              <q-chat-message
-                                    class="artificialmoderation"
+                                    class="artificddddialmoderation"
                                     size=4
                                     avatar="~assets/actor2.png"
                                     :text="[item.container.am_instruction]"

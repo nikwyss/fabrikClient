@@ -156,14 +156,13 @@ const getters = {
         if (state.publicIndex == null) {
             return (null)
         }
- 
         // Check if there is at least one ongoing assembly.
         if (state.publicIndex_ongoing_assemblies.length === 0) {
             return (false)
         }
 
         // Check permissions:
-        let accessibleAssemblies = state.publicIndex.assemblies.filter(x => x.am_is_accessible_by_current_user)
+        let accessibleAssemblies = state.publicIndex_ongoing_assemblies.filter(x => x.am_is_accessible_by_current_user)
         return (accessibleAssemblies.length > 0)
     }
 }
