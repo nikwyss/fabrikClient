@@ -1,10 +1,7 @@
 <style lang="sass" scoped>
-.my-card
-    // margin-top: 2em;
-    // margin-bottom: 2em;
-    // margin-left: auto;
-    // margin-right: auto;
-    // width: 80%
+.assemblycard
+    margin-top: 4em;
+    margin-bottom: 4em;
 </style>
 
 <template>
@@ -18,7 +15,7 @@
         <div v-if="get_publicIndex_published_assemblies != null" class="full-width">
            <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
-            <q-card class="my-card" flat bordered 
+            <q-card class="assemblycard" flat bordered
                     v-for="assembly of get_publicIndex_published_assemblies" 
                     :key="assembly.identifier">
 
@@ -30,7 +27,11 @@
                     <span>{{assembly.info}}</span>
                 </q-card-section>
 
+                <q-card-section class="col-12 " align="right">
                 <ArtificialModeratorAssemblyListShowcaseSelection />
+                </q-card-section>
+                
+                <br />
 
             </q-card>
         </div>

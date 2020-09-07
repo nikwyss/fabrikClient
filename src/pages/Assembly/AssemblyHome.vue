@@ -1,14 +1,19 @@
 <template>
     <q-page class="doc_content">
+        <!-- <div align="center" class="full-width q-mb-lg">
+            <q-btn align="around" 
+                class="btn-fixed-width" 
+                label="Back to the list of assemblies"
+                flat
+                icon="mdi-arrow-up" 
+                @click="clickBackToAssemblyListButton"/>
+        </div> -->
 
+        
         <div v-if="assembly">
 
-                <q-btn align="around" 
-                    class="btn-fixed-width" color="brown-5" 
-                    label="Back to the list of assemblies"
-                    icon="mdi-arrow-left" 
-                    @click="clickBackToAssemblyListButton"/>
-
+<!-- color="brown-5"  -->
+                    
             <q-card class="my-card" flat>
             <q-card-section >
                 <!-- <div class="text-overline">Der Bürgerkonvent</div> -->

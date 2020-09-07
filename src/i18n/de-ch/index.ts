@@ -101,12 +101,20 @@ export default {
 
     assemblies: {
       h1: 'Aktuelle BürgerInnenversammlung | Aktuelle BürgerInnenversammlungen',
+      item: {
+        please_enter: 'Bitte Eintreten',
+        subtitle: 'Aktuelle Online-Bürgerversammlung',
+        days_left: 'Noch {days_left} Tage'
+      },
       am: {
         there_are_assemblies_ongoing: 'Wunderbar! Sie sind eingeladen sich an einer BürgerInnenversammlung zu beteiligen.',
         no_assemblies_accessible: 'Sie können sich aktuell an keiner BürgerInnenversammlung beteiligen. Wer sich beteiligen darf und wer nicht, entschied das Los.',
         invitation_to_authenticate: 'Sind Sie eine der 1000 eingeladenen Personen, die sich an einer BürgerInnenversammlung beteiligen dürfen? Dann möchten wir Sie bitten sich anzumelden.',
         you_may_enter_this_assembly_for_the_first_time: 'Treten Sie ein: Es macht Spass und Sie leisten einen Beitrag für unsere Demokratie.'
       }
+    },
+
+    assembly: {
     },
 
     showcase: {
