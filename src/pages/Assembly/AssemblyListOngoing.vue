@@ -1,21 +1,16 @@
 <style lang="sass" scoped>
 .assemblycard
-    margin-top: 4em;
-    margin-bottom: 4em;
+    margin-bottom: 6em;
 </style>
 
 <template>
     <q-page class="doc_content ">
 
-        <!-- <ArtificialModeratorAssemblyListOngoing /> -->
-
-        <h1>{{$tc('content.assemblies.h1', nLength(get_publicIndex_ongoing_assemblies))}}</h1>
-
         <!-- SHOW LIST OF ONGOING ASSEMBLIES -->
         <div v-if="get_publicIndex_ongoing_assemblies != null" class="full-width">
            <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
-            <q-card class="assemblycard" flat bordered
+            <q-card class="assemblycard" flat 
                 v-for="assembly of get_publicIndex_ongoing_assemblies" :key="assembly.identifier">
 
                 <q-parallax
@@ -44,6 +39,12 @@
                 </q-card>
 
         </div>
+
+        <div v-else>
+            <h1>{{$tc('content.assemblies.h1', nLength(get_publicIndex_ongoing_assemblies))}}</h1>
+            <ArtificialModeratorAssemblyListOngoing />
+        </div>
+
     </q-page>
 
 </template>

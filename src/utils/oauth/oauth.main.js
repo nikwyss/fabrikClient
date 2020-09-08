@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { oAuthService } from './oauth.api';
-import { ApiService } from '../../utils/xhr'
-import {get_cookie_value, set_cookie_value} from '../../utils/cookie.service'
+import { ApiService } from '../xhr'
+import {get_cookie_value, set_cookie_value} from '../cookie.service'
 
 // DEFINE SESSION Object
 class oauthSession {

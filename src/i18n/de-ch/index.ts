@@ -104,7 +104,9 @@ export default {
       item: {
         please_enter: 'Bitte Eintreten',
         subtitle: 'Aktuelle Online-Bürgerversammlung',
-        days_left: 'Noch {days_left} Tage'
+        days_left: 'Noch {days_left} Tage',
+        home: `Heute sind {max_steps} Punkte auf Ihrer Agenda.`
+
       },
       am: {
         there_are_assemblies_ongoing: 'Wunderbar! Sie sind eingeladen sich an einer BürgerInnenversammlung zu beteiligen.',

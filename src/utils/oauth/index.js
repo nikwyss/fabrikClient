@@ -6,8 +6,8 @@ This does initiate a oauth2 session and stores it in Vue.$session
 import oauthSession from './oauth.main'
 import { LayoutEventBus } from 'src/layouts/components/eventbus.js'
 import {oAuthService} from "./oauth.api"
-import { ApiService } from '../../utils/xhr'
-import { Allow400Status, ReloginOnStatus403 } from '../../utils/xhr'
+import { ApiService } from '../xhr'
+import { Allow400Status, ReloginOnStatus403 } from '../xhr'
 
 console.log('Installing the Oauth Plugin!')
 export default {

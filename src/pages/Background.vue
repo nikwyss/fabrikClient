@@ -1,6 +1,8 @@
 <template>
   <q-page class="doc_content" >
 
+  <h1>{{$t('content.background.h1')}}</h1>
+
   <!-- RIGHT SIDE -->
   <div align="right">
   <ArtificialModerator alignment="left" role="1">
@@ -9,11 +11,6 @@
       </template>
   </ArtificialModerator>
   </div>
-
-  <br />
-  <br />
-
-  <h1>{{$t('content.background.h1')}}</h1>
 
   <q-list class="q-ma-xl q-pt-xl rounded-borders" style="clear: both">
       

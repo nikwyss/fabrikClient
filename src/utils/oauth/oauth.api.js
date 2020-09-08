@@ -2,7 +2,7 @@
  * Provides methods for oAuth2-related XHR calls.
  */
 
-import ApiService from '../../utils/xhr'
+import ApiService from '../xhr'
 import popupLibrary from './popup'
 import Configuration from 'src/utils/configuration'
 

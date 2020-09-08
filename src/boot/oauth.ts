@@ -1,5 +1,5 @@
 import { boot } from 'quasar/wrappers'
-import oauthInstance from '../plugins/oauth'
+import oauthInstance from '../utils/oauth'
 
 export default boot(({ Vue }) => {
   Vue.use(oauthInstance)

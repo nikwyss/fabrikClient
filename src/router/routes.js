@@ -1,63 +1,43 @@
-import { RouteConfig } from 'vue-router'
-
 import UserContentDefault from 'src/pages/UserContent/Default'
 import plugin_routes from 'src/plugins/routes.js'
+import oauth_routes from "../utils/oauth/routes.js"
 
+// Application Routes
+const meta4AssemblyPages = {topmenu: 'assemblies_ongoing_list'}
 const routes = [
-
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
+
+      // Main Menues
       { path: '', name: 'home', component: () => import('pages/Index.vue') },
-      { path: '/assemblies', name: 'assemblies', component: () => import(/* webpackPrefetch: true */ 'pages/Assembly/AssemblyListOngoing.vue') },
+      { path: '/background', name: 'background', component: () => import(/* webpackPrefetch: true */ 'pages/Background.vue') },
       { path: '/showcase', name: 'showcase', component: () => import(/* webpackPrefetch: true */ 'pages/Assembly/AssemblyListShowcase.vue') },
-      { path: '/background', name: 'background', component: () => import(/* webpackPrefetch: true */ 'pages/Background.vue') }
+      { path: '/assemblies_ongoing', name: 'assemblies_ongoing_list', component: () => import('pages/Assembly/AssemblyListOngoing.vue') },
+
+      // ASSEMBLY Pages
+      { path: '/:assemblyIdentifier/home', name: 'assembly_home', component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
+      { path: '/:assemblyIdentifier/step/:containerID', name: 'assembly_home_stepper', component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
+      { path: '/:assemblyIdentifier/container/:containerID', name: 'container', component: UserContentDefault, meta: meta4AssemblyPages},
+      { path: '/:assemblyIdentifier/container/:containerID/:contentID', name: 'content', component: UserContentDefault, meta: meta4AssemblyPages },
+
+      // Add Plugin Routes
+      ...plugin_routes
     ]
   },
 
-  {
-    path: '/:assemblyIdentifier/container/:containerID',
-    name: 'container',
-    component: UserContentDefault,
-    meta: {
-      authRequired: false,  // TODO; sure?
-      text: 'UserContent'
-    },
-  },
-  {
-    path: '/:assemblyIdentifier/container/:containerID/:contentID',
-    name: 'content',
-    component: UserContentDefault,
-    meta: {
-      authRequired: false, // TODO; sure?
-      text: 'UserContent'
-    }
-  }
-]
+  // Authentication Routes
+  ...oauth_routes,
 
-const final_routes_with_placeholder = [
-
-  {
-    path: '/:assemblyIdentifier/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: 'home', name: 'assembly_home', component: () => import('pages/Assembly/AssemblyHome.vue') },
-      { path: 'step/:containerID', name: 'assembly_home_stepper', component: () => import('pages/Assembly/AssemblyHome.vue') }
-    ]
-  },
-
+  // Catch all routes
   // Always leave this as last one,
   // but you can also remove it
   {
     path: '*',
     component: () => import('pages/Error404.vue')
   }
+
 ]
 
-// Define Routes
-routes.push(...plugin_routes)
-routes.push(...final_routes_with_placeholder)
-
-// Export routes.
 export default routes

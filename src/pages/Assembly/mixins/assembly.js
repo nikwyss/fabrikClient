@@ -32,6 +32,7 @@ export default {
 
       if (!this.assemblyIdentifier) {
         console.log("no identifier")
+        LayoutEventBus.$emit('hideLoading')
         return (null)
       }
 
@@ -54,6 +55,7 @@ export default {
       this.set_current_assemblyIdentifier(assembly)
 
       // no cache version exists: load the full tree...
+      LayoutEventBus.$emit('hideLoading')
       return (assembly)
     },
 
