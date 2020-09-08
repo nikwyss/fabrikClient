@@ -1,5 +1,19 @@
 /* THIS is a mixin for global helper methods and properties used in the Demokratie Fabrik. */
 import { boot } from 'quasar/wrappers'
+import Vue from 'vue'
+// import VueDOMPurifyHTML from 'vue-dompurify-html'
+import VueSanitize from "vue-sanitize";
+
+// Vue.use(VueDOMPurifyHTML)
+let defaultOptions = {
+  allowedTags: ['a', 'b', 'q'],
+  allowedAttributes: {
+    'a': [ 'href' ],
+    'q': [ 'class' ]
+  }
+}
+Vue.use(VueSanitize, defaultOptions);
+// => Use for all editable Richt-Text CONTENT : v-html="$sanitize(item.content.text)"
 
 export default boot(({ Vue }) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -7,6 +21,9 @@ export default boot(({ Vue }) => {
     {
       methods: {
 
+        /* 
+        Returns length of a object/list, while handling null as 0. 
+        */
         nLength: function (object1) {
           if (object1===null){
             return(0)

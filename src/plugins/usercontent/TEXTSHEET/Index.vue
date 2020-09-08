@@ -1,13 +1,17 @@
 <template>
-    <q-page class="doc_content">
+    <q-page class="doc_content " >
 
 
-        <q-btn align="around"
-            class="btn-fixed-width" color="brown-5"
+        <q-btn 
+            align="left"
+            class="btn-fixed-width q-mb-lg"
+            flat
             label="Back to the assembly home"
             icon="mdi-arrow-left"
             @click="gotoAssemblyHomeIndex()" />
 
+
+    <div align="center">
         <div v-if="assembly && container">
 
             <!-- DISABLED WARNING -->
@@ -21,24 +25,23 @@
                 :assembly_id="assembly.id"
                 :model="container" />
 
-            <div class="text-h4">{{container.title}}</div>
+            <!-- <div class="text-h4">{{container.title}}</div> -->
 
-            <p>{{container.info}}</p>
         </div>
 
-        <q-spinner-dots color="secondary" size="7em" v-if="!contenttree"/>
 
-        <div class="" v-if="container && contenttree">
+        <div v-if="container && contenttree" class="text-vessel">
             <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
-            <div class="row justify-between gt-xs ">
 
-                <div class="col-12 col-sm-6">
-                    <h2 class=" q-mb-none q-ml-md">{{container.title}}</h2>
-                </div>
 
-            </div>
+            <h2>{{container.title}}</h2>
+            <p class="text-body1">{{container.info}}</p>
+
             <div class="row justify-between" v-for="(nodeL1, keyL1)  in filter_textsheet_entries(contenttree.structure.children)" 
             :key="`L1${nodeL1.id}`">
+
+                <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
+
                 <TextsheetCard 
                     :acl="assembly.acl" 
                     :level="1"
@@ -49,8 +52,10 @@
                     :container="container" 
                     :item="contenttree.entries[nodeL1.id]"/>
 
-                <div class="row justify-between" v-for="(nodeL2, keyL2) in filter_textsheet_entries(nodeL1.children)" 
-                :key="`L2${nodeL2.id}`">
+                <div class="row justify-between" 
+                        v-for="(nodeL2, keyL2) in filter_textsheet_entries(nodeL1.children)" 
+                        :key="`L2${nodeL2.id}`">
+
                     <TextsheetCard
                         :acl="assembly.acl"
                         :level="2"
@@ -61,22 +66,25 @@
                         :contenttree="contenttree"
                         :item="contenttree.entries[nodeL2.id]"/>
 
+
                     <div class="row justify-between" v-for="(nodeL3, keyL3)  in filter_textsheet_entries(nodeL2.children)" 
                             :key="`L3${nodeL3.id}`">
+
                         <TextsheetCard
                             :acl="assembly.acl"
                             :comments="filter_comment_entries(nodeL3.children)"
                             :questions="filter_question_entries(nodeL3.children)"
                             :level="3"
-                            :heading_number="`${(keyL1+1)}.${(keyL2+1)}.${(keyL3+1)}`"
                             :contenttree="contenttree"
                             :container="container"
                             :item="contenttree.entries[nodeL3.id]"/>
                     </div>
                 </div>
+
             </div>
 
         </div>
+    </div>
     </q-page>
 </template>
 

@@ -2,6 +2,8 @@ import ApiService from "src/utils/xhr"
 import {mapGetters, mapActions} from 'vuex'
 import AssemblyMixin from "src/pages/Assembly/mixins/assembly"
 // import assembly from "src/pages/Assembly/mixins/assembly"
+import Configuration from 'src/utils/configuration'
+import { LayoutEventBus } from 'src/layouts/components/eventbus.js'
 
 export default {
 
@@ -29,18 +31,44 @@ export default {
         return(null)
       }
 
+
       // has contentree already be cached in the vues store??
       var container = this.get_assembly_container({
         assemblyIdentifier: this.assemblyIdentifier, 
         containerID: this.containerID})
-        if(!container) {
+  
+      if(!container) {
           // Not yet loaded. please wait
           return(null)
       }
 
-      console.assert(container)
+      return(container.container)
+    },
 
-      return(container)
+    
+    progression: function() {
+      console.assert(this.assembly)
+
+      if(!this.containerID) {
+        return(null)
+      }
+
+      if(!this.assemblyIdentifier) {
+        return(null)
+      }
+
+
+      // has contentree already be cached in the vues store??
+      var container = this.get_assembly_container({
+        assemblyIdentifier: this.assemblyIdentifier, 
+        containerID: this.containerID})
+  
+      if(!container) {
+          // Not yet loaded. please wait
+          return(null)
+      }
+
+      return(container.progression)
     },
 
     contenttree: function() {
@@ -58,6 +86,7 @@ export default {
 
       // // TODO: reload container data to check last modification date.
       if(contenttree) {
+        LayoutEventBus.$emit('hideLoading')
         return(contenttree)
       }
 
@@ -98,6 +127,7 @@ export default {
       ApiService.get(url).then(
         response => {
           // update
+          LayoutEventBus.$emit('hideLoading')
           console.log('save full contenttree to cache.')
           console.assert ('OK' in response.data)
           console.assert ('contenttree' in response.data)

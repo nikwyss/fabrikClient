@@ -29,7 +29,7 @@
                     <span>{{assembly.info}}</span>
 
                     <!-- v-if="assembly.date_end" -->
-                <div class="inline-block" >
+                <div class="q-mt-md text-caption">
                      {{$t('content.assemblies.item.days_left', {days_left: 3}) }}
                 </div>
 

@@ -108,7 +108,7 @@ const getters = {
 
         const containers = state.assemblies[assemblyIdentifier].containers
         console.assert(containerID in containers)
-
+        
         return (containers[containerID])
     },
 

@@ -10,24 +10,26 @@
       </ContentToolbar>
     </span>
 
-    <q-card class="q-ma-none full-width" flat v-if="item">
+    <q-card class="q-ma-none full-width"  flat v-if="item">
       <q-card-section horizontal class="full-width ">
-        <div class=" col-10">
-        <div class="q-mt-sm q-mb-xs" :class="header_class">{{heading_number}} {{item.content.title}}</div>
-        <div class="text-caption text-grey" v-if="item.content.text">
-          {{item.content.text}}
-        </div>
+        <div class=" col-11">
+          <div class="q-mt-lg q-mb-xs" :class="header_class">{{heading_number}} {{item.content.title}}</div>
+          <div class="text-body1 text-justify" v-if="item.content.text" v-html="$sanitize(item.content.text)"/>
+            <!-- <q class="L T">Die Demokratiefabrik legt grossen Wert auf Sicherheit und Datenschutz.</q> -->
+          </div>
         </div>
 
-        <q-card-actions class=" col-2">
-          <q-btn  @click="show_discussion=!show_discussion" dense text-color="purple" round icon="mdi-comment-outline" size="sm" class="">
+        <q-card-actions class=" col-1" align="right">
+          <q-btn  @click="show_discussion=!show_discussion" dense text-color="purple" round 
+              icon="mdi-comment-outline" size="sm" class="">
             <q-badge color="red" v-if="comments.length" floating>{{comments.length}}</q-badge>
           </q-btn>
-          <q-btn @click="show_discussion=!show_discussion" dense text-color="green" round icon="mdi-help-circle-outline" class=""  size="sm">
+          <!-- <q-btn @click="show_discussion=!show_discussion" dense text-color="green" round icon="mdi-help-circle-outline" class=""  size="sm">
             <q-badge color="red" v-if="questions.length" floating>{{questions.length}}</q-badge>
-          </q-btn>
+          </q-btn> -->
         </q-card-actions>
-        </q-card-section>
+      
+      </q-card-section>
 
     </q-card><br>
 
