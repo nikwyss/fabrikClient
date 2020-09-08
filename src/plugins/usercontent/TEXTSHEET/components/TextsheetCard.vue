@@ -67,11 +67,11 @@ export default {
     header_class: function() {
       switch (this.item.content.type) {
         case 'SECTION':
-          return('text-h5')
+          return('text-h4')
         case 'SUBSECTION':
-          return('text-h6')
+          return('text-subtitle1')
         case 'PARAGRAPH':
-          return('text-h7')
+          return('text-subtitle2')
       }
     },
 

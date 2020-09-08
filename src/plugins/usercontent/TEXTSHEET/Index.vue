@@ -1,14 +1,14 @@
 <template>
+
     <q-page class="doc_content " >
 
-
-        <q-btn 
-            align="left"
-            class="btn-fixed-width q-mb-lg"
-            flat
-            label="Back to the assembly home"
-            icon="mdi-arrow-left"
-            @click="gotoAssemblyHomeIndex()" />
+    <q-btn 
+        align="left"
+        class="btn-fixed-width q-mb-lg"
+        flat
+        label="Back to the assembly home"
+        icon="mdi-arrow-left"
+        @click="gotoAssemblyHomeIndex()" />
 
 
     <div align="center">

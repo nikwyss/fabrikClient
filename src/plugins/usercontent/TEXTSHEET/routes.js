@@ -1,4 +1,6 @@
 
+const meta4AssemblyPages = {topmenu: 'assemblies_ongoing_list'}
+
 var routes = [
 
   {
@@ -6,7 +8,7 @@ var routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       // { path: ':contentID/', name: 'TEXTSHEET_CONTENT', component: () => import('./Content') },
-      { path: '', name: 'TEXTSHEET', component: () => import('./Index') }
+      { path: '', name: 'TEXTSHEET', component: () => import('./Index'), meta: meta4AssemblyPages}
     ]
   }
 ]

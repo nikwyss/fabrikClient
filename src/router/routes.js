@@ -14,18 +14,18 @@ const routes = [
       { path: '', name: 'home', component: () => import('pages/Index.vue') },
       { path: '/background', name: 'background', component: () => import(/* webpackPrefetch: true */ 'pages/Background.vue') },
       { path: '/showcase', name: 'showcase', component: () => import(/* webpackPrefetch: true */ 'pages/Assembly/AssemblyListShowcase.vue') },
-      { path: '/assemblies_ongoing', name: 'assemblies_ongoing_list', component: () => import('pages/Assembly/AssemblyListOngoing.vue') },
+      { path: '/ongoing', name: 'assemblies_ongoing_list', component: () => import('pages/Assembly/AssemblyListOngoing.vue') },
 
       // ASSEMBLY Pages
       { path: '/:assemblyIdentifier/home', name: 'assembly_home', component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
-      { path: '/:assemblyIdentifier/step/:containerID', name: 'assembly_home_stepper', component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
+      { path: '/:assemblyIdentifier/agenda/:containerID', name: 'assembly_home_stepper', component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
       { path: '/:assemblyIdentifier/container/:containerID', name: 'container', component: UserContentDefault, meta: meta4AssemblyPages},
-      { path: '/:assemblyIdentifier/container/:containerID/:contentID', name: 'content', component: UserContentDefault, meta: meta4AssemblyPages },
-
-      // Add Plugin Routes
-      ...plugin_routes
+      { path: '/:assemblyIdentifier/container/:containerID/:contentID', name: 'content', component: UserContentDefault, meta: meta4AssemblyPages }
     ]
   },
+
+  // Add Plugin Routes
+  ...plugin_routes,
 
   // Authentication Routes
   ...oauth_routes,
