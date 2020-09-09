@@ -17,6 +17,7 @@ export default {
     /** 
      * Is there an active Assembly: 
      * assemblyIdentifier is taken from the localstorage 
+     * TODO: probably not used anymore
      */
     current_assemblyIdentifier: function () {
       return (this.get_current_assemblyIdentifier)
@@ -40,7 +41,7 @@ export default {
       var synced = false
       var assembly = this.get_assembly(this.assemblyIdentifier)
       if (assembly) {
-        // check sync state of local container version
+        // check sync state of local stage version
         synced = this.checkAssemblyStatus(assembly)
       }
 
@@ -59,15 +60,15 @@ export default {
       return (assembly)
     },
 
-    assembly_containers: function() {
-      console.log("get assembly_containers")
+    assembly_stages: function() {
+      console.log("get assembly_stages")
 
       if (!this.assemblyIdentifier) {
         return (null)
       }
       console.assert(this.assembly)
       console.assert(this.assemblyIdentifier)
-      return (this.get_assembly_containers(this.assemblyIdentifier))
+      return (this.get_assembly_stages(this.assemblyIdentifier))
     },
 
     assembly_configuration: function() {
@@ -92,7 +93,7 @@ export default {
     ...mapGetters({
       get_assembly: 'assemblystore/get_assembly',
       get_current_assemblyIdentifier: 'assemblystore/get_current_assemblyIdentifier',
-      get_assembly_containers: 'assemblystore/get_assembly_containers',
+      get_assembly_stages: 'assemblystore/get_assembly_stages',
       get_assembly_progression: 'assemblystore/get_assembly_progression',
       get_assembly_configuration: 'assemblystore/get_assembly_configuration'
     })
@@ -122,13 +123,13 @@ export default {
           LayoutEventBus.$emit('hideLoading')
 
           console.log('Update CACHE STATUS OF ASSEMBLY')
-          // if response contains a full version of the container then replace it in the cache
+          // if response contains a full version of the stage then replace it in the cache
           if (response.data && 'assembly' in response.data) {
             console.assert('assembly' in response.data)
-            console.assert('containers' in response.data)
+            console.assert('stages' in response.data)
             this.add_or_update_assembly ({
               assembly: response.data.assembly, 
-              containers: response.data.containers, 
+              stages: response.data.stages, 
               configuration: response.data.configuration, 
               progression: response.data.progression })
           }
@@ -139,7 +140,7 @@ export default {
     // CHECK STATE OF LOADED Assembly
     checkAssemblyStatus: function (assembly) {
       console.log("Is out of date? CACHE STATUS")
-      // Load container data (to check sync status)
+      // Load stage data (to check sync status)
       // check if user_id has changed!
       // reload assembly all half 20 minutes..
       var twentyMinutesEarlier = new Date();
@@ -153,7 +154,7 @@ export default {
         console.log("OUTDATED")
         return(false)
       }
-      console.log("OK")
+      console.log("Assembly status OK")
       return (true)
     },
 

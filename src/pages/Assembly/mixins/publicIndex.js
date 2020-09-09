@@ -32,7 +32,7 @@ export default {
       var publicIndex = this.get_publicIndex
       
       if (publicIndex) {
-        // check sync state of local container version
+        // check sync state of local assembly version
         console.log("check public index status")
         synced = this.checkPublicIndexStatus(publicIndex)
       }
@@ -69,7 +69,7 @@ export default {
           LayoutEventBus.$emit('hideLoading')
 
           if (!response.data) {
-              console.log ("TODO: error: Could not retrieve assemblies...")
+              console.error ("TODO: error: Could not retrieve assemblies...")
               return;
           }
 
@@ -85,8 +85,6 @@ export default {
     // CHECK STATE OF LOADED Assembly
     checkPublicIndexStatus: function (publicIndex) {
       console.log("Is out of date? CACHE STATUS")
-      // Load container data (to check sync status)
-      // check if user_id has changed!
       // reload assembly all half 20 minutes..
       var twentyMinutesEarlier = new Date()
       twentyMinutesEarlier.setMinutes(twentyMinutesEarlier.getMinutes() - 20)

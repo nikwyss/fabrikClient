@@ -285,7 +285,7 @@ var _default = {
 
     if (this.expanded === null) {
       this.expanded = this.calculate_default_expanded_branches();
-      console.log(this.expanded);
+      // console.log(this.expanded);
       this.update_expanded_branches({
         containerID: this.containerID,
         startingContentID: this.startingContentID,
@@ -293,7 +293,7 @@ var _default = {
       });
     }
 
-    console.log(this.expanded);
+    // console.log(this.expanded);
   },
   mounted: function mounted() {
     console.log("finished loading");

@@ -105,8 +105,16 @@ export default {
         please_enter: 'Bitte Eintreten',
         subtitle: 'Aktuelle Online-Bürgerversammlung',
         days_left: 'Noch {days_left} Tage',
-        home: `Heute sind {max_steps} Punkte auf Ihrer Agenda.`
-
+        home: `Heute sind {maxSteps} Punkte auf Ihrer Agenda.`,
+        stage_enter_first: `Wir möchten gerne hier anfangen. Sind Sie bereit?`,
+        stage_enter_continue: `Wir möchten heute gerne hier anfangen. Sind Sie bereit?`,
+        stage_enter_end: `Bevor wir für heute Schluss machen: Darf ich Sie bitten mir zu folgen.`,
+        stage_already_seen: 'Möchten Sie sich das noch einmal ansehen?',
+        stage_attention_needed: 'Hierzu hätten wir noch einen Wunsch. Folgen Sie uns bitte.',
+        unique_stage_enter: `Dies ist heute der einzige Punkt auf dem Programm. Sind Sie bereit?`,
+        please_enter_stage: 'Start',
+        goto_next_stage: 'Überspringen',
+        goto_final_message: 'Zum Abschluss'
       },
       am: {
         there_are_assemblies_ongoing: 'Wunderbar! Sie sind eingeladen sich an einer BürgerInnenversammlung zu beteiligen.',

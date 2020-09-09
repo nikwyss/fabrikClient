@@ -16,8 +16,37 @@ export default {
   },
 
   computed: {
+    stageID: function() {
+      return(this.$route.params.stageID)
+    },
+
     containerID: function() {
-      return(this.$route.params.containerID)
+      return(this.stage.stage.container_id)
+    },
+
+    stage: function() {
+      console.assert(this.assembly)
+
+      if(!this.stageID) {
+        return(null)
+      }
+
+      if(!this.assemblyIdentifier) {
+        return(null)
+      }
+
+
+      // has contentree already be cached in the vues store??
+      var stage = this.get_assembly_stage({
+        assemblyIdentifier: this.assemblyIdentifier, 
+        stageID: this.stageID})
+  
+      if(!stage) {
+          // Not yet loaded. please wait
+          return(null)
+      }
+
+      return(stage)
     },
 
     container: function() {
@@ -112,6 +141,7 @@ export default {
     },
 
     ...mapGetters({ 
+      get_assembly_stage: 'assemblystore/get_assembly_stage',
       get_assembly_container: 'assemblystore/get_assembly_container',
       get_contenttree: 'contentstore/get_contenttree'
     })

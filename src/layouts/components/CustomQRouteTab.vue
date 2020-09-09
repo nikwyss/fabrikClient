@@ -34,8 +34,6 @@ export default {
         }
 
       if(this.isAssemblyRoute(current, route)){
-        console.log("Activate thsi route")
-        console.log(current)
         this.__activateRoute({...params})
       }
     },

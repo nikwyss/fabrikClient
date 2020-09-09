@@ -277,13 +277,13 @@ export default {
 
         if(this.expanded===null) {
             this.expanded = this.calculate_default_expanded_branches()
-            console.log(this.expanded)
+            // console.log(this.expanded)
             this.update_expanded_branches({
                 containerID: this.containerID, 
                 startingContentID: this.startingContentID, 
                 expanded: this.expanded})
         }
-        console.log(this.expanded)
+        // console.log(this.expanded)
 
     },
 

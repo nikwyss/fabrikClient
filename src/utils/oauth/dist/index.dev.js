@@ -60,7 +60,7 @@ var _default = {
         */
         forceVueUpdateOfOpener: function forceVueUpdateOfOpener() {
           console.log("Try TO UPDATE OPENER");
-          console.log(window);
+          // console.log(window);
           window.opener.forceVueUpdate();
         },
         forceVueUpdate: function forceVueUpdate() {

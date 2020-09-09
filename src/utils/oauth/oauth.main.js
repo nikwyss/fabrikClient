@@ -291,11 +291,11 @@ class oauthSession {
       this.refresh_token = accessToken['refresh_token']
       this.random_state = null
       this.jwt = accessToken['access_token']
-      console.log(this._jwt)
+      // console.log(this._jwt)
 
       console.log("successfull (re-)login..." + accessToken['access_token'])
       console.assert(this.jwt)
-      console.log(this._jwt)
+      // console.log(this._jwt)
       return (true)
     }
 }

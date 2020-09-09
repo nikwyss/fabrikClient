@@ -2,7 +2,7 @@
 var routes = [
 
   {
-    path: '/:assemblyIdentifier/politicaltopics/:containerID/',
+    path: '/:assemblyIdentifier/politicaltopics/:stageID/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: ':contentID/', name: 'VAA_TOPICS_CONTENT', component: () => import('./Content') },

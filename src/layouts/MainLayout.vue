@@ -103,7 +103,7 @@
     </q-inner-loading>
 
     <!-- NOTIFICATION BANNER -->
-    <q-inner-loading :showing="NotificationBannerVisible" style="z-index:100" class="bg-white">
+    <q-inner-loading :showing="NotificationBannerVisible" style="z-index:100; justify-content:flex-start; padding-top: 100px;" class="bg-white">
       <div class="q-ma-xl" style="max-width: 400px">
         <h1><q-icon v-if="NotificationBannerIcon" :name="NotificationBannerIcon" /> {{NotificationBannerTitle}}</h1>
         <div>{{NotificationBannerBody}}</div>

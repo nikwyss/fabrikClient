@@ -167,9 +167,8 @@ export default {
   methods: {
     tooltip_shuffle () {
       // take next tooltip
-      console.log("K")
       this.tooltip_nr += 1
-      console.log("Shuffled tooltip " + this.tooltip_nr)
+      // console.log("Shuffled tooltip " + this.tooltip_nr)
 
       
       if (this.tooltip_nr >= this.available_tooltips.length) {

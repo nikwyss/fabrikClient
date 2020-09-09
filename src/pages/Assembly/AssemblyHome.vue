@@ -12,91 +12,61 @@
 
         </div>
 
-        <ArtificialModeratorAssemblyHome :ongoing_assembly="assembly" align="right" />
-
+        <ArtificialModeratorAssemblyHome 
+            :ongoing_assembly="assembly" 
+            :maxSteps="maxSteps"
+            align="left" />
 
         <q-stepper
-            v-if="assembly && assembly_containers"
+            v-if="assembly && assembly_stages"
             v-model="step"
             vertical
-            flat
+            header-nav
             ref="stepper"
             active-color="accent"
             done-color="secondary"
             >
-            <!-- alternative-labels
-            :header-nav="true"
-            color="primary" -->
 
             <q-step
-                v-for="(item, key) in sorted_containers"
-                :key="Number(key)"
-                :icon="item.icon ? item.container.icon : 'mdi-folder'"
-                :active-icon="item.icon ? item.container.icon : 'mdi-folder'"
-                :done-icon="item.icon ? item.container.icon : 'mdi-folder'"
-                :name="Number(key)"
-                :title="getStepTitle(item, key)"
-                :done="isDone(item, key)"
+                v-for="(item, stageNr) in sorted_stages"
+                :key="Number(stageNr)"
+                :name="Number(stageNr)"
+                :header-nav="step > stageNr"
+                :title="getStepTitle(item, stageNr)"
+                :icon="item.icon ? item.stage.icon : 'mdi-email-outline'"
+                :active-icon="item.icon ? item.stage.icon : 'mdi-email-open-outline'"
+                :done-icon="item.icon ? item.stage.icon : 'mdi-email-check-outline'"
+                :error="isSkipped(item)"
+                :done="isDone(item, stageNr)"
                 :disabled="isDisabled(item)"
             >
-
-                <ComponentContainerEditor :key="`AE${key}`"  v-if="assembly.acl.includes('manage') && step==key" :assembly="assembly" :model="item"/>
+                <ComponentStageEditor :key="`AE${stageNr}`"  v-if="assembly.acl.includes('manage') && step==stageNr" :assembly="assembly" :model="item"/>
 
                 <!-- AGENDA ITEM -->
                 <q-card flat>
 
-
                     <q-card-section class="q-pa-sm" style="min-height:7em;" >
 
-                        <q-btn
-                        round
-                        class="float-right"
-                        external-label
-                        v-if="step > 1"
-                        icon="mdi-chevron-up"
-                        @click.prevent="$refs.stepper.previous()">
-                        </q-btn>
+                        <span  class="text-h5">{{item.stage.title}}</span>
+                        <div class="text-subtitle2" v-html="item.stage.info" />
 
-                        <span  class="col text-h6">{{item.container.title}}</span>
-                        <div class="text-subtitle1" v-html="item.container.info" />
-                    
-                    </q-card-section>
-
-                    <!-- <q-separator class="q-mr-lg" /> -->
-                    
-                    <q-card-section>
-                    <q-btn
-                        @click.prevent="clickPluginLink(item)"
-                        color="positive"
-                        flat
-                        size='lg'
-                        icon="mdi-door-open"
-                        label="Enter"
-                        class="absolute q-ma-lg q-pa-lg"
-                        style="top: 0; right: 0px; "
-                    />
-                        <!-- transform: translateY(-50%); -->
-                    
-                    <div class="row no-wrap items-center">
-                        <div class="col ">
-
-                                    <!-- name="Moderatorin Sophie" -->
-                             <q-chat-message
-                                    class="artificddddialmoderation"
-                                    size=4
-                                    avatar="~assets/actor2.png"
-                                    :text="[item.container.am_instruction]"
-                                />
-                        </div>
-                    </div>
-
-                    </q-card-section>
-
-
-                    <q-card-section class="q-pt-none">
-                        <div class="text-caption text-grey">
+                        <div class="q-mt-lg text-caption">
                             Bisher haben sich 400 Teilnehmende hier beteiligt.
                         </div>
+
+                    </q-card-section>
+
+                    <q-card-section class="col-12 " align="right">
+                    <ArtificialModeratorAssemblyStage
+                        :ongoing_assembly="assembly"
+                        :stageNr="stageNr"
+                        :lastStage="isLastStage(stageNr)"
+                        :skippable="isSkippable(item, stageNr)"
+                        :isNew="isNew(item)"
+                        :isAlert="isAlert(item)"
+                        :firstStage="isFirstStage(stageNr)"
+                        @clickGotoNextStage="clickGotoNextStage"
+                        :stage="item" />
                     </q-card-section>
 
                 </q-card>
@@ -105,41 +75,59 @@
 
     </div>
 
-    <ComponentContainerEditor v-if="assembly && assembly.acl.includes('manage')" :assembly="assembly" />
+    <ComponentStageEditor v-if="assembly && assembly.acl.includes('manage')" :assembly="assembly" />
 </q-page>
 </template>
 
 
-  <script>
+<script>
 import AssemblyMixin from "./mixins/assembly"
-import ComponentContainerEditor from "src/pages/UserContent/components/ContainerEditor";
+import ComponentStageEditor from "src/pages/UserContent/components/StageEditor";
 import { mapGetters, mapActions } from 'vuex'
 import ArtificialModeratorAssemblyHome from 'src/artificialmoderation/AssemblyHome'
+import ArtificialModeratorAssemblyStage from 'src/artificialmoderation/AssemblyStage'
 
 export default {
     name: 'PageAssemblyHome',
-    components: {ComponentContainerEditor, ArtificialModeratorAssemblyHome },
+    components: {ComponentStageEditor, ArtificialModeratorAssemblyHome, ArtificialModeratorAssemblyStage},
     mixins: [AssemblyMixin],
     computed: {
-        max_steps: function() {
-            return(Object.keys(this.assembly_containers).length)
+        maxSteps: function() {
+            return(Object.keys(this.assembly_stages).length)
         },
 
-        sorted_containers: function() {
-            // Object.values(assembly_containers).sort((a, b) => a.container.order_position.localeCompare(b.container.order_position))
-            console.log(this.assembly_containers)
-            let sorted = Object.values(this.assembly_containers).sort((a, b) => a.container.order_position < b.container.order_position ? -1 : a.container.order_position > b.container.order_position ? 1 : 0)
+        sorted_stages: function() {
+            // Object.values(assembly_stages).sort((a, b) => a.stage.order_position.localeCompare(b.stage.order_position))
+            // console.log(this.assembly_stages)
+            let sorted = Object.values(this.assembly_stages).sort((a, b) => a.stage.order_position < b.stage.order_position ? -1 : a.stage.order_position > b.stage.order_position ? 1 : 0)
             return(sorted)
         },
+
         step: {
             get: function() {
-                return(this.get_current_containerID(this.assembly.identifier))
+                let stageID = this.get_current_stageID(this.assembly.identifier)
+                console.log(stageID)
+                let stageNr = null
+                if (stageID) {
+                    let stage = this.assembly_stages[stageID]
+                    stageNr = this.sorted_stages.indexOf(stage)
+                }
+                if (stageNr === null || stageNr === undefined) {
+                    stageNr = 0
+                }
+                console.log(stageNr)
+                return (stageNr)
             },
-            set: function(step) {
-                this.set_current_containerID({assembly: this.assembly, containerID: step})
+
+            set: function(stageNr) {
+                console.log(stageNr)
+                console.log(this.sorted_stages[stageNr])
+                console.log(this.sorted_stages[stageNr].stage.id)
+                console.log("SET NEW STAGE")
+                this.set_current_stageID({assembly: this.assembly, stageID: this.sorted_stages[stageNr].stage.id})
             },
         },
-        ...mapGetters({get_current_containerID: 'assemblystore/get_current_containerID'})
+        ...mapGetters({get_current_stageID: 'assemblystore/get_current_stageID'})
     },
 
     methods: {
@@ -149,38 +137,75 @@ export default {
             this.$router.push ({ name: 'assemblies' })
         },
         
-        getStepTitle: function (item, key) {
-            var title = item.container.title
+        clickGotoNextStage: function(stageNr) {
+            console.log(("KKKK"))
+            this.step = stageNr + 1
+        },
 
-            if(item.container.disabled) {
+        getStepTitle: function (item, key) {
+            var title = item.stage.title
+
+            if(item.stage.disabled) {
                 title +=  ' [DISABLED]'
             }
 
-            if("deleted" in item.container && item.container.deleted) {
+            if("deleted" in item.stage && item.stage.deleted) {
                 title +=  ' [DELETED]'
             }
 
             // PREFIX
-            title = `${key+1}/${this.max_steps} ${title}`
+            title = `${key+1}/${this.maxSteps} ${title}`
 
             return(title)
         },
+
         isDone: function (item, key) {
-            return(this.step >=key)
+            // return(this.step in [this.STATUS_COMPLETED])
+            return(this.step >= key)
+        },
+
+        isSkipped: function (item) {
+            return(item.progression && item.progression.status in [this.STATUS_SKIPPED])
+        },
+        isAlert: function (item) {
+            return(item.progression && item.progression.status in [this.STATUS_ALERT])
+        },
+        isIdle: function (item) {
+            return(item.status in [this.STATUS_IDLE])
+        },
+        isNew: function (item) {
+            return(item.progression === null || item.progression === undefined)
         },
         isDisabled: function (item) {
             // only admins see deleted attribute.
-            return(("disabled" in item.container && item.container.disabled) || ("deleted" in item.container && item.container.deleted))
+            return(("disabled" in item.stage && item.stage.disabled) || ("deleted" in item.stage && item.stage.deleted))
         },
 
-        clickPluginLink: function (item) {
-            console.log("clickPluginLink")
-            var assemblyIdentifier = this.$route.params.assemblyIdentifier
-            var params = {assemblyIdentifier: assemblyIdentifier}
-            params["containerID"] = item.container.id
-            this.$router.push({name: item.container.type, params: params})
+        isSkippable: function(item, key) {
+
+            // new content is never skippable
+            if (this.isNew(item)) {
+                return (false)
+            }
+
+            // alerted content is never skippable
+            if (this.isAlert(item)) {
+                return (false)
+            }
+
+            // all the rest is skippable. right?
+            return(true)
         },
-        ...mapActions({set_current_containerID: 'assemblystore/set_current_containerID'})
+
+        isFirstStage: function (key) {
+            return(key == 0)
+        },
+
+        isLastStage: function (key) {
+            return(key == this.sorted_stages.length)
+        },
+
+        ...mapActions({set_current_stageID: 'assemblystore/set_current_stageID'})
     }
 }
 </script>

@@ -1,7 +1,6 @@
 <template>
 <div class="justify-center center" >
-
-
+<!-- style="max-width:350px" -->
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="2" amGroup='ongoingassemblyPage'

@@ -8,32 +8,32 @@
             icon="mdi-arrow-left"
             @click="gotoAssemblyHomeIndex()" />
 
-        <div v-if="assembly && container">
+        <div v-if="assembly && stage">
 
             <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="container.disabled" style="padding:2em; margin-bottom:1em;">
-            This UserContent Container is disabled and, therefore, not visible for users.
+            <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
+            This Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
             <!-- EDIT CONTENT -->
-            <ComponentContainerEditor 
+            <ComponentStageEditor 
                 v-if="assembly.acl.includes('manage')"
                 :assembly_id="assembly.id"
-                :model="container" />
+                :model="stage" />
 
-            <div class="text-h4">{{container.title}}</div>
+            <div class="text-h4">{{stage.title}}</div>
 
-            <p>{{container.info}}</p>
+            <p>{{stage.info}}</p>
         </div>
 
         <q-spinner-dots color="secondary" size="7em" v-if="!contenttree"/>
 
-        <div class="" v-if="container && contenttree">
+        <div class="" v-if="stage && contenttree">
             <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
             <div class="row justify-between gt-xs ">
 
                 <div class="col-12 col-sm-6">
-                    <h2 class=" q-mb-none q-ml-md">{{container.title}}</h2>
+                    <h2 class=" q-mb-none q-ml-md">{{stage.title}}</h2>
                 </div>
 
             </div>
@@ -46,7 +46,7 @@
                     :questions="filter_question_entries(nodeL1.children)"
                     :heading_number="(keyL1+1)"
                     :contenttree="contenttree"
-                    :container="container"
+                    :stage="stage"
                     :item="contenttree.entries[nodeL1.id]"/>
             </div>
 
@@ -56,18 +56,19 @@
 
 
 <script>
+import StageMixin from "src/pages/UserContent/mixins/stage"
 import ContentTreeMixin from "src/pages/UserContent/mixins/contenttree"
-import ComponentContainerEditor from "src/pages/UserContent/components/ContainerEditor";
+import ComponentStageEditor from "src/pages/UserContent/components/StageEditor";
 import TextsheetCard from "./components/TextsheetCard";
 
 export default {
-    name: 'TextsheetDefault',
+    name: 'VAATopics',
     components: {
-        ComponentContainerEditor,
+        ComponentStageEditor,
         TextsheetCard,
     },
 
-    mixins: [ContentTreeMixin],
+    mixins: [ContentTreeMixin, StageMixin],
 
     methods: {
         
@@ -77,7 +78,7 @@ export default {
             this.$router.replace({name: 'assembly_home_stepper', 
                 params: {
                     assemblyIdentifier: this.assembly.identifier,
-                    containerID: this.container.id
+                    stageID: this.stage.id
                     }
             })
         },

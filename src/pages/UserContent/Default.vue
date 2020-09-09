@@ -4,20 +4,20 @@
         <div v-if="contenttree">
 
             <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="container.disabled" style="padding:2em; margin-bottom:1em;">
-            This UserContent Container is disabled and, therefore, not visible for users.
+            <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
+            This UserContent Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
             <!-- EDIT CONTENT -->
-            <ComponentContainerEditor 
+            <ComponentStageEditor 
                 v-if="acl.includes('manage')" 
-                @syncstorecontainer="syncstorecontainer"
-                :model="container" />
+                @syncstorestage="syncstorestage"
+                :model="stage" />
 
-            <div class="text-h4">{{container.title}}</div>
-            <!-- <div class="text-h4 q-mt-sm q-mb-xs">{{container.title}}</div> -->
+            <div class="text-h4">{{stage.title}}</div>
+            <!-- <div class="text-h4 q-mt-sm q-mb-xs">{{stage.title}}</div> -->
 
-            <p>{{container.info}}</p>
+            <p>{{stage.info}}</p>
         </div>
 
 
@@ -28,7 +28,7 @@
         <ComponentContentTree 
             :acl="acl"
             label="Offene Diskussion"
-            :container="container" 
+            :stage="stage" 
             :contenttree="contenttree" 
             :startingContentID="startingContentID" />
             
@@ -40,7 +40,7 @@
 import ContentTreeMixin from "./mixins/contenttree"
 // import ComponentLoading from "@/layouts/components/Loading";
 // import ComponentError from "@/layouts/components/Error";
-import ComponentContainerEditor from "./components/ContainerEditor";
+import ComponentStageEditor from "./components/StageEditor";
 import ComponentContentTree  from "./components/ContentTree";
 
 // import ApiService from "src/utils/xhr";
@@ -64,7 +64,7 @@ export default {
     name: 'UserContentDefault',
     components: {
         // AsyncComponent,
-        ComponentContainerEditor,
+        ComponentStageEditor,
         ComponentContentTree
         // 'AsyncComponent': () => import('./components/ContentTree.vue')
     },

@@ -12,30 +12,30 @@
 
 
     <div align="center">
-        <div v-if="assembly && container">
+        <div v-if="assembly && stage">
 
             <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="container.disabled" style="padding:2em; margin-bottom:1em;">
-            This UserContent Container is disabled and, therefore, not visible for users.
+            <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
+            This UserContent Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
             <!-- EDIT CONTENT -->
-            <ComponentContainerEditor 
+            <ComponentStageEditor 
                 v-if="assembly.acl.includes('manage')"
                 :assembly_id="assembly.id"
-                :model="container" />
+                :model="stage" />
 
-            <!-- <div class="text-h4">{{container.title}}</div> -->
+            <!-- <div class="text-h4">{{stage.title}}</div> -->
 
         </div>
 
 
-        <div v-if="container && contenttree" class="text-vessel">
+        <div v-if="stage && contenttree" class="text-vessel">
             <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
 
 
-            <h2>{{container.title}}</h2>
-            <p class="text-body1">{{container.info}}</p>
+            <h2>{{stage.title}}</h2>
+            <p class="text-body1">{{stage.info}}</p>
 
             <div class="row justify-between" v-for="(nodeL1, keyL1)  in filter_textsheet_entries(contenttree.structure.children)" 
             :key="`L1${nodeL1.id}`">
@@ -49,7 +49,7 @@
                     :questions="filter_question_entries(nodeL1.children)"
                     :heading_number="(keyL1+1)"
                     :contenttree="contenttree"
-                    :container="container" 
+                    :stage="stage" 
                     :item="contenttree.entries[nodeL1.id]"/>
 
                 <div class="row justify-between" 
@@ -62,7 +62,7 @@
                         :comments="filter_comment_entries(nodeL2.children)"
                         :questions="filter_question_entries(nodeL2.children)"
                         :heading_number="`${(keyL1+1)}.${(keyL2+1)}`"
-                        :container="container"
+                        :stage="stage"
                         :contenttree="contenttree"
                         :item="contenttree.entries[nodeL2.id]"/>
 
@@ -76,7 +76,7 @@
                             :questions="filter_question_entries(nodeL3.children)"
                             :level="3"
                             :contenttree="contenttree"
-                            :container="container"
+                            :stage="stage"
                             :item="contenttree.entries[nodeL3.id]"/>
                     </div>
                 </div>
@@ -88,20 +88,20 @@
     </q-page>
 </template>
 
-
 <script>
+import StageMixin from "src/pages/UserContent/mixins/stage"
 import ContentTreeMixin from "src/pages/UserContent/mixins/contenttree"
-import ComponentContainerEditor from "src/pages/UserContent/components/ContainerEditor";
+import ComponentStageEditor from "src/pages/UserContent/components/StageEditor";
 import TextsheetCard from "./components/TextsheetCard";
 
 export default {
     name: 'TextsheetDefault',
     components: {
-        ComponentContainerEditor,
+        ComponentStageEditor,
         TextsheetCard,
     },
 
-    mixins: [ContentTreeMixin],
+    mixins: [ContentTreeMixin, StageMixin],
 
     methods: {
 
@@ -111,7 +111,7 @@ export default {
             this.$router.replace({name: 'assembly_home_stepper', 
                 params: {
                     assemblyIdentifier: this.assembly.identifier,
-                    containerID: this.container.id
+                    stageID: this.stage.id
                     }
             })
         },

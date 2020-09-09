@@ -8,29 +8,29 @@
             icon="mdi-arrow-left"
             @click="gotoAssemblyHomeIndex()" />
 
-        <div v-if="assembly && container">
+        <div v-if="assembly && stage">
 
             <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="container.disabled" style="padding:2em; margin-bottom:1em;">
-            This UserContent Container is disabled and, therefore, not visible for users.
+            <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
+            This UserContent Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
-            <ContainerPeerReview />
+            <StagePeerReview />
 
             <!-- EDIT CONTENT -->
-            <ComponentContainerEditor 
+            <ComponentStageEditor 
                 v-if="assembly.acl.includes('manage')"
                 :assembly_id="assembly.id"
-                :model="container" />
+                :model="stage" />
 
-            <div class="text-h4">{{container.title}}</div>
+            <div class="text-h4">{{stage.title}}</div>
 
-            <p>{{container.info}}</p>
+            <p>{{stage.info}}</p>
         </div>
 
         <q-spinner-dots color="secondary" size="7em" v-if="!contenttree"/>
 
-        <div class="" v-if="container && contenttree">
+        <div class="" v-if="stage && contenttree">
             <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
             <div class="row justify-between gt-xs ">
 
@@ -47,7 +47,7 @@
                     <ArgumentCard 
                         :acl="assembly.acl" 
                         :default_content_type="column_types[0]"
-                        :container="container" 
+                        :stage="stage" 
                         :content="get_content_entry(row,0)"/>
 
                 </div>
@@ -55,7 +55,7 @@
                     <ArgumentCard 
                         :acl="assembly.acl" 
                         :default_content_type="column_types[1]"
-                        :container="container"
+                        :stage="stage"
                         :content="get_content_entry(row,1)"/>
                 </div>
 
@@ -77,19 +77,20 @@
 
 <script>
 import ContentTreeMixin from "src/pages/UserContent/mixins/contenttree"
-import ComponentContainerEditor from "src/pages/UserContent/components/ContainerEditor";
+import StageMixin from "src/pages/UserContent/mixins/stage"
+import ComponentStageEditor from "src/pages/UserContent/components/StageEditor";
 import ArgumentCard from "./components/ArgumentCard";
-import ContainerPeerReview from "src/pages/UserContent/components/ContainerPeerReview"
+import StagePeerReview from "src/pages/UserContent/components/StagePeerReview"
 
 export default {
     name: 'ProsAndConsDefault',
     components: {
-        ComponentContainerEditor,
+        ComponentStageEditor,
         ArgumentCard,
-        ContainerPeerReview
+        StagePeerReview
     },
 
-    mixins: [ContentTreeMixin],
+    mixins: [ContentTreeMixin, StageMixin],
 
     computed: {
         pros: function() {
@@ -109,8 +110,8 @@ export default {
         },
         random_column_order: function() {
             // Return 0 or 1
-            console.assert(this.container.container)
-            return(this.container.container.RANDOM_LEFTRIGHT_ASSIGNMENT)
+            console.assert(this.stage.stage)
+            return(this.stage.stage.RANDOM_LEFTRIGHT_ASSIGNMENT)
         },
         column_args: function() {
             console.assert(this.random_column_order!==undefined)
@@ -134,7 +135,7 @@ export default {
             this.$router.replace({name: 'assembly_home_stepper', 
                 params: {
                     assemblyIdentifier: this.assembly.identifier,
-                    containerID: this.container.id
+                    stageID: this.stage.id
                     }
             })
         },

@@ -5,7 +5,7 @@
       <ContentToolbar
         :obj="item"
         :acl="acl"
-        :container="container"
+        :stage="stage"
         @afterdeletion="openIndex()">
       </ContentToolbar>
     </span>
@@ -38,7 +38,7 @@
       class="bg-grey-3 q-pa-md col-10 q-ml-xl "
       :dense="true"
       label="Offene Diskussion"
-      :container="container.container" 
+      :stage="stage.stage" 
       :contenttree="contenttree" 
       :custom_starting_node="starting_content_node" 
     /> 
@@ -55,7 +55,7 @@ import ComponentContentTree from "src/pages/UserContent/components/ContentTree"
 
 export default {
   name: 'TextsheetCard',
-  props: ['container','contenttree', 'item', 'acl', 'standalone', 'heading_number', 'questions', 'comments'],
+  props: ['stage','contenttree', 'item', 'acl', 'standalone', 'heading_number', 'questions', 'comments'],
   components: { Fragment, ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
   data: function() {
     return({
@@ -92,7 +92,7 @@ export default {
       var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'TEXTSHEET', params: {
         assemblyIdentifier: identifier,
-        containerID: this.container.id }})
+        stageID: this.stage.id }})
     },
 
     openArgument: function() {
@@ -102,11 +102,11 @@ export default {
       }
 
       // REDIRECT TO ARGUMENT PAGE
-      console.log(this.item)
+      // console.log(this.item)
       var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'TEXTSHEET_CONTENT', params: {
         assemblyIdentifier: identifier,
-        containerID: this.container.id,
+        stageID: this.stage.id,
         contentID: item.content.id
       }})
     }

@@ -10,7 +10,7 @@ var state = {
     publicIndex_ongoing_assemblies: null,
     publicIndex_published_assemblies: null,
     assemblies: {},
-    current_containerID: {},
+    current_stageID: {},
     current_assemblyIdentifier: null
 }
 
@@ -53,16 +53,16 @@ const getters = {
         return (state.publicIndex_published_assemblies)
     },
 
-    get_assembly_containers: (state) => (assemblyIdentifier) => {
+    get_assembly_stages: (state) => (assemblyIdentifier) => {
         // return state.things.find(thing => thing.identifier === id)
         console.log(assemblyIdentifier)
         if (!(assemblyIdentifier in state.assemblies)) {
             return (null)
         }
-        console.assert('containers' in state.assemblies[assemblyIdentifier])
-        console.assert(state.assemblies[assemblyIdentifier].containers !== null)
+        console.assert('stages' in state.assemblies[assemblyIdentifier])
+        console.assert(state.assemblies[assemblyIdentifier].stages !== null)
 
-        return (state.assemblies[assemblyIdentifier].containers)
+        return (state.assemblies[assemblyIdentifier].stages)
     },
 
     get_assembly_configuration: (state) => (assemblyIdentifier) => {
@@ -94,7 +94,7 @@ const getters = {
         return (state.assemblies[assemblyIdentifier].progression)
     },
 
-    get_assembly_container: (state) => ({assemblyIdentifier, containerID}) => {
+    get_assembly_stage: (state) => ({assemblyIdentifier, stageID}) => {
         // return state.things.find(thing => thing.identifier === id)
 
         // return state.things.find(thing => thing.identifier === id)
@@ -102,14 +102,14 @@ const getters = {
             return (null)
         }
 
-        if (!('containers' in state.assemblies[assemblyIdentifier])) {
+        if (!('stages' in state.assemblies[assemblyIdentifier])) {
             return (null)
         }
 
-        const containers = state.assemblies[assemblyIdentifier].containers
-        console.assert(containerID in containers)
-        
-        return (containers[containerID])
+        const stages = state.assemblies[assemblyIdentifier].stages
+        console.assert(stageID in stages)
+
+        return (stages[stageID])
     },
 
     get_current_assemblyIdentifier: (state) => {
@@ -117,12 +117,12 @@ const getters = {
         return (state.current_assemblyIdentifier)
     },
 
-    get_current_containerID:  (state) => (assemblyIdentifier) => {
+    get_current_stageID:  (state) => (assemblyIdentifier) => {
         // return state.things.find(thing => thing.identifier === id)
-        if(!(assemblyIdentifier in state.current_containerID)) {
+        if(!(assemblyIdentifier in state.current_stageID)) {
             return(null)
         }
-        return(state.current_containerID[assemblyIdentifier])
+        return(state.current_stageID[assemblyIdentifier])
     },
 
     /* SHORTCUTS */
@@ -149,7 +149,6 @@ const getters = {
         return (state.publicIndex.length === 0)
     },
 
-    
     IsUserDelegateOfOngoingAssembly: function (state) {
 
         // data not yet loaded
@@ -172,14 +171,18 @@ const actions = {
     touchRandomSeed ({commit}) {
         commit('set_random_seed')
     },
-    set_current_containerID({commit}, {assembly, containerID}) {
-        commit('set_current_containerID', {assembly, containerID})
+    set_current_stageID({commit}, {assembly, stageID}) {
+        commit('set_current_stageID', {assembly, stageID})
     },
     set_current_assemblyIdentifier({commit}, assembly) {
         commit('set_current_assemblyIdentifier', assembly)
     },
-    add_or_update_assembly({commit}, {assembly, containers, configuration, progression}) {
-        commit('add_or_update_assembly', {assembly, containers, configuration, progression})
+    add_or_update_assembly({commit}, {assembly, stages, configuration, progression}) {
+        commit('add_or_update_assembly', {assembly, stages, configuration, progression})
+    },
+
+    add_or_update_stage_progression({commit}, {assembly_identifier, stage_id, progression}) {
+        commit('add_or_update_stage_progression', {assembly_identifier, stage_id, progression})
     },
     add_or_update_publicIndex({commit}, publicIndex) {
         commit('add_or_update_publicIndex', publicIndex)
@@ -205,37 +208,37 @@ const mutations = {
         state.current_assemblyIdentifier = assembly ? assembly.identifier: null
     },
 
-    set_current_containerID(state, {assembly, containerID}) {
-        
+    set_current_stageID(state, {assembly, stageID}) {
+
         // keep list of opened contents (if previously available)
-        console.log("update current  container id for the given assembly")
-        
+        console.log("update current  stage id for the given assembly")
+
         // preprare folder
-        if (!(assembly.identifier in state.current_containerID)) {
-            Vue.set(state.current_containerID, assembly.identifier, null)
+        if (!(assembly.identifier in state.current_stageID)) {
+            Vue.set(state.current_stageID, assembly.identifier, null)
         }
         // Vue.set  makes the change reactive!!
-        Vue.set(state.current_containerID, assembly.identifier, containerID)
+        Vue.set(state.current_stageID, assembly.identifier, stageID)
     },
 
-    add_or_update_assembly(state, {assembly, containers, configuration, progression}) {
+    add_or_update_assembly(state, {assembly, stages, configuration, progression}) {
 
         // keep list of opened contents (if previously available)
-        console.log("update assembly containers")
+        console.log("update assembly stages")
 
         // preprare folder
         if (!(assembly.identifier in state.assemblies)) {
-            Vue.set(state.assemblies, assembly.identifier, {containers : null, assembly: null, configuration: null, progression: null})
+            Vue.set(state.assemblies, assembly.identifier, {stages : null, assembly: null, configuration: null, progression: null})
         }
-        console.log("...containers....")
-        console.log(containers)
+        console.log("...stags....")
+        console.log(stages)
 
         // Vue.set  makes the change reactive!!
         Vue.set(state.assemblies[assembly.identifier], 'assembly', assembly)
         console.log("assemblies have been updated..")
 
-        Vue.set(state.assemblies[assembly.identifier], 'containers', containers)
-        console.log("containers have been updated..")
+        Vue.set(state.assemblies[assembly.identifier], 'stages', stages)
+        console.log("stages have been updated..")
 
         // convert to named array (names == ids)
         Vue.set(state.assemblies[assembly.identifier], 'configuration', configuration)
@@ -246,6 +249,21 @@ const mutations = {
         console.log("assemblies progression have been updated too..")
     },
 
+    add_or_update_stage_progression(state, {assembly_identifier, stage_id, progression}) {
+
+        // keep list of opened contents (if previously available)
+        console.log("update stage_progression")
+
+        // preprare folder
+        console.assert(assembly_identifier in state.assemblies) 
+        console.assert('stages' in state.assemblies[assembly_identifier])
+        console.assert(stage_id in state.assemblies[assembly_identifier].stages)
+
+        // Vue.set  makes the change reactive!!
+        Vue.set(state.assemblies[assembly_identifier].stages[stage_id], 'progression', progression)
+        console.log("stage progression has been updated..")
+    },
+    
     add_or_update_publicIndex (state, publicIndex) {
 
         // Vue.set  makes the change reactive!!

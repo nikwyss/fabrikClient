@@ -4,7 +4,7 @@
          <ContentToolbar
             :obj="content"
             :acl="acl"
-            :container="container"
+            :stage="stage"
             @afterdeletion="openIndex()">
           </ContentToolbar>
         </span>
@@ -59,7 +59,7 @@
 
         <ContentEditor
             v-if="acl.includes('contribute')"
-            :containerID="container.id"
+            :stageID="stage.id"
             :content_type="default_content_type"
             @zoom-to-content="openArgument"
             btnlabel="Add Argument"
@@ -79,7 +79,7 @@ import ContentToolbar from "src/pages/UserContent/components/ContentToolbar"
 
 export default {
   name: 'ArgumentCard',
-  props: ['container', 'content', 'acl', 'standalone', 'default_content_type'],
+  props: ['stage', 'content', 'acl', 'standalone', 'default_content_type'],
   components: { Fragment, ContentRating, ContentEditor, ContentToolbar},
 
   methods: {
@@ -92,7 +92,7 @@ export default {
       var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'PROS_AND_CONS', params: {
         assemblyIdentifier: identifier,
-        containerID: this.container.id }})
+        stageID: this.stage.id }})
     },
 
     openArgument: function(content) {
@@ -102,11 +102,11 @@ export default {
       }
 
       // REDIRECT TO ARGUMENT PAGE
-      console.log(this.content)
+      // console.log(this.content)
       var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'PROS_AND_CONS_CONTENT', params: {
         assemblyIdentifier: identifier,
-        containerID: this.container.container.id,
+        stageID: this.stage.stage.id,
         contentID: content.id
       }})
     }
