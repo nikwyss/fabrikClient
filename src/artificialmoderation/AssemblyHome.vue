@@ -9,6 +9,14 @@
         </template>
     </ArtificialModerator>
 
+                <!-- <div class="text-h6 q-mt-sm q-mb-xs">Ihre heutige Agenda umfasst {{assembly_containers.length}} Punkte:</div>
+                <div class="text-caption" v-if="!assembly_containers">
+                    Heute stehen für Sie keine Aufgaben an.
+                </div>
+                <div class="text-caption" v-if="assembly_containers">
+                    Wie Sie wissen, gibt es in einer Fabrik viel zu tun. Das ist Ihre heutige Agenda:
+                </div> -->
+
     </div>
 </template>
 
@@ -20,6 +28,10 @@ export default{
     name: "ArtificialModeratorAssemblyHome",
     components: {ArtificialModerator},
     // mixins: [AssemblyMixin],
-    props: ['ongoing_assembly']
+    props: ['ongoing_assembly'],
+
+    computed: {
+        'max_steps': function() { return(2) }
+    }
 }
 </script>

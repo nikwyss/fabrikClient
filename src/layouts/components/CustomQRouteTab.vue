@@ -1,35 +1,30 @@
 <script>
 /*
-Extending the QRouteTab Component with intelligence to detect subpages of the assembly- or the 
+Extending the QRouteTab Component with intelligence to detect subpages of the assembly- or the
 showcase top-menu.
 */
 
 import { QRouteTab  } from 'quasar'
-import { isSameRoute, isIncludedRoute } from 'quasar/src/utils/router.js'
 
 export default {
   name: 'CustomQRouteTab',
 
   extends: QRouteTab,
 
+  watch: {
+
+    $route () {
+      this.check_for_assembly_routes()
+    }
+  },
+
   methods: {
 
-    isIncludedRoute: function(a, b){
-
-      if('assemblyIdentifier' in a.params) {
-        return(a.meta.topmenu == b.name)
-      }
-      return(isIncludedRoute(a,b))
-    },
-
-    __checkActivation (selected = false) {
-      /* This is a copy of the original function in QRouteTab.js */
+    check_for_assembly_routes: function(){
       const
+        selected = false,
         current = this.$route,
         { href, location, route } = this.$router.resolve(this.to, current, this.append),
-        redirected = route.redirectedFrom !== void 0,
-        isSameRouteCheck = isSameRoute(current, route),
-        checkFunction = this.exact === true ? isSameRoute : this.isIncludedRoute,
         params = {
           name: this.name,
           selected,
@@ -37,26 +32,25 @@ export default {
           priorityMatched: route.matched.length,
           priorityHref: href.length
         }
-      if (isSameRouteCheck === true || (this.exact !== true && this.isIncludedRoute(current, route) === true)) {
-        this.__activateRoute({
-          ...params,
-          redirected,
-          // if it's an exact match give higher priority
-          // even if the tab is not marked as exact
-          exact: this.exact === true || isSameRouteCheck === true
-        })
+
+      if(this.isAssemblyRoute(current, route)){
+        console.log("Activate thsi route")
+        console.log(current)
+        this.__activateRoute({...params})
       }
-      if (
-        redirected === true &&
-        checkFunction(current, {
-          path: route.redirectedFrom,
-          ...location
-        }) === true
-      ) {
-        this.__activateRoute(params)
+    },
+
+    isAssemblyRoute: function(current, route){
+      if('assemblyIdentifier' in current.params) {
+        return('meta' in current && 'topmenu' in current.meta && current.meta.topmenu == route.name)
       }
-      this.isActive === true && this.__activateRoute()
+
+      return(false)
     }
+  },
+
+  mounted () {
+    this.$router !== void 0 && this.check_for_assembly_routes()
   }
 }
 </script>

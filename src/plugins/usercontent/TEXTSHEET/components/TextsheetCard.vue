@@ -15,8 +15,7 @@
         <div class=" col-11">
           <div class="q-mt-lg q-mb-xs" :class="header_class">{{heading_number}} {{item.content.title}}</div>
           <div class="text-body1 text-justify" v-if="item.content.text" v-html="$sanitize(item.content.text)"/>
-            <!-- <q class="L T">Die Demokratiefabrik legt grossen Wert auf Sicherheit und Datenschutz.</q> -->
-          </div>
+          <!-- <q class="L T">Die Demokratiefabrik legt grossen Wert auf Sicherheit und Datenschutz.</q> -->
         </div>
 
         <q-card-actions class=" col-1" align="right">

@@ -1,43 +1,18 @@
 <template>
     <q-page class="doc_content">
-        <!-- <div align="center" class="full-width q-mb-lg">
-            <q-btn align="around" 
-                class="btn-fixed-width" 
-                label="Back to the list of assemblies"
-                flat
-                icon="mdi-arrow-up" 
-                @click="clickBackToAssemblyListButton"/>
-        </div> -->
 
-        
+
         <div v-if="assembly">
 
-<!-- color="brown-5"  -->
-                    
-            <q-card class="my-card" flat>
-            <q-card-section >
-                <!-- <div class="text-overline">Der Bürgerkonvent</div> -->
-                <div class="text-h4 q-mt-sm q-mb-xs">Der Bürgerkonvent zur {{assembly.title}}</div>
-            </q-card-section>
-            </q-card>
+            <!-- <h2>Die BürgerInnenversammlung zur {{assembly.title}}</h2> -->
 
-                <!-- <div class="text-h6 q-mt-sm q-mb-xs">Ihre heutige Agenda umfasst {{assembly_containers.length}} Punkte:</div>
-                <div class="text-caption" v-if="!assembly_containers">
-                    Heute stehen für Sie keine Aufgaben an.
-                </div>
-                <div class="text-caption" v-if="assembly_containers">
-                    Wie Sie wissen, gibt es in einer Fabrik viel zu tun. Das ist Ihre heutige Agenda:
-                </div> -->
-
-                <!-- v-if="!step" -->
-            <q-chat-message
-                class="artificialdmoderation"
-                size=8
-                avatar="~assets/actor1.png"
-                :text="[`Heute sind ${max_steps} Punkte auf Ihrer Agenda.`]"
-            />
+            <div class="text-subtitle2">{{$t('content.assemblies.item.subtitle')}}</div>
+            <h2>Bürger-Standpunkt zur {{assembly.title}}</h2>
+            <span>{{assembly.info}}</span>
 
         </div>
+
+        <ArtificialModeratorAssemblyHome :ongoing_assembly="assembly" align="right" />
 
 
         <q-stepper
@@ -46,12 +21,12 @@
             vertical
             flat
             ref="stepper"
-            alternative-labels
-            :header-nav="true"
-            color="primary"
-            active-color="deep-orange"
+            active-color="accent"
             done-color="secondary"
             >
+            <!-- alternative-labels
+            :header-nav="true"
+            color="primary" -->
 
             <q-step
                 v-for="(item, key) in sorted_containers"
@@ -70,7 +45,6 @@
                 <!-- AGENDA ITEM -->
                 <q-card flat>
 
-                    <q-separator />
 
                     <q-card-section class="q-pa-sm" style="min-height:7em;" >
 
@@ -118,28 +92,17 @@
 
                     </q-card-section>
 
-                    <q-separator />
 
-                    <q-card-actions>
                     <q-card-section class="q-pt-none">
-                    <!-- <div class="text-subtitle1">
-                        Bis am 23.07.2020 zugänglich.
-                    </div> -->
-                    <div class="text-caption text-grey">
-                        Bisher haben sich 400 Teilnehmende hier beteiligt.
-                    </div>
+                        <div class="text-caption text-grey">
+                            Bisher haben sich 400 Teilnehmende hier beteiligt.
+                        </div>
                     </q-card-section>
-                    <q-space />
-                        <!-- <q-btn color="" 
-                            size="1em" icon="mdi-chevron-down" round  
-                            @click="$refs.stepper.next()"
-                            v-if="step < Object.keys(assembly_containers).length"
-                            class="text-black"/> -->
-                    </q-card-actions>
-                    <q-separator />
+
                 </q-card>
             </q-step>
         </q-stepper>
+
     </div>
 
     <ComponentContainerEditor v-if="assembly && assembly.acl.includes('manage')" :assembly="assembly" />
@@ -147,14 +110,15 @@
 </template>
 
 
-<script>
+  <script>
 import AssemblyMixin from "./mixins/assembly"
 import ComponentContainerEditor from "src/pages/UserContent/components/ContainerEditor";
 import { mapGetters, mapActions } from 'vuex'
+import ArtificialModeratorAssemblyHome from 'src/artificialmoderation/AssemblyHome'
 
 export default {
     name: 'PageAssemblyHome',
-    components: {ComponentContainerEditor},
+    components: {ComponentContainerEditor, ArtificialModeratorAssemblyHome },
     mixins: [AssemblyMixin],
     computed: {
         max_steps: function() {
