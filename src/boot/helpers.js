@@ -5,6 +5,8 @@ import Vue from 'vue'
 import VueSanitize from "vue-sanitize";
 import ApiService from "src/utils/xhr"
 import Configuration from 'src/utils/configuration'
+import { isNumber } from 'util';
+// we import all of `date`
 
 // Vue.use(VueDOMPurifyHTML)
 let defaultOptions = {
@@ -44,7 +46,8 @@ export default boot(({ Vue }) => {
           // API Events
           NotificationStageEntering: 'NotificationStageEntering',
           // Enter number of minutes between each notification request.
-          NotificationStageFrequency: 5 
+          NotificationFrequency: 5,
+          CacheUpdateFrequency: 5 
 
         }
       },
@@ -60,33 +63,27 @@ export default boot(({ Vue }) => {
           return (object1.length)
         },
 
-        notifyAPICallRequiredLastAccessDate (dbobj) {
-          console.assert('progression' in dbobj)
-          
+        check4OutdatedData: function (dbdatestring, frequencyMinutes) {
+          console.assert(isNumber(frequencyMinutes) && frequencyMinutes)
 
-          // notify API. if not progression entry exist (its probably a first time visit)
-          if (!(dbobj.progression)){
+          if (!dbdatestring) {
+            console.log("dbdatestring is emtpy...")
             return (true)
           }
 
-          // notify API, if last time visit is older X minutes 
-          if (!(dbobj.progression.last_accessed)){
+          var thresholdDate = new Date();
+          thresholdDate.setMinutes(thresholdDate.getMinutes() - frequencyMinutes)
+          const dbdate = new Date(dbdatestring)
+          console.log(`OUTDATED AS SOON AS:  ${thresholdDate} > ${dbdate}`)
+          if (thresholdDate > dbdate){
+            console.log("OUTDATED")
             return (true)
           }
 
-          // const msFrequency = this.NotificationStageFrequency * 60 * 1000
-          // const thresholdDate = new Date(myDate.getTime() - msFrequency)   
-          console.log(dbobj.progression.last_accessed)
-          console.log("K")
-          var XMinutesEarlier = new Date()
-          XMinutesEarlier.setMinutes(XMinutesEarlier.getMinutes() - this.NotificationStageFrequency)
-          
-
-          console.log(XMinutesEarlier)
-          console.log(XMinutesEarlier > dbobj.progression.last_accessed)
+          // Not Outdated
           return (false)
-
         },
+
 
         // LOAD TREE
         notifyAPI (event, data) {

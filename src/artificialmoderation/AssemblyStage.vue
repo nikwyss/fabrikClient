@@ -29,15 +29,13 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip :size="requiresAttention ? 'lg' : 'md'" icon="mdi-arrow-right" v-if="stage" clickable @click="clickPluginLink">
+        <q-chip v-if="stage && !lastStage && skippable" :size="requiresAttention ? 'md' : 'md'" icon="mdi-arrow-down" 
+            clickable @click="clickGotoNextStage">
+            {{ $t('content.assemblies.item.goto_next_stage') }}
+        </q-chip>
+        <q-chip :size="requiresAttention ? 'md' : 'md'" icon="mdi-arrow-right" v-if="stage" clickable @click="clickPluginLink">
             {{ $t('content.assemblies.item.please_enter_stage') }}
         </q-chip>
-        <div v-if="stage && !lastStage && skippable">
-            <q-chip :size="requiresAttention ? 'md' : 'lg'" icon="mdi-arrow-down" 
-                clickable @click="clickGotoNextStage">
-                {{ $t('content.assemblies.item.goto_next_stage') }}
-            </q-chip>
-        </div>
         <q-chip size="sm" icon="mdi-arrow-down" v-if="stage && lastStage && skippable" 
             clickable @click="goto_final_message">
             {{ $t('content.assemblies.item.goto_final_message') }}

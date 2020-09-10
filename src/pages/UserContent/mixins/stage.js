@@ -32,10 +32,13 @@ export default {
       }
 
       // CHECK IF API SHOULD BE NOTIFIED
-      console.log("STAGE kkkk")
-      console.log(stage)
+      console.log("STAGE")
+      
+      let please_notify =  (!('progression' in stage) ||
+          !stage.progression ||
+          this.check4OutdatedData(stage.progression.last_accessed, this.NotificationFrequency))
 
-      if (this.notifyAPICallRequiredLastAccessDate(stage)) {
+      if (please_notify) {
         this.notifyAPI (
           this.NotificationStageEntering,
           {assembly_identifier: this.assemblyIdentifier, stage_id: this.stageID}

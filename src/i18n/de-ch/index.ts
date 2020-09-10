@@ -111,9 +111,10 @@ export default {
         stage_enter_end: `Bevor wir für heute Schluss machen: Darf ich Sie bitten mir zu folgen.`,
         stage_already_seen: 'Möchten Sie sich das noch einmal ansehen?',
         stage_attention_needed: 'Hierzu hätten wir noch einen Wunsch. Folgen Sie uns bitte.',
+        stage_not_yet_accessible: '(Noch nicht zugänglich)',
         unique_stage_enter: `Dies ist heute der einzige Punkt auf dem Programm. Sind Sie bereit?`,
-        please_enter_stage: 'Start',
-        goto_next_stage: 'Überspringen',
+        please_enter_stage: 'Öffnen',
+        goto_next_stage: 'Weiter zum nächsten Punkt',
         goto_final_message: 'Zum Abschluss'
       },
       am: {

@@ -85,18 +85,23 @@ export default {
     // CHECK STATE OF LOADED Assembly
     checkPublicIndexStatus: function (publicIndex) {
       console.log("Is out of date? CACHE STATUS")
+
       // reload assembly all half 20 minutes..
-      var twentyMinutesEarlier = new Date()
-      twentyMinutesEarlier.setMinutes(twentyMinutesEarlier.getMinutes() - 20)
       let invalid_status = (!publicIndex ||
           publicIndex.access_sub === undefined ||
-          publicIndex.access_date === undefined ||
           // allow userid ==0 && user_id == null
-          publicIndex.access_sub != (this.$root.userid == 0 ? null : this.$root.userid) ||
-          publicIndex.access_date < twentyMinutesEarlier)
+          publicIndex.access_sub != (this.$root.userid == 0 ? null : this.$root.userid))
 
-      return (!invalid_status)
+      if (invalid_status){
+        return (false)
+      }
 
+      if (this.check4OutdatedData(publicIndex.access_date, this.CacheUpdateFrequency)) {
+        console.log("OUTDATED")
+        return (false)
+      }
+
+      return (true)
     },
 
     ...mapActions({

@@ -140,20 +140,21 @@ export default {
     // CHECK STATE OF LOADED Assembly
     checkAssemblyStatus: function (assembly) {
       console.log("Is out of date? CACHE STATUS")
-      // Load stage data (to check sync status)
-      // check if user_id has changed!
-      // reload assembly all half 20 minutes..
-      var twentyMinutesEarlier = new Date();
-      twentyMinutesEarlier.setMinutes(twentyMinutesEarlier.getMinutes() - 20);
+
+      // is cache up to date?
       if (!assembly ||
           assembly.access_sub === undefined ||
-          assembly.access_date === undefined ||
           // TODO: just during page reload $root.userid is null.
-          assembly.access_sub != this.$root.userid ||
-          assembly.access_date < twentyMinutesEarlier) {
+          assembly.access_sub != this.$root.userid) {
         console.log("OUTDATED")
         return(false)
       }
+
+      if (this.check4OutdatedData(assembly.access_date, this.CacheUpdateFrequency)) {
+        console.log("OUTDATED")
+        return (false)
+      }
+
       console.log("Assembly status OK")
       return (true)
     },

@@ -1,3 +1,8 @@
+<style lang="sass" scoped>
+.q-stepper__dot
+    width: 50px  !important;
+    height: 50px !important;
+</style>
 <template>
     <q-page class="doc_content">
 
@@ -10,49 +15,50 @@
         </div>
 
         <!-- AM-OVERVIEW -->
-        <ArtificialModeratorAssemblyHome 
+        <div class="q-mb-xl">
+            <ArtificialModeratorAssemblyHome 
             :ongoing="!assembly || assembly_stages === undefined" 
             :maxSteps="maxSteps"
             align="left" />
-
+        </div>
 
         <!-- STAGES -->
         <q-stepper
             v-if="assembly && assembly_stages"
             v-model="step"
             vertical
+            flat
+            animated
             header-nav
             ref="stepper"
-            active-color="accent"
-            done-color="secondary"
+            inactive-icon="mdi-disabled"
             >
 
             <q-step
                 v-for="(item, stageNr) in sorted_stages"
                 :key="Number(stageNr)"
+                :prefix="stageNr+1"
                 :name="Number(stageNr)"
+                :caption="getStepCaption(item, stageNr)"
                 :header-nav="highestAllowedStep >= stageNr"
                 :title="getStepTitle(item, stageNr)"
                 :icon="item.icon ? item.stage.icon : 'mdi-email-outline'"
-                :active-icon="item.icon ? item.stage.icon : 'mdi-email-open-outline'"
-                :done-icon="item.icon ? item.stage.icon : 'mdi-email-check-outline'"
-                :error="isSkipped(item)"
+                error-icon="mdi-email-alert-outline"
+                :done-icon="ishighestAllowedStep(stageNr) ? 'mdi-email-outline' : 'mdi-email-open-outline'"
+                :active-icon="'mdi-email-open-outline'"
+                :active-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent'"
+                :done-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent'"
                 :done="isDone(item, stageNr)"
                 :disabled="isDisabled(item)"
             >
-
                 <!-- MANAGERS: STAGE EDITOR -->
                 <ComponentStageEditor :key="`AE${stageNr}`"  v-if="assembly.acl.includes('manage') && step==stageNr" :assembly="assembly" :model="item"/>
 
                 <!-- STAGE CONTENT-->
                 <q-card flat>
 
-                    <q-card-section class="q-pa-sm" style="min-height:7em;" >
-                        <span  class="text-h5">{{item.stage.title}}</span>
+                    <q-card-section class="q-pa-xs" style="min-height:3em;" >
                         <div class="text-subtitle2" v-html="item.stage.info" />
-                        <div class="q-mt-lg text-caption">
-                            Bisher haben sich 400 Teilnehmende hier beteiligt.
-                        </div>
                     </q-card-section>
 
                     <!-- AM-STAGE -->
@@ -131,7 +137,6 @@ export default {
         step: {
             get: function() {
                 let stageID = this.get_current_stageID(this.assembly.identifier)
-                console.log(stageID)
                 let stageNr = null
                 if (stageID) {
                     let stage = this.assembly_stages[stageID]
@@ -140,14 +145,10 @@ export default {
                 if (stageNr === null || stageNr === undefined) {
                     stageNr = 0
                 }
-                console.log(stageNr)
                 return (stageNr)
             },
 
             set: function(stageNr) {
-                console.log(stageNr)
-                console.log(this.sorted_stages[stageNr])
-                console.log(this.sorted_stages[stageNr].stage.id)
                 console.log("SET NEW STAGE")
                 this.set_current_stageID({assembly: this.assembly, stageID: this.sorted_stages[stageNr].stage.id})
             },
@@ -164,11 +165,22 @@ export default {
         },
 
         clickGotoNextStage: function(stageNr) {
-            console.log(("KKKK"))
             this.step = stageNr + 1
         },
 
-        getStepTitle: function (item, key) {
+        getStepCaption: function (item, key) {
+
+            var caption = ''
+
+            // PREFIX
+            if (!this.isDone(item, key)){
+                caption = this.$i18n.t('content.assemblies.item.stage_not_yet_accessible')
+            }
+
+            return(caption)
+        },
+
+                getStepTitle: function (item, key) {
             var title = item.stage.title
 
             if(item.stage.disabled) {
@@ -180,7 +192,7 @@ export default {
             }
 
             // PREFIX
-            title = `${key+1}/${this.maxSteps} ${title}`
+            // title = `${key+1}/${this.maxSteps} ${title}`
 
             return(title)
         },
@@ -188,6 +200,9 @@ export default {
         isDone: function (item, key) {
             // return(this.step in [this.STATUS_COMPLETED])
             return(this.highestAllowedStep >= key)
+        },
+        ishighestAllowedStep: function (key) {
+            return(this.highestAllowedStep == key)
         },
         isSkipped: function (item) {
             return(item.progression && item.progression.status in [this.STATUS_SKIPPED])
