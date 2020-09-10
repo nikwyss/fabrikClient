@@ -12,7 +12,7 @@
 
             <!-- DISABLED WARNING -->
             <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
-            This UserContent Stage is disabled and, therefore, not visible for users.
+            This ContentTree Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
             <StagePeerReview />
@@ -76,11 +76,10 @@
 
 
 <script>
-import ContentTreeMixin from "src/pages/UserContent/mixins/contenttree"
-import StageMixin from "src/pages/UserContent/mixins/stage"
-import ComponentStageEditor from "src/pages/UserContent/components/StageEditor";
+import ContentTreeMixin from "src/pages/ContentTree/mixins/contenttree"
+import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import ArgumentCard from "./components/ArgumentCard";
-import StagePeerReview from "src/pages/UserContent/components/StagePeerReview"
+import StagePeerReview from "src/pages/ContentTree/components/StagePeerReview"
 
 export default {
     name: 'ProsAndConsDefault',
@@ -90,7 +89,7 @@ export default {
         StagePeerReview
     },
 
-    mixins: [ContentTreeMixin, StageMixin],
+    mixins: [ContentTreeMixin],
 
     computed: {
         pros: function() {

@@ -1,14 +1,13 @@
 import ApiService from "src/utils/xhr"
 import {mapGetters, mapActions} from 'vuex'
-import AssemblyMixin from "src/pages/Assembly/mixins/assembly"
-import StageMixin from "./stage"
+import StageMixin from "../../Assembly/mixins/stage"
 // import assembly from "src/pages/Assembly/mixins/assembly"
 import Configuration from 'src/utils/configuration'
 import { LayoutEventBus } from 'src/layouts/components/eventbus.js'
 
 export default {
 
-  mixins: [AssemblyMixin, StageMixin],
+  mixins: [StageMixin],
   data() {
     return {
       is_loaded: false,

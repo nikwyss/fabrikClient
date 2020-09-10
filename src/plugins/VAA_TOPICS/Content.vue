@@ -45,8 +45,8 @@
 
 
 <script>
-import ContentTreeMixin from "src/pages/UserContent/mixins/contenttree"
-import ComponentContentTree  from "src/pages/UserContent/components/ContentTree";
+import ContentTreeMixin from "src/pages/ContentTree/mixins/contenttree"
+import ComponentContentTree  from "src/pages/ContentTree/components/ContentTree";
 import TextsheetCard from "./components/TextsheetCard";
 
 export default {
@@ -59,7 +59,8 @@ export default {
 
     methods: {
         clickBackButton: function () {
-            this.$router.push({name: 'PROS_AND_CONS', params: {containerID: this.containerID}})
+            alert ("disabled")
+            // this.$router.push({name: 'PROS_AND_CONS', params: {containerID: this.containerID}})
         }
     }
 }

@@ -89,7 +89,7 @@
 
 <script>
 import AssemblyMixin from "./mixins/assembly"
-import ComponentStageEditor from "src/pages/UserContent/components/StageEditor";
+import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import { mapGetters, mapActions } from 'vuex'
 import ArtificialModeratorAssemblyHome from 'src/artificialmoderation/AssemblyHome'
 import ArtificialModeratorAssemblyStage from 'src/artificialmoderation/AssemblyStage'

@@ -15,7 +15,8 @@ export default class Configuration {
       ENV_APISERVER_URL: '$ENV_APISERVER_URL',
       ENV_OAUTH_LOCAL_REDIRECTION_URI: '$ENV_OAUTH_LOCAL_REDIRECTION_URI',
       ENV_OAUTH_BASE_URL: '$ENV_OAUTH_BASE_URL',
-      ENV_OAUTH_CLIENT_ID: '$ENV_OAUTH_CLIENT_ID'
+      ENV_OAUTH_CLIENT_ID: '$ENV_OAUTH_CLIENT_ID',
+      ENV_SURVEY_URL: '$ENV_SURVEY_URL'
     }
   }
 
@@ -70,7 +71,10 @@ export default class Configuration {
         case 'ENV_OAUTH_CLIENT_ID':
           envValue = process.env.ENV_OAUTH_CLIENT_ID
           break
-      }
+        case 'ENV_SURVEY_URL':
+          envValue = process.env.ENV_SURVEY_URL
+          break;
+        }
       
       if (envValue !== null) {
         return envValue

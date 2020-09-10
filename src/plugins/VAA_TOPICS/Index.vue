@@ -56,9 +56,8 @@
 
 
 <script>
-import StageMixin from "src/pages/UserContent/mixins/stage"
-import ContentTreeMixin from "src/pages/UserContent/mixins/contenttree"
-import ComponentStageEditor from "src/pages/UserContent/components/StageEditor";
+import ContentTreeMixin from "src/pages/ContentTree/mixins/contenttree"
+import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import TextsheetCard from "./components/TextsheetCard";
 
 export default {
@@ -68,7 +67,7 @@ export default {
         TextsheetCard,
     },
 
-    mixins: [ContentTreeMixin, StageMixin],
+    mixins: [ContentTreeMixin],
 
     methods: {
         

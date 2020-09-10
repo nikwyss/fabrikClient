@@ -115,6 +115,7 @@ export default {
         unique_stage_enter: `Dies ist heute der einzige Punkt auf dem Programm. Sind Sie bereit?`,
         please_enter_stage: 'Öffnen',
         goto_next_stage: 'Weiter zum nächsten Punkt',
+        go_back_to_assembly_home: 'Zur Tagesübersicht',
         goto_final_message: 'Zum Abschluss'
       },
       am: {

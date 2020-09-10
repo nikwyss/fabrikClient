@@ -73,9 +73,9 @@
 
 <script>
 import { Fragment } from 'vue-fragment'
-import ContentRating from "src/pages/UserContent/components/ContentRating"
-import ContentEditor from "src/pages/UserContent/components/ContentEditor"
-import ContentToolbar from "src/pages/UserContent/components/ContentToolbar"
+import ContentRating from "src/pages/ContentTree/components/ContentRating"
+import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
+import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
 
 export default {
   name: 'ArgumentCard',
@@ -90,7 +90,7 @@ export default {
 
       // REDIRECT TO ARGUMENT PAGE
       var identifier = this.$route.params.assemblyIdentifier
-      this.$router.push({name: 'PROS_AND_CONS', params: {
+      this.$router.push({name: 'CIR_PROS_AND_CONS', params: {
         assemblyIdentifier: identifier,
         stageID: this.stage.id }})
     },
@@ -104,7 +104,7 @@ export default {
       // REDIRECT TO ARGUMENT PAGE
       // console.log(this.content)
       var identifier = this.$route.params.assemblyIdentifier
-      this.$router.push({name: 'PROS_AND_CONS_CONTENT', params: {
+      this.$router.push({name: 'CIR_PROS_AND_CONS_CONTENT', params: {
         assemblyIdentifier: identifier,
         stageID: this.stage.stage.id,
         contentID: content.id

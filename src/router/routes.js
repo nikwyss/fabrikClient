@@ -1,4 +1,4 @@
-import UserContentDefault from 'src/pages/UserContent/Default'
+import UserContentDefault from 'src/pages/ContentTree/Default'
 import plugin_routes from 'src/plugins/routes.js'
 import oauth_routes from "../utils/oauth/routes.js"
 

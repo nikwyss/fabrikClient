@@ -20,7 +20,7 @@
 <script>
 // TODO: put title also in structure dictionary. This could fasten the tree.
 // import ContentToolbar from "./ContentToolbar";
-import ContentToolbar from "src/pages/UserContent/components/ContentToolbar";
+import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 
 export default {
     name: "ContentTreeEntryTitle",

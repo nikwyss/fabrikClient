@@ -5,7 +5,7 @@
 
             <!-- DISABLED WARNING -->
             <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
-            This UserContent Stage is disabled and, therefore, not visible for users.
+            This ContentTree Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
             <!-- EDIT CONTENT -->
