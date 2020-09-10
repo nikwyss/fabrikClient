@@ -44,10 +44,10 @@
                 :title="getStepTitle(item, stageNr)"
                 :icon="item.icon ? item.stage.icon : 'mdi-email-outline'"
                 error-icon="mdi-email-alert-outline"
-                :done-icon="ishighestAllowedStep(stageNr) ? 'mdi-email-outline' : 'mdi-email-open-outline'"
+                :done-icon="ishighestAllowedStep(stageNr) ? 'mdi-email-outline' : 'mdi-email-check-outline'"
                 :active-icon="'mdi-email-open-outline'"
-                :active-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent'"
-                :done-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent'"
+                :active-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent2'"
+                :done-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent2-light'"
                 :done="isDone(item, stageNr)"
                 :disabled="isDisabled(item)"
             >
