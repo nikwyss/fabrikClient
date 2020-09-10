@@ -2,21 +2,21 @@
     <q-page class="doc_content">
 
 
+        <!-- ASSEMBLY DESCRIPTION -->
         <div v-if="assembly">
-
-            <!-- <h2>Die BürgerInnenversammlung zur {{assembly.title}}</h2> -->
-
             <div class="text-subtitle2">{{$t('content.assemblies.item.subtitle')}}</div>
-            <h2>Bürger-Standpunkt zur {{assembly.title}}</h2>
+            <h2>{{assembly.title}}</h2>
             <span>{{assembly.info}}</span>
-
         </div>
-{{highestAllowedStep}}
 
+        <!-- AM-OVERVIEW -->
         <ArtificialModeratorAssemblyHome 
-            :ongoing_assembly="assembly" 
+            :ongoing="!assembly || assembly_stages === undefined" 
             :maxSteps="maxSteps"
             align="left" />
+
+
+        <!-- STAGES -->
         <q-stepper
             v-if="assembly && assembly_stages"
             v-model="step"
@@ -40,25 +40,25 @@
                 :done="isDone(item, stageNr)"
                 :disabled="isDisabled(item)"
             >
+
+                <!-- MANAGERS: STAGE EDITOR -->
                 <ComponentStageEditor :key="`AE${stageNr}`"  v-if="assembly.acl.includes('manage') && step==stageNr" :assembly="assembly" :model="item"/>
 
-                <!-- AGENDA ITEM -->
+                <!-- STAGE CONTENT-->
                 <q-card flat>
 
                     <q-card-section class="q-pa-sm" style="min-height:7em;" >
-
                         <span  class="text-h5">{{item.stage.title}}</span>
                         <div class="text-subtitle2" v-html="item.stage.info" />
-
                         <div class="q-mt-lg text-caption">
                             Bisher haben sich 400 Teilnehmende hier beteiligt.
                         </div>
-
                     </q-card-section>
 
+                    <!-- AM-STAGE -->
                     <q-card-section class="col-12 " align="right">
                     <ArtificialModeratorAssemblyStage
-                        :ongoing_assembly="assembly"
+                        :ongoing="!assembly && assembly_stages === undefined"
                         :stageNr="stageNr"
                         :lastStage="isLastStage(stageNr)"
                         :skippable="isSkippable(item, stageNr)"
@@ -75,6 +75,7 @@
 
     </div>
 
+    <!-- MANAGER: NEW STAGE -->
     <ComponentStageEditor v-if="assembly && assembly.acl.includes('manage')" :assembly="assembly" />
 </q-page>
 </template>
@@ -92,11 +93,21 @@ export default {
     components: {ComponentStageEditor, ArtificialModeratorAssemblyHome, ArtificialModeratorAssemblyStage},
     mixins: [AssemblyMixin],
     computed: {
+        
         maxSteps: function() {
+
+            if(!this.assembly_stages){
+                return (undefined)
+            }
+
             return(Object.keys(this.assembly_stages).length)
         },
 
         sorted_stages: function() {
+            if(!this.assembly_stages){
+                return (undefined)
+            }
+
             // Object.values(assembly_stages).sort((a, b) => a.stage.order_position.localeCompare(b.stage.order_position))
             // console.log(this.assembly_stages)
             let sorted = Object.values(this.assembly_stages).sort((a, b) => a.stage.order_position < b.stage.order_position ? -1 : a.stage.order_position > b.stage.order_position ? 1 : 0)
@@ -104,6 +115,10 @@ export default {
         },
 
         highestAllowedStep: function () {
+            if(!this.assembly_stages){
+                return (undefined)
+            }
+
             for (let stageNr in this.sorted_stages) {
                 let stage = this.sorted_stages[stageNr]
                 if (this.isNew(stage) || this.isAlert(stage)){
@@ -137,16 +152,17 @@ export default {
                 this.set_current_stageID({assembly: this.assembly, stageID: this.sorted_stages[stageNr].stage.id})
             },
         },
+
         ...mapGetters({get_current_stageID: 'assemblystore/get_current_stageID'})
     },
 
     methods: {
-     
+
         clickBackToAssemblyListButton: function () {
             this.set_current_assemblyIdentifier(null)
             this.$router.push ({ name: 'assemblies' })
         },
-        
+
         clickGotoNextStage: function(stageNr) {
             console.log(("KKKK"))
             this.step = stageNr + 1
@@ -173,7 +189,6 @@ export default {
             // return(this.step in [this.STATUS_COMPLETED])
             return(this.highestAllowedStep >= key)
         },
-
         isSkipped: function (item) {
             return(item.progression && item.progression.status in [this.STATUS_SKIPPED])
         },

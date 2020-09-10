@@ -10,7 +10,7 @@ var state = {
     publicIndex_ongoing_assemblies: null,
     publicIndex_published_assemblies: null,
     assemblies: {},
-    current_stageID: {},
+    current_stages: {},
     current_assemblyIdentifier: null
 }
 
@@ -119,10 +119,10 @@ const getters = {
 
     get_current_stageID:  (state) => (assemblyIdentifier) => {
         // return state.things.find(thing => thing.identifier === id)
-        if(!(assemblyIdentifier in state.current_stageID)) {
+        if(!(assemblyIdentifier in state.current_stages)) {
             return(null)
         }
-        return(state.current_stageID[assemblyIdentifier])
+        return(state.current_stages[assemblyIdentifier])
     },
 
     /* SHORTCUTS */
@@ -214,11 +214,11 @@ const mutations = {
         console.log("update current  stage id for the given assembly")
 
         // preprare folder
-        if (!(assembly.identifier in state.current_stageID)) {
-            Vue.set(state.current_stageID, assembly.identifier, null)
+        if (!(assembly.identifier in state.current_stages)) {
+            Vue.set(state.current_stages, assembly.identifier, null)
         }
         // Vue.set  makes the change reactive!!
-        Vue.set(state.current_stageID, assembly.identifier, stageID)
+        Vue.set(state.current_stages, assembly.identifier, stageID)
     },
 
     add_or_update_assembly(state, {assembly, stages, configuration, progression}) {

@@ -42,7 +42,9 @@ export default boot(({ Vue }) => {
           STATUS_LOCKED: 13,
 
           // API Events
-          NotificationStageEntering: 'NotificationStageEntering'
+          NotificationStageEntering: 'NotificationStageEntering',
+          // Enter number of minutes between each notification request.
+          NotificationStageFrequency: 5 
 
         }
       },
@@ -56,6 +58,34 @@ export default boot(({ Vue }) => {
             return(0)
           }
           return (object1.length)
+        },
+
+        notifyAPICallRequiredLastAccessDate (dbobj) {
+          console.assert('progression' in dbobj)
+          
+
+          // notify API. if not progression entry exist (its probably a first time visit)
+          if (!(dbobj.progression)){
+            return (true)
+          }
+
+          // notify API, if last time visit is older X minutes 
+          if (!(dbobj.progression.last_accessed)){
+            return (true)
+          }
+
+          // const msFrequency = this.NotificationStageFrequency * 60 * 1000
+          // const thresholdDate = new Date(myDate.getTime() - msFrequency)   
+          console.log(dbobj.progression.last_accessed)
+          console.log("K")
+          var XMinutesEarlier = new Date()
+          XMinutesEarlier.setMinutes(XMinutesEarlier.getMinutes() - this.NotificationStageFrequency)
+          
+
+          console.log(XMinutesEarlier)
+          console.log(XMinutesEarlier > dbobj.progression.last_accessed)
+          return (false)
+
         },
 
         // LOAD TREE

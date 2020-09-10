@@ -72,7 +72,6 @@ export default{
         clickGotoNextStage: function () {
             console.log("clickGotoNextStage")
             this.$emit('clickGotoNextStage', this.stageNr)
-            // this.set_current_stageID({assembly: this.assembly, stageID: step+})
         },
 
         clickPluginLink: function () {
@@ -84,7 +83,6 @@ export default{
             console.log("....")
             this.$router.push({name:  this.stage.stage.type, params: params})
         }
-        // ...mapActions({set_current_stageID: 'assemblystore/set_current_stageID'})
     }
 }
 </script>

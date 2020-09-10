@@ -1,3 +1,5 @@
+import {mapGetters} from 'vuex'
+
 export default {
 
   computed: {
@@ -6,17 +8,45 @@ export default {
     },
     assemblyIdentifier: function () {
       return (this.$route.params.assemblyIdentifier)
-    }
-  },
+    },
 
-  mounted: function() {
-    // notify statge entry 
-    // TODO: shall we prevent too many notifications?
-    this.notifyAPI (
-      this.NotificationStageEntering,
-      {assembly_identifier: this.assemblyIdentifier, stage_id: this.stageID})
+    stage: function() {
+      console.assert(this.assembly)
 
-    // update stage (as having visited)
+      if(!this.stageID) {
+        return(null)
+      }
 
+      if(!this.assemblyIdentifier) {
+        return(null)
+      }
+
+      // has contentree already be cached in the vues store??
+      var stage = this.get_assembly_stage({
+        assemblyIdentifier: this.assemblyIdentifier,
+        stageID: this.stageID})
+  
+      if(!stage) {
+          // Not yet loaded. please wait
+          return(null)
+      }
+
+      // CHECK IF API SHOULD BE NOTIFIED
+      console.log("STAGE kkkk")
+      console.log(stage)
+
+      if (this.notifyAPICallRequiredLastAccessDate(stage)) {
+        this.notifyAPI (
+          this.NotificationStageEntering,
+          {assembly_identifier: this.assemblyIdentifier, stage_id: this.stageID}
+        )
+      }
+
+      return(stage)
+    },
+
+    ...mapGetters({ 
+      get_assembly_stage: 'assemblystore/get_assembly_stage'
+    })
   }
 }
