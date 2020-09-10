@@ -17,7 +17,7 @@
 
 
             <!-- MISCONFIGURATION -->
-            <div v-if="stage && !check_data">
+            <div v-if="stage && !is_survey_completed && !check_data">
                 <h2>{{stage.stage.title}}</h2>
 
                 <q-banner class="bg-grey-3 q-mb-lg">
@@ -35,7 +35,7 @@
    
 
             <!-- ALREADY COMPLETED? -->
-            <div v-if="stage && (!stage.progression || stage.progression.completed)">
+            <div v-if="stage && is_survey_completed">
                 <h2>{{stage.stage.title}}</h2>
 
                 <q-banner class="bg-grey-3 q-mb-lg">
@@ -53,7 +53,7 @@
    
 
             <!-- REDIRECT TO SURVEY  -->
-            <div v-if="stage && check_data && (!stage.progression || !stage.progression.completed)"  align="center">
+            <div v-if="stage && check_data && !is_survey_completed"  align="center">
                 <!-- <p>{{stage.stage.info}}</p> -->
 
                 <q-spinner-gears
@@ -66,7 +66,7 @@
             </div>
 
         </div>
-  
+  {{ stage.progression }}
     </q-page>
 </template>
 
@@ -104,7 +104,7 @@ export default {
                     return (false)
             }
 
-            if (this.is_a_survey_response){
+            if (this.is_a_survey_response && !this.is_survey_completed){
 
                 const STAGEID = this.stage.stage.id
                 const USERID = this.stage.stage.access_sub
@@ -127,7 +127,7 @@ export default {
             }
 
 
-            if (!this.is_a_survey_response){
+            if (!this.is_a_survey_response && !this.is_survey_completed){
                 this.redirect()
             }
 
@@ -139,6 +139,10 @@ export default {
             if (this.$route.query.completed){
                 return (true)
             }
+        },
+
+        is_survey_completed() {
+            return (this.stage && this.stage.progression && this.stage.progression.completed)
         },
 
         redirect: function () {
