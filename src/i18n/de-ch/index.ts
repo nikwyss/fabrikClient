@@ -107,7 +107,7 @@ export default {
         days_left: 'Noch {days_left} Tage',
         home: `Heute sind {maxSteps} Punkte auf Ihrer Agenda.`,
         stage_enter_first: `Wir möchten gerne hier anfangen. Sind Sie bereit?`,
-        stage_enter_continue: `Wir möchten heute gerne hier anfangen. Sind Sie bereit?`,
+        stage_enter_continue: `Wir möchten nun gerne hier weiterfahren. Sind Sie bereit?`,
         stage_enter_end: `Bevor wir für heute Schluss machen: Darf ich Sie bitten mir zu folgen.`,
         stage_already_seen: 'Möchten Sie sich das noch einmal ansehen?',
         stage_attention_needed: 'Hierzu hätten wir noch einen Wunsch. Folgen Sie uns bitte.',

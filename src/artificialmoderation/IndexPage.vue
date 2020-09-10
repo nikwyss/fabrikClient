@@ -94,11 +94,11 @@ export default{
 
     methods: {
         clickInitLink: function () {
-            var route = { name: 'assemblies' }
+            var route = { name: 'assemblies_ongoing_list' }
             this.$router.push(route)
         },
         clickAuthLink: function () {
-            var route = {name: 'assemblies'}
+            var route = {name: 'assemblies_ongoing_list'}
             route = this.$router.resolve(route)
             this.$session.redirect_to_provider(route.href)
         }

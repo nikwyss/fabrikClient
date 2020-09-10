@@ -11,12 +11,12 @@
             <span>{{assembly.info}}</span>
 
         </div>
+{{highestAllowedStep}}
 
         <ArtificialModeratorAssemblyHome 
             :ongoing_assembly="assembly" 
             :maxSteps="maxSteps"
             align="left" />
-
         <q-stepper
             v-if="assembly && assembly_stages"
             v-model="step"
@@ -31,7 +31,7 @@
                 v-for="(item, stageNr) in sorted_stages"
                 :key="Number(stageNr)"
                 :name="Number(stageNr)"
-                :header-nav="step > stageNr"
+                :header-nav="highestAllowedStep >= stageNr"
                 :title="getStepTitle(item, stageNr)"
                 :icon="item.icon ? item.stage.icon : 'mdi-email-outline'"
                 :active-icon="item.icon ? item.stage.icon : 'mdi-email-open-outline'"
@@ -103,6 +103,16 @@ export default {
             return(sorted)
         },
 
+        highestAllowedStep: function () {
+            for (let stageNr in this.sorted_stages) {
+                let stage = this.sorted_stages[stageNr]
+                if (this.isNew(stage) || this.isAlert(stage)){
+                    return (stageNr)
+                }
+            }
+            return (this.maxSteps + 1)
+        },
+
         step: {
             get: function() {
                 let stageID = this.get_current_stageID(this.assembly.identifier)
@@ -161,7 +171,7 @@ export default {
 
         isDone: function (item, key) {
             // return(this.step in [this.STATUS_COMPLETED])
-            return(this.step >= key)
+            return(this.highestAllowedStep >= key)
         },
 
         isSkipped: function (item) {
