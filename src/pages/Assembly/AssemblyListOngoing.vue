@@ -19,16 +19,17 @@
                 />
 
                 <q-card-section class="col-12">
-                    <div class="text-subtitle2">{{$t('content.assemblies.item.subtitle')}}</div>
-                    <h2>Bürger-Standpunkt zur {{assembly.title}}</h2>
+                    <div class="text-subtitle2">{{$t('content.assemblies.item.home_caption', {assembly_title: assembly.title})}}</div>
+                    <h2>{{assembly.caption}}</h2>
                     <span>{{assembly.info}}</span>
 
                     <!-- v-if="assembly.date_end" -->
-                <div class="q-mt-md text-caption">
-                     {{$t('content.assemblies.item.days_left', {days_left: 3}) }}
+                <div class="q-mt-md text-caption" v-if="assembly.date_end">
+                     {{ $t('content.assemblies.item.date_end', {relative_date: $moment('2020-09-11T23:00').fromNow(true)}) }}
+                     <!-- TODO: Add timer for the last hour -->
                 </div>
-
                 </q-card-section>
+
 
                   <!-- <q-card-section> -->
                 <q-card-section class="col-12 " align="right">
@@ -58,13 +59,18 @@ export default {
 
     name: 'PageAssemblyList',
     mixins: [PublicIndex],
-    components: { ArtificialModeratorAssemblyListOngoingSelection }
+    components: { ArtificialModeratorAssemblyListOngoingSelection },
 
-    // created() {
-    //     // if(this.get_current_assemblyIdentifier) {
-    //     //     this.$router.push({name: 'assembly_home',
-    //     //         params: {assemblyIdentifier: this.get_current_assemblyIdentifier}})
-    //     // }
-    // }
+    mounted: function() {
+        console.log("kdddk")
+
+
+        //, "from", "now", true) )
+
+        // if(this.get_current_assemblyIdentifier) {
+        //     this.$router.push({name: 'assembly_home',
+        //         params: {assemblyIdentifier: this.get_current_assemblyIdentifier}})
+        // }
+    }
 }
 </script>

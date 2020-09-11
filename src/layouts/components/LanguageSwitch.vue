@@ -27,6 +27,7 @@ export default {
   watch: {
     lang(lang) {
       this.$i18n.locale = lang
+      this.$moment.locale = lang
     }
   },
 

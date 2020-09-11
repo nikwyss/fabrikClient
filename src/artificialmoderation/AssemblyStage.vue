@@ -6,24 +6,27 @@
             :ongoing="$root.authenticated!==undefined && ongoing_assembly===null">
         
         <!-- // TODO: differentiate by alert status -->
-        <template v-if="isNew && firstStage && !lastStage">
+        <template v-if="isNew && firstStage && !lastStage && !isCompleted">
             {{$t('content.assemblies.item.stage_enter_first') }}
         </template>
-        <template v-if="isNew && !firstStage  && !lastStage">
+        <template v-if="isNew && !firstStage  && !lastStage  && !isCompleted">
             {{$t('content.assemblies.item.stage_enter_continue') }}
         </template>
-        <template v-if="isNew && !firstStage  && lastStage">
+        <template v-if="isCompleted">
+            {{$t('content.assemblies.item.stage_already_completed') }}
+        </template>
+        <template v-if="isNew && !firstStage  && lastStage && !isCompleted">
             {{$t('content.assemblies.item.stage_enter_end') }}
         </template>
-        <template v-if="isNew && firstStage  && lastStage">
+        <template v-if="isNew && firstStage  && lastStage && !isCompleted">
             {{$t('content.assemblies.item.unique_stage_enter') }}
         </template>
 
-        <template v-if="!isNew && isAlert">
+        <template v-if="!isNew && isAlert && !isCompleted">
             {{$t('content.assemblies.item.stage_attention_needed') }}
         </template>
 
-        <template v-if="!isNew && !isAlert">
+        <template v-if="!isNew && !isAlert && !isCompleted">
             {{$t('content.assemblies.item.stage_already_seen') }}
         </template>
 
@@ -33,7 +36,7 @@
             clickable @click="clickGotoNextStage">
             {{ $t('content.assemblies.item.goto_next_stage') }}
         </q-chip>
-        <q-chip :size="requiresAttention ? 'md' : 'md'" icon="mdi-arrow-right" v-if="stage" clickable @click="clickPluginLink">
+        <q-chip :size="requiresAttention ? 'md' : 'md'" icon="mdi-arrow-right" v-if="stage && !isCompleted" clickable @click="clickPluginLink">
             {{ $t('content.assemblies.item.please_enter_stage') }}
         </q-chip>
         <q-chip size="sm" icon="mdi-arrow-down" v-if="stage && lastStage && skippable" 
@@ -57,7 +60,7 @@ export default{
     components: {ArtificialModerator},
     // mixins: [AssemblyMixin],
     props: ['ongoing_assembly', 'lastStage', 'firstStage', 'stage', 'skippable', 
-    'isAlert', 'isNew', 'stageNr'],
+    'isAlert', 'isNew', 'stageNr', 'isCompleted'],
 
     computed: {
         requiresAttention: function(){

@@ -9,9 +9,18 @@
 
         <!-- ASSEMBLY DESCRIPTION -->
         <div v-if="assembly">
-            <div class="text-subtitle2">{{$t('content.assemblies.item.subtitle')}}</div>
-            <h2>{{assembly.title}}</h2>
-            <span>{{assembly.info}}</span>
+            <div class="caption">{{ $t('content.assemblies.item.home_caption', {assembly_title: assembly.title}) }}</div>
+            <h2>{{$t('content.assemblies.item.home_title', {current_date: '20.11.1981'})}}</h2>
+            <span>{{ $t('content.assemblies.item.home_description') }}</span>
+<br> -
+            {{ new Date(assembly.access_date) | moment("dddd, MMMM Do") }}
+OR<br> - 
+            <!-- <span>{{ new Date() | moment("dddd, MM") }}</span> -->
+
+<span>{{ Date(assembly.access_date) | moment("from", "now") }}</span>
+<!-- <span>{{ someDate | moment("dddd, MMMM Do YYYY") }}</span> -->
+            <!-- <br>- 
+            {{ new Date(assembly.access_date) | moment("from", new Date(), true) }} -->
         </div>
 
         <!-- AM-OVERVIEW -->
@@ -47,9 +56,9 @@
                 :done-icon="ishighestAllowedStep(stageNr) ? 'mdi-email-outline' : 'mdi-email-check-outline'"
                 :active-icon="'mdi-email-open-outline'"
                 :active-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent2'"
-                :done-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent2-light'"
-                :done="isDone(item, stageNr)"
-                :disabled="isDisabled(item)"
+                :done-color="ishighestAllowedStep(stageNr) ? 'blue' : 'accent2'"
+                :done="isDone(item, stageNr) "
+                :disabled="isDisabled(item) || isCompleted(item)"
             >
                 <!-- MANAGERS: STAGE EDITOR -->
                 <ComponentStageEditor :key="`AE${stageNr}`"  v-if="assembly.acl.includes('manage') && step==stageNr" :assembly="assembly" :model="item"/>
@@ -57,7 +66,7 @@
                 <!-- STAGE CONTENT-->
                 <q-card flat>
 
-                    <q-card-section class="q-pa-xs" style="min-height:3em;" >
+                    <q-card-section v-if="!isCompleted(item)" class="q-pa-xs" style="min-height:3em;" >
                         <div class="text-subtitle2" v-html="item.stage.info" />
                     </q-card-section>
 
@@ -69,6 +78,7 @@
                         :lastStage="isLastStage(stageNr)"
                         :skippable="isSkippable(item, stageNr)"
                         :isNew="isNew(item)"
+                        :isCompleted="isCompleted(item)"
                         :isAlert="isAlert(item)"
                         :firstStage="isFirstStage(stageNr)"
                         @clickGotoNextStage="clickGotoNextStage"
@@ -219,6 +229,10 @@ export default {
         isDisabled: function (item) {
             // only admins see deleted attribute.
             return(("disabled" in item.stage && item.stage.disabled) || ("deleted" in item.stage && item.stage.deleted))
+        },
+        
+        isCompleted: function (item) {
+            return(item.progression && item.progression.completed)
         },
 
         isSkippable: function(item, key) {
