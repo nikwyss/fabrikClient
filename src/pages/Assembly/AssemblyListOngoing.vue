@@ -25,7 +25,7 @@
 
                     <!-- v-if="assembly.date_end" -->
                 <div class="q-mt-md text-caption" v-if="assembly.date_end">
-                     {{ $t('content.assemblies.item.date_end', {relative_date: $moment('2020-09-11T23:00').fromNow(true)}) }}
+                     {{ $t('content.assemblies.item.date_end', {relative_end_date: $moment('2020-09-11T23:00').fromNow(true)}) }}
                      <!-- TODO: Add timer for the last hour -->
                 </div>
                 </q-card-section>

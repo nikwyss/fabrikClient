@@ -43,30 +43,11 @@ import ContentTreeMixin from "./mixins/contenttree"
 import ComponentStageEditor from "./components/StageEditor";
 import ComponentContentTree  from "./components/ContentTree";
 
-// import ApiService from "src/utils/xhr";
-// import {mapGetters, mapActions} from 'vuex'
-
-// const AsyncComponent = () => ({
-//   // The component to load (should be a Promise)
-//   component: import("./components/ComponentContentTree"),
-//   // A component to use while the async component is loading
-//   loading: ComponentLoading,
-//   // A component to use if the load fails
-//   error: ComponentError,
-//   // Delay before showing the loading component. Default: 200ms.
-//   delay: 20,
-//   // The error component will be displayed if a timeout is
-//   // provided and exceeded. Default: Infinity.
-//   timeout: 3000
-// })
-
 export default {
     name: 'UserContentDefault',
     components: {
-        // AsyncComponent,
         ComponentStageEditor,
         ComponentContentTree
-        // 'AsyncComponent': () => import('./components/ContentTree.vue')
     },
     mixins: [ContentTreeMixin]
 }

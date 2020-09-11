@@ -135,19 +135,22 @@ const ApiService = {
     // this.$http.get("https://recetapp-b43f2.firebaseio.com/posts.json")
     // .then(response => { console.log(response.data); })
     // .catch(e => { console.log(e); })
-
+    
     // Note: 403 error handling takes place within the interceptor
-    if (ReloginOnStatus403(data)) {
-      console.log("PERMISSION ERROR: Try again")
-      if (response.retry && response.retoken) {
-        // Re-issue tokens (in ApiService)
-        console.log("refresh token status set")
-        await response.retoken()
-        // Re-axios (same as before...)
-        response = await axios(data)
+    // TODO: is this correct? add 403 condition in the night.
+    if (response.status == 403){
+      if (ReloginOnStatus403(data)) {
+        console.log("PERMISSION ERROR: Try again")
+        if (response.retry && response.retoken) {
+          // Re-issue tokens (in ApiService)
+          console.log("refresh token status set")
+          await response.retoken()
+          // Re-axios (same as before...)
+          response = await axios(data)
 
-        console.log("second try")
-        console.log(response)
+          console.log("second try")
+          console.log(response)
+        }
       }
     }
 

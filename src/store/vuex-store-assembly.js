@@ -182,6 +182,10 @@ const actions = {
     },
 
     add_or_update_stage_progression({commit}, {assembly_identifier, stage_id, progression}) {
+        console.log("add_or_update_stage_progression (2)")
+        console.assert(assembly_identifier)
+        console.assert(stage_id)
+        console.assert(progression)
         commit('add_or_update_stage_progression', {assembly_identifier, stage_id, progression})
     },
     add_or_update_publicIndex({commit}, publicIndex) {

@@ -85,45 +85,45 @@ export default boot(({ Vue }) => {
         },
 
 
-        // LOAD TREE
-        notifyAPI (event, data) {
-          /* Allowed Events (see fabrikApi/utils/events.py)
-          __all__  = [EventStageVisit]
+        // // LOAD TREE
+        // notifyAPI (event, data) {
+        //   /* Allowed Events (see fabrikApi/utils/events.py)
+        //   __all__  = [EventStageVisit]
 
-          stealth request: dont show any loading progression._200
-          however: show error on failure.
-          */
+        //   stealth request: dont show any loading progression._200
+        //   however: show error on failure.
+        //   */
 
-          console.log("Start Notify API")
-          console.assert(event)
+        //   console.log("Start Notify API")
+        //   console.assert(event)
 
-          let url = `${Configuration.value('ENV_APISERVER_URL')}/notify/${event}`
-          ApiService.post(url, {content: data}).then (
-            response => {
-              console.log("API Notified." + event)
+        //   let url = `${Configuration.value('ENV_APISERVER_URL')}/notify/${event}`
+        //   ApiService.post(url, {content: data}).then (
+        //     response => {
+        //       console.log("API Notified." + event)
 
-              // update local storage with updated data
-              if (response && 'data' in response) {
-                this.localstorage_add_or_update(response.data)
-              }
-            }
-          )
-        },
+        //       // update local storage with updated data
+        //       if (response && 'data' in response) {
+        //         this.localstorage_add_or_update(response.data)
+        //       }
+        //     }
+        //   )
+        // },
 
-        // TODO: longerm: store all localstorage opbjects via this method
-        localstorage_add_or_update (data) {
-          console.log(data)
+        // // TODO: longerm: store all localstorage opbjects via this method
+        // localstorage_add_or_update (data) {
+        //   console.log(data)
           
-          // Stage Progression
-          if (data && 'stage_progression' in data){
-            console.assert('assembly_identifier' in data)
-            console.assert('stage_id' in data)
-            this.$store.dispatch('assemblystore/add_or_update_stage_progression',
-              {assembly_identifier: data.assembly_identifier, 
-                stage_id: data.stage_id,
-                progression: data.stage_progression});            
-          }
-        }
+        //   // Stage Progression
+        //   if (data && 'stage_progression' in data){
+        //     console.assert('assembly_identifier' in data)
+        //     console.assert('stage_id' in data)
+        //     this.$store.dispatch('assemblystore/add_or_update_stage_progression',
+        //       {assembly_identifier: data.assembly_identifier, 
+        //         stage_id: data.stage_id,
+        //         progression: data.stage_progression});            
+        //   }
+        // }
 
       //   /* Random Translator method. (tr <default>, trc <pluarization>)
       //   This allows to define multiple translations with exactly the same meaning.

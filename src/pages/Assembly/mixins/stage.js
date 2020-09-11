@@ -33,19 +33,15 @@ export default {
           return(null)
       }
 
-      // CHECK IF API SHOULD BE NOTIFIED
-      console.log("STAGE")
-      
-      let please_notify =  (!('progression' in stage) ||
-          !stage.progression ||
-          this.check4OutdatedData(stage.progression.last_accessed, this.NotificationFrequency))
-
-      if (please_notify) {
-        this.notifyAPI (
-          this.NotificationStageEntering,
-          {assembly_identifier: this.assemblyIdentifier, stage_id: this.stageID}
-        )
+      // Notify about stage visit
+      let data = {
+        assembly_identifier: this.assemblyIdentifier, 
+        stage_id: this.stageID,
+        returnObject: !stage.progression
       }
+      this.$store.dispatch('monitorApi', {
+        event: this.NotificationStageEntering,
+        data: data})
 
       return(stage)
     },

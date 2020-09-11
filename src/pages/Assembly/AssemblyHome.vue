@@ -10,17 +10,8 @@
         <!-- ASSEMBLY DESCRIPTION -->
         <div v-if="assembly">
             <div class="caption">{{ $t('content.assemblies.item.home_caption', {assembly_title: assembly.title}) }}</div>
-            <h2>{{$t('content.assemblies.item.home_title', {current_date: '20.11.1981'})}}</h2>
-            <span>{{ $t('content.assemblies.item.home_description') }}</span>
-<br> -
-            {{ new Date(assembly.access_date) | moment("dddd, MMMM Do") }}
-OR<br> - 
-            <!-- <span>{{ new Date() | moment("dddd, MM") }}</span> -->
-
-<span>{{ Date(assembly.access_date) | moment("from", "now") }}</span>
-<!-- <span>{{ someDate | moment("dddd, MMMM Do YYYY") }}</span> -->
-            <!-- <br>- 
-            {{ new Date(assembly.access_date) | moment("from", new Date(), true) }} -->
+            <h2>{{$t('content.assemblies.item.home_title', {current_date: $moment().format('l')})}}</h2>
+            <span>{{ $t('content.assemblies.item.home_description', {relative_end_date: $moment(assembly.date_end).fromNow()}) }}</span>
         </div>
 
         <!-- AM-OVERVIEW -->
