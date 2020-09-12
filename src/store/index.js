@@ -38,16 +38,16 @@ export default new Vuex.Store({
         const now = Vue.moment(new Date())
         const timeThreshold = now.clone()
         timeThreshold.subtract(MonitorFrequency, 'minutes')
-        console.log("NOTIFY ABOUT STAGE VISIT: " + event)
+        console.log("MONITOR STAGE VISIT: " + event)
         if (state.monitors[event] && timeThreshold.isBefore(state.monitors[event]) ){
-          return ('No Notification needed')
+          return ('No Monitor action needed')
         }
 
-        // Send API Notifcation
+        // Send API Monitor
         commit('update_monitor_date', {event, now})
 
-        console.log("Start Notify API")
-        let url = `${Configuration.value('ENV_APISERVER_URL')}/notify/${event}`
+        console.log("Start Monitor API")
+        let url = `${Configuration.value('ENV_APISERVER_URL')}/monitor/${event}`
         ApiService.post(url, {content: data}).then (
           response => {
 
@@ -57,10 +57,8 @@ export default new Vuex.Store({
             }
 
             // Dealing with Data response)
-            console.log("API Notified." + event)
-            console.log(response.data)
+            console.log("API Monnitored." + event)
             if (response.data && 'stage_progression' in response.data){
-              console.log("add_or_update_stage_progression (1)")
               dispatch('assemblystore/add_or_update_stage_progression', {
                   assembly_identifier: response.data.assembly_identifier,
                   stage_id: response.data.stage_id,
@@ -70,6 +68,11 @@ export default new Vuex.Store({
           }
         )
       }, 3000)
+    },
+
+    update_monitor_date({state, commit}, {event}) {
+      const now = Vue.moment(new Date())
+      commit('update_monitor_date', {event, now})
     }
   },
 

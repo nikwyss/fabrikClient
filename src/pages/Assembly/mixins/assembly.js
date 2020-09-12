@@ -10,6 +10,7 @@ export default {
       attempts_to_retrieve_an_assembly: 0,
     }
   },
+
   computed: {
 
     // Helper Dummies
@@ -46,10 +47,16 @@ export default {
       }
 
       if (!synced) {
-        // re-load assembly
+
+        // (Re-)Load Assembly from API
         // anyway: downt wait; return cache version. (dont wait until remote data are loaded...)
         console.log("The local copy of the assembly is outdated")
         this.retrieveAssembly (this.assemblyIdentifier)
+
+      }else{
+
+        // Just monitor about assembly visit.
+        this.monitorApi()
       }
 
       // update store: current_assembly
@@ -63,11 +70,8 @@ export default {
     assembly_stages: function() {
       console.log("get assembly_stages")
 
-      if (!this.assemblyIdentifier) {
-        return (null)
-      }
-      console.assert(this.assembly)
-      console.assert(this.assemblyIdentifier)
+      // not yet ready...
+      if (!this.assembly){ return (null)}
       return (this.get_assembly_stages(this.assemblyIdentifier))
     },
 
@@ -116,6 +120,9 @@ export default {
       console.log("Attempts: " + this.attempts_to_retrieve_an_assembly)
       let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${assemblyIdentifier}`
 
+      // store date of last assembly request. (to prevent imediate monitor calls)
+      this.$store.dispatch('update_monitor_date', {event: this.MonitorAssemblyEntering})
+
       ApiService.get(url).then (
         response => {
           // store it to vuex
@@ -135,6 +142,18 @@ export default {
           }
         }
       )
+    },
+
+    monitorApi: function() {
+      /* By this method we allow the API to monitor user activities */
+    
+      // Just Monitor assembly visit
+      let data = {
+        assembly_identifier: this.assemblyIdentifier
+      }
+      this.$store.dispatch('monitorApi', {
+        event: this.MonitorAssemblyEntering,
+        data: data})
     },
 
     // CHECK STATE OF LOADED Assembly

@@ -5,9 +5,11 @@ export default {
   mixins: [AssemblyMixin],
   
   computed: {
+
     stageID: function() {
       return(this.$route.params.stageID)
     },
+
     assemblyIdentifier: function () {
       return (this.$route.params.assemblyIdentifier)
     },
@@ -27,21 +29,13 @@ export default {
       var stage = this.get_assembly_stage({
         assemblyIdentifier: this.assemblyIdentifier,
         stageID: this.stageID})
-  
+
       if(!stage) {
           // Not yet loaded. please wait
           return(null)
       }
 
-      // Notify about stage visit
-      let data = {
-        assembly_identifier: this.assemblyIdentifier, 
-        stage_id: this.stageID,
-        returnObject: !stage.progression
-      }
-      this.$store.dispatch('monitorApi', {
-        event: this.NotificationStageEntering,
-        data: data})
+      this.monitorApi()
 
       return(stage)
     },
@@ -49,5 +43,21 @@ export default {
     ...mapGetters({ 
       get_assembly_stage: 'assemblystore/get_assembly_stage'
     })
+  },
+
+  methods: {
+
+    monitorApi: function() {
+      /* By this method we allow the API to monitor user activities */
+    
+      // Monitor about stage visit
+      let data = {
+        assembly_identifier: this.assemblyIdentifier,
+        stage_id: this.stageID
+      }
+      this.$store.dispatch('monitorApi', {
+        event: this.MonitorStageEntering,
+        data: data})
+    }
   }
 }

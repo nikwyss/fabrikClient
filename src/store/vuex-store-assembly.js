@@ -234,8 +234,6 @@ const mutations = {
         if (!(assembly.identifier in state.assemblies)) {
             Vue.set(state.assemblies, assembly.identifier, {stages : null, assembly: null, configuration: null, progression: null})
         }
-        console.log("...stags....")
-        console.log(stages)
 
         // Vue.set  makes the change reactive!!
         Vue.set(state.assemblies[assembly.identifier], 'assembly', assembly)

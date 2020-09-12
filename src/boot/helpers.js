@@ -44,9 +44,10 @@ export default boot(({ Vue }) => {
           STATUS_LOCKED: 13,
 
           // API Events
-          NotificationStageEntering: 'NotificationStageEntering',
+          MonitorStageEntering: 'MonitorStageEntering',
+          MonitorAssemblyEntering: 'MonitorAssemblyEntering',
+
           // Enter number of minutes between each notification request.
-          NotificationFrequency: 5,
           CacheUpdateFrequency: 5 
 
         }
@@ -86,7 +87,7 @@ export default boot(({ Vue }) => {
 
 
         // // LOAD TREE
-        // notifyAPI (event, data) {
+        // monitorApi (event, data) {
         //   /* Allowed Events (see fabrikApi/utils/events.py)
         //   __all__  = [EventStageVisit]
 

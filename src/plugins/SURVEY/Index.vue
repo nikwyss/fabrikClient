@@ -87,7 +87,7 @@ export default {
 
     data() {
         return {
-            NotificationSurveyCompleting: 'NotificationSurveyCompleting'
+            MonitorSurveyCompleting: 'MonitorSurveyCompleting'
         }
     },
 
@@ -115,8 +115,8 @@ export default {
                 }
 
                 // Notify API
-                this.notifyAPI (
-                    this.NotificationSurveyCompleting,
+                this.monitorApi (
+                    this.MonitorSurveyCompleting,
                     {assembly_identifier: this.assemblyIdentifier,
                     stage_id:STAGEID,
                     sub: USERID

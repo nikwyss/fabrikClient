@@ -111,7 +111,7 @@ export default {
       return(null)
     },
 
-    ...mapGetters({ 
+    ...mapGetters({
       get_assembly_container: 'assemblystore/get_assembly_container',
       get_contenttree: 'contentstore/get_contenttree'
     })
@@ -134,8 +134,6 @@ export default {
           this.add_or_update_contenttree({containerID: this.containerID, contenttree: response.data.contenttree})
         }
       )
-
-      // this.checked_sync_state = true
     },
 
     filter_question_entries: function(nodes) {
