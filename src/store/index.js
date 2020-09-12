@@ -28,7 +28,12 @@ export default new Vuex.Store({
 
   actions: {
 
-    monitorApi: ({state, dispatch, commit}, { event, data}) => {
+    monitorApi: ({state, dispatch, commit}, { event, data, timeout}) => {
+
+      // 3s as default value
+      if (!timeout && timeout !== 0){
+        timeout = 3000
+      }
 
       // add some lag for this monitor method: all other ajax call have priority.
       setTimeout(function(){
@@ -67,7 +72,7 @@ export default new Vuex.Store({
             }
           }
         )
-      }, 3000)
+      }, timeout)
     },
 
     update_monitor_date({state, commit}, {event}) {

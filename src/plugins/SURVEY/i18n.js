@@ -4,7 +4,7 @@ const messages = {
   'de-ch': {
     survey: {
       misconfiguration_error: 'Es ist ein Fehler aufgeteten für den wir um Entschuldiung bitten. Momentan ist es nicht möglich die Befragung fortzusetzen.',
-      redirect_to_survey: 'Sie werden zum Fragebogen weitergleietet...',
+      redirect_to_survey: 'Einen kleinen Moment...',
       already_completed_error: 'Sie haben diesen Fragebogen fertig ausgefüllt. Sie können zur Tagesübersicht zurückkehren.'
     }
   }

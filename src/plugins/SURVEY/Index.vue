@@ -66,6 +66,9 @@
             </div>
 
         </div>
+
+        survey response: {{is_a_survey_response}}<br>
+        completed: {{is_survey_completed}}<br>
   {{ stage.progression }}
     </q-page>
 </template>
@@ -92,6 +95,7 @@ export default {
     },
 
     computed: {
+
         check_data: function () {
             if (this.stage === undefined) {
                 // not yet loaded...
@@ -103,26 +107,8 @@ export default {
                 !this.stage.stage.custom_data.SID) {
                     return (false)
             }
-
             if (this.is_a_survey_response && !this.is_survey_completed){
-
-                const STAGEID = this.stage.stage.id
-                const USERID = this.stage.stage.access_sub
-                if (this.$route.query.S != STAGEID ||
-                    this.$route.query.U != USERID) {
-                        console.log("wrong response data...")
-                        return (false)
-                }
-
-                // Notify API
-                this.monitorApi (
-                    this.MonitorSurveyCompleting,
-                    {assembly_identifier: this.assemblyIdentifier,
-                    stage_id:STAGEID,
-                    sub: USERID
-                    }
-                )
-
+                this.monitorApi2()
                 return (true)
             }
 
@@ -169,15 +155,35 @@ export default {
 
     methods: {
 
+        monitorApi2: function() {
+            /* By this method we allow the API to monitor user activities */
+            const STAGEID = this.stage.stage.id
+            const USERID = this.stage.stage.access_sub
+            if (this.$route.query.S != STAGEID ||
+                this.$route.query.U != USERID) {
+                    console.log("wrong response data...")
+                    return (false)
+            }
+
+            // Notify API
+            const data = {
+                assembly_identifier: this.assemblyIdentifier,
+                stage_id:STAGEID,
+                sub: USERID
+            }
+            
+            this.$store.dispatch('monitorApi', {
+                event: this.MonitorSurveyCompleting,
+                data: data})
+
+        },
+
         gotoAssemblyHome: function() {
             // REDIRECT TO ARGUMENT PAGE
             this.$router.replace({name: 'assembly_home',
                 params: {assemblyIdentifier: this.assembly.identifier}
             })
         }
-    },
-    mounted: function() {
-        console.log(this.$i18n.messages['de-ch'])
     }
 }
 </script>
