@@ -7,11 +7,11 @@
     <q-page class="doc_content ">
 
         <!-- SHOW LIST OF ONGOING ASSEMBLIES -->
-        <div v-if="get_publicIndex_ongoing_assemblies != null" class="full-width">
+        <div v-if="publicIndex_ongoing_assemblies != null" class="full-width">
            <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
             <q-card class="assemblycard" flat 
-                v-for="assembly of get_publicIndex_ongoing_assemblies" :key="assembly.identifier">
+                v-for="assembly of publicIndex_ongoing_assemblies" :key="assembly.identifier">
 
                 <q-parallax
                     :src="assembly.image"
@@ -42,7 +42,8 @@
         </div>
 
         <div v-else>
-            <h1>{{$tc('content.assemblies.h1', nLength(get_publicIndex_ongoing_assemblies))}}</h1>
+            <h1>{{$tc('content.assemblies.h1', nLength(publicIndex_ongoing_assemblies))}}</h1>
+            
             <ArtificialModeratorAssemblyListOngoing />
         </div>
 

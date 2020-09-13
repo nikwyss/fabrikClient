@@ -2,6 +2,7 @@ import {mapGetters} from 'vuex'
 import AssemblyMixin from "src/pages/Assembly/mixins/assembly"
 
 export default {
+  
   mixins: [AssemblyMixin],
   
   computed: {

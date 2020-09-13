@@ -7,8 +7,8 @@ import { store } from 'quasar/wrappers'
 var state = {
     randomSeed: null,
     publicIndex: null,
-    publicIndex_ongoing_assemblies: null,
-    publicIndex_published_assemblies: null,
+    // publicIndex_ongoing_assemblies: null,
+    // publicIndex_published_assemblies: null,
     assemblies: {},
     current_stages: {},
     current_assemblyIdentifier: null
@@ -45,13 +45,13 @@ const getters = {
         return (state.publicIndex)
     },
 
-    get_publicIndex_ongoing_assemblies: (state) => {
-        return (state.publicIndex_ongoing_assemblies)
-    },
+    // get_publicIndex_ongoing_assemblies: (state) => {
+    //     return (state.publicIndex_ongoing_assemblies)
+    // },
     
-    get_publicIndex_published_assemblies: (state) => {
-        return (state.publicIndex_published_assemblies)
-    },
+    // get_publicIndex_published_assemblies: (state) => {
+    //     return (state.publicIndex_published_assemblies)
+    // },
 
     get_assembly_stages: (state) => (assemblyIdentifier) => {
         // return state.things.find(thing => thing.identifier === id)
@@ -123,46 +123,6 @@ const getters = {
             return(null)
         }
         return(state.current_stages[assemblyIdentifier])
-    },
-
-    /* SHORTCUTS */
-    // publicIndex_ongoing_assemblies: {},
-    // publicIndex_published_assemblies: {},
-    IsThereAnAssemblyInPublicState: (state) => {
-        if (state.publicIndex_published_assemblies == null) {
-            return (null)
-        }
-        return (state.publicIndex_published_assemblies.length > 0)
-    },
-
-    IsThereAnAssemblyOngoing: (state) => {
-        if (state.publicIndex_ongoing_assemblies == null) {
-            return (null)
-        }
-        return (state.publicIndex_ongoing_assemblies.length > 0)
-    },
-
-    IsThereNothingGoingOn: (state) => {
-        if (state.publicIndex == null) {
-            return (null)
-        }
-        return (state.publicIndex.length === 0)
-    },
-
-    IsUserDelegateOfOngoingAssembly: function (state) {
-
-        // data not yet loaded
-        if (state.publicIndex == null) {
-            return (null)
-        }
-        // Check if there is at least one ongoing assembly.
-        if (state.publicIndex_ongoing_assemblies.length === 0) {
-            return (false)
-        }
-
-        // Check permissions:
-        let accessibleAssemblies = state.publicIndex_ongoing_assemblies.filter(x => x.am_is_accessible_by_current_user)
-        return (accessibleAssemblies.length > 0)
     }
 }
 
@@ -270,13 +230,12 @@ const mutations = {
 
         // Vue.set  makes the change reactive!!
         Vue.set(state, 'publicIndex', publicIndex.publicIndex)
-        console.log('publicIndex of assemblies has been updated.')
-        console.log(publicIndex)
-        const publicAssemblies = publicIndex.publicIndex.assemblies.filter(x => x.is_public)
-        const ongoingAssemblies = publicIndex.publicIndex.assemblies.filter(x => x.is_active)
-
-        Vue.set(state, 'publicIndex_published_assemblies', publicAssemblies)
-        Vue.set(state, 'publicIndex_ongoing_assemblies', ongoingAssemblies)
+        // console.log('publicIndex of assemblies has been updated.')
+        // console.log(publicIndex)
+        // const publicAssemblies = publicIndex.publicIndex.assemblies.filter(x => x.is_public)
+        // const ongoingAssemblies = publicIndex.publicIndex.assemblies.filter(x => x.is_active)
+        // Vue.set(state, 'publicIndex_published_assemblies', publicAssemblies)
+        // Vue.set(state, 'publicIndex_ongoing_assemblies', ongoingAssemblies)
     }
 }
 

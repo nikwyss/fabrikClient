@@ -104,7 +104,7 @@ export default {
       item: {
         home_caption: 'Konferenz der BürgerInnen: {assembly_title}',
         home_title: 'Ihre Agenda für den {current_date}',
-        home_description: 'Sie finden hier bis zum Ende der Konferenz {relative_end_date} täglich eine Übersicht der anstehenden Aufgaben.',
+        home_description: 'Bis zum Ende der Konferenz {relative_end_date} finden Sie hier täglich eine Übersicht der anstehenden Aufgaben.',
         please_enter: 'Bitte Eintreten',
         date_end: 'Noch {relative_end_date}',
         home: `Heute sind {maxSteps} Punkte auf Ihrer Agenda.`,

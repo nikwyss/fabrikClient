@@ -7,16 +7,16 @@
 <template>
     <q-page class="doc_content ">
 
-        <h1>{{$tc('content.showcase.h1', nLength(get_publicIndex_published_assemblies))}}</h1>
+        <h1>{{$tc('content.showcase.h1', nLength(publicIndex_published_assemblies))}}</h1>
 
-        <ArtificialModeratorAssemblyListShowcase />
+        <ArtificialModeratorAssemblyListShowcase :publicIndex="publicIndex_published_assemblies"/>
 
         <!-- SOME PUBLIC ASSEMBLIES -->
-        <div v-if="get_publicIndex_published_assemblies != null" class="full-width">
+        <div v-if="publicIndex_published_assemblies != null" class="full-width">
            <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
             <q-card class="assemblycard" flat bordered
-                    v-for="assembly of get_publicIndex_published_assemblies" 
+                    v-for="assembly of publicIndex_published_assemblies" 
                     :key="assembly.identifier">
 
                 <q-parallax :src="assembly.image" :height="150"/>
@@ -30,7 +30,7 @@
                 <q-card-section class="col-12 " align="right">
                 <ArtificialModeratorAssemblyListShowcaseSelection />
                 </q-card-section>
-                
+
                 <br />
 
             </q-card>

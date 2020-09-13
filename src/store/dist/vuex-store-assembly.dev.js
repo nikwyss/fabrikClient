@@ -17,8 +17,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var state = {
   randomSeed: null,
   publicIndex: null,
-  publicIndex_ongoing_assemblies: null,
-  publicIndex_published_assemblies: null,
+  // publicIndex_ongoing_assemblies: null,
+  // publicIndex_published_assemblies: null,
   assemblies: {},
   current_containerID: {},
   current_assemblyIdentifier: null
@@ -56,12 +56,12 @@ var getters = {
   get_publicIndex: function get_publicIndex(state) {
     return state.publicIndex;
   },
-  get_publicIndex_ongoing_assemblies: function get_publicIndex_ongoing_assemblies(state) {
-    return state.publicIndex_ongoing_assemblies;
-  },
-  get_publicIndex_published_assemblies: function get_publicIndex_published_assemblies(state) {
-    return state.publicIndex_published_assemblies;
-  },
+  // get_publicIndex_ongoing_assemblies: function get_publicIndex_ongoing_assemblies(state) {
+  //   return state.publicIndex_ongoing_assemblies;
+  // },
+  // get_publicIndex_published_assemblies: function get_publicIndex_published_assemblies(state) {
+  //   return state.publicIndex_published_assemblies;
+  // },
   get_assembly_containers: function get_assembly_containers(state) {
     return function (assemblyIdentifier) {
       // return state.things.find(thing => thing.identifier === id)

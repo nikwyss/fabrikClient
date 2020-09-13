@@ -55,8 +55,15 @@ export default {
 
       }else{
 
-        // Just monitor about assembly visit.
-        this.monitorApi()
+        // Just Monitor assembly visit
+        let data = {
+          assembly_identifier: this.assemblyIdentifier
+        }
+        this.$store.dispatch('monitorApi', {
+          event: this.MonitorAssemblyEntering,
+          data: data
+        })
+        
       }
 
       // update store: current_assembly
@@ -142,18 +149,6 @@ export default {
           }
         }
       )
-    },
-
-    monitorApi: function() {
-      /* By this method we allow the API to monitor user activities */
-    
-      // Just Monitor assembly visit
-      let data = {
-        assembly_identifier: this.assemblyIdentifier
-      }
-      this.$store.dispatch('monitorApi', {
-        event: this.MonitorAssemblyEntering,
-        data: data})
     },
 
     // CHECK STATE OF LOADED Assembly

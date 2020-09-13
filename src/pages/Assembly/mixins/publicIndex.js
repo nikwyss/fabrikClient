@@ -13,11 +13,62 @@ export default {
 
   computed: {
 
+    
+    /* SHORTCUTS */
+    IsThereAnAssemblyInPublicState: function() {
+        if (this.publicIndex_published_assemblies == null) {
+            return (null)
+        }
+
+        return (this.publicIndex_published_assemblies.length > 0)
+    },
+
+    IsThereAnAssemblyOngoing: (state) => {
+        if (this.publicIndex_ongoing_assemblies == null) {
+            return (null)
+        }
+        return (this.publicIndex_ongoing_assemblies.length > 0)
+    },
+
+    IsThereNothingGoingOn: (state) => {
+        if (this.IsThereAnAssemblyOngoing===null || this.IsThereAnAssemblyOngoing === null) {
+          return (null)
+        }
+        return (!this.IsThereAnAssemblyOngoing && !this.IsThereAnAssemblyOngoing)
+    },
+
+    IsUserDelegateOfOngoingAssembly: function (state) {
+
+        // data not yet loaded
+        if (this.publicIndex_ongoing_assemblies == null) {
+            return (null)
+        }
+        // Check if there is at least one ongoing assembly.
+        if (this.publicIndex_ongoing_assemblies.length === 0) {
+            return (false)
+        }
+
+        // Check permissions:
+        let accessibleAssemblies = this.publicIndex_ongoing_assemblies.filter(x => x.am_is_accessible_by_current_user)
+        return (accessibleAssemblies.length > 0)
+    },
+
+    publicIndex_published_assemblies: function() {
+      console.log(this.get_publicIndex)
+      const publicAssemblies = this.get_publicIndex.assemblies.filter(x => x.is_public)
+      return (publicAssemblies)
+    },
+
+    publicIndex_ongoing_assemblies: function() {
+      const ongoingAssemblies = this.get_publicIndex.assemblies.filter(x => x.is_active)
+      return (ongoingAssemblies)
+    },
+
     ...mapGetters({
       get_current_assemblyIdentifier: 'assemblystore/get_current_assemblyIdentifier',
       get_publicIndex: 'assemblystore/get_publicIndex',
-      get_publicIndex_ongoing_assemblies: 'assemblystore/get_publicIndex_ongoing_assemblies',
-      get_publicIndex_published_assemblies: 'assemblystore/get_publicIndex_published_assemblies'
+      // get_publicIndex_ongoing_assemblies: 'assemblystore/get_publicIndex_ongoing_assemblies',
+      // get_publicIndex_published_assemblies: 'assemblystore/get_publicIndex_published_assemblies'
     })
   },
 

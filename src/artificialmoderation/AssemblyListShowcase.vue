@@ -5,15 +5,16 @@
     <ArtificialModerator alignment="right" role="1"
         i18n_path_prefix="content.showcase"
         amGroup='publicassemblyPage'
-        :ongoing_request="IsThereAnAssemblyInPublicState === null">
+        :ongoing_request="publicIndex === null">
+
 
         <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
-        <template v-if="IsThereAnAssemblyInPublicState === true">
+        <template v-if="publicIndex.length > 0">
         {{$t('content.showcase.am.there_are_assemblies_in_public_state')}}
         </template>
 
         <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
-        <template v-if="IsThereAnAssemblyInPublicState === false">
+        <template v-if="publicIndex.length === 0">
         {{$t('content.showcase.am.no_assemblies_in_public_state')}}
         </template>
 
@@ -29,6 +30,7 @@ import {mapGetters} from 'vuex'
 export default{
     name: "ArtificialModeratorAssemblyListShowcase",
     components: {ArtificialModerator},
+    props: ['publicIndex'],
     computed: {
         ...mapGetters({
             IsThereAnAssemblyInPublicState: 'assemblystore/IsThereAnAssemblyInPublicState'
