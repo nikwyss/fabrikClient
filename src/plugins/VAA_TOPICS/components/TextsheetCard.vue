@@ -39,7 +39,7 @@
       label="Offene Diskussion"
       :stage="stage.stage" 
       :contenttree="contenttree" 
-      :custom_starting_node="starting_content_node" 
+      :custom_starting_node="startingContent_node" 
     /> 
   </Fragment>
 </template>
@@ -73,7 +73,7 @@ export default {
       }
     },
 
-    starting_content_node: function() {
+    startingContent_node: function() {
       var node = {children: this.comments}
       return(node)
     }

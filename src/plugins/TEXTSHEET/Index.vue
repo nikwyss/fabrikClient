@@ -49,7 +49,7 @@
                     :questions="filter_question_entries(nodeL1.children)"
                     :heading_number="(keyL1+1)"
                     :contenttree="contenttree"
-                    :stage="stage" 
+                    :stage="stage"
                     :item="contenttree.entries[nodeL1.id]"/>
 
                 <div class="row justify-between" 

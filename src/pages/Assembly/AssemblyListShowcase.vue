@@ -7,16 +7,16 @@
 <template>
     <q-page class="doc_content ">
 
-        <h1>{{$tc('content.showcase.h1', nLength(publicIndex_published_assemblies))}}</h1>
+        <h1>{{$tc('content.showcase.h1', nLength(published_assemblies))}}</h1>
 
-        <ArtificialModeratorAssemblyListShowcase :publicIndex="publicIndex_published_assemblies"/>
+        <ArtificialModeratorAssemblyListShowcase :publicIndex="published_assemblies"/>
 
         <!-- SOME PUBLIC ASSEMBLIES -->
-        <div v-if="publicIndex_published_assemblies != null" class="full-width">
+        <div v-if="published_assemblies != null" class="full-width">
            <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
             <q-card class="assemblycard" flat bordered
-                    v-for="assembly of publicIndex_published_assemblies" 
+                    v-for="assembly of published_assemblies" 
                     :key="assembly.identifier">
 
                 <q-parallax :src="assembly.image" :height="150"/>
@@ -43,12 +43,15 @@
 
 import ArtificialModeratorAssemblyListShowcase from 'src/artificialmoderation/AssemblyListShowcase'
 import ArtificialModeratorAssemblyListShowcaseSelection from 'src/artificialmoderation/AssemblyListShowcaseSelection'
-import PublicIndex from "./mixins/publicIndex"
+import PublicIndex from "src/mixins/publicIndex"
 
 export default {
 
     name: 'PageAssemblyList',
     mixins: [PublicIndex],
-    components: { ArtificialModeratorAssemblyListShowcase, ArtificialModeratorAssemblyListShowcaseSelection }
+    components: {
+        ArtificialModeratorAssemblyListShowcase,
+        ArtificialModeratorAssemblyListShowcaseSelection
+    }
 }
 </script>

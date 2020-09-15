@@ -60,7 +60,7 @@ import Configuration from 'src/utils/configuration'
 export default {
   name: 'ContentEditor',
   props: {
-    containerID: { type: Number },
+    contenttreeID: { type: Number },
     parent_id: {
       type: Number,
       required: false
@@ -103,10 +103,10 @@ export default {
 
     saveContent: function(model) {
       console.log("Save content")
-      console.assert( this.$route.params.containerID)
+      console.assert( this.$route.params.contenttreeID)
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier)
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/container/${this.$route.params.containerID}`
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${this.$route.params.contenttreeID}`
       var create_action = true
       if (model.id) {
           // this is an update
@@ -131,7 +131,7 @@ export default {
             // update the whole tree
             if ('contenttree' in response.data) {
             this.add_or_update_contenttree({
-              containerID:  this.containerID,
+              contenttreeID:  this.contenttreeID,
               contenttree: response.data.contenttree});
             }
             

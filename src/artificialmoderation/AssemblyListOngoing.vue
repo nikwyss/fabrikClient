@@ -1,16 +1,12 @@
 <template>
 <div class="justify-center center" style="max-width:350px">
 
-
-       <!-- IsThereAnAssemblyOngoing  {{IsThereAnAssemblyOngoing}} - 
-       IsThereNothingGoingOn  {{IsThereNothingGoingOn}} - 
-       IsUserDelegateOfOngoingAssembly {{IsUserDelegateOfOngoingAssembly}} -->
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="right" role="1" :amGroup="'ongoingassemblyPage'"
             :ongoing="IsThereAnAssemblyOngoing===null">
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
-        <!-- <template v-if="!$root.authenticated && IsThereAnAssemblyOngoing === true">
+        <!-- <template v-if="!oauth.authenticated && IsThereAnAssemblyOngoing === true">
         {{$t('content.assemblies.am.invitation_to_authenticate')}}
         </template> -->
 
@@ -20,18 +16,18 @@
         </template> -->
 
         <!-- No ongoing and accesible assembly ongoing -->
-        <template  v-if="$root.authenticated && IsUserDelegateOfOngoingAssembly === false">
+        <template  v-if="oauth.authenticated && IsUserDelegateOfOngoingAssembly === false">
         {{$t('content.assemblies.am.no_assemblies_accessible')}}
         </template>
 
         <!-- No ongoing and accesible assembly ongoing -->
-        <template  v-if="!$root.authenticated && IsThereAnAssemblyOngoing === false">
+        <template  v-if="!oauth.authenticated && IsThereAnAssemblyOngoing === false">
         {{$t('content.assemblies.am.no_assemblies_accessible')}}
         </template>
 
         <!-- ACTION CHIPS -->
         <!-- <template  v-slot:actions>
-        <q-chip size="md" icon="mdi-key-outline" v-if="!$root.authenticated && IsThereNothingGoingOn === false" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAuthLink">
+        <q-chip size="md" icon="mdi-key-outline" v-if="!oauth.authenticated && IsThereNothingGoingOn === false" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAuthLink">
             {{ $t('auth.goto_authentication_form') }}
         </q-chip>
         </template> -->
@@ -49,6 +45,10 @@ export default{
     components: {ArtificialModerator},
 
     computed: {
+
+        oauth: function() {
+            return(this.$store.oauth)
+        },
 
         ...mapGetters({
             IsThereAnAssemblyOngoing: 'assemblystore/IsThereAnAssemblyOngoing',

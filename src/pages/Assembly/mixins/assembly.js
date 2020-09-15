@@ -38,7 +38,7 @@ export default {
         return (null)
       }
 
-      // has contentree already be cached in the vues store??
+      // has contenttree already be cached in the vues store??
       var synced = false
       var assembly = this.get_assembly(this.assemblyIdentifier)
       if (assembly) {
@@ -128,7 +128,7 @@ export default {
       let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${assemblyIdentifier}`
 
       // store date of last assembly request. (to prevent imediate monitor calls)
-      this.$store.dispatch('update_monitor_date', {event: this.MonitorAssemblyEntering})
+      this.$store.dispatch('manually_update_monitor_date', {event: this.MonitorAssemblyEntering})
 
       ApiService.get(url).then (
         response => {
@@ -177,9 +177,5 @@ export default {
       add_or_update_assembly: 'assemblystore/add_or_update_assembly',
       set_current_assemblyIdentifier: 'assemblystore/set_current_assemblyIdentifier'
     })
-  },
-
-  mounted: function () {
-    // this.update_publicIndex()
   }
 }

@@ -17,82 +17,34 @@ export default {
 
   computed: {
 
-    containerID: function() {
-      return(this.stage.stage.container_id)
-    },
-
-    container: function() {
-      console.assert(this.assembly)
-
-      if(!this.containerID) {
-        return(null)
-      }
-
-      if(!this.assemblyIdentifier) {
-        return(null)
-      }
-
-      // has contentree already be cached in the vues store??
-      var container = this.get_assembly_container({
-        assemblyIdentifier: this.assemblyIdentifier, 
-        containerID: this.containerID})
-  
-      if(!container) {
-          // Not yet loaded. please wait
-          return(null)
-      }
-
-      return(container.container)
-    },
-
-    
-    progression: function() {
-      console.assert(this.assembly)
-
-      if(!this.containerID) {
-        return(null)
-      }
-
-      if(!this.assemblyIdentifier) {
-        return(null)
-      }
-
-
-      // has contentree already be cached in the vues store??
-      var container = this.get_assembly_container({
-        assemblyIdentifier: this.assemblyIdentifier, 
-        containerID: this.containerID})
-  
-      if(!container) {
-          // Not yet loaded. please wait
-          return(null)
-      }
-
-      return(container.progression)
+    contenttreeID: function() {
+      return(this.stage.stage.contenttree_id)
     },
 
     contenttree: function() {
 
-      if(!this.containerID) {
-        return(null)
-      }
+      console.assert(this.contenttreeID)
+      console.assert(this.assemblyIdentifier)
 
-      if(!this.assemblyIdentifier) {
-        return(null)
-      }
+      //   console.error("assemblyIdentifier is missing")
+      //   return(null)
+      // }
 
-      // has contentree already be cached in the vues store??
-      var contenttree = this.get_contenttree(this.containerID)
+      return (this.get_contenttree({
+        contenttreeID: this.contenttreeID, 
+        assemblyIdentifier: this.assemblyIdentifier
+      }))
 
-      // // TODO: reload container data to check last modification date.
-      if(contenttree) {
-        LayoutEventBus.$emit('hideLoading')
-        return(contenttree)
-      }
-
-      // no cache version exists: load the full tree...
-      this.retrieveContentTree()
-      return(null)
+      // has contenttree already be cached in the vues store??
+      // var contenttree = this.get_contenttree(this.contenttreeID)
+      // // TODO: reload contenttree data to check last modification date.
+      // if(contenttree) {
+      //   LayoutEventBus.$emit('hideLoading')
+      //   return(contenttree)
+      // }
+      // // no cache version exists: load the full tree...
+      // this.retrieveContentTree()
+      // return(null)
     },
 
     startingContentID: function() {
@@ -103,7 +55,7 @@ export default {
       return(null)
     },
 
-    starting_content: function() {
+    startingContent: function() {
       if(this.startingContentID) {
         console.log("starting content found")
         return(this.contenttree.entries[this.startingContentID])
@@ -112,29 +64,11 @@ export default {
     },
 
     ...mapGetters({
-      get_assembly_container: 'assemblystore/get_assembly_container',
       get_contenttree: 'contentstore/get_contenttree'
     })
   },
 
   methods: {
-
-    retrieveContentTree() {
-      console.log("Retrieve contenttree")
-      // Load container data (to check sync status)
-      console.assert(this.assemblyIdentifier)
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${this.assemblyIdentifier}/container/${this.containerID}/contenttree`
-      ApiService.get(url).then(
-        response => {
-          // update
-          LayoutEventBus.$emit('hideLoading')
-          console.log('save full contenttree to cache.')
-          console.assert ('OK' in response.data)
-          console.assert ('contenttree' in response.data)
-          this.add_or_update_contenttree({containerID: this.containerID, contenttree: response.data.contenttree})
-        }
-      )
-    },
 
     filter_question_entries: function(nodes) {
       var QUESTION_ENTRIES = ['QUESTION']

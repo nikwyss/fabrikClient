@@ -33,7 +33,7 @@ module.exports = configure(function (ctx) {
     //   'axios'
     // ],
     boot: [
-      'axios',
+      // 'axios',
       'helpers',
       'oauth',
       'i18n'

@@ -1,8 +1,27 @@
 /**
+ * https://medium.com/locale-ai/architecting-http-clients-in-vue-js-applications-for-efficient-network-communication-991cf1df1cb2
+ * 
  * Provides methods for XHR-calls using Axios.
  */
 import axios from 'axios'
-import Vue from 'vue'
+import Configuration from 'src/utils/configuration'
+
+/* 
+One more thing to keep in mind, Axios by default has the timeout set to 0, which means no timeout. But in most cases, we need to set request timeouts in our application along with a retry period. We will discuss how to retry a failed request in the below sections but you can change the default timeout of our httpClient while creating it.
+TODO: set timeout above 0 for axios!!!!!!!
+const httpClient = axios.create({
+    baseUrl: process.env.VUE_APP_BASE_URL,
+    timeout: 1000, // indicates, 1000ms ie. 1 second
+    headers: {
+        "Content-Type": "application/json",
+    }
+});
+
+
+*/
+const HTTP_HEADER = 'Authorization'
+const RequestOrigin = 'ApiService'
+
 
 const ReloginOnStatus403 = (config = {}) => {
   return Object.prototype.hasOwnProperty.call(config, "ReloginOnStatus403") && !config.ReloginOnStatus403 ?
@@ -16,12 +35,14 @@ const WithoutAuthHeader = (config = {}) => {
   return Object.prototype.hasOwnProperty.call(config, "WithoutAuthHeader") && config.WithoutAuthHeader ?
     true : false
 }
-const HTTP_HEADER = 'Authorization'
-const RequestOrigin = 'ApiService'
 
 const ApiService = {
 
-  init (baseURL) { axios.defaults.baseURL = baseURL },
+  init () {
+    const baseURL = `${Configuration.value('ENV_APISERVER_URL')}`;
+    axios.defaults.timeout = 2000
+    axios.defaults.baseURL = baseURL}
+  ,
 
   /**
    * Sets the transmitted JWT token as current default authentication header
@@ -183,8 +204,11 @@ const ApiService = {
       onFullfilled,
       error => onRejected(error)
     )
-  },
+  }
 }
+
+// ApiService.create()
+// defaults.timeout = 5000;
 
 export { ApiService, ReloginOnStatus403, WithoutAuthHeader, Allow400Status };
 export default ApiService

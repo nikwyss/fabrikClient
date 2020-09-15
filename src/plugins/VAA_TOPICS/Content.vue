@@ -2,14 +2,14 @@
     <q-page class="doc_content">
 
         <!-- DISABLED WARNING -->
-        <q-banner dense inline-actions class="text-white bg-red" v-if="container.disabled" style="padding:2em; margin-bottom:1em;">
-        This Container is disabled and, therefore, not visible for users.
+        <q-banner dense inline-actions class="text-white bg-red" v-if="contenttree.disabled" style="padding:2em; margin-bottom:1em;">
+        This ContentTree is disabled and, therefore, not visible for users.
         </q-banner>
 
         <div v-if="contenttree">
 
            
-            <div v-if="starting_content">
+            <div v-if="startingContent">
 
                 <q-btn align="around" 
                     class="btn-fixed-width" color="brown-5" 
@@ -18,8 +18,8 @@
                     @click="clickBackButton"/>
 
                 <TextsheetCard :acl="assembly.acl" 
-                    :container="container" 
-                    :content="starting_content"
+                    :contenttree="contenttree" 
+                    :content="startingContent"
                     :standalone="true" />
 
             </div>
@@ -35,7 +35,6 @@
         <ComponentContentTree
             :acl="assembly.acl"
             label="Offene Diskussion"
-            :container="container" 
             :contenttree="contenttree" 
             :startingContentID="startingContentID" 
         /> 
@@ -60,7 +59,7 @@ export default {
     methods: {
         clickBackButton: function () {
             alert ("disabled")
-            // this.$router.push({name: 'PROS_AND_CONS', params: {containerID: this.containerID}})
+            // this.$router.push({name: 'PROS_AND_CONS', params: {contenttreeID: this.contenttreeID}})
         }
     }
 }

@@ -19,19 +19,19 @@ export default {
 
     computed: {
 
-        containerID: function() {
-            return(this.container.id)
+        contenttreeID: function() {
+            return(this.contenttree.id)
         },
 
         root_node_ids: function() {
             if(this.startingContentID) {
-                return(this.starting_content_node.children.map(x=> x.id))
+                return(this.startingContent_node.children.map(x=> x.id))
             }
             return(this.contenttree.structure.children.map(x=> x.id))
         },
 
-        starting_content_node: function() {
-            console.log("get starting_content_node")
+        startingContent_node: function() {
+            console.log("get startingContent_node")
             if(this.custom_starting_node) {
                 return(this.custom_starting_node)
             }else{
@@ -41,7 +41,7 @@ export default {
         },
 
         total_nof_contents: function() {
-            return(this.starting_content_node["nof_descendants"])
+            return(this.startingContent_node["nof_descendants"])
         },
 
         ...mapGetters({ get_default_expanded_branches_from_store: 'contentstore/get_default_expanded_branches_from_store'}),
@@ -127,7 +127,7 @@ export default {
         calculate_default_expanded_branches: function () {
             
             // get default values
-            let node = this.starting_content_node
+            let node = this.startingContent_node
            // TODO: do a while and loop the x level until 25 are reached...
             //    let branches = Object.keys(node.children)
            let branches = node.children.map(function (x) { return x.id});
@@ -137,7 +137,7 @@ export default {
 
         updateExpanded: function() {
             this.update_expanded_branches({
-                containerID: this.containerID, 
+                contenttreeID: this.contenttreeID, 
                 startingContentID: this.startingContentID, 
                 expanded: this.expanded})
         },
@@ -259,8 +259,8 @@ export default {
         },
 
         ...mapActions({
-            // add_or_update_container: 'container/add_or_update_container',
-            // update_contenttree: 'containerstore/update_contenttree',
+            // add_or_update_contenttree: 'contenttree/add_or_update_contenttree',
+            // update_contenttree: 'contenttreestore/update_contenttree',
             update_expanded_branches: 'contentstore/update_expanded_branches'
         }),
     },
@@ -272,14 +272,14 @@ export default {
             console.assert(this.contenttree)
           
             // first: check in 
-            this.expanded = this.get_default_expanded_branches_from_store({containerID: this.containerID, startingContentID: this.startingContentID})
+            this.expanded = this.get_default_expanded_branches_from_store({contenttreeID: this.contenttreeID, startingContentID: this.startingContentID})
         }
 
         if(this.expanded===null) {
             this.expanded = this.calculate_default_expanded_branches()
             // console.log(this.expanded)
             this.update_expanded_branches({
-                containerID: this.containerID, 
+                contenttreeID: this.contenttreeID, 
                 startingContentID: this.startingContentID, 
                 expanded: this.expanded})
         }

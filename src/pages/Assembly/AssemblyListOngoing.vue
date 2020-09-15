@@ -7,11 +7,11 @@
     <q-page class="doc_content ">
 
         <!-- SHOW LIST OF ONGOING ASSEMBLIES -->
-        <div v-if="publicIndex_ongoing_assemblies != null" class="full-width">
+        <div v-if="ongoing_assemblies != null" class="full-width">
            <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
             <q-card class="assemblycard" flat 
-                v-for="assembly of publicIndex_ongoing_assemblies" :key="assembly.identifier">
+                v-for="assembly of ongoing_assemblies" :key="assembly.identifier">
 
                 <q-parallax
                     :src="assembly.image"
@@ -41,9 +41,10 @@
 
         </div>
 
+        <!-- No ONGOINNG ASSEMBLIES -->
         <div v-else>
-            <h1>{{$tc('content.assemblies.h1', nLength(publicIndex_ongoing_assemblies))}}</h1>
-            
+            <h1>{{$tc('content.assemblies.h1', nLength(ongoing_assemblies))}}</h1>
+
             <ArtificialModeratorAssemblyListOngoing />
         </div>
 
@@ -54,24 +55,12 @@
 <script>
 // import ArtificialModeratorAssemblyListOngoing from 'src/artificialmoderation/AssemblyListOngoing'
 import ArtificialModeratorAssemblyListOngoingSelection from 'src/artificialmoderation/AssemblyListOngoingSelection'
-import PublicIndex from "./mixins/publicIndex"
+import PublicIndex from "src/mixins/publicIndex"
 
 export default {
 
     name: 'PageAssemblyList',
     mixins: [PublicIndex],
-    components: { ArtificialModeratorAssemblyListOngoingSelection },
-
-    mounted: function() {
-        console.log("kdddk")
-
-
-        //, "from", "now", true) )
-
-        // if(this.get_current_assemblyIdentifier) {
-        //     this.$router.push({name: 'assembly_home',
-        //         params: {assemblyIdentifier: this.get_current_assemblyIdentifier}})
-        // }
-    }
+    components: { ArtificialModeratorAssemblyListOngoingSelection }
 }
 </script>

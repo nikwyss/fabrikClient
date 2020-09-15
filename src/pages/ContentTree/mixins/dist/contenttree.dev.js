@@ -41,7 +41,7 @@ var _default = {
 
       if (!this.assemblyIdentifier) {
         return null;
-      } // has contentree already be cached in the vues store??
+      } // has contenttree already be cached in the vues store??
 
 
       var container = this.get_assembly_container({
@@ -64,7 +64,7 @@ var _default = {
 
       if (!this.assemblyIdentifier) {
         return null;
-      } // has contentree already be cached in the vues store??
+      } // has contenttree already be cached in the vues store??
 
 
       var contenttree = this.get_contenttree(this.containerID); // // TODO: reload container data to check last modification date.
@@ -72,7 +72,7 @@ var _default = {
       if (contenttree) {
         //     // Retrieve once the version of the API
         //     // to ensure, that the local tree is up to date...
-        //     this.retrieveContainer()
+        //     this.retrieveContentTree()
         //     // return cached version. (dont wait until data are up to date...)
         return contenttree;
       } // no cache version exists: load the full tree...
@@ -88,7 +88,7 @@ var _default = {
 
       return null;
     },
-    starting_content: function starting_content() {
+    startingContent: function startingContent() {
       if (this.startingContentID) {
         console.log("starting content found");
         return this.contenttree.entries[this.startingContentID];

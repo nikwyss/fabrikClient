@@ -16,9 +16,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 */
 var state = {
   randomSeed: null,
-  publicIndex: null,
-  // publicIndex_ongoing_assemblies: null,
-  // publicIndex_published_assemblies: null,
+  // publicIndex: null,
+  // ongoing_assemblies: null,
+  // published_assemblies: null,
   assemblies: {},
   current_containerID: {},
   current_assemblyIdentifier: null
@@ -31,9 +31,11 @@ and will only re-evaluate when some of its dependencies have changed.
 */
 
 var getters = {
+
   randomLocalStorageSeed: function randomLocalStorageSeed(state) {
     return state.randomSeed;
   },
+
   get_assembly: function get_assembly(state) {
     return function (assemblyIdentifier) {
       // return state.things.find(thing => thing.identifier === id)
@@ -49,19 +51,6 @@ var getters = {
     };
   },
 
-  /* Public Index: the publically accessible list of all potential accessible assemblies:
-      - assemblies that are currently ongoing (require invitation)
-      - assemblies that have been published (accessible by the public)
-  */
-  get_publicIndex: function get_publicIndex(state) {
-    return state.publicIndex;
-  },
-  // get_publicIndex_ongoing_assemblies: function get_publicIndex_ongoing_assemblies(state) {
-  //   return state.publicIndex_ongoing_assemblies;
-  // },
-  // get_publicIndex_published_assemblies: function get_publicIndex_published_assemblies(state) {
-  //   return state.publicIndex_published_assemblies;
-  // },
   get_assembly_containers: function get_assembly_containers(state) {
     return function (assemblyIdentifier) {
       // return state.things.find(thing => thing.identifier === id)
@@ -76,6 +65,7 @@ var getters = {
       return state.assemblies[assemblyIdentifier].containers;
     };
   },
+
   get_assembly_configuration: function get_assembly_configuration(state) {
     return function (assemblyIdentifier) {
       // return state.things.find(thing => thing.identifier === id)
@@ -91,6 +81,7 @@ var getters = {
       return state.assemblies[assemblyIdentifier].configuration;
     };
   },
+
   get_assembly_progression: function get_assembly_progression(state) {
     return function (assemblyIdentifier) {
       // return state.things.find(thing => thing.identifier === id)
@@ -106,6 +97,7 @@ var getters = {
       return state.assemblies[assemblyIdentifier].progression;
     };
   },
+
   get_assembly_container: function get_assembly_container(state) {
     return function (_ref) {
       var assemblyIdentifier = _ref.assemblyIdentifier,
@@ -126,10 +118,12 @@ var getters = {
       return containers[containerID];
     };
   },
+  
   get_current_assemblyIdentifier: function get_current_assemblyIdentifier(state) {
     // return state.things.find(thing => thing.identifier === id)
     return state.current_assemblyIdentifier;
   },
+
   get_current_containerID: function get_current_containerID(state) {
     return function (assemblyIdentifier) {
       // return state.things.find(thing => thing.identifier === id)
@@ -138,56 +132,17 @@ var getters = {
       }
 
       return state.current_containerID[assemblyIdentifier];
-    };
-  },
-
-  /* SHORTCUTS */
-  // publicIndex_ongoing_assemblies: {},
-  // publicIndex_published_assemblies: {},
-  IsThereAnAssemblyInPublicState: function IsThereAnAssemblyInPublicState(state) {
-    if (state.publicIndex_published_assemblies == null) {
-      return null;
     }
-
-    return state.publicIndex_published_assemblies.length > 0;
-  },
-  IsThereAnAssemblyOngoing: function IsThereAnAssemblyOngoing(state) {
-    if (state.publicIndex_ongoing_assemblies == null) {
-      return null;
-    }
-
-    return state.publicIndex_ongoing_assemblies.length > 0;
-  },
-  IsThereNothingGoingOn: function IsThereNothingGoingOn(state) {
-    if (state.publicIndex == null) {
-      return null;
-    }
-
-    return state.publicIndex.length === 0;
-  },
-  IsUserDelegateOfOngoingAssembly: function IsUserDelegateOfOngoingAssembly(state) {
-    // data not yet loaded
-    if (state.publicIndex == null) {
-      return null;
-    } // Check if there is at least one ongoing assembly.
-
-
-    if (state.publicIndex_ongoing_assemblies.length === 0) {
-      return false;
-    } // Check permissions:
-
-
-    var accessibleAssemblies = state.publicIndex.assemblies.filter(function (x) {
-      return x.am_is_accessible_by_current_user;
-    });
-    return accessibleAssemblies.length > 0;
   }
-};
+}
+
 var actions = {
+
   touchRandomSeed: function touchRandomSeed(_ref2) {
     var commit = _ref2.commit;
     commit('set_random_seed');
   },
+
   set_current_containerID: function set_current_containerID(_ref3, _ref4) {
     var commit = _ref3.commit;
     var assembly = _ref4.assembly,
@@ -197,10 +152,12 @@ var actions = {
       containerID: containerID
     });
   },
+
   set_current_assemblyIdentifier: function set_current_assemblyIdentifier(_ref5, assembly) {
     var commit = _ref5.commit;
     commit('set_current_assemblyIdentifier', assembly);
   },
+
   add_or_update_assembly: function add_or_update_assembly(_ref6, _ref7) {
     var commit = _ref6.commit;
     var assembly = _ref7.assembly,
@@ -214,12 +171,15 @@ var actions = {
       progression: progression
     });
   },
+
   add_or_update_publicIndex: function add_or_update_publicIndex(_ref8, publicIndex) {
     var commit = _ref8.commit;
     commit('add_or_update_publicIndex', publicIndex);
   }
-};
+}
+
 var mutations = {
+
   set_random_seed: function set_random_seed(state) {
     console.log("SET RANDOM SEED IF NOT YET DONE");
 
@@ -229,12 +189,14 @@ var mutations = {
       state.randomSeed = randomSeed;
     }
   },
+
   set_current_assemblyIdentifier: function set_current_assemblyIdentifier(state, assembly) {
     // keep list of opened contents (if previously available)
     console.log("update current assembly identifier"); // TODO: Vue.set would make the change reactive!! necessary?
 
     state.current_assemblyIdentifier = assembly ? assembly.identifier : null;
   },
+
   set_current_containerID: function set_current_containerID(state, _ref9) {
     var assembly = _ref9.assembly,
         containerID = _ref9.containerID;
@@ -248,6 +210,7 @@ var mutations = {
 
     _vue["default"].set(state.current_containerID, assembly.identifier, containerID);
   },
+
   add_or_update_assembly: function add_or_update_assembly(state, _ref10) {
     var assembly = _ref10.assembly,
         containers = _ref10.containers,
@@ -297,16 +260,18 @@ var mutations = {
       return x.is_active;
     });
 
-    _vue["default"].set(state, 'publicIndex_published_assemblies', publicAssemblies);
+    _vue["default"].set(state, 'published_assemblies', publicAssemblies);
 
-    _vue["default"].set(state, 'publicIndex_ongoing_assemblies', ongoingAssemblies);
+    _vue["default"].set(state, 'ongoing_assemblies', ongoingAssemblies);
   }
-};
+}
+
 var assemblystore = {
   namespaced: true,
   state: state,
   getters: getters,
   actions: actions,
   mutations: mutations
-};
+}
+
 exports.assemblystore = assemblystore;

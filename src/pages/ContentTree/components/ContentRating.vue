@@ -52,7 +52,7 @@ export default{
 
     setRating: function(rating) {
     console.log("set rating...")
-    // Load container from scratch
+    // Load contenttree from scratch
     console.assert(rating !== null && rating !== undefined)
     console.assert(this.content.content.id)
     var identifier = this.$route.params.assemblyIdentifier
@@ -69,9 +69,9 @@ export default{
           if(response.data.OK) {
               console.log("rating received")
 
-              // this.syncContainer({
-              //     assembly: response.data.container,
-              //     container: response.data.container})
+              // this.syncContentTree({
+              //     assembly: response.data.contenttree,
+              //     contenttree: response.data.contenttree})
               
               this.update_contents({modifiedContents: response.data.modifiedContents})
           }

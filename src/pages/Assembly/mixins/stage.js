@@ -26,7 +26,7 @@ export default {
         return(null)
       }
 
-      // has contentree already be cached in the vues store??
+      // has contenttree already be cached in the vues store??
       var stage = this.get_assembly_stage({
         assemblyIdentifier: this.assemblyIdentifier,
         stageID: this.stageID})

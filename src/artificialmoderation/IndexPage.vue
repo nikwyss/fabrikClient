@@ -2,7 +2,10 @@
 <div class="justify-center center" style="max-width:350px">
 
     <!-- LEFT  SIDE -->
-    <ArtificialModerator v-if="this.$root.authenticated !== undefined" alignment="left" role="1" i18n_path_prefix="content.index">
+    <ArtificialModerator 
+            v-if="this.$root.authenticated !== undefined" 
+            alignment="left" role="1" 
+            i18n_path_prefix="content.index">
         <template>
         {{$t('content.index.am.general_greeting', {salutation: salutation})}}
         </template>
@@ -10,7 +13,7 @@
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator  alignment="right" role="2" i18n_path_prefix="content.index" 
-            :ongoing_request="ongoing_request">
+            :ongoing_request="published_assemblies === null">
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
         <template v-if="$root.authenticated === false && IsThereAnAssemblyOngoing === true">
@@ -59,26 +62,19 @@
 <script>
 import ArtificialModerator from './components/ArtificialModerator'
 import {mapGetters} from 'vuex'
+import PublicIndex from "src/mixins/publicIndex"
 
 export default{
     name: "ArtificialModeratorIndexPage",
+    mixins: [PublicIndex],
     components: {ArtificialModerator},
 
     computed: {
 
-        ...mapGetters({
-            IsThereAnAssemblyInPublicState: 'assemblystore/IsThereAnAssemblyInPublicState',
-            IsThereAnAssemblyOngoing: 'assemblystore/IsThereAnAssemblyOngoing',
-            IsThereNothingGoingOn: 'assemblystore/IsThereNothingGoingOn',
-            IsUserDelegateOfOngoingAssembly: 'assemblystore/IsUserDelegateOfOngoingAssembly'
-        }),
-
-        ongoing_request: function () {
-            return (this.IsThereAnAssemblyOngoing === null || this.$root.authenticated === undefined)
-        },
-
         salutation: function() {
+
             if (this.$root.authenticated) {
+
                 const salutation = this.$i18n.t(
                 'content.index.am.salutation_for_authenticated',
                 {username: this.$root.username}
@@ -86,6 +82,7 @@ export default{
                 return (salutation)
 
             } else {
+
                 const salutation = this.$i18n.t('content.index.am.salutation_for_guests')
                 return (salutation)
             }

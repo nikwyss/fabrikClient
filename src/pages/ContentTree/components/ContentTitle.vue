@@ -9,7 +9,7 @@
                 <ContentToolbar
                     :acl="acl"
                     :obj="obj"
-                    :container="container"/>
+                    :contenttree="contenttree"/>
             </span>
             <div style="margin-top:10px;">{{ content.title }} </div>
             <q-badge color="blue" v-if="!real_expanded" align="top">click to see {{node.nof_descendants}} more</q-badge>
@@ -25,7 +25,7 @@ import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 export default {
     name: "ContentTreeEntryTitle",
     props: ["obj", "node", "acl", "expanded", "currently_selected_contentID", 
-        "container"],
+        "contenttree"],
     components: {ContentToolbar},
 
     // data () {

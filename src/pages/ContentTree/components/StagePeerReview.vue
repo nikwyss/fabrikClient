@@ -18,7 +18,7 @@
    <q-dialog v-model="peerreview_large" persistent position="top" class="q-ma-lg">
     <!-- position="bottom" seamless-->
 
-   <!-- <q-layout view="Lhh lpR fff" container class="bg-white">
+   <!-- <q-layout view="Lhh lpR fff" contenttree class="bg-white">
         <q-header class="bg-white">
           <!-- <q-toolbar>
             <q-btn flat @click="drawerR = !drawerR" round dense icon="menu" />
@@ -32,7 +32,7 @@
           </q-toolbar>
         </q-footer> -->
 
-    <!-- <q-page-container>
+    <!-- <q-page-contenttree>
           <q-page padding>  -->
 
          
@@ -148,7 +148,7 @@
                             
                             <q-item>
                               <q-item-section avatar top>
-                                <q-item-label lines="1" class="q-mt-sm">Container</q-item-label>
+                                <q-item-label lines="1" class="q-mt-sm">ContentTree</q-item-label>
                               </q-item-section>
                               <q-item-section top>
                                 <q-item-label lines="1">
@@ -216,7 +216,7 @@
             </q-card>
 
         <!-- </q-page>  
-        </q-page-container>
+        </q-page-contenttree>
     </q-layout> -->
 
     </q-dialog>
@@ -227,8 +227,8 @@
 import { Fragment } from 'vue-fragment'
 
 export default {
-  name: "ContainerPeerReview",
-  props: ["containerID"],
+  name: "ContentTreePeerReview",
+  props: ["contenttreeID"],
   components: {Fragment},
   
   computed: {

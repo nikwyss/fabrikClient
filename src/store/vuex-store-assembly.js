@@ -6,9 +6,6 @@ import { store } from 'quasar/wrappers'
 
 var state = {
     randomSeed: null,
-    publicIndex: null,
-    // publicIndex_ongoing_assemblies: null,
-    // publicIndex_published_assemblies: null,
     assemblies: {},
     current_stages: {},
     current_assemblyIdentifier: null
@@ -36,22 +33,6 @@ const getters = {
         }
         return (state.assemblies[assemblyIdentifier].assembly)
     },
-
-    /* Public Index: the publically accessible list of all potential accessible assemblies:
-        - assemblies that are currently ongoing (require invitation)
-        - assemblies that have been published (accessible by the public)
-    */
-    get_publicIndex: (state) => {
-        return (state.publicIndex)
-    },
-
-    // get_publicIndex_ongoing_assemblies: (state) => {
-    //     return (state.publicIndex_ongoing_assemblies)
-    // },
-    
-    // get_publicIndex_published_assemblies: (state) => {
-    //     return (state.publicIndex_published_assemblies)
-    // },
 
     get_assembly_stages: (state) => (assemblyIdentifier) => {
         // return state.things.find(thing => thing.identifier === id)
@@ -147,9 +128,6 @@ const actions = {
         console.assert(stage_id)
         console.assert(progression)
         commit('add_or_update_stage_progression', {assembly_identifier, stage_id, progression})
-    },
-    add_or_update_publicIndex({commit}, publicIndex) {
-        commit('add_or_update_publicIndex', publicIndex)
     }
 }
 
@@ -224,18 +202,6 @@ const mutations = {
         // Vue.set  makes the change reactive!!
         Vue.set(state.assemblies[assembly_identifier].stages[stage_id], 'progression', progression)
         console.log("stage progression has been updated..")
-    },
-    
-    add_or_update_publicIndex (state, publicIndex) {
-
-        // Vue.set  makes the change reactive!!
-        Vue.set(state, 'publicIndex', publicIndex.publicIndex)
-        // console.log('publicIndex of assemblies has been updated.')
-        // console.log(publicIndex)
-        // const publicAssemblies = publicIndex.publicIndex.assemblies.filter(x => x.is_public)
-        // const ongoingAssemblies = publicIndex.publicIndex.assemblies.filter(x => x.is_active)
-        // Vue.set(state, 'publicIndex_published_assemblies', publicAssemblies)
-        // Vue.set(state, 'publicIndex_ongoing_assemblies', ongoingAssemblies)
     }
 }
 

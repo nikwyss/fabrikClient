@@ -11,7 +11,7 @@
         <!-- DELETE -->
         <ContentEditor
             v-if="acl.includes('contribute')"
-            :containerID="container.id"
+            :contenttreeID="contenttree.id"
             :model="obj.content"
             :parent_id="obj.content.parent_id"
             @zoom-to-content="$emit('zoomToContent')"
@@ -44,7 +44,7 @@
                 style="float:right; padding:0.3em;" 
                 @click="$refs.contentpopup.cancel()"/>
 
-            <div class="q-pa-md doc-container" width="400px">
+            <div class="q-pa-md doc-contenttree" width="400px">
                 <q-badge color="blue">Authors</q-badge>
                 <div class="row items-start">
                   <div class="col-7">Created</div>
@@ -57,7 +57,7 @@
                     @EPU111 20.02.2020</div>
                 </div>
             </div>
-            <div class="q-pa-md doc-container" width="400px">
+            <div class="q-pa-md doc-contenttree" width="400px">
                 <q-badge color="blue">Peer Review</q-badge>
                 <div class="row items-start">
                   <div class="col-7">Acceptance:</div>
@@ -68,7 +68,7 @@
                   <div class="col-5">3</div>
                 </div>
               </div>
-            <div class="q-pa-md doc-container" width="400px">
+            <div class="q-pa-md doc-contenttree" width="400px">
                 <q-badge color="blue">Overall Interactions</q-badge>
                 <div class="row items-start">
                   <div class="col-7">Viewed:</div>
@@ -107,7 +107,7 @@ import { mapActions } from 'vuex'
 
 export default {
     name: "ContentToolbarComponent",
-    props:["obj", "acl", "container"],
+    props:["obj", "acl", "contenttree"],
     components: {ContentRating, ContentEditor},
     data () {
         return {
@@ -159,10 +159,10 @@ export default {
     // TODO: move deleteentry to contenttre.js
     deleteEntry(content, justification) {
       console.log("deleteEntry")
-      let containerID = this.$route.params.containerID
+      let contenttreeID = this.$route.params.contenttreeID
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier);
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/container/${containerID}/content/${content.id}`
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${contenttreeID}/content/${content.id}`
       var data = {'justification': justification}
       ApiService.delete(url, data).then(
         response => {
@@ -174,7 +174,7 @@ export default {
 
               // update the whole tree
               this.add_or_update_contenttree({
-                containerID: containerID,
+                contenttreeID: contenttreeID,
                 contenttree: response.data.contenttree})
 
               // Zoom to parent entry (if catched)

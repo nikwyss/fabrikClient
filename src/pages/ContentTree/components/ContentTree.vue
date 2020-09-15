@@ -1,7 +1,7 @@
 <template>
 <div>
 
-    <div v-if="starting_content_node.nof_descendants">
+    <div v-if="startingContent_node.nof_descendants">
 
             <span style="float:right; margin-bottom:1.8em; margin-right:0.3em; display:inline-block">
             <q-btn
@@ -46,7 +46,7 @@
     <!-- AFTER LOADING -->
     <div class="q-pa-none q-ma-none q-gutter-sm" v-if="contenttree">
         
-        <span v-if="starting_content_node.nof_descendants">{{starting_content_node.nof_descendants}} Beiträge</span>
+        <span v-if="startingContent_node.nof_descendants">{{startingContent_node.nof_descendants}} Beiträge</span>
 
             <!-- TREE MENU -->
             <!-- tyle="float:right; margin-top: 0.5em; margin-bottom:1.8em; margin-right:0.3em; display:inline-block"
@@ -59,7 +59,7 @@
             <!-- Tree -->
             <q-tree
                 ref="qtree"
-                :nodes="starting_content_node.children"
+                :nodes="startingContent_node.children"
                 label-key="id"
                 nodeKey="id"
                 icon="mdi-play"
@@ -82,7 +82,7 @@
                     :obj="cachedNode(prop.node.id)" 
                     :expanded="prop.expanded"
                     :key="prop.node.id"
-                    :container="container"
+                    :contenttree="contenttree"
                     :acl="acl" />
                 </template>
 
@@ -95,7 +95,7 @@
 
                     <ContentEditor
                         v-if="acl.includes('contribute')"
-                        :containerID="container.id"
+                        :contenttreeID="contenttree.id"
                         :parent_id="prop.node.id"
                         @zoom-to-content="zoomToContent"
                         />
@@ -107,7 +107,7 @@
 
             <!-- Add a new top-level entry -->
             <ContentEditor  
-                :containerID="container.id"
+                :contenttreeID="contenttree.id"
                 v-if="acl.includes('contribute')"
                 @zoom-to-content=zoomToContent
                 :parent_id="startingContentID"
@@ -117,7 +117,7 @@
             <!-- Disclaimer -->
 
             <q-expansion-item
-                v-if="starting_content_node.children.length>1"
+                v-if="startingContent_node.children.length>1"
                 expand-separator
                 icon="mdi-format-paragraph"
                 label="Algorithmus-Disclaimer:"
@@ -130,7 +130,7 @@
                     Die Inhalte in diesem Forum werden in hierarchischer (und nicht in chronologischer) Reihenfolge aufgelistet.
                     Die Reihenfolge der Inhalte auf gleicher Hierarchiestufe ist zufällig und variiert von Benutzer zu Benutzer.
                     </span>
-                    <span v-if="starting_content_node.children.length>30">
+                    <span v-if="startingContent_node.children.length>30">
                     Die Diskussion ist schon recht umfassend. Damit die Diskussion übersichtlich bleibt, wurden nur 30 zufällig ausgewählte Beiträge vollständig aufgeklappt.
                     Sie können die restlichen Beiträge selbst per Mausklick öffnen.
                     </span>
@@ -160,7 +160,7 @@ import ContentEditor from "./ContentEditor"
 export default {
     name: "ContentTree",
     mixins: [QTreeMixin],
-    props: ['contenttree', 'container', 'startingContentID', 'custom_starting_node', 'acl', 'label', 'dense'],
+    props: ['contenttree', 'contenttree', 'startingContentID', 'custom_starting_node', 'acl', 'label', 'dense'],
     components: {ContentTitle, ContentEditor, Fragment}
 }
 </script>

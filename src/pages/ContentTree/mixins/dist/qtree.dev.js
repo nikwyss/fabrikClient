@@ -29,7 +29,7 @@ var _default = {
     },
     root_node_ids: function root_node_ids() {
       if (this.startingContentID) {
-        return this.starting_content_node.children.map(function (x) {
+        return this.startingContent_node.children.map(function (x) {
           return x.id;
         });
       }
@@ -38,8 +38,8 @@ var _default = {
         return x.id;
       });
     },
-    starting_content_node: function starting_content_node() {
-      console.log("get starting_content_node");
+    startingContent_node: function startingContent_node() {
+      console.log("get startingContent_node");
 
       if (this.custom_starting_node) {
         return this.custom_starting_node;
@@ -49,7 +49,7 @@ var _default = {
       }
     },
     total_nof_contents: function total_nof_contents() {
-      return this.starting_content_node["nof_descendants"];
+      return this.startingContent_node["nof_descendants"];
     }
   }, (0, _vuex.mapGetters)({
     get_default_expanded_branches_from_store: 'contentstore/get_default_expanded_branches_from_store'
@@ -129,7 +129,7 @@ var _default = {
     },
     calculate_default_expanded_branches: function calculate_default_expanded_branches() {
       // get default values
-      var node = this.starting_content_node; // TODO: do a while and loop the x level until 25 are reached...
+      var node = this.startingContent_node; // TODO: do a while and loop the x level until 25 are reached...
       //    let branches = Object.keys(node.children)
 
       var branches = node.children.map(function (x) {

@@ -1,5 +1,8 @@
 import Cookies from 'js-cookie'
 import Configuration from 'src/utils/configuration'
+// TODO: replace by vue-cookie ???
+
+
 
 const nonull = function (val) {
   if (val === undefined || val === 'null' || val === '' || val === {}) {

@@ -1,6 +1,6 @@
 export const pluginstore = {
     // stage,
-    // container
+    // contenttree
     // assembly
     // oauth
 }
