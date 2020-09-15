@@ -6,7 +6,7 @@
             :ongoing="IsThereAnAssemblyOngoing===null">
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
-        <!-- <template v-if="!oauth.authenticated && IsThereAnAssemblyOngoing === true">
+        <!-- <template v-if="!oauth_authenticated && IsThereAnAssemblyOngoing === true">
         {{$t('content.assemblies.am.invitation_to_authenticate')}}
         </template> -->
 
@@ -16,18 +16,18 @@
         </template> -->
 
         <!-- No ongoing and accesible assembly ongoing -->
-        <template  v-if="oauth.authenticated && IsUserDelegateOfOngoingAssembly === false">
+        <template  v-if="oauth_authenticated && IsUserDelegateOfOngoingAssembly === false">
         {{$t('content.assemblies.am.no_assemblies_accessible')}}
         </template>
 
         <!-- No ongoing and accesible assembly ongoing -->
-        <template  v-if="!oauth.authenticated && IsThereAnAssemblyOngoing === false">
+        <template  v-if="!oauth_authenticated && IsThereAnAssemblyOngoing === false">
         {{$t('content.assemblies.am.no_assemblies_accessible')}}
         </template>
 
         <!-- ACTION CHIPS -->
         <!-- <template  v-slot:actions>
-        <q-chip size="md" icon="mdi-key-outline" v-if="!oauth.authenticated && IsThereNothingGoingOn === false" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAuthLink">
+        <q-chip size="md" icon="mdi-key-outline" v-if="!oauth_authenticated && IsThereNothingGoingOn === false" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAuthLink">
             {{ $t('auth.goto_authentication_form') }}
         </q-chip>
         </template> -->
@@ -51,9 +51,9 @@ export default{
         },
 
         ...mapGetters({
-            IsThereAnAssemblyOngoing: 'assemblystore/IsThereAnAssemblyOngoing',
-            IsThereNothingGoingOn: 'assemblystore/IsThereNothingGoingOn',
-            IsUserDelegateOfOngoingAssembly: 'assemblystore/IsUserDelegateOfOngoingAssembly',
+            IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
+            IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn',
+            IsUserDelegateOfOngoingAssembly: 'publicindexstore/IsUserDelegateOfOngoingAssembly',
         })
     },
 

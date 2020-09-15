@@ -28,6 +28,7 @@ export default {
   },
   mounted: function () {
     this.touchRandomSeed()
+    console.log("APP mounted...")
   }
 }
 </script>

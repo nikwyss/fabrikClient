@@ -1,7 +1,5 @@
 // import ApiService from "src/utils/xhr"
 import {mapGetters, mapActions} from 'vuex'
-// import { LayoutEventBus } from 'src/layouts/components/eventbus.js'
-// import Configuration from 'src/utils/configuration'
 
 export default {
   computed: {

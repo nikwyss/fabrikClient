@@ -32,13 +32,13 @@
     <q-toolbar style="width:320px">
 
       <!-- ACCOUNT CHIP -->
-      <q-chip :icon="$root.authenticated ? 'mdi-account-circle-outline' : 'mdi-incognito'"
+      <q-chip :icon="oauth_authenticated ? 'mdi-account-circle-outline' : 'mdi-incognito'"
           @click="right = !right" text-color="primary" class="cursor-pointer" clickable>
-        <span v-if="$root.authenticated">
-          {{ $t('auth.registered_as', {username: $root.username}) }}
+        <span v-if="oauth_authenticated">
+          {{ $t('auth.registered_as', {username: oauth_username}) }}
           <q-tooltip max-width="300px">{{ $t('auth.tooltip_authenticated') }} </q-tooltip>
         </span>
-        <span v-if="!$root.authenticated">
+        <span v-if="!oauth_authenticated">
           {{ $t('auth.not_registered') }}
           <q-tooltip max-width="300px">{{ $t('auth.tooltip_non_authenticated') }} </q-tooltip>
         </span>
@@ -76,7 +76,6 @@
         <CustomQRouteTab name="showcase" icon="mdi-eye-outline" to="/showcase" :label="$t('menu.items.showcase.label')">
           <q-tooltip :offset="menuOffset" max-width="300px">{{$t('menu.items.showcase.tooltip')}}</q-tooltip>
         </CustomQRouteTab>
-        <!-- :icon="$root.authenticated ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"  -->
         <CustomQRouteTab name="assemblies" :to="{name: 'assemblies_ongoing_list'}" icon="mdi-lead-pencil" :label="$t('menu.items.assembly.label')" >
           <q-tooltip :offset="menuOffset" max-width="300px">{{$t('menu.items.assembly.tooltip')}}</q-tooltip>
         </CustomQRouteTab>
@@ -126,8 +125,7 @@
 import ComponentDrawer from './components/ComponentDrawer.vue'
 import LanguageSwitch from './components/LanguageSwitch.vue'
 import CustomQRouteTab from './components/CustomQRouteTab.vue'
-import { LayoutEventBus } from './components/eventbus.js'
-
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 export default {
   name: 'MainLayout',
@@ -228,6 +226,17 @@ export default {
       let msg_body = this.$i18n.t('auth.authentication_warning_body')
       this.showNotificationBanner(type, msg_title, msg_body, icon)
     })
+    LayoutEventBus.$on('showAuthenticationError', data => {
+      let type = 'error'
+      let icon = 'mdi-alarm-light-outline'
+      let msg_title = this.$i18n.t('auth.authentication_error_title')
+      let msg_body = this.$i18n.t('auth.authentication_error_body')
+      this.showNotificationBanner(type, msg_title, msg_body, icon)
+    })
+    LayoutEventBus.$on("resetLayoutToDefault", data => {
+      console.log("drawer is gooing to be closed...")
+      this.close_drawer_right()
+    })
   },
 
   computed: {
@@ -239,6 +248,7 @@ export default {
     is_assembly_page: function () {
       return ( this.$route.name === 'assemblies' || !!this.$route.params.assemblyIdentifier)
     }
-  }
+  },
+
 }
 </script>

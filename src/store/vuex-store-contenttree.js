@@ -5,7 +5,7 @@
 */
 
 import Vue from 'vue'
-import { LayoutEventBus } from 'src/layouts/components/eventbus.js'
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 import Configuration from 'src/utils/configuration'
 import ApiService from "src/utils/xhr"
 

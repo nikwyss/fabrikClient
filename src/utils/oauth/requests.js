@@ -3,7 +3,7 @@
  */
 
 import ApiService from '../xhr'
-import popupLibrary from './popup'
+import popupLibrary from './lib/popup'
 import Configuration from 'src/utils/configuration'
 
 // interface oAuthServiceInstance {
@@ -212,9 +212,7 @@ const oAuthService = {
 
   tokenDecode(jwt)  {
     const token = {};
-    // token.header = JSON.parse(window.atob(t.split('.')[0]));
     token.payload = JSON.parse(window.atob(jwt.split('.')[1]));
-
     return (token.payload)
   }
 }

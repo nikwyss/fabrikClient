@@ -3,7 +3,7 @@
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="right" role="1" amGroup='ongoingassemblyPage'
-            :ongoing="$root.authenticated!==undefined || ongoing">
+            :ongoing="oauth_authenticated!==undefined || ongoing">
         <template>
             {{$t('content.assemblies.item.home', {'maxSteps': maxSteps}) }}
         </template>

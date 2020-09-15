@@ -2,62 +2,41 @@
     <div class="doc_content ">
 
         <!-- Ongoing -->
-        <div v-if="ongoing">
+        <!-- <div v-if="oauth_ongoing">-->
         <!-- Show Loading -->
-        </div>
+        <!-- </div> -->
 
         <!-- Successful Login -->
-        <div v-if="$root.authenticated">
-            Okay. Login was successfully.
-            <q-btn label="Standard" @click="forceVueUpdateOfOpener()"/>
-        </div>
+        <div v-if="oauth_authenticated">Okay. Login was successfully.</div>
 
         <!-- Not logged in -->
-        <div v-if="!$root.authenticated && !loginerror && !ongoing">            
-        </div>
+        <div v-if="!oauth_authenticated && !oauth_ongoing"></div>
 
         <!-- Login Error -->
-        <div v-if="loginerror">    
+        <!-- <div v-if="loginerror">
             Error. The login was not successfully. Please try again.
-        </div>
+        </div> -->
     </div>
 </template>
 
 <script>
-import { LayoutEventBus } from 'src/layouts/components/eventbus.js';
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 export default {
     name: 'OngoingAuthentication',
+
     data() {
         return {
-            ongoing: !!this.$session.random_state,
             loginerror: false
-
         };
     },
 
     mounted() {
-        if(this.ongoing) {
-            console.log("ongoing authorization....39049382")
+        console.log("ongoing::.......  " + this.oauth_ongoing)
+        if(this.oauth_ongoing) {
+            console.log("ongoing authorization...")
             LayoutEventBus.$emit('showLoading')
-            const response = this.$session.authorize_by_authentication_code(this.authentication_ends)
-        }
-    },
-
-    methods: {
-
-        authentication_ends: function(response) {
-            // Update local data.
-            // this is since the cookie plugin as well as the VUE.prototype $session is not reactive.
-            this.$root.oauth_callback()
-            console.log("endign authorization....444444")
-            LayoutEventBus.$emit('hideLoading')
-            this.ongoing = false
-            this.loginerror = !this.$root.authenticated
-            this.forceVueUpdateOfOpener()
-            if(this.$root.authenticated) {
-                window.close()
-            }
+            const response = this.$session.authorize_by_authentication_code()
         }
     },
 

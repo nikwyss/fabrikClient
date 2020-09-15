@@ -2,7 +2,7 @@
 <div class="q-pa-none">
 <q-list  bordered>
     <!-- Visitors => Login -->
-    <q-item-section v-if="!$root.authenticated">
+    <q-item-section v-if="!oauth_authenticated">
 
 
       <q-item tag="label" v-ripple>
@@ -27,11 +27,11 @@
     </q-item-section>
 
     <!-- Account Info -->
-    <q-item-section v-if="$root.authenticated">
+    <q-item-section v-if="oauth_authenticated">
 
       <q-item tag="label" v-ripple>
         <q-item-section>
-          <q-item-label>Dear {{$root.username}}</q-item-label>
+          <q-item-label>Dear {{oauth_username}}</q-item-label>
           <q-item-label caption>Klicken Sie auf Logout, wenn Sie sich abmelden möchten. </q-item-label>
         </q-item-section>
       </q-item>
@@ -64,7 +64,7 @@
         </q-item-section>
       </q-item>
 
-      <q-item tag="label" v-ripple  v-if="$root.authenticated">
+      <q-item tag="label" v-ripple  v-if="oauth_authenticated">
         <q-item-section side top>
           <q-checkbox v-model="user_setting_session_cookie" />
         </q-item-section>
@@ -99,9 +99,8 @@
 
 <script>
 
+// TODO: supported_locales??
 import {SUPPORTED_LOCALES} from '../../../babel.config';
-// import i18n from 'src/utils/i18n/i18n'
-// import {set_new_locale} from 'src/utils/i18n/i18n.service'
 
 export default {
   name: 'drawerDefault',
@@ -116,13 +115,8 @@ export default {
 
   methods: {
     logout: function() {
-      this.$session.logout(this.$root.oauth_callback)
-      let msg_title = 'SuccCessful Logout'
-      let msg_body = 'You have been logged out successfully!'
-      this.$emit("close_drawer_right");
-
-      // this._flash.show({ status: 'info', title: msg_title, message: msg_body })
-      // this.$router.push({ name: 'home' })
+      // this.$session.logout(this.$root.oauth_callback)
+      this.$session.logout()
     }
   }
 }

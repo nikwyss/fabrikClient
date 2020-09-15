@@ -3,8 +3,8 @@
 - assemblies that have been published (accessible by the public)
 */
 import Vue from 'vue'
-import api from 'src/utils/api';
-import { LayoutEventBus } from 'src/layouts/components/eventbus.js'
+import api from 'src/utils/api'
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 var state = {
   publicIndex: null

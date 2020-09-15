@@ -79,7 +79,6 @@
                 </q-card>
             </q-step>
         </q-stepper>
-
     </div>
 
     <!-- MANAGER: NEW STAGE -->

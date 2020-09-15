@@ -4,7 +4,7 @@
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="1" 
         amGroup='publicassemblyPage'
-        v-if="$root.authenticated"
+        v-if="oauth_authenticated"
         :ongoing="assembly===null">
 
         <!-- First Time Entering -->

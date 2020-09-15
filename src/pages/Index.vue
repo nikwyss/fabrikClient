@@ -10,7 +10,6 @@
 import Vue from 'vue'
 import ArtificialModeratorIndexPage from "src/artificialmoderation/IndexPage"
 import PublicIndex from "src/mixins/publicIndex"
-import Configuration from 'src/utils/configuration'
 
 export default Vue.extend({
   name: 'PageIndex',

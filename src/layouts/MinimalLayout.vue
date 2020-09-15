@@ -4,7 +4,7 @@
     <q-page-container>
       
       <!-- Login Banner -->
-      <q-banner class="secondary" v-if="!$root.authenticated" 
+      <q-banner class="secondary" v-if="!oauth_authenticated" 
               @click="$session.redirect_to_provider()">
       <template v-slot:avatar>
         <q-icon name="mdi-login" color="primary" />

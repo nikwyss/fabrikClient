@@ -1,30 +1,15 @@
 /* eslint-disable */
-import { oAuthService } from './oauth.api';
+import { oAuthService } from './requests';
 import { ApiService } from '../xhr'
 import {get_cookie_value, set_cookie_value} from '../cookie.service'
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 // DEFINE SESSION Object
-class oauthSession {
+class oauthLibrary {
 
-    // username
-    static username = null
-
-    // sub (subject id)
-    static sub = null
     static protected_url = null
 
-    // JWT Token
-    static  _jwt = null;
-
-    get jwt() {
-      console.log("get jwt value")
-      if (this._jwt === null) {
-        this._jwt = get_cookie_value('oauth_jwt')
-      }
-      return (this._jwt)
-    }
-  
-    set jwt (value) {
+    set_jwt (value) {
       console.log("update jwt cookie" + value)
 
       // TODO: not sure, whether jwt should be saved in cookies or only in runtime variable.
@@ -32,9 +17,11 @@ class oauthSession {
 
       // Add authorization prefix for all following xhr requests.
       // header for axios requests
+      console.log(" set axios header: " + value)
       ApiService.setHeader(value)
-        
-      this._jwt = value
+
+      // Global notification  that login status has changed ...
+      LayoutEventBus.$emit('oauthUpdate')
     }
 
     // Refresh Token
@@ -51,6 +38,7 @@ class oauthSession {
     }
 
     // Provider
+    // TODO: does it have to be in a cookie?
     get provider() {
       return (get_cookie_value('oauth_provider'))
     }
@@ -69,16 +57,6 @@ class oauthSession {
       set_cookie_value('oauth_random_state', value)
     }
   
-    // is the user authenticated?
-    authenticated() {
-      return (!!(this.jwt) && (this.jwt.length > 0))
-    }
-  
-    // is currently an authentication process goiing on?
-    ongoing() {
-      return (!!(this.random_state) && (this.random_state.length>0))
-    }
-   
     /**
      * Load refresh token and JWT etc  from cookie...
      * Check expiration date of JWT
@@ -86,13 +64,14 @@ class oauthSession {
      * @returns {Promise<boolean>}
      */
     async initialize(VueRoot) {
-  
-      // force to reread jwt token from cookie.
-      this._jwt = null
-      
+
       // dont touch an ongoing authentication
-      if (this.ongoing()) {
-        console.log("ongoing authentication..")
+      const cookieval = get_cookie_value('oauth_random_state')
+      const cookiejwt = get_cookie_value('oauth_jwt')
+
+      console.log( `${this.random_state} - Random state:  ${cookieval} `)
+      if (this.random_state) {
+        console.log("ongoing authentication (random state is transmitted)..")
         return (true)
       }
   
@@ -100,38 +79,35 @@ class oauthSession {
       // either only provider or only refresh_token is given..
       if ((this.refresh_token && !this.provider) ||
         (!this.refresh_token && this.provider) ||
-        (this.jwt && !this.refresh_token)) {
+        (this.cookiejwt && !this.refresh_token)) {
+        // console.log( `${this.refresh_token} - prov ${this.provider}  refresh token: ${this.refresh_token} oauth ${this.oauth_jwt} && ${this.refresh_token} `)
   
         // Incomplete auth configuration..
-        // console.log("incomplete auth setup: reset..")
+        console.log("incomplete auth setup: reset..")
         this.reset_everything()
         return (false)
       }
   
       if (!this.refresh_token) {
-        // console.log("no previous auth session found...")
+        console.log("no previous auth session found...")
         return (false)
       }
   
       // Validate TOKENS: Correctly specified tokens
-      if (!this.jwt) {
+      if (!cookiejwt) {
         // Check  JWT token. Issue a new token if no JWT is available:
-        // console.log("...retrieve new JWT... ")
+        console.log("...retrieve new JWT... ")
         const response = await VueRoot.retrieve_refreshed_token()
 
         if (!response) {
           return (false)
         }
-
       }
 
       // update axios header
-      console.log("update axios header while initializing")
-      ApiService.setHeader(this.jwt)
+      console.log("update axios header while initializing")      
+      ApiService.setHeader(cookiejwt)
 
-      // CALLBACK
-      VueRoot.oauth_callback()
-  
       return (true)
     }
   
@@ -164,7 +140,7 @@ class oauthSession {
      * Step 2: after receiving authentication code.
      * @returns {Promise}
      */
-    async authorize_by_authentication_code (callback) {
+    async authorize_by_authentication_code () {
       // console.log("authorize by code.." + this.random_state)
   
       // Error Handling....
@@ -194,6 +170,7 @@ class oauthSession {
       console.assert(this.provider)
       var response = false
       try {
+
         var accessToken = await oAuthService.authorizeByAuthenticationCode(this.provider, authorization_code)
         if(!accessToken) {
           console.warn("No access token received 98df9")
@@ -203,6 +180,10 @@ class oauthSession {
         response = this._finalize_authentication_by_access_token(this.provider, accessToken)
 
       } catch (error) {
+
+        // Finalize...
+        console.log('error while authorizeByAuthentication' + error)
+
         if (error.response) {
           if (error.response.status) {
             console.warn("Error during authentication routine. 83979 " + error.response.status)
@@ -216,19 +197,15 @@ class oauthSession {
           return(false)
         }
       }
-      
-      if(response && callback) {
-        callback()
-      }
 
-      return (response)
+      LayoutEventBus.$emit('authentication_ends')
     }
   
   
     /**
      * Perform logout. reset all oAuth data (including cookie)
      */
-    async logout(callback) {
+    async logout () {
       // console.log("logout called..")
 
       this.reset_everything()
@@ -238,9 +215,15 @@ class oauthSession {
         void oAuthService.tokenRevoke(this.provider, this.refresh_token)
       }
 
-      if(callback) {
-        callback()
-      }
+      // Global notification  that login status has changed ...
+      LayoutEventBus.$emit("resetLayoutToDefault")
+
+      // TODO Notification Message
+      // let msg_title = 'SuccCessful Logout'
+      // let msg_body = 'You have been logged out successfully!'
+      // this._flash.show({ status: 'info', title: msg_title, message: msg_body })
+      // this.$router.push({ name: 'home' })
+
     }
   
     /**
@@ -249,12 +232,11 @@ class oauthSession {
      */
     reset_everything(){
       // console.log("reset everything...")
-      this.jwt = null
       this.random_state = null
       this.provider = null
       this.refresh_token = null
+      this.set_jwt(null)
     }
-  
   
     // /**
     //  * Show error message popup in vue.js
@@ -290,14 +272,20 @@ class oauthSession {
       console.assert(accessToken['refresh_token'])
       this.refresh_token = accessToken['refresh_token']
       this.random_state = null
-      this.jwt = accessToken['access_token']
-      // console.log(this._jwt)
+      // this.jwt = accessToken['access_token']
+      
+      console.log("stroe new jwt")
+      this.set_jwt(accessToken['access_token'])
 
-      console.log("successfull (re-)login..." + accessToken['access_token'])
-      console.assert(this.jwt)
-      // console.log(this._jwt)
+      console.log('access token found: ' + accessToken['access_token'])
+      console.assert(accessToken['access_token'])
+      // console.assert(this.oauth_jwt)
+
+      // Finalize...
+      console.log("successfull (re-)login...: EMIT authentication_ends")
+
       return (true)
     }
 }
 
-export default oauthSession
+export default oauthLibrary

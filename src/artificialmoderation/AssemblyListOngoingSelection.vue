@@ -4,7 +4,7 @@
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="2" amGroup='ongoingassemblyPage'
-            :ongoing="oauth.authenticated!==undefined && ongoing_assembly===null">
+            :ongoing="oauth_authenticated!==undefined && ongoing_assembly===null">
 
         <!-- First Time Entering -->
         <!-- <template  v-if="ongoing_assembly.acl.length > 0">
@@ -41,11 +41,11 @@
             />
         </template>
 
-        <template v-if="oauth.authenticated && !ongoing_assembly.acl.length">
+        <template v-if="oauth_authenticated && !ongoing_assembly.acl.length">
             Wir können Sie im Moment nicht zu der Veranstaltung zulassen.
         </template>
 
-        <template v-if="!oauth.authenticated && !ongoing_assembly.acl.length">
+        <template v-if="!oauth_authenticated && !ongoing_assembly.acl.length">
         {{$t('content.assemblies.am.invitation_to_authenticate')}}
         </template>
 
@@ -59,7 +59,7 @@
         <q-chip size="md" icon="mdi-forward" v-if="ongoing_assembly.acl.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink">
             {{ $t('content.assemblies.item.please_enter') }}
         </q-chip>
-        <q-chip size="md" icon="mdi-forward" v-if="!oauth.authenticated" outline color="primary" 
+        <q-chip size="md" icon="mdi-forward" v-if="!oauth_authenticated" outline color="primary" 
                 text-color="primary" class="bg-white cursor-pointer" 
                 clickable @click="clickAuthLink">
             {{ $t('auth.goto_authentication_form') }}

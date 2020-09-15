@@ -3,7 +3,7 @@
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="2" amGroup='ongoingassemblyPage'
-            :ongoing="$root.authenticated!==undefined && ongoing_assembly===null">
+            :ongoing="oauth_authenticated!==undefined && ongoing_assembly===null">
         
         <!-- // TODO: differentiate by alert status -->
         <template v-if="isNew && firstStage && !lastStage && !isCompleted">

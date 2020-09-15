@@ -7,19 +7,38 @@ import { contentstore } from './vuex-store-contenttree'
 import { assemblystore } from './vuex-store-assembly'
 import { publicindexstore } from './vuex-store-publicindex'
 import { pluginstore } from 'src/plugins/vuex-store'
-import {get_cookie_value} from '../cookie.service'
-// import cookie from 'vue-cookies'
+import { oauthstore } from 'src/utils/oauth/vuex-store-oauth'
 
 Vue.use(Vuex)
 
 // Modules
 var stores = {
+  oauthstore,
   assemblystore,
   publicindexstore,
   contentstore,
   pluginstore
 }
 
+// const getters = {
+  
+//   /* This computed property is a vuex getter: to make sure it is only run once globally. 
+//     By the way: 'oauth_update_date' is a helper-state variable to make this Vuex-Cookie getter Getter responsive.
+//     Note: Cookies are not responsive in Vuejs by default. 
+//   */
+//   retrieve_oauth_data: function (state) {
+//     if (!!state.oauth_update_date || state.oauth_update_date <= new Date()){
+//       console.log("READ JWT FROM COOKIE  (should only run once per Vue mounting)")
+//       const oauth_jwt = get_cookie_value('oauth_jwt')
+//       if (oauth_jwt) {
+//         console.log("DECODE JWT")
+//         return (oAuthService.tokenDecode(oauth_jwt))
+//       }
+//     }
+
+//     return (null)
+//   }
+// }
 
 export default new Vuex.Store({
   modules: stores,
@@ -27,27 +46,21 @@ export default new Vuex.Store({
   strict: false, // disable for production
   state: {
     monitors: {}
+    // oauth_update_date: null
   },
 
   getters: {
 
-    oauth_userid(state) {
-      const cookie = get_cookie_value('oauth_jwt')
-      return(state.oauth.jwt)
-    },
-
-    getSubject() {
-      return(state.oauth.sub)
-    }
   },
 
   actions: {
-    updateOauth: ({state, dispatch, commit}, { jwt}) => {
-      alert(jwt)
-      const sub = 'ddd'
-      const oauth = {jwt: jwt, sub: sub}
-      commit('monitor_date', {oauth})
-    },
+
+    // /* This is a helper method to force Vuex-Getter to be updated, when Oauth Cookie changes.
+    // Note: Cookies are not responsive in Vuejs by default. 
+    // */ 
+    // oauthUpdate: ({commit}, {newdate}) => {
+    //   commit('oauth_update_date', {newdate})
+    // },
 
     monitorApi: ({state, dispatch, commit}, { event, data, timeout}) => {
 
@@ -101,8 +114,8 @@ export default new Vuex.Store({
       Vue.set(state.monitors, event, now)
     },
 
-    update_oauth (state, {oauth}) {
-      Vue.set(state, 'oauth', oauth)
-    }
+    // oauth_update_date (state, {newdate}) {
+    //   Vue.set(state, 'oauth_update_date', newdate)
+    // }
   }
 })

@@ -1,6 +1,6 @@
 import ApiService from "src/utils/xhr"
 import {mapGetters, mapActions} from 'vuex'
-import { LayoutEventBus } from 'src/layouts/components/eventbus.js'
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 import Configuration from 'src/utils/configuration'
 
 export default {
@@ -158,8 +158,8 @@ export default {
       // is cache up to date?
       if (!assembly ||
           assembly.access_sub === undefined ||
-          // TODO: just during page reload $root.userid is null.
-          assembly.access_sub != this.$root.userid) {
+          // TODO: just during page reload oauth_userid is null.
+          assembly.access_sub != this.oauth_userid) {
         console.log("OUTDATED")
         return(false)
       }

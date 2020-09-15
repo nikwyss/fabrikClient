@@ -49,7 +49,7 @@ const ApiService = {
    */
   setHeader(token) {
 
-    console.log("Set XHR Request header")
+    console.log("Set XHR Request header" + token)
     if (typeof (token) !== 'string' && token !== null) {
       return (null)
     }
