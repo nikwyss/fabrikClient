@@ -9,51 +9,172 @@ and will only re-evaluate when some of its dependencies have changed.
 */
 
 import Vue from 'vue'
-import {get_cookie_value} from 'src/utils/cookie.service'
+import {get_cookie_value, set_cookie_value} from 'src/utils/cookie.service'
 import {oAuthService} from "src/utils/oauth/requests"
+import { ApiService } from 'src/utils/xhr'
+
+const empty_credentials = {
+  aud: null,
+  authtype: null,
+  expiration: null,
+  iss: null,
+  roles: null,
+  sub: null,
+  userName: null}
 
 var state = {
-    oauth_update_date: null
+    oauth_update_date: null,
+    oauth_credentials: empty_credentials
 }
 
 const getters = {
 
-    retrieve_oauth_data: function (state) {
+  retrieveCredentials: function (state) {
+    return (state.oauth_credentials)
+  },
 
-        if (!!state.oauth_update_date || state.oauth_update_date <= new Date()){
-          console.log("READ JWT FROM COOKIE  (should only run once per Vue mounting)")
-          const oauth_jwt = get_cookie_value('oauth_jwt')
-          if (oauth_jwt) {
-            console.log("DECODE JWT")
-            return (oAuthService.tokenDecode(oauth_jwt))
-          }
-        }
+  oauth_ongoing: function () {
+    const oauth_random_state = get_cookie_value('oauth_random_state')
+    return(!!oauth_random_state)
+  },
 
-        return (null)
-    }
+  oauth_username: (state) => {
+    // console.log("READ userid...........")
+    const credentials = getters.retrieveCredentials(state)
+    console.assert (credentials)
+    return (credentials['userName'])
+  },
+  
+  oauth_userid: (state) => {
+    // console.log("READ userid...........")
+    const credentials = getters.retrieveCredentials(state)
+    console.assert (credentials)
+    return (credentials['sub'])
+  },
+  
+  oauth_authenticated: (state) => {
+    // console.log("READ userid...........")
+    const oauth_userid = getters.oauth_userid(state)
+    return (!!oauth_userid)
+  },
+
+  is_current_oauth_userid: (state) => (cached_userid) => {
+    // console.log("READ userid...........")
+    const oauth_userid = getters.oauth_userid(state)
+    return (oauth_userid == cached_userid)
+  }
 }
 
 const actions = {
    
-    /* This is a helper method to force Vuex-Getter to be updated, when Oauth Cookie changes.
-    Note: Cookies are not responsive in Vuejs by default. 
-    */ 
-    oauthUpdate: ({commit}, {newdate}) => {
-        commit('oauth_update_date', {newdate})
+  /* This is a helper method to force Vuex-Getter to be updated, when Oauth Cookie changes.
+  Note: Cookies are not responsive in Vuejs by default. 
+  */ 
+  oauthUpdate: ({commit, dispatch}, {newdate, newjwt}) => {
+    console.log("UPDATE OAUTH")
+
+    if (newdate) {
+      commit('oauth_update_date', {newdate})
     }
+
+    // Store newest credentials in localstorages:
+    if (newjwt===undefined){
+
+      // no credentials are transmitted. Just (re-)read them from cookies
+      console.log("Read JWT from cookie...")
+      newjwt = get_cookie_value('oauth_jwt')
+
+    }
+
+    // JWT is empty: initiate new JWT Request... 
+    if (newjwt===null){
+
+      const oauthProvider = get_cookie_value('oauth_provider')
+      const refreshToken = get_cookie_value('oauth_refresh_token')
+
+      if (!!refreshToken && !!oauthProvider) {
+
+        dispatch('retrieveNewJWT', {refreshToken, oauthProvider})
+
+      }else if (!!refreshToken !== !!oauthProvider) {
+        
+        // error: refreshToken or Provider are not valid: Reset everything.
+        console.log("Provider or RefreshTOken is missing: Reset everything")
+        dispatch('resetEverything', {})
+
+      } else {
+
+        // Not authenticated.
+        // all correctly configured.
+
+      }
+
+    }else{
+
+      // credentials have been transmitted as method parameter
+      // Everything seems to be alright
+      commit('oauth_update_credentials', newjwt)
+    }
+  },
+
+  resetEverything: ({commit, dispatch}) => {
+    console.log("RESET EVERYTHIN: localstorage and cookie")
+    set_cookie_value('oauth_jwt', null)
+    set_cookie_value('oauth_provider', null)
+    set_cookie_value('oauth_random_state', null)
+    set_cookie_value('oauth_refresh_token', null)
+    commit('oauth_update_credentials', null)
+  },
+
+    /* Retrieve a new jwt token: async */ 
+  async retrieveNewJWT ({commit}, {oauthProvider, refreshToken}) {
+    console.log("Retrieve new OAUTH")
+
+    if (!refreshToken || !refreshToken) {
+      oauthProvider = get_cookie_value('oauth_provider')
+      refreshToken = get_cookie_value('oauth_refresh_token')
+    }
+    
+    console.assert(oauth_provider)
+    console.assert(refreshToken)
+    let jwt = await oAuthService.tokenRefresh(oauth_provider, refreshToken)
+    commit('oauth_update_credentials', jwt)
+
+    return(jwt)
+
+  }
 }
 
 const mutations = {
 
   oauth_update_date (state, {newdate}) {
     Vue.set(state, 'oauth_update_date', newdate)
+  },
+
+  oauth_update_credentials (state, jwt) {
+
+    // 1) Header for axios requests
+    // Add authorization prefix for all following xhr requests.
+    // console.log(" set axios header: " + jwt)
+    ApiService.setHeader(jwt)
+
+    // 2) update localstorage
+    console.assert(jwt!==undefined)
+    if (jwt) {
+      console.log("DECODE JWT AND STORE IN LOCALSTORAGE")
+      const credentials = oAuthService.tokenDecode(jwt)
+      Vue.set(state, 'oauth_credentials', credentials)
+    }else {
+      console.log("REMOVE JWT DATA FROM LOCALSTORAGE")
+      Vue.set(state, 'oauth_credentials', empty_credentials)
+    }
   }
 }
 
 export const oauthstore = {
     namespaced: true,
     state,
-    getters,
+    mutations,
     actions,
-    mutations
+    getters
 }

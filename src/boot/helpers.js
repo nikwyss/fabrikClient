@@ -23,7 +23,7 @@ export default boot(({ Vue }) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   Vue.mixin(
     {
-
+      //TODO: where to define global constants?
       data: function() {
         return {
           // User-specific Statuses
@@ -56,6 +56,7 @@ export default boot(({ Vue }) => {
 
         /*
         Returns length of a object/list, while handling null as 0. 
+        TODO: put this to window.object
         */
         nLength: function (object1) {
           if (object1===null){

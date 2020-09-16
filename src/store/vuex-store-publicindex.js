@@ -12,6 +12,14 @@ var state = {
 
 const getters = {
 
+  // getTheGetter(state, rootGetters) {
+  //   console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+  //   const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
+  //   const userid = 7
+  //   console.log(compare_func)
+  //   return (compare_func(userid))
+  // },
+
   published_assemblies: function(state) {
     const publicIndex = state.publicIndex
 
@@ -33,26 +41,28 @@ const getters = {
 
   /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
   currently logged in user */
-  checkPublicIndexStatus: function (state) {
-    
-    // not access_date availabl
+  checkPublicIndexStatus(state, rootGetters) {
+
+    // not access_date available
     const timeDownloaded = Vue.moment(state.publicIndex.access_date)
     if (!timeDownloaded) { return (false)}
     
     // Cache expired
-    const MonitorFrequency = 20 // TODO: put this in environment variable.
+    const CacheDurabilityMinutes = 0 // TODO: put this in environment variable.
     const timeThreshold = Vue.moment(new Date())
-    timeThreshold.subtract(MonitorFrequency, 'minutes')
+    timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
     if (timeDownloaded < timeThreshold) {
       return (false)
     }
 
     // Wrong user
-    return (true)
+    const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
+    const cached_userid = state.publicIndex.access_sub
+    return (compare_func(cached_userid))
   },
 
   /* SHORTCUTS: mainly for artificial moderators */
-  IsThereAnAssemblyInPublicState: function() {
+  IsThereAnAssemblyInPublicState: (state) => {
     if (state.published_assemblies == null) {
       return (null)
     }
@@ -94,7 +104,7 @@ const getters = {
 
 const actions = {
 
-  syncPublicIndex: ({state, dispatch}) => {
+  syncPublicIndex: ({state, dispatch, rootGetters}) => {
 
     if(state.publicIndex===null || state.publicIndex === undefined) {
       // no cached version exists: load the data from resource server...
@@ -103,7 +113,7 @@ const actions = {
     }
 
     // renew cache all x- minutes
-    if (!getters.checkPublicIndexStatus(state)) {
+    if (!getters.checkPublicIndexStatus(state, rootGetters)) {
       // too old cache: load the data from resource server...
       dispatch('retrievePublicIndex')
     }
@@ -139,7 +149,7 @@ const mutations = {
 export const publicindexstore = {
   namespaced: true,
   state,
-  getters,
+  mutations,
   actions,
-  mutations
+  getters
 }

@@ -159,6 +159,7 @@ const oAuthService = {
       refresh_token: refreshToken,
       client_id: clientId
     }
+    console.log(data)
     const formData = Object.keys(data).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`).join('&');
     const requestData = {
       method: 'POST',

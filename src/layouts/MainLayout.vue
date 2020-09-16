@@ -234,7 +234,7 @@ export default {
       this.showNotificationBanner(type, msg_title, msg_body, icon)
     })
     LayoutEventBus.$on("resetLayoutToDefault", data => {
-      console.log("drawer is gooing to be closed...")
+      console.log("resetLayoutToDefault Listener...")
       this.close_drawer_right()
     })
   },

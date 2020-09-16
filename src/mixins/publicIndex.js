@@ -1,5 +1,6 @@
 // import ApiService from "src/utils/xhr"
 import {mapGetters, mapActions} from 'vuex'
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 export default {
   computed: {
@@ -9,11 +10,15 @@ export default {
       IsThereAnAssemblyInPublicState: 'publicindexstore/IsThereAnAssemblyInPublicState',
       IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
       IsUserDelegateOfOngoingAssembly: 'publicindexstore/IsUserDelegateOfOngoingAssembly',
-      IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn'
+      IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn',
+      retrieveCredentials: 'oauthstore/retrieveCredentials',
+      // checkPublicIndexStatus: 'publicindexstore/checkPublicIndexStatus'
+      
     })
   },
 
   mounted: function() {
     this.$store.dispatch('publicindexstore/syncPublicIndex')
+    
   }
 }

@@ -116,7 +116,17 @@ export default {
   methods: {
     logout: function() {
       // this.$session.logout(this.$root.oauth_callback)
-      this.$session.logout()
+      this.$session.logout().then((response) => {
+      
+        // Notification Message
+        let msg_title = this.$i18n.t('auth.logout_succeeded_title')
+        let msg_caption = this.$i18n.t('auth.logout_succeeded_caption')
+        this.$q.notify({
+          type: 'info',
+          caption: `${msg_caption}`,
+          message: `${msg_title}`
+        })
+      })
     }
   }
 }

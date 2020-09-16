@@ -20,33 +20,12 @@ var stores = {
   pluginstore
 }
 
-// const getters = {
-  
-//   /* This computed property is a vuex getter: to make sure it is only run once globally. 
-//     By the way: 'oauth_update_date' is a helper-state variable to make this Vuex-Cookie getter Getter responsive.
-//     Note: Cookies are not responsive in Vuejs by default. 
-//   */
-//   retrieve_oauth_data: function (state) {
-//     if (!!state.oauth_update_date || state.oauth_update_date <= new Date()){
-//       console.log("READ JWT FROM COOKIE  (should only run once per Vue mounting)")
-//       const oauth_jwt = get_cookie_value('oauth_jwt')
-//       if (oauth_jwt) {
-//         console.log("DECODE JWT")
-//         return (oAuthService.tokenDecode(oauth_jwt))
-//       }
-//     }
-
-//     return (null)
-//   }
-// }
-
 export default new Vuex.Store({
   modules: stores,
   plugins: [createPersistedState()],
   strict: false, // disable for production
   state: {
     monitors: {}
-    // oauth_update_date: null
   },
 
   getters: {
@@ -54,13 +33,6 @@ export default new Vuex.Store({
   },
 
   actions: {
-
-    // /* This is a helper method to force Vuex-Getter to be updated, when Oauth Cookie changes.
-    // Note: Cookies are not responsive in Vuejs by default. 
-    // */ 
-    // oauthUpdate: ({commit}, {newdate}) => {
-    //   commit('oauth_update_date', {newdate})
-    // },
 
     monitorApi: ({state, dispatch, commit}, { event, data, timeout}) => {
 
