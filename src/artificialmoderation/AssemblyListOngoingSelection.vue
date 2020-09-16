@@ -7,16 +7,16 @@
             :ongoing="oauth_authenticated!==undefined && ongoing_assembly===null">
 
         <!-- First Time Entering -->
-        <!-- <template  v-if="ongoing_assembly.acl.length > 0">
+        <!-- <template  v-if="assembly_acls.length > 0">
         {{$t('content.assemblies.am.you_may_enter_this_assembly_for_the_first_time')}}
         </template> -->
 
-        <template v-if="ongoing_assembly.acl.includes('delegate')">
+        <template v-if="assembly_acls.includes('delegate')">
         Durch die Hilfe von Ihnen und 1000 anderen eingeladenen BürgerInnen
         erstellen wir hier einen unabhängigen Standpunkt.
         </template>
 
-        <template v-else-if="ongoing_assembly.acl.includes('expert') || ongoing_assembly.acl.includes('manage')">
+        <template v-else-if="assembly_acls.includes('expert') || assembly_acls.includes('manage')">
         Sie können hier eintreten. Vielen Dank für Ihre Hilfe.
         <q-btn
             class="q-pa-sm"
@@ -29,7 +29,7 @@
             />
         </template>
 
-        <template v-else-if="ongoing_assembly.acl.includes('observe')">
+        <template v-else-if="assembly_acls.includes('observe')">
             Schauen Sie sich an, wie 1000 zufällig ausgewählte und unabhängige BürgerInnen über das Thema denken. Sie werden hier auf jeden Fall etwas lernen können.
             <q-btn
                 size="6"
@@ -41,11 +41,11 @@
             />
         </template>
 
-        <template v-if="oauth_authenticated && !ongoing_assembly.acl.length">
+        <template v-if="oauth_authenticated && !assembly_acls.length">
             Wir können Sie im Moment nicht zu der Veranstaltung zulassen.
         </template>
 
-        <template v-if="!oauth_authenticated && !ongoing_assembly.acl.length">
+        <template v-if="!oauth_authenticated && !assembly_acls.length">
         {{$t('content.assemblies.am.invitation_to_authenticate')}}
         </template>
 
@@ -56,7 +56,7 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip size="md" icon="mdi-forward" v-if="ongoing_assembly.acl.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink">
+        <q-chip size="md" icon="mdi-forward" v-if="assembly_acls.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink">
             {{ $t('content.assemblies.item.please_enter') }}
         </q-chip>
         <q-chip size="md" icon="mdi-forward" v-if="!oauth_authenticated" outline color="primary" 
@@ -74,6 +74,7 @@
 <script>
 import ArtificialModerator from './components/ArtificialModerator'
 import AssemblyMixin from 'src/pages/Assembly/mixins/assembly'
+import {mapGetters} from 'vuex'
 
 export default{
     name: "ArtificialModeratorAssemblyListOngoingSelection",
@@ -85,7 +86,15 @@ export default{
 
         oauth: function() {
             return(this.$store.oauth)
-        }
+        },
+ 
+        assembly_acls: function() {
+            return (this.store_assembly_acls(this.ongoing_assembly.identifier))
+        },
+
+        ...mapGetters({
+           store_assembly_acls: 'oauthstore/assembly_acls'
+        })
     },
 
     methods: {

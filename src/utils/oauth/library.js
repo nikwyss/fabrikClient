@@ -117,8 +117,11 @@ class oauthLibrary {
         }
         
         const jwt = accessToken['access_token']
+        const refresh_token = accessToken['refresh_token']
+        console.log(accessToken)
         console.log("last step: finalize by access code: " + jwt)
         this.set_jwt_cookie(jwt)
+        this.refresh_token = refresh_token
 
       } catch (error) {
 

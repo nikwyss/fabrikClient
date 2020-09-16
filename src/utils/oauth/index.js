@@ -192,6 +192,7 @@ export default {
           }
           console.log("Popup requests update of oauth runtime values!")
           LayoutEventBus.$emit('resetLayoutToDefault')
+          LayoutEventBus.$emit('hideNotificationBanners')
           LayoutEventBus.$emit('oauthUpdate')
         },
 
@@ -215,6 +216,7 @@ export default {
                 if (Allow400Status(error.config)) {
                     // dont raise 400 errors, if this is made explicit
                     // console.log("AXIOS: Pass Error 400")
+                    LayoutEventBus.$emit('showServiceError')
                     return (true)
                 }
 

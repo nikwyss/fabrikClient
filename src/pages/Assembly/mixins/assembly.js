@@ -164,8 +164,9 @@ export default {
         return(false)
       }
 
-      if (this.check4OutdatedData(assembly.access_date, this.CacheUpdateFrequency)) {
-        console.log("OUTDATED")
+      // if (this.check4OutdatedData(assembly.access_date, this.CacheUpdateFrequency)) {
+      if (this.check4OutdatedData(assembly.access_date, 1)) {
+          console.log("OUTDATED")
         return (false)
       }
 

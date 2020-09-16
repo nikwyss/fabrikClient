@@ -233,6 +233,9 @@ export default {
       let msg_body = this.$i18n.t('auth.authentication_error_body')
       this.showNotificationBanner(type, msg_title, msg_body, icon)
     })
+    LayoutEventBus.$on('hideNotificationBanners', data => {
+      this.hideNotificationBanner()
+    })
     LayoutEventBus.$on("resetLayoutToDefault", data => {
       console.log("resetLayoutToDefault Listener...")
       this.close_drawer_right()

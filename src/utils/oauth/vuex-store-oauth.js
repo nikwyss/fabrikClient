@@ -12,6 +12,7 @@ import Vue from 'vue'
 import {get_cookie_value, set_cookie_value} from 'src/utils/cookie.service'
 import {oAuthService} from "src/utils/oauth/requests"
 import { ApiService } from 'src/utils/xhr'
+import oauth from '.'
 
 const empty_credentials = {
   aud: null,
@@ -52,6 +53,14 @@ const getters = {
     return (credentials['sub'])
   },
   
+    
+  oauth_roles: (state) => {
+    // console.log("READ userid...........")
+    const credentials = getters.retrieveCredentials(state)
+    console.assert (credentials)
+    return (credentials['roles'])
+  },
+
   oauth_authenticated: (state) => {
     // console.log("READ userid...........")
     const oauth_userid = getters.oauth_userid(state)
@@ -62,14 +71,33 @@ const getters = {
     // console.log("READ userid...........")
     const oauth_userid = getters.oauth_userid(state)
     return (oauth_userid == cached_userid)
+  },
+
+  /* Returns a list of all roles obtained by the authenticated user 
+  for the given assembly */
+  assembly_acls: (state) => (assemblyIdentifier) => {
+    // console.log("CHECK ACLs for current assembly...........")
+    const oauth_roles = getters.oauth_roles(state)
+    if (!oauth_roles){
+      return []
+    }
+    var assembly_roles = oauth_roles.filter(function (el) {
+      return el.endsWith(`@${assemblyIdentifier}`);
+    });
+
+    var assembly_acls = assembly_roles.map(function (el) {
+      return el.split('@')[0]
+    });
+
+    return (assembly_acls)
   }
 }
 
 const actions = {
-   
+
   /* This is a helper method to force Vuex-Getter to be updated, when Oauth Cookie changes.
   Note: Cookies are not responsive in Vuejs by default. 
-  */ 
+  */
   oauthUpdate: ({commit, dispatch}, {newdate, newjwt}) => {
     console.log("UPDATE OAUTH")
 
@@ -130,17 +158,28 @@ const actions = {
   async retrieveNewJWT ({commit}, {oauthProvider, refreshToken}) {
     console.log("Retrieve new OAUTH")
 
-    if (!refreshToken || !refreshToken) {
+    if (!refreshToken || !oauthProvider) {
       oauthProvider = get_cookie_value('oauth_provider')
       refreshToken = get_cookie_value('oauth_refresh_token')
     }
     
-    console.assert(oauth_provider)
+    console.assert(oauthProvider)
     console.assert(refreshToken)
-    let jwt = await oAuthService.tokenRefresh(oauth_provider, refreshToken)
+    let token = await oAuthService.tokenRefresh(oauthProvider, refreshToken)
+    console.assert('access_token' in token)
+    console.assert('refresh_token' in token)
+    console.log(token)
+    console.log("after refresh")
+
+    set_cookie_value('oauth_jwt', token['access_token'])
+    set_cookie_value('oauth_refresh_token', token['refresh_token'])
+    console.assert(token['access_token'])
+    console.assert(token['refresh_token'])
+
+    const jwt = token['access_token']
     commit('oauth_update_credentials', jwt)
 
-    return(jwt)
+    return(token['access_token'])
 
   }
 }

@@ -12,14 +12,6 @@ var state = {
 
 const getters = {
 
-  // getTheGetter(state, rootGetters) {
-  //   console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-  //   const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
-  //   const userid = 7
-  //   console.log(compare_func)
-  //   return (compare_func(userid))
-  // },
-
   published_assemblies: function(state) {
     const publicIndex = state.publicIndex
 
@@ -41,7 +33,8 @@ const getters = {
 
   /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
   currently logged in user */
-  checkPublicIndexStatus(state, rootGetters) {
+  checkPublicIndexStatus(state, getters, rootState, rootGetters) {
+    // console.log(rootGetters)
 
     // not access_date available
     const timeDownloaded = Vue.moment(state.publicIndex.access_date)
@@ -51,14 +44,13 @@ const getters = {
     const CacheDurabilityMinutes = 0 // TODO: put this in environment variable.
     const timeThreshold = Vue.moment(new Date())
     timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
-    if (timeDownloaded < timeThreshold) {
-      return (false)
-    }
-
-    // Wrong user
-    const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
-    const cached_userid = state.publicIndex.access_sub
-    return (compare_func(cached_userid))
+    return (timeDownloaded < timeThreshold)
+    //   return (false)
+    // }
+    // // Wrong user
+    // const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
+    // const cached_userid = state.publicIndex.access_sub
+    // return (compare_func(cached_userid))
   },
 
   /* SHORTCUTS: mainly for artificial moderators */
@@ -84,7 +76,7 @@ const getters = {
     return (!getters.IsThereAnAssemblyOngoing(state) && !getters.IsThereAnAssemblyOngoing(state))
   },
 
-  IsUserDelegateOfOngoingAssembly: function (state) {
+  IsUserDelegateOfOngoingAssembly(state, localgetters, rootState, rootGetters) {
 
     // data not yet loaded
     const ongoing_assemblies = getters.ongoing_assemblies(state);
@@ -97,14 +89,16 @@ const getters = {
     }
 
     // Check permissions:
-    let accessibleAssemblies = ongoing_assemblies.filter(x => x.am_is_accessible_by_current_user)
+    const compare_func = rootGetters['oauthstore/assembly_acls']
+    console.log(compare_func)
+    let accessibleAssemblies = ongoing_assemblies.filter(x => compare_func(x.identifier))
     return (accessibleAssemblies.length > 0)
   }
 }
 
 const actions = {
 
-  syncPublicIndex: ({state, dispatch, rootGetters}) => {
+  syncPublicIndex: ({state, dispatch, localgetters, rootState, rootGetters}) => {
 
     if(state.publicIndex===null || state.publicIndex === undefined) {
       // no cached version exists: load the data from resource server...
@@ -113,7 +107,7 @@ const actions = {
     }
 
     // renew cache all x- minutes
-    if (!getters.checkPublicIndexStatus(state, rootGetters)) {
+    if (!getters.checkPublicIndexStatus(state, getters, rootState, rootGetters)) {
       // too old cache: load the data from resource server...
       dispatch('retrievePublicIndex')
     }

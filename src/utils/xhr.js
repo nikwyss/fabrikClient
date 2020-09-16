@@ -13,6 +13,8 @@ const httpClient = axios.create({
     baseUrl: process.env.VUE_APP_BASE_URL,
     timeout: 1000, // indicates, 1000ms ie. 1 second
     headers: {
+            responseType: 'text'
+
         "Content-Type": "application/json",
     }
 });
@@ -60,6 +62,22 @@ const ApiService = {
     } else {
       delete axios.defaults.headers.common[HTTP_HEADER]
     }
+
+    // axios.defaults.headers.get['responseType'] = 'json';
+    // axios.defaults.headers.get['Response-Encoding'] = 'raw';
+    // axios.defaults.headers.get['responseEncoding'] = 'raw';
+    // axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
+    // axios.defaults.headers.get['Data-Type'] = 'text';
+    // axios.defaults.headers.get['dataType'] = 'text';
+  
+
+      // See the global options here (Request Config)
+      //   encoding: "raw",
+      //   reponseEncoding: 'raw',
+      //   dataType: "text",
+      //   contentType: "application/text",
+  
+
   },
 
   /**
@@ -93,13 +111,21 @@ const ApiService = {
   },
 
   async get(resource) {
-    // return await axios.get(resource, {'origin': RequestOrigin})
-    let data = {
+
+    let options = {
       method: 'GET',
-      url: resource,
+      url: resource
     }
-    let response = await this.customRequest(data)
-    return (response)
+    // // var request = require('request');
+    // var options = {
+    //   'method': 'get',
+    //   'url': resource,
+    //   'headers': {
+    //     'Accept': 'application/json, text/plain, */*',
+    //     'Authorization': 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOjcsImlzcyI6ImRlbW9rcmF0aWVmYWJyaWsvZmFicmlrQXV0aCIsInVzZXJOYW1lIjoiZGVsZWdhdGUiLCJyb2xlcyI6WyJkZWxlZ2F0ZUBkaWdpa29uMjAyMiIsImRlbGVnYXRlQGluaXRpYXRpdmVYWSJdLCJleHAiOjE3ODAyODc2MDB9.YUvqRbRVkYfTBxLFoLCgvJYCvw025LWQgCNKw99VaeSCV0aJKMDyip3kIcJsNmF88srjoG7YBnatx1nShypdPg',
+    //     'Content-Type': 'application/json'
+    //   },
+    return (await this.customRequest(options))
   },
 
   async post(resource, data) {
@@ -151,6 +177,8 @@ const ApiService = {
     }
 
     var response = null
+    console.log(data)
+    console.log("-------------------XHR")
     response = await axios(data)
     // TODO: do we have to catch the unknown exception?
     // this.$http.get("https://recetapp-b43f2.firebaseio.com/posts.json")
