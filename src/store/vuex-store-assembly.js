@@ -61,10 +61,16 @@ const getters = {
   
   get_assembly_stages: (state) => (assemblyIdentifier) => {
     // return state.things.find(thing => thing.identifier === id)
+
     console.assert(assemblyIdentifier)
     if (!(assemblyIdentifier in state.assemblydata)) {
       return (null)
     }
+
+    if (!state.assemblydata[assemblyIdentifier]) {
+      return (false)
+    }
+
     console.assert('stages' in state.assemblydata[assemblyIdentifier])
     console.assert(state.assemblydata[assemblyIdentifier].stages !== null)
 
@@ -78,6 +84,8 @@ const getters = {
     if (stages===null) {
       return (null)
     }
+    
+    console.log(stages)
     console.assert(stageID in stages)
 
     return (stages[stageID])
@@ -147,6 +155,7 @@ const actions = {
   },
   
   retrieveAssembly({commit}, {assemblyIdentifier}) {
+
     console.log("Retrieve assemblies from resource server")
     api.retrieveAssembly(assemblyIdentifier).then(
       response => {

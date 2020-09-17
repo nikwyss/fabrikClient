@@ -10,13 +10,13 @@
         <!-- First Time Entering -->
         <!-- <template v-else-if="assembly_acls.includes('observe')"> -->
         <template v-if="assembly !== null && assembly.is_public === true">
-        {{$t('content.showcase.am.there_are_assemblies_in_public_state')}}
+        {{$t('showcase.am.there_are_assemblies_in_public_state')}}
         </template>
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
         <q-chip size="md" icon="mdi-forward" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink">
-            {{$t('content.showcase.am.chip_please_enter')}}
+            {{$t('showcase.am.chip_please_enter')}}
         </q-chip>
         </template>
 

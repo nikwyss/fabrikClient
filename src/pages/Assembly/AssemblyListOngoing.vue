@@ -19,13 +19,13 @@
                 />
 
                 <q-card-section class="col-12">
-                    <div class="text-subtitle2">{{$t('content.assemblies.item.home_caption', {assembly_title: assembly.title})}}</div>
+                    <div class="text-subtitle2">{{$t('assemblies.home_caption', {assembly_title: assembly.title})}}</div>
                     <h2>{{assembly.caption}}</h2>
                     <span>{{assembly.info}}</span>
 
                     <!-- v-if="assembly.date_end" -->
                 <div class="q-mt-md text-caption" v-if="assembly.date_end">
-                     {{ $t('content.assemblies.item.date_end', {relative_end_date: $moment('2020-09-11T23:00').fromNow(true)}) }}
+                     {{ $t('assemblies.date_end', {relative_end_date: $moment('2020-09-11T23:00').fromNow(true)}) }}
                      <!-- TODO: Add timer for the last hour -->
                 </div>
                 </q-card-section>

@@ -7,7 +7,7 @@
             alignment="left" role="1" 
             i18n_path_prefix="content.index">
         <template>
-        {{$t('content.index.am.general_greeting', {salutation: salutation})}}
+        {{$t('index.am.general_greeting', {salutation: salutation})}}
         </template>
     </ArtificialModerator>
 
@@ -17,27 +17,27 @@
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
         <template v-if="oauth_authenticated === false && IsThereAnAssemblyOngoing === true">
-        {{$t('content.index.am.invitation_to_authenticate')}}
+        {{$t('index.am.invitation_to_authenticate')}}
         </template>
 
         <!-- Already authenticated delegate -->
         <template  v-else-if="oauth_authenticated === true && IsUserDelegateOfOngoingAssembly === true">
-        {{$t('content.index.am.delegates_redirect')}} 
+        {{$t('index.am.delegates_redirect')}} 
         </template>
 
         <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
         <template v-else-if="this.oauth_authenticated !== undefined && IsThereAnAssemblyInPublicState === true">
-        {{$t('content.index.am.information_for_public_visitors')}}
+        {{$t('index.am.information_for_public_visitors')}}
         </template>
 
         <!-- no assembly is PUBLIC -->
         <template v-else-if="this.oauth_authenticated !== undefined && IsThereNothingGoingOn === true">
-        {{$t('content.index.am.factory_holiday')}}
+        {{$t('index.am.factory_holiday')}}
         </template>
 
         <!-- authenticated user does not have permission to ongoing assembly-->
         <template v-else-if="this.oauth_authenticated !== undefined">
-        {{$t('content.index.am.authenticated_user_without_permission_for_ongoing_assembly')}}
+        {{$t('index.am.authenticated_user_without_permission_for_ongoing_assembly')}}
         </template>
 
         <!-- ACTION CHIPS -->
@@ -83,7 +83,7 @@ export default{
 
             } else {
 
-                const salutation = this.$i18n.t('content.index.am.salutation_for_guests')
+                const salutation = this.$i18n.t('index.am.salutation_for_guests')
                 return (salutation)
             }
         }

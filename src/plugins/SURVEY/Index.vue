@@ -27,7 +27,7 @@
                     {{ $t('survey.misconfiguration_error') }}
                     <template v-slot:action>
                         <q-btn flat 
-                            :label="$t('content.assemblies.item.go_back_to_assembly_home')" 
+                            :label="$t('assemblies.go_back_to_assembly_home')" 
                             @click="gotoAssemblyHome()" />
                     </template>
                 </q-banner>
@@ -45,7 +45,7 @@
                     {{ $t('survey.already_completed_error') }}
                     <template v-slot:action>
                         <q-btn flat 
-                            :label="$t('content.assemblies.item.go_back_to_assembly_home')" 
+                            :label="$t('assemblies.go_back_to_assembly_home')" 
                             @click="gotoAssemblyHome()" />
                     </template>
                 </q-banner>

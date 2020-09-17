@@ -111,8 +111,6 @@ export default {
                 console.log("try to refresh token and then relaunch xhr (2)")
                 error.response.status = 449
                 error.config.retoken = await that.$store.dispatch('oauthstore/retrieveNewJWT', {})
-                debugger
-
                 error.config.retry = true
                 console.log(error.config)
                 return (error.config)

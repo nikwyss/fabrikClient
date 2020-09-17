@@ -7,22 +7,22 @@
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
         <!-- <template v-if="!oauth_authenticated && IsThereAnAssemblyOngoing === true">
-        {{$t('content.assemblies.am.invitation_to_authenticate')}}
+        {{$t('assemblies.am.invitation_to_authenticate')}}
         </template> -->
 
         <!-- Already authenticated delegate -->
         <!-- <template  v-if="IsUserDelegateOfOngoingAssembly === true">
-        {{$t('content.assemblies.am.there_are_assemblies_ongoing')}}
+        {{$t('assemblies.am.there_are_assemblies_ongoing')}}
         </template> -->
 
         <!-- No ongoing and accesible assembly ongoing -->
         <template  v-if="oauth_authenticated && IsUserDelegateOfOngoingAssembly === false">
-        {{$t('content.assemblies.am.no_assemblies_accessible')}}
+        {{$t('assemblies.am.no_assemblies_accessible')}}
         </template>
 
         <!-- No ongoing and accesible assembly ongoing -->
         <template  v-if="!oauth_authenticated && IsThereAnAssemblyOngoing === false">
-        {{$t('content.assemblies.am.no_assemblies_accessible')}}
+        {{$t('assemblies.am.no_assemblies_accessible')}}
         </template>
 
         <!-- ACTION CHIPS -->

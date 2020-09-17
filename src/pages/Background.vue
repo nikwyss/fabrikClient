@@ -1,13 +1,13 @@
 <template>
   <q-page class="doc_content" >
 
-  <h1>{{$t('content.background.h1')}}</h1>
+  <h1>{{$t('background.h1')}}</h1>
 
   <!-- RIGHT SIDE -->
   <div align="right">
   <ArtificialModerator alignment="left" role="1">
       <template>
-      {{ $t('content.background.am.page_introduction') }}
+      {{ $t('background.am.page_introduction') }}
       </template>
   </ArtificialModerator>
   </div>
@@ -17,11 +17,11 @@
       <!-- CITIZEN ASSEMBLIES -->
       <q-expansion-item group="somegroup" 
           icon="mdi-account-supervisor-circle"
-          :label="$t('content.background.citizen_assemblies.label')"
+          :label="$t('background.citizen_assemblies.label')"
           header-class="text-secondary">
         <q-card>
           <q-card-section>
-            {{$t('content.background.citizen_assemblies.text')}}
+            {{$t('background.citizen_assemblies.text')}}
           </q-card-section>
         </q-card>
       </q-expansion-item>
@@ -30,11 +30,11 @@
       <!-- DIGITAL PARTICIPATION -->
       <q-expansion-item group="somegroup" 
           icon="mdi-mouse-variant"
-          :label="$t('content.background.digital_participation.label')"
+          :label="$t('background.digital_participation.label')"
           header-class="text-secondary">
         <q-card>
           <q-card-section>
-            {{$t('content.background.digital_participation.text')}}
+            {{$t('background.digital_participation.text')}}
           </q-card-section>
         </q-card>
       </q-expansion-item>
@@ -44,11 +44,11 @@
       <q-expansion-item
         group="somegroup"
         icon="mdi-monitor-clean"
-        :label="$t('content.background.transparency.label')"
+        :label="$t('background.transparency.label')"
         header-class="text-secondary"
       >
         <q-card>
-          <q-card-section v-html="$t('content.background.transparency.text', {iconTechnicalTransparency: iconTechnicalTransparency})"></q-card-section>
+          <q-card-section v-html="$t('background.transparency.text', {iconTechnicalTransparency: iconTechnicalTransparency})"></q-card-section>
         </q-card>
       </q-expansion-item>
 
@@ -57,12 +57,12 @@
       <q-expansion-item
         group="somegroup"
         icon="mdi-incognito"
-        :label="$t('content.background.privacy.label')"
+        :label="$t('background.privacy.label')"
         header-class="text-secondary"
       >
         <q-card>
           <q-card-section>
-            {{$t('content.background.privacy.text')}}
+            {{$t('background.privacy.text')}}
           </q-card-section>
         </q-card>
       </q-expansion-item>
@@ -73,12 +73,12 @@
       <q-expansion-item
         group="somegroup"
         icon="mdi-sign-direction"
-        :label="$t('content.background.artificialmoderators.label')"
+        :label="$t('background.artificialmoderators.label')"
         header-class="text-secondary rounded-borders bg-primarylight"
       >
         <q-card>
           <q-card-section>
-            {{$t('content.background.artificialmoderators.text')}}
+            {{$t('background.artificialmoderators.text')}}
           </q-card-section>
         </q-card> 
       </q-expansion-item>
@@ -88,12 +88,12 @@
       <q-expansion-item
         group="somegroup"
         icon="mdi-account-group-outline"
-        :label="$t('content.background.team.label')"
+        :label="$t('background.team.label')"
         header-class="text-secondary rounded-borders bg-primarylight"
       >
         <q-card>
           <q-card-section>
-            {{$t('content.background.team.text')}}
+            {{$t('background.team.text')}}
           </q-card-section>
         </q-card> 
       </q-expansion-item>
@@ -104,12 +104,12 @@
       <q-expansion-item
         group="somegroup"
         icon="mdi-hammer-screwdriver"
-        :label="$t('content.background.technologies.label')"
+        :label="$t('background.technologies.label')"
         header-class="text-secondary"
       >
         <q-card>
           <q-card-section>
-            {{$t('content.background.technologies.text')}}
+            {{$t('background.technologies.text')}}
             <div class="full-width" align="center">
             <q-img src="~assets/technologies.png" style="max-width: 400px;"   />
             </div>
@@ -122,11 +122,11 @@
       <!-- THE NEXT STEPS OF THE PROJECT -->
       <q-expansion-item group="somegroup"
         icon="mdi-shoe-print"
-        :label="$t('content.background.next_steps.label')"
+        :label="$t('background.next_steps.label')"
         header-class="text-secondary">
         <q-card>
           <q-card-section>
-            {{$t('content.background.next_steps.text')}}
+            {{$t('background.next_steps.text')}}
           </q-card-section>
         </q-card>
       </q-expansion-item>
@@ -137,12 +137,12 @@
     <ArtificialModerator alignment="right" role="2" i18n_path_prefix="content.background">
 
         <template>
-          {{ $t('content.background.am.open_questions') }}
+          {{ $t('background.am.open_questions') }}
         </template>
 
         <template  v-slot:actions>
           <q-chip size="md" icon="mdi-email-outline" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickSendEmail">
-            {{ $t('content.background.am.cmd_email_composer') }}
+            {{ $t('background.am.cmd_email_composer') }}
           </q-chip>
         </template>
 

@@ -5,7 +5,7 @@
     <ArtificialModerator alignment="right" role="1" amGroup='ongoingassemblyPage'
             :ongoing="oauth_authenticated!==undefined || ongoing">
         <template>
-            {{$t('content.assemblies.item.home', {'maxSteps': maxSteps}) }}
+            {{$t('assemblies.home', {'maxStages': maxStages}) }}
         </template>
     </ArtificialModerator>
 
@@ -20,6 +20,6 @@ export default{
     name: "ArtificialModeratorAssemblyHome",
     components: {ArtificialModerator},
     // mixins: [AssemblyMixin],
-    props: ['maxSteps']
+    props: ['maxStages']
 }
 </script>

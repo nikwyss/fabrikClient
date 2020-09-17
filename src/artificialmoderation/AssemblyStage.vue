@@ -7,41 +7,41 @@
         
         <!-- // TODO: differentiate by alert status -->
         <template v-if="isNew && firstStage && !lastStage && !isCompleted">
-            {{$t('content.assemblies.item.stage_enter_first') }}
+            {{$t('assemblies.stage_enter_first') }}
         </template>
         <template v-if="isNew && !firstStage  && !lastStage  && !isCompleted">
-            {{$t('content.assemblies.item.stage_enter_continue') }}
+            {{$t('assemblies.stage_enter_continue') }}
         </template>
         <template v-if="isCompleted">
-            {{$t('content.assemblies.item.stage_already_completed') }}
+            {{$t('assemblies.stage_already_completed') }}
         </template>
         <template v-if="isNew && !firstStage  && lastStage && !isCompleted">
-            {{$t('content.assemblies.item.stage_enter_end') }}
+            {{$t('assemblies.stage_enter_end') }}
         </template>
         <template v-if="isNew && firstStage  && lastStage && !isCompleted">
-            {{$t('content.assemblies.item.unique_stage_enter') }}
+            {{$t('assemblies.unique_stage_enter') }}
         </template>
 
         <template v-if="!isNew && isAlert && !isCompleted">
-            {{$t('content.assemblies.item.stage_attention_needed') }}
+            {{$t('assemblies.stage_attention_needed') }}
         </template>
 
         <template v-if="!isNew && !isAlert && !isCompleted">
-            {{$t('content.assemblies.item.stage_already_seen') }}
+            {{$t('assemblies.stage_already_seen') }}
         </template>
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
         <q-chip v-if="stage && !lastStage && skippable" :size="requiresAttention ? 'md' : 'md'" icon="mdi-arrow-down" 
             clickable @click="clickGotoNextStage">
-            {{ $t('content.assemblies.item.goto_next_stage') }}
+            {{ $t('assemblies.goto_next_stage') }}
         </q-chip>
         <q-chip :size="requiresAttention ? 'md' : 'md'" icon="mdi-arrow-right" v-if="stage && !isCompleted" clickable @click="clickPluginLink">
-            {{ $t('content.assemblies.item.please_enter_stage') }}
+            {{ $t('assemblies.please_enter_stage') }}
         </q-chip>
         <q-chip size="sm" icon="mdi-arrow-down" v-if="stage && lastStage && skippable" 
             clickable @click="goto_final_message">
-            {{ $t('content.assemblies.item.goto_final_message') }}
+            {{ $t('assemblies.goto_final_message') }}
         </q-chip>
         </template>
 

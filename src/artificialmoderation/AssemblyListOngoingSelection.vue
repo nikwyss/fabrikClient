@@ -8,7 +8,7 @@
 
         <!-- First Time Entering -->
         <!-- <template  v-if="assembly_acls.length > 0">
-        {{$t('content.assemblies.am.you_may_enter_this_assembly_for_the_first_time')}}
+        {{$t('assemblies.am.you_may_enter_this_assembly_for_the_first_time')}}
         </template> -->
 
         <template v-if="assembly_acls.includes('delegate')">
@@ -46,18 +46,18 @@
         </template>
 
         <template v-if="!oauth_authenticated && !assembly_acls.length">
-        {{$t('content.assemblies.am.invitation_to_authenticate')}}
+        {{$t('assemblies.am.invitation_to_authenticate')}}
         </template>
 
         <!-- Repeated Entering
         <template  v-if="IsUserDelegateOfOngoingAssembly">
-        {{$t('content.assemblies.am.you_may_enter_this_assembly_for_the_repeatedly')}}
+        {{$t('assemblies.am.you_may_enter_this_assembly_for_the_repeatedly')}}
         </template> -->
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
         <q-chip size="md" icon="mdi-forward" v-if="assembly_acls.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink">
-            {{ $t('content.assemblies.item.please_enter') }}
+            {{ $t('assemblies.please_enter') }}
         </q-chip>
         <q-chip size="md" icon="mdi-forward" v-if="!oauth_authenticated" outline color="primary" 
                 text-color="primary" class="bg-white cursor-pointer" 

@@ -10,12 +10,12 @@
 
         <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
         <template v-if="nLength(published_assemblies)">
-        {{$t('content.showcase.am.there_are_assemblies_in_public_state')}}
+        {{$t('showcase.am.there_are_assemblies_in_public_state')}}
         </template>
 
         <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
         <template v-if="!nLength(published_assemblies)">
-        {{$t('content.showcase.am.no_assemblies_in_public_state')}}
+        {{$t('showcase.am.no_assemblies_in_public_state')}}
         </template>
 
     </ArtificialModerator>
