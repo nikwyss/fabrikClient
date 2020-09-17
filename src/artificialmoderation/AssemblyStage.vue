@@ -3,7 +3,7 @@
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="2" amGroup='ongoingassemblyPage'
-            :ongoing="oauth_authenticated!==undefined && ongoing_assembly===null">
+            :ongoing="oauth_authenticated!==undefined && assembly===null">
         
         <!-- // TODO: differentiate by alert status -->
         <template v-if="isNew && firstStage && !lastStage && !isCompleted">
@@ -53,13 +53,13 @@
 
 <script>
 import ArtificialModerator from './components/ArtificialModerator'
-// import AssemblyMixin from 'src/pages/Assembly/mixins/assembly'
+import AssemblyMixin from 'src/mixins/assembly'
 
 export default{
     name: "ArtificialModeratorAssemblyHome",
     components: {ArtificialModerator},
-    // mixins: [AssemblyMixin],
-    props: ['ongoing_assembly', 'lastStage', 'firstStage', 'stage', 'skippable', 
+    mixins: [AssemblyMixin],
+    props: ['lastStage', 'firstStage', 'stage', 'skippable', 
     'isAlert', 'isNew', 'stageNr', 'isCompleted'],
 
     computed: {

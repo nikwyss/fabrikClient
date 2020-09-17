@@ -37,7 +37,7 @@
 
 
 <script>
-import ContentTreeMixin from "./mixins/contenttree"
+import ContentTreeMixin from "src/mixins/contenttree"
 // import ComponentLoading from "@/layouts/components/Loading";
 // import ComponentError from "@/layouts/components/Error";
 import ComponentStageEditor from "./components/StageEditor";

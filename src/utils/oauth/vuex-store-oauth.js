@@ -66,7 +66,7 @@ const getters = {
     const oauth_userid = getters.oauth_userid(state)
     return (!!oauth_userid)
   },
-
+  
   is_current_oauth_userid: (state) => (cached_userid) => {
     // console.log("READ userid...........")
     const oauth_userid = getters.oauth_userid(state)

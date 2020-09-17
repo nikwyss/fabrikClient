@@ -52,7 +52,7 @@
                 :disabled="isDisabled(item) || isCompleted(item)"
             >
                 <!-- MANAGERS: STAGE EDITOR -->
-                <ComponentStageEditor :key="`AE${stageNr}`"  v-if="assembly.acl.includes('manage') && step==stageNr" :assembly="assembly" :model="item"/>
+                <ComponentStageEditor :key="`AE${stageNr}`"  v-if="assembly_acls.includes('manage') && step==stageNr" :assembly="assembly" :model="item"/>
 
                 <!-- STAGE CONTENT-->
                 <q-card flat>
@@ -82,13 +82,13 @@
     </div>
 
     <!-- MANAGER: NEW STAGE -->
-    <ComponentStageEditor v-if="assembly && assembly.acl.includes('manage')" :assembly="assembly" />
+    <ComponentStageEditor v-if="assembly && assembly_acls.includes('manage')" :assembly="assembly" />
 </q-page>
 </template>
 
 
 <script>
-import AssemblyMixin from "./mixins/assembly"
+import AssemblyMixin from "src/mixins/assembly"
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import { mapGetters, mapActions } from 'vuex'
 import ArtificialModeratorAssemblyHome from 'src/artificialmoderation/AssemblyHome'

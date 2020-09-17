@@ -19,7 +19,7 @@
 
             <!-- EDIT CONTENT -->
             <ComponentStageEditor 
-                v-if="assembly.acl.includes('manage')"
+                v-if="assembly_acls.includes('manage')"
                 :assembly_id="assembly.id"
                 :model="stage" />
 
@@ -45,7 +45,7 @@
             <div class="row justify-between" v-for="row in maxrows" :key="row">
                 <div class="col-12 col-sm-6  ">
                     <ArgumentCard 
-                        :acl="assembly.acl" 
+                        :acl="assembly_acls" 
                         :default_content_type="column_types[0]"
                         :stage="stage" 
                         :content="get_content_entry(row,0)"/>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ArgumentCard 
-                        :acl="assembly.acl" 
+                        :acl="assembly_acls" 
                         :default_content_type="column_types[1]"
                         :stage="stage"
                         :content="get_content_entry(row,1)"/>
@@ -76,7 +76,7 @@
 
 
 <script>
-import ContentTreeMixin from "src/pages/ContentTree/mixins/contenttree"
+import ContentTreeMixin from "src/mixins/contenttree"
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import ArgumentCard from "./components/ArgumentCard";
 import StagePeerReview from "src/pages/ContentTree/components/StagePeerReview"

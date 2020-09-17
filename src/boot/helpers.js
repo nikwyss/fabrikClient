@@ -8,6 +8,13 @@ import Configuration from 'src/utils/configuration'
 import { isNumber } from 'util';
 // we import all of `date`
 
+
+Object.filter = (obj, predicate) => 
+Object.keys(obj)
+      .filter( key => predicate(obj[key]) )
+      .reduce( (res, key) => (res[key] = obj[key], res), {} );
+
+      
 // Vue.use(VueDOMPurifyHTML)
 let defaultOptions = {
   allowedTags: ['a', 'b', 'q'],
@@ -16,6 +23,7 @@ let defaultOptions = {
     'q': [ 'class' ]
   }
 }
+
 Vue.use(VueSanitize, defaultOptions);
 // => Use for all editable Richt-Text CONTENT : v-html="$sanitize(item.content.text)"
 

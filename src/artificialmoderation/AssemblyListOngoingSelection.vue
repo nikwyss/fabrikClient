@@ -73,27 +73,25 @@
 
 <script>
 import ArtificialModerator from './components/ArtificialModerator'
-import AssemblyMixin from 'src/pages/Assembly/mixins/assembly'
 import {mapGetters} from 'vuex'
 
 export default{
     name: "ArtificialModeratorAssemblyListOngoingSelection",
     components: {ArtificialModerator},
-    mixins: [AssemblyMixin],
     props: ['ongoing_assembly'],
 
     computed: {
 
-        oauth: function() {
-            return(this.$store.oauth)
-        },
- 
+        // oauth: function() {
+        //     return(this.$store.oauth)
+        // },
+
         assembly_acls: function() {
             return (this.store_assembly_acls(this.ongoing_assembly.identifier))
         },
 
         ...mapGetters({
-           store_assembly_acls: 'oauthstore/assembly_acls'
+            store_assembly_acls: 'oauthstore/assembly_acls'
         })
     },
 

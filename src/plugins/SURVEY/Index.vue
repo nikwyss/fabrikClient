@@ -11,7 +11,7 @@
 
             <!-- EDIT CONTENT -->
             <ComponentStageEditor 
-                v-if="assembly.acl.includes('manage')"
+                v-if="assembly_acls.includes('manage')"
                 :assembly_id="assembly.id"
                 :model="stage" />
 
@@ -50,7 +50,6 @@
                     </template>
                 </q-banner>
             </div>
-   
 
             <!-- REDIRECT TO SURVEY  -->
             <div v-if="stage && check_data && !is_survey_completed"  align="center">
@@ -67,16 +66,13 @@
 
         </div>
 
-        survey response: {{is_a_survey_response}}<br>
-        completed: {{is_survey_completed}}<br>
-  {{ stage.progression }}
     </q-page>
 </template>
 
 
 <script>
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
-import StageMixin from "src/pages/Assembly/mixins/stage"
+import StageMixin from "src/mixins/stage"
 import i18nPluginMixin from "./i18n"
 import Configuration from 'src/utils/configuration'
 

@@ -69,7 +69,6 @@ const ApiService = {
     // axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
     // axios.defaults.headers.get['Data-Type'] = 'text';
     // axios.defaults.headers.get['dataType'] = 'text';
-  
 
       // See the global options here (Request Config)
       //   encoding: "raw",
@@ -177,31 +176,30 @@ const ApiService = {
     }
 
     var response = null
-    console.log(data)
-    console.log("-------------------XHR")
     response = await axios(data)
+
     // TODO: do we have to catch the unknown exception?
     // this.$http.get("https://recetapp-b43f2.firebaseio.com/posts.json")
     // .then(response => { console.log(response.data); })
     // .catch(e => { console.log(e); })
     
     // Note: 403 error handling takes place within the interceptor
-    // TODO: is this correct? add 403 condition in the night.
-    if (response.status == 403){
-      if (ReloginOnStatus403(data)) {
-        console.log("PERMISSION ERROR: Try again")
-        if (response.retry && response.retoken) {
-          // Re-issue tokens (in ApiService)
-          console.log("refresh token status set")
-          await response.retoken()
-          // Re-axios (same as before...)
-          response = await axios(data)
+    // // TODO: is this correct? add 403 condition in the night.
+    // if (response.status == 403){
+    //   if (ReloginOnStatus403(data)) {
+    //     console.log("PERMISSION ERROR: Try again")
+    //     if (response.retry && response.retoken) {
+    //       // Re-issue tokens (in ApiService)
+    //       console.log("refresh token status set")
+    //       await response.retoken()
+    //       // Re-axios (same as before...)
+    //       response = await axios(data)
 
-          console.log("second try")
-          console.log(response)
-        }
-      }
-    }
+    //       console.log("second try")
+    //       console.log(response)
+    //     }
+    //   }
+    // }
 
     if (temp_oauth_jwt && WithoutAuthHeader(data)) {
       // re-set the header

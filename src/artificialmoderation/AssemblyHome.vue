@@ -14,12 +14,12 @@
 
 <script>
 import ArtificialModerator from './components/ArtificialModerator'
-// import AssemblyMixin from 'src/pages/Assembly/mixins/assembly'
+// import AssemblyMixin from 'src/mixins/assembly'
 
 export default{
     name: "ArtificialModeratorAssemblyHome",
     components: {ArtificialModerator},
     // mixins: [AssemblyMixin],
-    props: ['ongoing_assembly', 'maxSteps']
+    props: ['maxSteps']
 }
 </script>

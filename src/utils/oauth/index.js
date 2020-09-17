@@ -49,49 +49,8 @@ export default {
           oauth_ongoing: 'oauthstore/oauth_ongoing'
         }),
 
-        // /* Reads JWT from Cookie */
-        // oauth_jwt_decoded:  function () {
-        //   return (this.retrieveCredentials)
-        // },
-
-        // oauth_userid: function () {
-        //   // TODO: put this in vuex, right?
-        //   // console.log("READ userid...........")
-        //   const token = this.oauth_jwt_decoded
-        //   if (token) {
-        //     return (token['sub'])
-        //   }
-        // },
-
-        // /* Authentication is alright, as soon as refresh token is present 
-        // // TODO: put this 
-        // */
-        // oauth_authenticated: function () {
-        //   // console.log("OREAD authenticated...")
-        //   // return (this.$session.refresh_token)
-        //   const token = this.oauth_jwt_decoded
-        //   if (!token || !token['sub']){
-        //     return (false)
-        //   }else {
-        //     return (true)
-        //   }
-        // },
-
-        // oauth_username: function () {
-        //   // console.log("READ username...........")
-        //   const token = this.oauth_jwt_decoded
-        //   if (token) {
-        //     return (token['userName'])
-        //   }
-        // },
-
-        // oauth_ongoing: function () {
-        //   // console.log(this.$session.random_state)
-        //   return(!!this.$session.random_state)
-        // }
       },
-      
-      
+
       methods: {
 
         /**
@@ -101,11 +60,77 @@ export default {
          * @returns {Promise<boolean>}
          */
         async oauth_initialize() {
+          var that = this
+
+
+          async function onAxiosReject(error) {
+            // onAxiosReject = async function (error) {
+            // enfoce that ApiService Wrapper is used, (and not pure Axios)
+            console.log("XHR ERROR")
+            ApiService.is_api_service_used_as_axios_wrapper(error.config)
+
+            // No remote connection established
+            if (!error.response) {
+              let msg_title = 'Network Error'
+              let msg_body = 'We could not make a connection to the service provider. Please try again!'
+              // this._flash.show({ status: 'error', title: msg_title, message: msg_body })
+              console.log("Network error")
+              console.warn(`${msg_title} ${msg_body}`);
+              LayoutEventBus.$emit('showServiceError')
+              return(false)
+
+            } else if (error.response.status == 400) {
+              // 400 errors (parse errors)
+              if (Allow400Status(error.config)) {
+                  // dont raise 400 errors, if this is made explicit
+                  // console.log("AXIOS: Pass Error 400")
+                  LayoutEventBus.$emit('showServiceError')
+                  return (true)
+              }
+
+            } else if (error.response.status == 403) {
+
+              // 403 errors
+              if (ReloginOnStatus403(error.config)) {
+                console.log("AXIOS: ReloginOnStatus403")
+                // at 403: try to (re)establish authentication, if not explicitly denied..
+                if (!that.$session.refresh_token || error.config.retry) {
+                
+                  // Ooops. There seems to be a need for a complete (re)login.
+                  if (that.oauth_authenticated) {
+                    LayoutEventBus.$emit('showAuthorizationError')
+                  }else{
+                    LayoutEventBus.$emit('showAuthenticationWarning')
+                  }
+                  console.log("Oauth Permission request error")
+                  return Promise.reject(error)
+                }
+                
+                // Not too bad: only a token refresh might fix this.
+                // Hence, we specify the token refresh function and th status 449 ("retry with")
+                console.log("try to refresh token and then relaunch xhr (2)")
+                error.response.status = 449
+                error.config.retoken = await that.$store.dispatch('oauthstore/retrieveNewJWT', {})
+                debugger
+
+                error.config.retry = true
+                console.log(error.config)
+                return (error.config)
+
+              }
+            }
+
+            // All other errors:
+            console.log("Unknown oauth request error")
+            LayoutEventBus.$emit('showServiceError')
+
+            return Promise.reject(error)
+          }
 
           // Allow "publicVueUpdateMethod" method to be accessed by popup window.
           window.publicVueUpdateMethod = this.publicVueUpdateMethod
           // TODO: put this in root Vue or in helper (this is not only oauth specific)
-          ApiService.mountAxiosInterceptor(this.onAxiosReject)
+          ApiService.mountAxiosInterceptor(onAxiosReject)
 
           this.registerListener()
 
@@ -194,103 +219,7 @@ export default {
           LayoutEventBus.$emit('resetLayoutToDefault')
           LayoutEventBus.$emit('hideNotificationBanners')
           LayoutEventBus.$emit('oauthUpdate')
-        },
-
-        async onAxiosReject (error) {
-            // enfoce that ApiService Wrapper is used, (and not pure Axios)
-            console.log("XHR ERROR")
-            ApiService.is_api_service_used_as_axios_wrapper(error.config)
-
-            // No remote connection established
-            if (!error.response) {
-                let msg_title = 'Network Error'
-                let msg_body = 'We could not make a connection to the service provider. Please try again!'
-                // this._flash.show({ status: 'error', title: msg_title, message: msg_body })
-                console.log("Network error")
-                console.warn(`${msg_title} ${msg_body}`);
-                LayoutEventBus.$emit('showServiceError')
-                return(false)
-
-            } else if (error.response.status == 400) {
-                // 400 errors (parse errors)
-                if (Allow400Status(error.config)) {
-                    // dont raise 400 errors, if this is made explicit
-                    // console.log("AXIOS: Pass Error 400")
-                    LayoutEventBus.$emit('showServiceError')
-                    return (true)
-                }
-
-            } else if (error.response.status == 403) {
-                // 403 errors
-                if (ReloginOnStatus403(error.config)) {
-                console.log("AXIOS: ReloginOnStatus403")
-                // at 403: try to (re)establish authentication, if not explicitly denied..
-                if (this.$session.refresh_token && !error.config.retry) {
-                    // Not too bad: only a token refresh might fix this.
-                    // Hence, we specify the token refresh function and th status 449 ("retry with")
-                    console.log("try to refresh token and then relaunch xhr (2)")
-                    error.response.status = 449
-                    error.config.retoken = await this.$store.dispatch('oauthstore/retrieveNewJWT', {})
-                    error.config.retry = true
-                    return (error.config)
-                }
-
-                // There seems to be a need for a complete (re)login.
-                // retoken is not possible anymore (due to logout / or session expiration?)
-                console.log('cannot access refresh token')
-                var customactions = [
-                  { label: 'Homepage', color: 'white', handler: () => { this.$router.push('/') } }
-                ]
-
-                if (this.oauth_authenticated) {
-                  LayoutEventBus.$emit('showAuthorizationError')
-                }else{
-                  LayoutEventBus.$emit('showAuthenticationWarning')
-                }
-
-                return (false)
-            }
-          }
-
-          // All other errors:
-          console.log("Unknown oauth request error")
-          LayoutEventBus.$emit('showServiceError')
-          return Promise.reject(error)
-        },
-
-        /**
-         * Refresh token routine: MAIN
-         * @returns {Promise<void>}
-         */
-      //   retrieve_refreshed_token: async function() {
-      //     console.log("START refresh token handling")
-
-      //     // VALIDATE DATA
-      //     // re-read cookie values
-      //     // TODO: dont know why I have to doo this...
-      //     console.assert(this.$session.refresh_token)
-      //     console.assert(this.$session.provider)
-
-      //     // empty jwt
-      //     // this.$session.set_jwt_cookie(null)
-          
-      //     // Re-issue a token
-      //     // try to re-issue an access_token by refresh token.
-      //     let accessToken = await oAuthService.tokenRefresh(this.$session.provider, this.$session.refresh_token)
-      //     if (!accessToken) {
-      //       // console.log("auth session invalid: reset and redirect to login..")
-      //       // let msg_title = 'Session Timeout'
-      //       // let msg_body = 'We could not continue your last login session. Please login again!'
-      //       // this._flash.show({ status: 'warning', title: msg_title, message: msg_body })
-      //       this.$session.reset_everything()
-      //       return (false)
-      //     }
-
-      //     // Convert to JWT
-      //     // let success = await this.$session._finalize_authentication_by_access_token(this.$session.provider, accessToken)
-      //     // console.assert(success)
-      //     return (true)
-      //   }
+        }
       }
     })
   }

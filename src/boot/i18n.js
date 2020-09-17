@@ -32,11 +32,11 @@ moment.defineLocale('de-ch', {parentLocale: 'de',});
 Vue.use(require('vue-moment'), {moment})
  
 
-console.log("----------")
-console.log(Vue.moment().locale()) //es
-console.log("----------")
-Vue.moment.locale('de-ch');
-console.log(Vue.moment().locale()) //es
+// console.log("----------")
+// console.log(Vue.moment().locale()) //es
+// console.log("----------")
+// Vue.moment.locale('de-ch');
+// console.log(Vue.moment().locale()) //es
 
 
 // Vue.use(require('vue-moment'));

@@ -17,7 +17,7 @@
 
             <!-- EDIT CONTENT -->
             <ComponentStageEditor 
-                v-if="assembly.acl.includes('manage')"
+                v-if="assembly_acls.includes('manage')"
                 :assembly_id="assembly.id"
                 :model="stage" />
 
@@ -40,7 +40,7 @@
             <div class="row justify-between" v-for="(nodeL1, keyL1)  in contenttree.structure.children"
                     :key="`L1${nodeL1.id}`">
                 <TextsheetCard 
-                    :acl="assembly.acl"
+                    :acl="assembly_acls"
                     :level="1"
                     :comments="filter_comment_entries(nodeL1.children)"
                     :questions="filter_question_entries(nodeL1.children)"
@@ -56,7 +56,7 @@
 
 
 <script>
-import ContentTreeMixin from "src/pages/ContentTree/mixins/contenttree"
+import ContentTreeMixin from "src/mixins/contenttree"
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import TextsheetCard from "./components/TextsheetCard";
 

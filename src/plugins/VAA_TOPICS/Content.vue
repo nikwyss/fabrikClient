@@ -17,7 +17,7 @@
                     icon="mdi-arrow-left"
                     @click="clickBackButton"/>
 
-                <TextsheetCard :acl="assembly.acl" 
+                <TextsheetCard :acl="assembly_acls" 
                     :contenttree="contenttree" 
                     :content="startingContent"
                     :standalone="true" />
@@ -33,7 +33,7 @@
         <br /><br />
         
         <ComponentContentTree
-            :acl="assembly.acl"
+            :acl="assembly_acls"
             label="Offene Diskussion"
             :contenttree="contenttree" 
             :startingContentID="startingContentID" 
@@ -44,7 +44,7 @@
 
 
 <script>
-import ContentTreeMixin from "src/pages/ContentTree/mixins/contenttree"
+import ContentTreeMixin from "src/mixins/contenttree"
 import ComponentContentTree  from "src/pages/ContentTree/components/ContentTree";
 import TextsheetCard from "./components/TextsheetCard";
 

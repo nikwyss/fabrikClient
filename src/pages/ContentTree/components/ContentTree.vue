@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import QTreeMixin from "../mixins/qtree"
+import QTreeMixin from "src/mixins/qtree"
 import ContentTitle from "./ContentTitle"
 import Fragment from 'vue-fragment'
 // import ContentBody from "./ContentBody"

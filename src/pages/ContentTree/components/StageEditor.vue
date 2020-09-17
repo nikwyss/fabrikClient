@@ -134,7 +134,7 @@
 
 <script>
 import ApiService from "src/utils/xhr";
-import ContentTreeMixin from "../mixins/contenttree"
+import ContentTreeMixin from "src/mixins/contenttree"
 import {mapActions} from 'vuex'
 import Configuration from 'src/utils/configuration'
 

@@ -20,7 +20,9 @@ const getters = {
     }
 
     // alert(state.published_assemblies)
-    return(publicIndex.assemblies.filter(x => x.is_public))
+
+    const filtered_assemblies = Object.filter(publicIndex.assemblies, x => x.is_public)
+    return (filtered_assemblies)
   },
 
   ongoing_assemblies: function(state) {
@@ -28,7 +30,9 @@ const getters = {
     if (publicIndex===null){
       return (null)
     }
-    return(publicIndex.assemblies.filter(x => x.is_active))
+
+    const filtered_assemblies = Object.filter(publicIndex.assemblies, x => x.is_active)
+    return (filtered_assemblies)
   },
 
   /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
@@ -41,7 +45,7 @@ const getters = {
     if (!timeDownloaded) { return (false)}
     
     // Cache expired
-    const CacheDurabilityMinutes = 0 // TODO: put this in environment variable.
+    const CacheDurabilityMinutes = 5 // TODO: put this in environment variable.
     const timeThreshold = Vue.moment(new Date())
     timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
     return (timeDownloaded < timeThreshold)
@@ -91,7 +95,7 @@ const getters = {
     // Check permissions:
     const compare_func = rootGetters['oauthstore/assembly_acls']
     console.log(compare_func)
-    let accessibleAssemblies = ongoing_assemblies.filter(x => compare_func(x.identifier))
+    let accessibleAssemblies = Object.filter(ongoing_assemblies, x => compare_func(x.identifier))
     return (accessibleAssemblies.length > 0)
   }
 }
@@ -123,7 +127,7 @@ const actions = {
         // save data
         console.assert (response.data !== null && response.data !== undefined)
         console.log('save full contenttree to cache.')
-        commit('add_or_update_publicIndex', response.data)
+        commit('storePublicIndex', response.data)
 
         // end loading
         LayoutEventBus.$emit('hideLoading')
@@ -134,7 +138,7 @@ const actions = {
 }
 
 const mutations = {
-  add_or_update_publicIndex (state, publicIndex) {
+  storePublicIndex (state, publicIndex) {
     // Vue.set  makes the change reactive!!
     Vue.set(state, 'publicIndex', publicIndex)
   }

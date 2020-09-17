@@ -8,7 +8,7 @@
         :ongoing="assembly===null">
 
         <!-- First Time Entering -->
-        <!-- <template v-else-if="assembly.acl.includes('observe')"> -->
+        <!-- <template v-else-if="assembly_acls.includes('observe')"> -->
         <template v-if="assembly !== null && assembly.is_public === true">
         {{$t('content.showcase.am.there_are_assemblies_in_public_state')}}
         </template>
@@ -27,7 +27,7 @@
 
 <script>
 import ArtificialModerator from './components/ArtificialModerator'
-import AssemblyMixin from 'src/pages/Assembly/mixins/assembly'
+import AssemblyMixin from 'src/mixins/assembly'
 
 export default{
     name: "ArtificialModeratorAssemblyListShowcaseSelection",

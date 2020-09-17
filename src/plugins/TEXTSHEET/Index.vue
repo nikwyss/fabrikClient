@@ -21,7 +21,7 @@
 
             <!-- EDIT CONTENT -->
             <ComponentStageEditor 
-                v-if="assembly.acl.includes('manage')"
+                v-if="assembly_acls.includes('manage')"
                 :assembly_id="assembly.id"
                 :model="stage" />
 
@@ -43,7 +43,7 @@
                 <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
 
                 <TextsheetCard 
-                    :acl="assembly.acl" 
+                    :acl="assembly_acls" 
                     :level="1"
                     :comments="filter_comment_entries(nodeL1.children)"
                     :questions="filter_question_entries(nodeL1.children)"
@@ -57,7 +57,7 @@
                         :key="`L2${nodeL2.id}`">
 
                     <TextsheetCard
-                        :acl="assembly.acl"
+                        :acl="assembly_acls"
                         :level="2"
                         :comments="filter_comment_entries(nodeL2.children)"
                         :questions="filter_question_entries(nodeL2.children)"
@@ -71,7 +71,7 @@
                             :key="`L3${nodeL3.id}`">
 
                         <TextsheetCard
-                            :acl="assembly.acl"
+                            :acl="assembly_acls"
                             :comments="filter_comment_entries(nodeL3.children)"
                             :questions="filter_question_entries(nodeL3.children)"
                             :level="3"
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import ContentTreeMixin from "src/pages/ContentTree/mixins/contenttree"
+import ContentTreeMixin from "src/mixins/contenttree"
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import TextsheetCard from "./components/TextsheetCard";
 
