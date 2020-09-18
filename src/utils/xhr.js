@@ -177,38 +177,38 @@ const ApiService = {
 
     var response = null
     response = await axios(data)
-
-    // TODO: do we have to catch the unknown exception?
-    // this.$http.get("https://recetapp-b43f2.firebaseio.com/posts.json")
-    // .then(response => { console.log(response.data); })
-    // .catch(e => { console.log(e); })
     
-    // Note: 403 error handling takes place within the interceptor
-    // // TODO: is this correct? add 403 condition in the night.
-    // if (response.status == 403){
-    //   if (ReloginOnStatus403(data)) {
-    //     console.log("PERMISSION ERROR: Try again")
-    //     if (response.retry && response.retoken) {
-    //       // Re-issue tokens (in ApiService)
-    //       console.log("refresh token status set")
-    //       await response.retoken()
-    //       // Re-axios (same as before...)
-    //       response = await axios(data)
+    // TOKEN SHOULD BE ALRIGHT NOW:
+    // DO the secont attempt
+    // if (response.status == 449){
+    // if (ReloginOnStatus403(data)) {
+    console.log("PERMISSION ERROR: Try again")
+    console.log(response)
+    if (response.retry && response.retoken) {
+      
+      // Re-issue tokens (in ApiService)
+      // console.log("refresh token status set")
+      // await response.retoken()
 
-    //       console.log("second try")
-    //       console.log(response)
-    //     }
-    //   }
-    // }
-
+      // Re-axios (same as before...)
+      // (token should already be refreshed...)
+      console.log("Second attempt....")
+      response = await axios(data)
+      console.log("second try")
+      console.log(response)
+      
+      // Headers are set again. dont neet to this.
+      temp_oauth_jwt = null
+    } 
+      
     if (temp_oauth_jwt && WithoutAuthHeader(data)) {
       // re-set the header
+      console.log("header re-set")
       this.setHeader(temp_oauth_jwt)
     }
 
     return (response)
   },
-
 
 
   /**
@@ -232,9 +232,6 @@ const ApiService = {
     )
   }
 }
-
-// ApiService.create()
-// defaults.timeout = 5000;
 
 export { ApiService, ReloginOnStatus403, WithoutAuthHeader, Allow400Status };
 export default ApiService

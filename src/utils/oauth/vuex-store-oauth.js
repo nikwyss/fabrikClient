@@ -168,7 +168,6 @@ const actions = {
     let token = await oAuthService.tokenRefresh(oauthProvider, refreshToken)
     console.assert('access_token' in token)
     console.assert('refresh_token' in token)
-    console.log(token)
     console.log("after refresh")
 
     set_cookie_value('oauth_jwt', token['access_token'])

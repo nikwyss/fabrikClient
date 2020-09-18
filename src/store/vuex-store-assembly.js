@@ -36,14 +36,14 @@ const getters = {
     if (!(assemblyIdentifier in state.assemblydata)) {
       return (null)
     }
-    
+
     if (!('configuration' in state.assemblydata[assemblyIdentifier])) {
       return (null)
     }
-    
+
     return (state.assemblydata[assemblyIdentifier].configuration)
   },
-  
+
   get_assembly_progression: (state) => (assemblyIdentifier) => {
     // return state.things.find(thing => thing.identifier === id)
 
@@ -54,11 +54,10 @@ const getters = {
     if(!('progression' in state.assemblydata[assemblyIdentifier])) {
       return(null)
     }
-    
+
     return (state.assemblydata[assemblyIdentifier].progression)
   },
-  
-  
+
   get_assembly_stages: (state) => (assemblyIdentifier) => {
     // return state.things.find(thing => thing.identifier === id)
 
@@ -116,7 +115,7 @@ const getters = {
     if (!timeDownloaded) { return (false)}
 
     // Cache expired
-    const CacheDurabilityMinutes = 2 // TODO: put this in environment variable.
+    const CacheDurabilityMinutes = 1 // TODO: put this in environment variable.
     const timeThreshold = Vue.moment(new Date())
     timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
     if (timeDownloaded < timeThreshold) {
@@ -131,15 +130,15 @@ const getters = {
 }
 
 const actions = {
-  
+
   touchRandomSeed ({commit}) {
     commit('set_random_seed')
   },
-  
+
   set_current_stageID({commit}, {assembly, stageID}) {
     commit('set_current_stageID', {assembly, stageID})
   },
-  
+
   syncAssembly: ({state, dispatch, localgetters, rootState, rootGetters}, {assemblyIdentifier}) => {
     console.log(` sync assembly ${assemblyIdentifier}`)
 
@@ -170,7 +169,9 @@ const actions = {
         response => {
 
           console.log('save retrieved assembly to cache.')
+          console.log(assemblyIdentifier)
           const data = response.data
+          console.log(response)
           commit('storeAssembly', {assemblyIdentifier, data})
 
           // end loading
@@ -184,10 +185,9 @@ const actions = {
       })
     }
   }
-  
+
   const mutations = {
-    
-    
+
     set_random_seed (state) {
       console.log("SET RANDOM SEED IF NOT YET DONE")
       if (!state.randomSeed) {
@@ -211,7 +211,6 @@ const actions = {
     },
 
     storeAssembly (state, {assemblyIdentifier, data}) {
-    
       console.log(`Store assembly ${assemblyIdentifier}`)
       // Vue.set  makes the change reactive!!
       Vue.set(state.assemblydata, assemblyIdentifier, data)

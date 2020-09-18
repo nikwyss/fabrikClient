@@ -34,33 +34,39 @@ export default {
 
     assembly_stages: function() {
       console.log("get assembly_stages")
+      console.assert(this.assemblyIdentifier)
 
       // not yet ready?
-      if (!this.assembly){ return (null)}
+      if (!this.assembly){ 
+        console.log("assembly not yet loaded...1923")
+        return (null)
+      }
+
       return (this.get_assembly_stages(this.assemblyIdentifier))
     },
 
     assembly_configuration: function() {
-      if (!this.assemblyIdentifier) {
+      console.assert(this.assemblyIdentifier)
+      // not yet ready?
+      if (!this.assembly){ 
+        console.log("assembly not yet loaded...1922")
         return (null)
       }
-      console.assert(this.assembly)
-      console.assert(this.assemblyIdentifier)
       return (this.get_assembly_configuration(this.assemblyIdentifier))
     },
 
     assembly_progression: function() {
-      if (!this.assemblyIdentifier) {
+      console.assert(this.assemblyIdentifier)
+      // not yet ready?
+      if (!this.assembly){ 
+        console.log("assembly not yet loaded...1921")
         return (null)
       }
-
-      console.assert(this.assembly)
-      console.assert(this.assemblyIdentifier)
       return (this.get_assembly_progression(this.assemblyIdentifier))
     },
 
     assembly_acls: function() {
-      return (this.store_assembly_acls(this.assembly.identifier))
+      return (this.store_assembly_acls(this.assemblyIdentifier))
     },
 
     ...mapGetters({

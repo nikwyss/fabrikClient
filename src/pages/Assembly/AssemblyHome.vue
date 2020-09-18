@@ -18,7 +18,6 @@
             <ArtificialModeratorAssemblyHome 
             v-if="!isAgendaFinished"
             :ongoing="!sorted_stages || oauth_authenticated === null" 
-            :numberOfStages="numberOfStages"
             align="left" />
         </div>
 
@@ -188,7 +187,11 @@ export default {
 
         currentStageNr: {
             get: function() {
-                let stageID = this.get_current_stageID(this.assembly.identifier)
+                if (this.assembly_stages===null) {
+                    return (null)
+                }
+
+                let stageID = this.get_current_stageID(this.assemblyIdentifier)
                 let stageNr = null
                 if (stageID) {
                     let stage = this.assembly_stages[stageID]
@@ -207,7 +210,7 @@ export default {
               if (stageNr === null) {
                 this.set_current_stageID({assembly: this.assembly, stageID: null })
                 return (null)
-              } 
+              }
 
               // Is this a valid stage?
               const stage = this.sorted_stages[stageNr]

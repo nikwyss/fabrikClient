@@ -90,7 +90,7 @@ export default {
 
             } else if (error.response.status == 403) {
 
-              // 403 errors
+              // 403 errors: Permission errors : probaly token expired...
               if (ReloginOnStatus403(error.config)) {
                 console.log("AXIOS: ReloginOnStatus403")
                 // at 403: try to (re)establish authentication, if not explicitly denied..
@@ -102,7 +102,7 @@ export default {
                   }else{
                     LayoutEventBus.$emit('showAuthenticationWarning')
                   }
-                  console.log("Oauth Permission request error")
+                  console.log("Oauth Permission request error")                  
                   return Promise.reject(error)
                 }
 
@@ -112,9 +112,9 @@ export default {
                 error.response.status = 449
                 error.config.retoken = await that.$store.dispatch('oauthstore/retrieveNewJWT', {})
                 error.config.retry = true
-                console.log(error.config)
-                return (error.config)
 
+                // Token should now be up to date!
+                return (error.config)
               }
             }
 
