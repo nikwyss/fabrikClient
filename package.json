@@ -21,6 +21,7 @@
     "vue-fragment": "^1.5.1",
     "vue-i18n": "^8.0.0",
     "vue-moment": "^4.1.0",
+    "vue-reactive-provide": "^0.3.0",
     "vue-sanitize": "^0.2.0",
     "vuex-persistedstate": "^3.1.0"
   },

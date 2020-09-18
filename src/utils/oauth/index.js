@@ -95,7 +95,7 @@ export default {
                 console.log("AXIOS: ReloginOnStatus403")
                 // at 403: try to (re)establish authentication, if not explicitly denied..
                 if (!that.$session.refresh_token || error.config.retry) {
-                
+
                   // Ooops. There seems to be a need for a complete (re)login.
                   if (that.oauth_authenticated) {
                     LayoutEventBus.$emit('showAuthorizationError')
@@ -105,7 +105,7 @@ export default {
                   console.log("Oauth Permission request error")
                   return Promise.reject(error)
                 }
-                
+
                 // Not too bad: only a token refresh might fix this.
                 // Hence, we specify the token refresh function and th status 449 ("retry with")
                 console.log("try to refresh token and then relaunch xhr (2)")
@@ -145,6 +145,14 @@ export default {
           return (true)
         },
     
+        clickAuthLink(route) {
+          if (!route) { 
+            var route = {name: 'assemblies'}
+          }
+          route = this.$router.resolve(route)
+          this.$session.redirect_to_provider(route.href)
+        },
+
         /**
         * forceVueUpdateOfOpener  push notification to opener window
         * is normally called after login routine in popup window (Necessary since Vue-responsivity is flawed)

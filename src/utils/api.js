@@ -22,5 +22,10 @@ export default {
   async retrieveAssembly(assemblyIdentifier) {
     let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${assemblyIdentifier}`
     return ApiService.get(url)
+  },
+
+  async retrieveContenttree(assemblyIdentifier, contenttreeID) {
+    let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${assemblyIdentifier}/contenttree/${contenttreeID}/contenttree`
+    return ApiService.get(url)
   }
 }

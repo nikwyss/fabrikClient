@@ -5,14 +5,14 @@
     <ArtificialModerator 
             v-if="this.oauth_authenticated !== undefined" 
             alignment="left" role="1" 
-            i18n_path_prefix="content.index">
+            i18n_path_prefix="index">
         <template>
         {{$t('index.am.general_greeting', {salutation: salutation})}}
         </template>
     </ArtificialModerator>
 
     <!-- RIGHT SIDE:  -->
-    <ArtificialModerator  alignment="right" role="2" i18n_path_prefix="content.index" 
+    <ArtificialModerator  alignment="right" role="2" i18n_path_prefix="index" 
             :ongoing_request="published_assemblies === null">
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
@@ -55,7 +55,6 @@
 
         </template>
     </ArtificialModerator>
-
     </div>
 </template>
 
@@ -76,7 +75,7 @@ export default{
             if (this.oauth_authenticated) {
 
                 const salutation = this.$i18n.t(
-                'content.index.am.salutation_for_authenticated',
+                'index.am.salutation_for_authenticated',
                 {username: this.oauth_username}
                 )
                 return (salutation)
@@ -93,12 +92,12 @@ export default{
         clickInitLink: function () {
             var route = { name: 'assemblies_ongoing_list' }
             this.$router.push(route)
-        },
-        clickAuthLink: function () {
-            var route = {name: 'assemblies_ongoing_list'}
-            route = this.$router.resolve(route)
-            this.$session.redirect_to_provider(route.href)
         }
+        // clickAuthLink: function () {
+        //     var route = {name: 'assemblies_ongoing_list'}
+        //     route = this.$router.resolve(route)
+        //     this.$session.redirect_to_provider(route.href)
+        // }
     }
 }
 </script>

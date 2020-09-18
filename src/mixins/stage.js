@@ -12,17 +12,13 @@ export default {
     },
 
     stage: function() {
-      
+
       console.log(this.assemblyIdentifier)
 
       const stage = this.get_assembly_stage({
         assemblyIdentifier: this.assemblyIdentifier, 
         stageID: this.stageID}
       )
-
-      if (stage) {
-        this.monitorApi()
-      }
 
       return(stage)
     },

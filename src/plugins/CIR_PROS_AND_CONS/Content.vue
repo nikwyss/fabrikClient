@@ -58,7 +58,11 @@ export default {
 
     methods: {
         clickBackButton: function () {
-            this.$router.push({name: 'CIR_PROS_AND_CONS', params: {contenttreeID: this.contenttreeID}})
+            this.$router.push({name: 'CIR_PROS_AND_CONS', params: {
+                assemblyIdentifier: this.assemblyIdentifier,
+                stageID: this.stageID,
+                contenttreeID: this.contenttreeID
+            }})
         }
     }
 }

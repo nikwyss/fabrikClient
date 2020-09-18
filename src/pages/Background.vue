@@ -134,7 +134,7 @@
     </q-list>
 
     <!-- RIGHT SIDE -->
-    <ArtificialModerator alignment="right" role="2" i18n_path_prefix="content.background">
+    <ArtificialModerator alignment="right" role="2" i18n_path_prefix="background">
 
         <template>
           {{ $t('background.am.open_questions') }}

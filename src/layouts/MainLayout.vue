@@ -106,8 +106,14 @@
       <div class="q-ma-xl" style="max-width: 400px">
         <h1><q-icon v-if="NotificationBannerIcon" :name="NotificationBannerIcon" /> {{NotificationBannerTitle}}</h1>
         <div>{{NotificationBannerBody}}</div>
-        <q-chip size="md" icon="mdi-close"  outline  color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable @click="hideNotificationBanner">
+
+        <q-chip v-if="NotificationBannerButtons.includes('hide')" size="md" icon="mdi-close"  outline  color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable @click="hideNotificationBanner">
           {{ $t('app.error.btn_close') }}
+        </q-chip>
+        <q-chip v-if="NotificationBannerButtons.includes('auth')" size="md" icon="mdi-forward"  outline  
+            color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable 
+            @click="clickAuthLink">
+          {{ $t('auth.goto_authentication_form') }}
         </q-chip>
       </div>
     </q-inner-loading>
@@ -146,7 +152,8 @@ export default {
       NotificationBannerType: 'info',
       NotificationBannerTitle: '',
       NotificationBannerBody: '',
-      NotificationBannerIcon: ''
+      NotificationBannerIcon: '',
+      NotificationBannerButtons: []
     }
   },
 
@@ -163,12 +170,13 @@ export default {
       }, 5000)
     },
 
-    showNotificationBanner (type, title, body, icon, settimer=false) {
+    showNotificationBanner (type, title, body, icon, settimer=false, buttons=['hide']) {
       this.NotificationBannerVisible = true
       this.NotificationBannerBody = body
       this.NotificationBannerTitle = title
       this.NotificationBannerType = type
       this.NotificationBannerIcon = icon
+      this.NotificationBannerButtons = buttons
       this.hideLoadingGif()
       if (settimer) {
         setTimeout(() => {
@@ -210,7 +218,7 @@ export default {
       let msg_body = 'You are not allowed to perform this action. Please notify the event organizers.'
       let icon = 'mdi-alarm-light-outline'
       let type = 'error'
-      this.showNotificationBanner(type, msg_title, msg_body, icon)
+      this.showNotificationBanner(type, msg_title, msg_body, icon, false, [])
     })
     LayoutEventBus.$on('showServiceError', data => {
       let msg_title = this.$i18n.t('app.error.service_error_title')
@@ -224,7 +232,7 @@ export default {
       let icon = 'mdi-emoticon-cool-outline'
       let msg_title = this.$i18n.t('auth.authentication_warning_title')
       let msg_body = this.$i18n.t('auth.authentication_warning_body')
-      this.showNotificationBanner(type, msg_title, msg_body, icon)
+      this.showNotificationBanner(type, msg_title, msg_body, icon, false, ['auth'])
     })
     LayoutEventBus.$on('showAuthenticationError', data => {
       let type = 'error'

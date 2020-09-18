@@ -6,7 +6,7 @@
             class="btn-fixed-width" color="brown-5" 
             label="Back to the assembly home"
             icon="mdi-arrow-left"
-            @click="gotoAssemblyHomeIndex()" />
+            @click="gotoAssemblyHome()" />
 
         <div v-if="assembly && stage">
 
@@ -71,17 +71,6 @@ export default {
 
     methods: {
         
-        gotoAssemblyHomeIndex: function() {
-
-            // REDIRECT TO ARGUMENT PAGE
-            this.$router.replace({name: 'assembly_home_stepper', 
-                params: {
-                    assemblyIdentifier: this.assembly.identifier,
-                    stageID: this.stage.id
-                    }
-            })
-        },
-
         filter_textsheet_entries: function(nodes) {
             var TEXTSHEET_ENTRIES = ['PARAGRAPH', 'SECTION', 'SUBSECTION']
             var local_contenttree = this.contenttree

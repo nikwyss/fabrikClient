@@ -9411,6 +9411,11 @@ vue-moment@^4.1.0:
   dependencies:
     moment "^2.19.2"
 
+vue-reactive-provide@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/vue-reactive-provide/-/vue-reactive-provide-0.3.0.tgz#fd0e924f3db0ce5149defcc98dbac4c3e97abfaf"
+  integrity sha512-hx2JtRPRvne9NY4s1r7ASsCaO8CIby30qwC1kGQRxsrWApO3he+rziGOzTDSfvmr852zWMb11n6qAwHCz6C/vw==
+
 vue-router@3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.2.0.tgz#da35195ffe37fdf0bec9f5f8f72781d2a7718815"

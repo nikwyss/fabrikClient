@@ -13,16 +13,12 @@ var state = {
 const getters = {
 
   published_assemblies: function(state) {
-    const publicIndex = state.publicIndex
-
-    if (publicIndex===null || publicIndex === undefined){
+    if (state.publicIndex===null || state.publicIndex === undefined){
       return (null)
     }
 
-    // alert(state.published_assemblies)
-
-    const filtered_assemblies = Object.filter(publicIndex.assemblies, x => x.is_public)
-    return (filtered_assemblies)
+    const filtered_assemblies = Object.filter(state.publicIndex.assemblies, x => x.is_public)
+    return (Object.values(filtered_assemblies))
   },
 
   ongoing_assemblies: function(state) {
@@ -32,7 +28,7 @@ const getters = {
     }
 
     const filtered_assemblies = Object.filter(publicIndex.assemblies, x => x.is_active)
-    return (filtered_assemblies)
+    return (Object.values(filtered_assemblies))
   },
 
   /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
@@ -48,17 +44,15 @@ const getters = {
     const CacheDurabilityMinutes = 5 // TODO: put this in environment variable.
     const timeThreshold = Vue.moment(new Date())
     timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
+
     return (timeDownloaded < timeThreshold)
-    //   return (false)
-    // }
-    // // Wrong user
-    // const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
-    // const cached_userid = state.publicIndex.access_sub
-    // return (compare_func(cached_userid))
   },
 
   /* SHORTCUTS: mainly for artificial moderators */
   IsThereAnAssemblyInPublicState: (state) => {
+    console.log(state.published_assemblies)
+    console.log("xxxxxxxxxxx")
+    
     if (state.published_assemblies == null) {
       return (null)
     }
@@ -73,11 +67,11 @@ const getters = {
   },
 
   IsThereNothingGoingOn: (state) => {
-    if (getters.ongoing_assemblies(state) === null) {
+    if (getters.IsThereAnAssemblyInPublicState(state) === null || getters.IsThereAnAssemblyInPublicState(state) === null) {
       return (null)
     }
 
-    return (!getters.IsThereAnAssemblyOngoing(state) && !getters.IsThereAnAssemblyOngoing(state))
+    return (!getters.IsThereAnAssemblyOngoing(state) && !getters.IsThereAnAssemblyInPublicState(state))
   },
 
   IsUserDelegateOfOngoingAssembly(state, localgetters, rootState, rootGetters) {
@@ -96,7 +90,7 @@ const getters = {
     const compare_func = rootGetters['oauthstore/assembly_acls']
     console.log(compare_func)
     let accessibleAssemblies = Object.filter(ongoing_assemblies, x => compare_func(x.identifier))
-    return (accessibleAssemblies.length > 0)
+    return (Object.values(accessibleAssemblies).length > 0)
   }
 }
 
@@ -121,19 +115,24 @@ const actions = {
 
   retrievePublicIndex({commit}) {
     console.log("Retrieve publicIndex from resource server")
-    api.retrievePublicIndex().then(
-      response => {
+    api.retrievePublicIndex()
+      .then(
+        response => {
 
-        // save data
-        console.assert (response.data !== null && response.data !== undefined)
-        console.log('save full contenttree to cache.')
-        commit('storePublicIndex', response.data)
+          // save data
+          console.assert (response.data !== null && response.data !== undefined)
+          console.log('save full contenttree to cache.')
+          commit('storePublicIndex', response.data)
 
-        // end loading
-        LayoutEventBus.$emit('hideLoading')
+          // end loading
+          LayoutEventBus.$emit('hideLoading')
 
-      }
-    )
+        }
+      )
+      .catch((error) => {
+        // Error Handling is done in Axios Interceptor
+        console.warn("Request Error")
+      })
   }
 }
 

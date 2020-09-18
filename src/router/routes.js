@@ -20,7 +20,8 @@ const routes = [
       { path: '/:assemblyIdentifier/home', name: 'assembly_home', component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
       { path: '/:assemblyIdentifier/agenda/:stageID', name: 'assembly_home_stepper', component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
       { path: '/:assemblyIdentifier/stage/:stageID', name: 'stage', component: UserContentDefault, meta: meta4AssemblyPages},
-      { path: '/:assemblyIdentifier/stage/:stageID/:contentID', name: 'content', component: UserContentDefault, meta: meta4AssemblyPages }
+      { path: '/:assemblyIdentifier/stage/:stageID/:contenttreeID', name: 'contenttree', component: UserContentDefault, meta: meta4AssemblyPages},
+      { path: '/:assemblyIdentifier/stage/:stageID/:contenttreeID/:contentID', name: 'content', component: UserContentDefault, meta: meta4AssemblyPages }
     ]
   },
 

@@ -100,13 +100,13 @@ export default{
             var route = {name: 'assembly_home', params: {assemblyIdentifier: this.ongoing_assembly.identifier}}
             console.assert(this.ongoing_assembly)
             this.$router.push(route)
-        },
-        clickAuthLink: function () {
-            // var route = {name: 'assemblies'}
-            var route = {name: 'assembly_home', params: {assemblyIdentifier: this.ongoing_assembly.identifier}}
-            route = this.$router.resolve(route)
-            this.$session.redirect_to_provider(route.href)
         }
+        // clickAuthLink: function () {
+        //     // var route = {name: 'assemblies'}
+        //     var route = {name: 'assembly_home', params: {assemblyIdentifier: this.ongoing_assembly.identifier}}
+        //     route = this.$router.resolve(route)
+        //     this.$session.redirect_to_provider(route.href)
+        // }
 
     }
 }

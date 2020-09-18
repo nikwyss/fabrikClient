@@ -1,127 +1,171 @@
-/* Should trees be stored in runtime variables?
- * This would be better: for instance: <F5> will do a full refresh...
- * However: Loading Content Trees is resource intensive. Think it is worth to store them
- * in local storage.
-*/
+/* ContentTree are stored in LocalStorage. */
 
 import Vue from 'vue'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
-import Configuration from 'src/utils/configuration'
-import ApiService from "src/utils/xhr"
+import api from 'src/utils/api'
 
 var state = {
-    contenttree: {},
-    expanded_branches: {}
+  contenttree: {},
+  expanded_branches: {}
 }
 
 const getters = {
-
-    get_contenttree: (state, dispatch) => ({contenttreeID, assemblyIdentifier}) => {
-
-        if(!(contenttreeID in state.contenttree)) {
-
-            // no cached version exists: load the full tree...
-            dispatch('contenttreestore/retrieve_contenttree', {
-                assemblyIdentifier: assemblyIdentifier,
-                contenttreeID: contenttreeID
-            })
-
-            return(null)
-        }
-
-        LayoutEventBus.$emit('hideLoading')
-
-        return(state.contenttree[contenttreeID])
-    },
-
-    get_default_expanded_branches_from_store: (state) => ({contenttreeID, startingContentID}) => {
-        // return state.things.find(thing => thing.id === id)
-        // if(!("expanded_branches" in state)) {
-        //     state.expanded_branches = {}
-        // }
-
-        let key = contenttreeID + "-" + startingContentID
-        if(!(key in state.expanded_branches)) {
-            return(null)
-        }
-
-        return(state.expanded_branches[key])
+  
+  get_contenttree: (state) => ({contenttreeID}) => {
+    // return state.things.find(thing => thing.identifier === id)
+    console.assert(contenttreeID)
+    if (!(contenttreeID in state.contenttree)) {
+      return (null)
     }
+    
+    return (state.contenttree[contenttreeID])
+  },
+  
+  get_default_expanded_branches_from_store: (state) => ({contenttreeID, startingContentID}) => {
+    let key = contenttreeID + "-" + startingContentID
+    if(!(key in state.expanded_branches)) {
+      return(null)
+    }
+    
+    return(state.expanded_branches[key])
+  },
+  
+  
+  /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
+  currently logged in user */
+  checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID}) {
+    console.log('check assembly status')
+    console.log(contenttreeID)
+    
+    // not access_date available
+    const timeDownloaded = Vue.moment(state.contenttree[contenttreeID].access_date)
+    if (!timeDownloaded) { return (false)}
+    
+    // Cache expired
+    const CacheDurabilityMinutes = 2 // TODO: put this in environment variable.
+    const timeThreshold = Vue.moment(new Date())
+    timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
+    if (timeDownloaded < timeThreshold) {
+      return (false)
+    }
+    
+    // Wrong user?
+    const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
+    const cached_userid = state.contenttree[contenttreeID].access_sub
+    return (compare_func(cached_userid))
+  }
 }
 
 const actions = {
 
-    retrieve_contenttree({commit}, {contenttreeID, assemblyIdentifier}) {
-        console.log("Retrieve contenttree from resource server")
-        let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${assemblyIdentifier}/contenttree/${contenttreeID}/contenttree`
-        ApiService.get(url).then(
-          response => {
-            // update
-            LayoutEventBus.$emit('hideLoading')
-            console.log('save full contenttree to cache.')
-            console.assert ('OK' in response.data)
-            console.assert ('contenttree' in response.data)
-            this.add_or_update_contenttree({contenttreeID: contenttreeID, contenttree: response.data.contenttree})
-          }
-        )
-    },
+  /* Retrieve new version of the contenttree <assemblyIdentifier>.<contenttreeID>
+  If timelag is set to true, the method will wait a few seconds to give priority the other 
+  API-Requests. (e.g. RetrieveAssembly)
+  TODO: is there a better way to queue API Requests. 
+  (Consider also the problem of oAuth2 Token refreshs, that are then issued twice..)
+  */
+  retrieveContenttree({commit}, {assemblyIdentifier, contenttreeID, timelag}) {
 
-    add_or_update_contenttree({commit}, {contenttreeID, contenttree}) {
-        commit('add_or_update_content', {contenttreeID, contenttree});
-    },
+    const timeout = timelag ? 5 : 0
+    setTimeout(() => {
 
-    update_contents({commit}, {modifiedContents}) {
-        commit('update_contents', {modifiedContents});
-    },
+      console.log("Retrieve contenttree from resource server" + contenttreeID)
+      console.assert(contenttreeID)
+      api.retrieveContenttree(assemblyIdentifier, contenttreeID)
+      .then(
+        response => {
+          // update
+          LayoutEventBus.$emit('hideLoading')
+          console.log('save full contenttree to cache.')
+          console.assert ('OK' in response.data)
+          console.assert ('contenttree' in response.data)
+          // this.add_or_update_contenttree({contenttreeID: contenttreeID, contenttree: response.data.contenttree})
+          commit('add_or_update_contenttree', {contenttreeID: contenttreeID, contenttree: response.data.contenttree});
+        }
+      )
+      .catch(
+        console.log("request error")
+      )
+    })
+  },
 
-    update_expanded_branches({commit}, {contenttreeID, startingContentID, expanded}) {
-        // console.log(expanded)
-        commit('update_expanded_branches', {contenttreeID, startingContentID, expanded});
+  add_or_update_contenttree({commit}, {contenttreeID, contenttree}) {
+    commit('add_or_update_contenttree', {contenttreeID, contenttree});
+  },
+
+  update_contents({commit}, {modifiedContents}) {
+    commit('update_contents', {modifiedContents});
+  },
+
+  update_expanded_branches({commit}, {contenttreeID, startingContentID, expanded}) {
+    // console.log(expanded)
+    commit('update_expanded_branches', {contenttreeID, startingContentID, expanded});
+  },
+
+  syncContenttree: ({state, dispatch, localgetters, rootState, rootGetters}, {assemblyIdentifier, contenttreeID}) => {
+    console.log(` sync contenttree ${contenttreeID}`)
+    console.assert(contenttreeID)
+    if(!state.contenttree || !(contenttreeID in state.contenttree)) {
+      // no cached version exists: load the data from resource server...
+      console.log("First time load of contenttree")
+      dispatch('retrieveContenttree', {assemblyIdentifier: assemblyIdentifier, contenttreeID: contenttreeID})
+      return(null)
     }
+    
+    // renew cache all x- minutes
+    if (!getters.checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID})) {
+      // too old cache: load the data from resource server...
+      console.log("Cache expired: reload contenttree")
+      dispatch('retrieveContenttree', {
+        assemblyIdentifier: assemblyIdentifier,
+        contenttreeID: contenttreeID,
+        timelag: true
+      })
+    }
+
+    return(null)
+  }
 }
 
 const mutations = {
 
-    add_or_update_content(state, {contenttreeID, contenttree}) {
+  add_or_update_contenttree(state, {contenttreeID, contenttree}) {
 
-        // keep list of opened contents (if previously available)
-        console.log("update contenttree")
-        if(contenttreeID in state.contenttree) {
-            let expanded = state.contenttree[contenttreeID].expanded_by_default
-            if(expanded) {
-                console.log("restore list of expanded entries")
-                content.expanded_by_default = expanded
-            }
-        }
-
-        // THIS makes the change reactive!!
-        console.log("new copy saved...")
-        Vue.set(state.contenttree, contenttreeID, contenttree)
-    },
-
-    update_contents(state, {modifiedContents}) {
-        // in case content or progression changes (without changing hierarchy...)
-        // THIS would make the change reactive!!)
-        // TODO: not sure if used..
-        for(let contentID in modifiedContents) {
-            let modifiedContent = modifiedContents[contentID]
-            let contenttreeID = modifiedContent.content.contenttreeID
-            state.contenttree[contenttreeID].entries[modifiedContent.content.id] = modifiedContent;
-        }
-    },
-
-    update_expanded_branches(state, {contenttreeID, startingContentID, expanded}) {
-        // in case content or progression changes (without changing hierarchy...)
-        let key = contenttreeID + "-" + startingContentID
-        console.log(expanded)
-        state.expanded_branches[key] = expanded
+    // keep list of opened contents (if previously available)
+    console.log("update contenttree")
+    if(contenttreeID in state.contenttree) {
+      let expanded = state.contenttree[contenttreeID].expanded_by_default
+      if(expanded) {
+        console.log("restore list of expanded entries")
+        content.expanded_by_default = expanded
+      }
     }
+
+    console.log("new copy saved...")
+    Vue.set(state.contenttree, contenttreeID, contenttree)
+  },
+  
+  update_contents(state, {modifiedContents}) {
+    // in case content or progression changes (without changing hirarchy...)
+    for(let contentID in modifiedContents) {
+      let modifiedContent = modifiedContents[contentID]
+      let contenttreeID = modifiedContent.content.contenttreeID
+      Vue.set(state.contenttree[contenttreeID].entries, modifiedContent.content.id, modifiedContent)
+    }
+  },
+
+  update_expanded_branches(state, {contenttreeID, startingContentID, expanded}) {
+    // in case content or progression changes (without changing hierarchy...)
+    let key = contenttreeID + "-" + startingContentID
+    console.log(expanded)
+    Vue.set(state.expanded_branches, key, expanded)
+  }
 }
 
 export const contentstore = {
-    namespaced: true,
-    state,
-    getters,
-    actions,
-    mutations
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations
 }

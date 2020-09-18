@@ -172,13 +172,6 @@ export default {
                 event: this.MonitorSurveyCompleting,
                 data: data})
 
-        },
-
-        gotoAssemblyHome: function() {
-            // REDIRECT TO ARGUMENT PAGE
-            this.$router.replace({name: 'assembly_home',
-                params: {assemblyIdentifier: this.assembly.identifier}
-            })
         }
     }
 }

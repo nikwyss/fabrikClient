@@ -92,7 +92,9 @@ export default {
       var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({name: 'CIR_PROS_AND_CONS', params: {
         assemblyIdentifier: identifier,
-        stageID: this.stage.id }})
+        stageID: this.stageID,
+        contenttreeID: this.contenttreeID
+      }})
     },
 
     openArgument: function(content) {

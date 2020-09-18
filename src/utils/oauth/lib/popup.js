@@ -31,7 +31,6 @@ var popupLibrary = {
     },
 
     openpopup(url) {
-        console.log(this.FindLeftWindowBoundry(), this.FindTopWindowBoundry());
         var x = screen.width/2 - 700/2 + this.FindLeftWindowBoundry();
         var y = screen.height/2 - 450/2 + this.FindTopWindowBoundry();
         window.open(url, 'sharegplus','height=485,width=700,left='+x+',top='+y);

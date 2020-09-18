@@ -24,14 +24,7 @@ export default {
 
       // Monitor assembly visit
       if (assembly){
-
-        let data = {
-          assembly_identifier: this.assemblyIdentifier
-        }
-        this.$store.dispatch('monitorApi', {
-          event: this.MonitorAssemblyEntering,
-          data: data
-        })
+        this.monitorApi()
       }
 
       // no cache version exists: load the full tree...
@@ -79,8 +72,54 @@ export default {
     })
   },
 
+  methods: {
+
+    gotoAssemblyHome: function(stage_id) {
+
+      // REDIRECT TO ARGUMENT PAGE
+      if (stage_id) {
+        this.$router.replace({name: 'assembly_home_stepper', 
+            params: {
+                assemblyIdentifier: this.assembly.identifier,
+                stageID: stage_id
+                }
+        })
+
+      } else {
+        
+        this.$router.replace({
+          name: 'assembly_home', 
+          params: {assemblyIdentifier: this.assembly.identifier}
+        })
+      }
+    },
+    
+    monitorApi: function() {
+      /* By this method we allow the API to monitor user activities */
+    
+      // Monitor about stage visit
+      let data = {
+        assembly_identifier: this.assemblyIdentifier
+      }
+      this.$store.dispatch('monitorApi', {
+        event: this.MonitorAssemblyEntering,
+        data: data
+      })
+    }
+  },
+
+  watch: {
+    // if route changes, hide TextLoading
+    oauth_authenticated (before, after) {
+      const assemblyIdentifier = this.assemblyIdentifier
+      console.log(">> oauth watcher")
+      this.$store.dispatch('assemblystore/syncAssembly', {assemblyIdentifier})
+    }
+  },
+  
   mounted: function() {
     const assemblyIdentifier = this.assemblyIdentifier
+    console.log(">> mounter")
     this.$store.dispatch('assemblystore/syncAssembly', {assemblyIdentifier})
   }
 }

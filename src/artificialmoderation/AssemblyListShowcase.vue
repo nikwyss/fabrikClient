@@ -3,7 +3,7 @@
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="right" role="1"
-        i18n_path_prefix="content.showcase"
+        i18n_path_prefix="showcase"
         amGroup='publicassemblyPage'
         :ongoing_request="published_assemblies === null">
 

@@ -8,11 +8,11 @@
         flat
         label="Back to the assembly home"
         icon="mdi-arrow-left"
-        @click="gotoAssemblyHomeIndex()" />
+        @click="gotoAssemblyHome()" />
 
 
     <div align="center">
-        <div v-if="assembly && stage">
+        <div v-if="stage">
 
             <!-- DISABLED WARNING -->
             <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
@@ -28,7 +28,6 @@
             <!-- <div class="text-h4">{{stage.title}}</div> -->
 
         </div>
-
 
         <div v-if="stage && contenttree" class="text-vessel">
             <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
@@ -103,17 +102,6 @@ export default {
     mixins: [ContentTreeMixin],
 
     methods: {
-
-        gotoAssemblyHomeIndex: function() {
-
-            // REDIRECT TO ARGUMENT PAGE
-            this.$router.replace({name: 'assembly_home_stepper', 
-                params: {
-                    assemblyIdentifier: this.assembly.identifier,
-                    stageID: this.stage.id
-                    }
-            })
-        },
 
         filter_textsheet_entries: function(nodes) {
             var TEXTSHEET_ENTRIES = ['PARAGRAPH', 'SECTION', 'SUBSECTION']

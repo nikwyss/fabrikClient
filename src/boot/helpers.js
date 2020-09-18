@@ -1,13 +1,9 @@
 /* THIS is a mixin for global helper methods and properties used in the Demokratie Fabrik. */
 import { boot } from 'quasar/wrappers'
 import Vue from 'vue'
-// import VueDOMPurifyHTML from 'vue-dompurify-html'
 import VueSanitize from "vue-sanitize";
-import ApiService from "src/utils/xhr"
-import Configuration from 'src/utils/configuration'
-import { isNumber } from 'util';
 // we import all of `date`
-
+import ReactiveProvide from 'vue-reactive-provide';
 
 Object.filter = (obj, predicate) => 
 Object.keys(obj)
@@ -24,8 +20,17 @@ let defaultOptions = {
   }
 }
 
+// Used for all editable Richt-Text CONTENT : v-html="$sanitize(item.content.text)"
 Vue.use(VueSanitize, defaultOptions);
-// => Use for all editable Richt-Text CONTENT : v-html="$sanitize(item.content.text)"
+
+/*  Used for reactive provide/injections (between antecedents/descendents components)
+Note: The descendent object have to load them by .incect!
+Advantage:, the mixin can only be loaded once in nested structures....
+to keep reactivitiy, see https://github.com/vuejs/vue/issues/7017
+// TODO: Vuejs 3: use this for reactive provisions
+// msg: Vue.computed(() => this.msg), */
+Vue.use(ReactiveProvide)
+
 
 export default boot(({ Vue }) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -52,6 +57,7 @@ export default boot(({ Vue }) => {
           STATUS_LOCKED: 13,
 
           // API Events
+          MonitorContenttreeEntering: 'MonitorContenttreeEntering',
           MonitorStageEntering: 'MonitorStageEntering',
           MonitorAssemblyEntering: 'MonitorAssemblyEntering',
 
@@ -74,7 +80,7 @@ export default boot(({ Vue }) => {
         },
 
         check4OutdatedData: function (dbdatestring, frequencyMinutes) {
-          console.assert(isNumber(frequencyMinutes) && frequencyMinutes)
+          console.assert(typeof frequencyMinutes === 'number' && frequencyMinutes)
 
           if (!dbdatestring) {
             console.log("dbdatestring is emtpy...")
