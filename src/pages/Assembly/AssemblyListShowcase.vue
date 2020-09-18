@@ -9,7 +9,9 @@
 
         <h1>{{$tc('showcase.h1', nLength(published_assemblies))}}</h1>
 
-        <ArtificialModeratorAssemblyListShowcase :publicIndex="published_assemblies"/>
+        <ArtificialModeratorAssemblyListShowcase
+            :ongoing="published_assemblies === null || oauth_authenticated===null"
+            :published_assemblies="published_assemblies"/>
 
         <!-- SOME PUBLIC ASSEMBLIES -->
         <div v-if="published_assemblies != null" class="full-width">
@@ -28,10 +30,8 @@
                 </q-card-section>
 
                 <q-card-section class="col-12 " align="right">
-                <ArtificialModeratorAssemblyListShowcaseSelection />
+                <ArtificialModeratorAssemblyListShowcaseSelection :assembly="assembly" />
                 </q-card-section>
-
-                <br />
 
             </q-card>
         </div>

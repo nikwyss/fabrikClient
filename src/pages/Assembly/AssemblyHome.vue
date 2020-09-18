@@ -264,15 +264,20 @@ export default {
 
         getColor(stage, stageNr) {
 
-          if (this.isDisabled(stage) || this.isCompleted(stage)) {
-              return 'grey-5'
+          var color = 'accent'
+
+        if (this.isDisabled(stage)) {
+              return 'grey-4'
+        }
+
+        if (this.isCompleted(stage)) {
+              return 'grey-4'
+        }
+
+          if (this.ishighestAllowedStageNr(stage, stageNr)) {
+            color =  'brown-9' 
           }
 
-          var color = 'accent2'
-
-          // if (this.ishighestAllowedStageNr(stage, stageNr)) {
-          //   color =  'blue' 
-          // }
 
           if (this.highestAllowedStageNr < stageNr) {
               return 'brown-5'

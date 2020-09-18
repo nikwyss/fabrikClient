@@ -166,9 +166,10 @@ const actions = {
     console.assert(oauthProvider)
     console.assert(refreshToken)
     let token = await oAuthService.tokenRefresh(oauthProvider, refreshToken)
-    console.assert('access_token' in token)
-    console.assert('refresh_token' in token)
-    console.log("after refresh")
+    if (!token || !('access_token' in token) || !('refresh_token' in token)){
+      LayoutEventBus.$emit('showAuthorizationError')
+      // TODO: should we logout?      
+    }
 
     set_cookie_value('oauth_jwt', token['access_token'])
     set_cookie_value('oauth_refresh_token', token['refresh_token'])

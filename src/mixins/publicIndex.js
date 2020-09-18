@@ -3,6 +3,14 @@ import {mapGetters, mapActions} from 'vuex'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 export default {
+
+  provide() {
+    // can be incected on all child components.
+    return {
+      clickAssemblyLink: this.clickAssemblyLink
+    }
+  },
+
   computed: {
     ...mapGetters({
       published_assemblies: 'publicindexstore/published_assemblies',
@@ -11,10 +19,16 @@ export default {
       IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
       IsUserDelegateOfOngoingAssembly: 'publicindexstore/IsUserDelegateOfOngoingAssembly',
       IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn',
-      retrieveCredentials: 'oauthstore/retrieveCredentials',
-      // checkPublicIndexStatus: 'publicindexstore/checkPublicIndexStatus'
-      
+      retrieveCredentials: 'oauthstore/retrieveCredentials',      
     })
+  },
+
+  methods: {
+    clickAssemblyLink: function (assembly) {
+        console.assert(assembly)
+        var route = {name: 'assembly_home', params: {assemblyIdentifier: assembly.identifier}}
+        this.$router.push(route)
+    }
   },
 
   mounted: function() {

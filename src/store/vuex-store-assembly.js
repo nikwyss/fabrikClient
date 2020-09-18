@@ -115,7 +115,7 @@ const getters = {
     if (!timeDownloaded) { return (false)}
 
     // Cache expired
-    const CacheDurabilityMinutes = 1 // TODO: put this in environment variable.
+    const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
     const timeThreshold = Vue.moment(new Date())
     timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
     if (timeDownloaded < timeThreshold) {

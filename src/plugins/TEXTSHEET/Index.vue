@@ -10,7 +10,6 @@
         icon="mdi-arrow-left"
         @click="gotoAssemblyHome()" />
 
-
     <div align="center">
         <div v-if="stage">
 
@@ -25,8 +24,7 @@
                 :assembly_id="assembly.id"
                 :model="stage" />
 
-            <!-- <div class="text-h4">{{stage.title}}</div> -->
-
+            <!-- <div class="text-h4">{{stage.stage.title}}</div> -->
         </div>
 
         <div v-if="stage && contenttree" class="text-vessel">
@@ -44,8 +42,8 @@
                 <TextsheetCard 
                     :acl="assembly_acls" 
                     :level="1"
-                    :comments="filter_comment_entries(nodeL1.children)"
-                    :questions="filter_question_entries(nodeL1.children)"
+                    :comments="filter_entries(nodeL1.children, ['COMMENT'])"
+                    :questions="filter_entries(nodeL1.children, ['QUESTION'])"
                     :heading_number="(keyL1+1)"
                     :contenttree="contenttree"
                     :stage="stage"
@@ -58,8 +56,8 @@
                     <TextsheetCard
                         :acl="assembly_acls"
                         :level="2"
-                        :comments="filter_comment_entries(nodeL2.children)"
-                        :questions="filter_question_entries(nodeL2.children)"
+                        :comments="filter_entries(nodeL2.children, ['COMMENT'])"
+                        :questions="filter_entries(nodeL2.children, ['QUESTION'])"
                         :heading_number="`${(keyL1+1)}.${(keyL2+1)}`"
                         :stage="stage"
                         :contenttree="contenttree"
@@ -71,8 +69,8 @@
 
                         <TextsheetCard
                             :acl="assembly_acls"
-                            :comments="filter_comment_entries(nodeL3.children)"
-                            :questions="filter_question_entries(nodeL3.children)"
+                            :comments="filter_entries(nodeL3.children, ['COMMENT'])"
+                            :questions="filter_entries(nodeL3.children, ['QUESTION'])"
                             :level="3"
                             :contenttree="contenttree"
                             :stage="stage"

@@ -31,11 +31,12 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip v-if="stage && !isLastStage(stage, stageNr) && isSkippable(stage, stageNr)" :size="requiresAttention ? 'md' : 'md'" icon="mdi-arrow-down" 
+        <q-chip v-if="stage && !isLastStage(stage, stageNr) && isSkippable(stage, stageNr)" :size="isSkippable(stage, stageNr) ? 'md' : 'md'" icon="mdi-arrow-down" 
             clickable @click="clickGotoNextStage(stage, stageNr)">
             {{ $t('stages.goto_next_stage') }}
         </q-chip>
-        <q-chip :size="requiresAttention ? 'md' : 'md'" icon="mdi-arrow-right" v-if="stage && !isCompleted(stage, stageNr)" clickable @click="clickPluginLink(stage)">
+        <q-chip :size="isSkippable(stage, stageNr) ? 'md' : 'md'" icon="mdi-arrow-right" v-if="stage && !isCompleted(stage, stageNr)" 
+                clickable @click="clickPluginLink(stage)">
             {{ $t('stages.please_enter_stage') }}
         </q-chip>
         <q-chip size="sm" icon="mdi-arrow-down" v-if="stage && isLastStage(stage, stageNr) && isSkippable(stage, stageNr)" 
@@ -59,11 +60,6 @@ export default{
         'isLastStage', 'isSkippable', 'isNew', 'isLastStage', 'isCompleted', 'isAlert', 'isFirstStage'
     ], // see provide attribute in the antecedents
     components: {ArtificialModerator},
-    props: ['stage', 'stageNr', 'ongoing'],
-    computed: {
-        requiresAttention: function(){
-            return (this.isNew(this.stage, this.stageNr) || this.isAlert(this.stage, this.stageNr))
-        }
-    }
+    props: ['stage', 'stageNr', 'ongoing']
 }
 </script>

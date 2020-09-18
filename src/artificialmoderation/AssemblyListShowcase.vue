@@ -5,7 +5,7 @@
     <ArtificialModerator alignment="right" role="1"
         i18n_path_prefix="showcase"
         amGroup='publicassemblyPage'
-        :ongoing_request="published_assemblies === null">
+        :ongoing="ongoing">
 
 
         <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
@@ -26,18 +26,11 @@
 <script>
 import ArtificialModerator from './components/ArtificialModerator'
 import {mapGetters} from 'vuex'
-import PublicIndex from 'src/mixins/publicIndex'
 
 export default{
     name: "ArtificialModeratorAssemblyListShowcase",
-    mixins: [PublicIndex],
+    props: ['ongoing', 'published_assemblies'],
+    inject: ['clickAssemblyLink'],
     components: {ArtificialModerator},
-    methods: {
-        clickAssemblyLink: function (assembly) {
-            var route = {name: 'assembly_home', params: {assemblyIdentifier: assembly.identifier}}
-            console.assert(assembly)
-            this.$router.push(route)
-        }
-    }
 }
 </script>

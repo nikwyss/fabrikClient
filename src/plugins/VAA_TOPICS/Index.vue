@@ -42,8 +42,8 @@
                 <TextsheetCard 
                     :acl="assembly_acls"
                     :level="1"
-                    :comments="filter_comment_entries(nodeL1.children)"
-                    :questions="filter_question_entries(nodeL1.children)"
+                    :comments="filter_entries(nodeL1.children, ['COMMENT'])"
+                    :questions="filter_entries(nodeL1.children, ['QUESTION'])"
                     :heading_number="(keyL1+1)"
                     :contenttree="contenttree"
                     :stage="stage"

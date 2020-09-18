@@ -4,8 +4,7 @@
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="1" 
         amGroup='publicassemblyPage'
-        v-if="oauth_authenticated"
-        :ongoing="assembly===null">
+        :ongoing="assembly===null || oauth_authenticated===null">
 
         <!-- First Time Entering -->
         <!-- <template v-else-if="assembly_acls.includes('observe')"> -->
@@ -15,7 +14,9 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip size="md" icon="mdi-forward" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink">
+        <q-chip size="md" icon="mdi-forward" outline color="primary" text-color="primary" 
+                class="bg-white cursor-pointer" clickable 
+                @click="clickAssemblyLink(assembly)">
             {{$t('showcase.am.chip_please_enter')}}
         </q-chip>
         </template>
@@ -32,16 +33,7 @@ import AssemblyMixin from 'src/mixins/assembly'
 export default{
     name: "ArtificialModeratorAssemblyListShowcaseSelection",
     components: {ArtificialModerator},
-    mixins: [AssemblyMixin],
-    props: ['public_assembly'],
+    props: ['assembly']
 
-
-    methods: {
-        clickAssemblyLink: function () {
-            var route = {name: 'assembly_home', params: {assemblyIdentifier: this.public_assembly.identifier}}
-            console.assert(this.public_assembly)
-            this.$router.push(route)
-        }
-    }
 }
 </script>

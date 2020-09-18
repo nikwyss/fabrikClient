@@ -18,6 +18,7 @@ export default {
       const contenttreeID = this.$route.params.contenttreeID
       // Mixin is only usable for pages with assemblyIdentifier in the URL
       console.assert(contenttreeID)
+      console.log(contenttreeID)
       return (contenttreeID)
     },
 
@@ -31,15 +32,7 @@ export default {
       const contenttree =  this.get_contenttree({
         contenttreeID: this.contenttreeID
       })
-
-      // Whether loaded or not: Do the localStorage-cache-sync
-      if (this.contenttreeID !== null) {
-        console.log("cache-sync contenttree")
-        this.$store.dispatch('contentstore/syncContenttree', {
-          assemblyIdentifier: this.assemblyIdentifier,
-          contenttreeID: this.contenttreeID
-        })
-      }
+      return (contenttree)
     },
 
     startingContentID: function() {
@@ -86,39 +79,20 @@ export default {
       })
     },
 
-    filter_question_entries: function(nodes) {
+    filter_entries: function(nodes, TYPES) {
 
       console.assert(this.contenttreeID && this.contenttree!==null)
-
-      var QUESTION_ENTRIES = ['QUESTION']
       var local_contenttree = this.contenttree
       let filtered = nodes.filter(
-        item => QUESTION_ENTRIES.includes(local_contenttree.entries[item.id].content.type)
+        item => TYPES.includes(local_contenttree.entries[item.id].content.type)
       )
       return(filtered)
     },
-
-    filter_comment_entries: function(nodes) {
-
-      console.assert(this.contenttreeID && this.contenttree!==null)
-
-      var COMMENT_ENTRIES = ['COMMENT']
-      var local_contenttree = this.contenttree
-      let filtered = nodes.filter(
-        item => COMMENT_ENTRIES.includes(local_contenttree.entries[item.id].content.type)
-      )
-      return(filtered)
-    }
   },
 
   watch: {
-    // if route changes, hide TextLoading
     oauth_authenticated (before, after) {
-      if (!this.contenttreeID){
-        // Wait until contenttreeID (respectively stage) is loaded.
-      }
-
-      const assemblyIdentifier = this.assemblyIdentifier
+      console.assert(this.contenttreeID)
       this.$store.dispatch('contentstore/syncContenttree', {
         assemblyIdentifier: this.assemblyIdentifier,
         contenttreeID: this.contenttreeID
@@ -127,18 +101,11 @@ export default {
   },
 
   mounted: function() {
-
-    // console.assert(this.assemblyIdentifier)
-
-    // if (!this.contenttreeID){
-    //   // Wait until contenttreeID (respectively stage) is loaded.
-    //   return (null)
-    // }
-
-    // // not usefull here, since stage loading can be longer than component mounting.
-    // this.$store.dispatch('contentstore/syncContenttree', {
-    //   assemblyIdentifier: this.assemblyIdentifier,
-    //   contenttreeID: this.contenttreeID
-    // })
+    console.assert(this.assemblyIdentifier)
+    console.assert(this.contenttreeID)
+    this.$store.dispatch('contentstore/syncContenttree', {
+      assemblyIdentifier: this.assemblyIdentifier,
+      contenttreeID: this.contenttreeID
+    })
   }
 }

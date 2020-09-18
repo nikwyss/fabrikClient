@@ -46,32 +46,11 @@ export default{
 
     computed: {
 
-        oauth: function() {
-            return(this.$store.oauth)
-        },
-
         ...mapGetters({
             IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
             IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn',
             IsUserDelegateOfOngoingAssembly: 'publicindexstore/IsUserDelegateOfOngoingAssembly',
         })
-    },
-
-    methods: {
-        // clickAssemblyLink: function (assembly) {
-        //     var route = {name: 'assembly_home', params: {assemblyIdentifier: assembly.identifier}}
-        //     console.assert(assembly)
-        //     this.$router.push(route)
-        // },
-        // clickInitLink: function () {
-        //     var route = { name: 'assemblies' }
-        //     this.$router.push(route)
-        // }
-        // clickAuthLink: function () {
-        //     var route = {name: 'assemblies'}
-        //     route = this.$router.resolve(route)
-        //     this.$session.redirect_to_provider(route.href)
-        // }
     }
 }
 </script>

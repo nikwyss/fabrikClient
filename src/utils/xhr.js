@@ -51,7 +51,7 @@ const ApiService = {
    */
   setHeader(token) {
 
-    console.log("Set XHR Request header" + token)
+    console.log("Set XHR Request header. Including token:" + !!token)
     if (typeof (token) !== 'string' && token !== null) {
       return (null)
     }
@@ -182,8 +182,10 @@ const ApiService = {
     // DO the secont attempt
     // if (response.status == 449){
     // if (ReloginOnStatus403(data)) {
-    console.log("PERMISSION ERROR: Try again")
-    console.log(response)
+
+    // retry parameter is set within the interceptor on 403 errors.
+    // At this point, the jwt token is already refreshed (within the interceptor) 
+    console.log("PERMISSION ERROR: Initiate a secont attempt")
     if (response.retry && response.retoken) {
       
       // Re-issue tokens (in ApiService)
@@ -196,11 +198,16 @@ const ApiService = {
       response = await axios(data)
       console.log("second try")
       console.log(response)
-      
+
+      // What if the second attempt fails?
+      if (response.retry && response.retoken) {
+        console.log("token could not be renewed.. 2nd attempt failed.")
+        LayoutEventBus.$emit('showAuthorizationError')        
+      }
       // Headers are set again. dont neet to this.
       temp_oauth_jwt = null
-    } 
-      
+    }
+
     if (temp_oauth_jwt && WithoutAuthHeader(data)) {
       // re-set the header
       console.log("header re-set")
@@ -216,16 +223,11 @@ const ApiService = {
    * This is done by axios intercept method, which everytime checks response.status of each API call.
    */
   mountAxiosInterceptor(onRejected) {
-    // if (!onFullfilled) {
-    // let onFullfilled = function(response) {
-    //   return (response);
-    // }
 
     let onFullfilled = (response) => {
       return response;
     }
-    // }
-    // this._401interceptor = 
+
     axios.interceptors.response.use(
       onFullfilled,
       error => onRejected(error)

@@ -4,7 +4,7 @@
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="2" amGroup='ongoingassemblyPage'
-            :ongoing="oauth_authenticated!==undefined && ongoing_assembly===null">
+            :ongoing="ongoing">
 
         <!-- First Time Entering -->
         <!-- <template  v-if="assembly_acls.length > 0">
@@ -23,7 +23,7 @@
             size="6"
             color="white"
             text-color="accent"
-            @click="clickAssemblyLink(ongoing_assembly)"
+            @click="clickAssemblyLink(assembly)"
             label="Bitte hier lang"
             icon-right="mdi-forward"
             />
@@ -35,7 +35,7 @@
                 size="6"
                 bg-color="primary"
                 text-color="accent"
-                @click="clickAssemblyLink(ongoing_assembly)"
+                @click="clickAssemblyLink(assembly)"
                 label="Bitte hier lang"
                 icon-right="mdi-forward"
             />
@@ -56,7 +56,7 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip size="md" icon="mdi-forward" v-if="assembly_acls.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink">
+        <q-chip size="md" icon="mdi-forward" v-if="assembly_acls.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink(assembly)">
             {{ $t('assemblies.please_enter') }}
         </q-chip>
         <q-chip size="md" icon="mdi-forward" v-if="!oauth_authenticated" outline color="primary" 
@@ -78,36 +78,17 @@ import {mapGetters} from 'vuex'
 export default{
     name: "ArtificialModeratorAssemblyListOngoingSelection",
     components: {ArtificialModerator},
-    props: ['ongoing_assembly'],
-
+    props: ['assembly', 'ongoing'],
+    inject: ['clickAssemblyLink'],
     computed: {
 
-        // oauth: function() {
-        //     return(this.$store.oauth)
-        // },
-
         assembly_acls: function() {
-            return (this.store_assembly_acls(this.ongoing_assembly.identifier))
+            return (this.store_assembly_acls(this.assembly.identifier))
         },
 
         ...mapGetters({
             store_assembly_acls: 'oauthstore/assembly_acls'
         })
     },
-
-    methods: {
-        clickAssemblyLink: function () {
-            var route = {name: 'assembly_home', params: {assemblyIdentifier: this.ongoing_assembly.identifier}}
-            console.assert(this.ongoing_assembly)
-            this.$router.push(route)
-        }
-        // clickAuthLink: function () {
-        //     // var route = {name: 'assemblies'}
-        //     var route = {name: 'assembly_home', params: {assemblyIdentifier: this.ongoing_assembly.identifier}}
-        //     route = this.$router.resolve(route)
-        //     this.$session.redirect_to_provider(route.href)
-        // }
-
-    }
 }
 </script>

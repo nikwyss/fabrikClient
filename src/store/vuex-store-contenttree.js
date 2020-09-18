@@ -35,20 +35,19 @@ const getters = {
   currently logged in user */
   checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID}) {
     console.log('check assembly status')
-    console.log(contenttreeID)
     
     // not access_date available
     const timeDownloaded = Vue.moment(state.contenttree[contenttreeID].access_date)
     if (!timeDownloaded) { return (false)}
-    
+
     // Cache expired
-    const CacheDurabilityMinutes = 2 // TODO: put this in environment variable.
+    const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
     const timeThreshold = Vue.moment(new Date())
     timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
     if (timeDownloaded < timeThreshold) {
       return (false)
     }
-    
+
     // Wrong user?
     const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
     const cached_userid = state.contenttree[contenttreeID].access_sub

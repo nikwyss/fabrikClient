@@ -41,7 +41,7 @@ const getters = {
     if (!timeDownloaded) { return (false)}
     
     // Cache expired
-    const CacheDurabilityMinutes = 5 // TODO: put this in environment variable.
+    const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
     const timeThreshold = Vue.moment(new Date())
     timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
 
@@ -88,7 +88,6 @@ const getters = {
 
     // Check permissions:
     const compare_func = rootGetters['oauthstore/assembly_acls']
-    console.log(compare_func)
     let accessibleAssemblies = Object.filter(ongoing_assemblies, x => compare_func(x.identifier))
     return (Object.values(accessibleAssemblies).length > 0)
   }
