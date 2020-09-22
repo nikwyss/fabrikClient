@@ -12,7 +12,7 @@ import Vue from 'vue'
 import {get_cookie_value, set_cookie_value} from 'src/utils/cookie.service'
 import {oAuthService} from "src/utils/oauth/requests"
 import { ApiService } from 'src/utils/xhr'
-import oauth from '.'
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 const empty_credentials = {
   aud: null,
@@ -166,21 +166,21 @@ const actions = {
     console.assert(oauthProvider)
     console.assert(refreshToken)
     let token = await oAuthService.tokenRefresh(oauthProvider, refreshToken)
-    if (!token || !('access_token' in token) || !('refresh_token' in token)){
+    if (!token || !('access_token' in token) || !('refresh_token' in token)) {
       LayoutEventBus.$emit('showAuthorizationError')
-      // TODO: should we logout?      
+      // TODO: should we logout? Probably, not: can be an token renewal conflict 
+      //(two request simulaniously renew the token)
+      // TODO: how to prevent simulatnious requests?
+    } else {
+      console.assert(token['access_token'])
+      console.assert(token['refresh_token'])
+      set_cookie_value('oauth_jwt', token['access_token'])
+      set_cookie_value('oauth_refresh_token', token['refresh_token'])
+      const jwt = token['access_token']
+      commit('oauth_update_credentials', jwt)
+
+      return(token['access_token'])
     }
-
-    set_cookie_value('oauth_jwt', token['access_token'])
-    set_cookie_value('oauth_refresh_token', token['refresh_token'])
-    console.assert(token['access_token'])
-    console.assert(token['refresh_token'])
-
-    const jwt = token['access_token']
-    commit('oauth_update_credentials', jwt)
-
-    return(token['access_token'])
-
   }
 }
 

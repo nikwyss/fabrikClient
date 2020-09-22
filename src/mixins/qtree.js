@@ -17,17 +17,18 @@ export default {
         }
     },
 
+    inject: ['CTREE', 'ABLY'],
     computed: {
 
-        contenttreeID: function() {
-            return(this.contenttree.id)
-        },
+        // contenttreeID: function() {
+        //     return(CTREE.contenttree.id)
+        // },
 
         root_node_ids: function() {
-            if(this.startingContentID) {
-                return(this.startingContent_node.children.map(x=> x.id))
+            if(this.CTREE.startingContentID) {
+                return(this.CTREE.startingContent_node.children.map(x=> x.id))
             }
-            return(this.contenttree.structure.children.map(x=> x.id))
+            return(this.CTREE.contenttree.structure.children.map(x=> x.id))
         },
 
         startingContent_node: function() {
@@ -35,16 +36,18 @@ export default {
             if(this.custom_starting_node) {
                 return(this.custom_starting_node)
             }else{
-                console.assert(this.startingContentID)
-                return(this.get_node_by_id(this.startingContentID))
+                console.assert(this.CTREE.startingContentID)
+                return(this.get_node_by_id(this.CTREE.startingContentID))
             }
         },
 
         total_nof_contents: function() {
-            return(this.startingContent_node["nof_descendants"])
+            return(this.CTREE.startingContent_node["nof_descendants"])
         },
 
-        ...mapGetters({ get_default_expanded_branches_from_store: 'contentstore/get_default_expanded_branches_from_store'}),
+        ...mapGetters({ 
+            get_default_expanded_branches_from_store: 'contentstore/get_default_expanded_branches_from_store',
+        }),
     },
 
     methods: {
@@ -132,13 +135,14 @@ export default {
             //    let branches = Object.keys(node.children)
            let branches = node.children.map(function (x) { return x.id});
            branches.push(node.id)
+
            return(branches)
         },
 
         updateExpanded: function() {
             this.update_expanded_branches({
-                contenttreeID: this.contenttreeID, 
-                startingContentID: this.startingContentID, 
+                contenttreeID: this.CTREE.contenttreeID, 
+                startingContentID: this.CTREE.startingContentID, 
                 expanded: this.expanded})
         },
 
@@ -146,7 +150,7 @@ export default {
         treeFilterMethod (node, filter) {
             const filt = filter.toLowerCase()
             // return node.label && node.label.toLowerCase().indexOf(filt) > -1 && node.label.toLowerCase().indexOf('(*)') > -1
-            let obj = this.contenttree.entries[node.id]
+            let obj = this.CTREE.contenttree.entries[node.id]
             let searchable = `${obj.content.title} ${obj.content.text}`
             return searchable.toLowerCase().indexOf(filt) > -1
         },
@@ -185,7 +189,7 @@ export default {
             // With this getter the content data has to be loaded only once; 
             // and can be used in the tree.header as well as the tree.body templates. 
             if (this.$options.temp_content_object===null || this.$options.temp_content_object.content.id != contentID) {
-                this.$options.temp_content_object = this.contenttree.entries[contentID]
+                this.$options.temp_content_object = this.CTREE.contenttree.entries[contentID]
             }
             return(this.$options.temp_content_object)
         },
@@ -195,7 +199,7 @@ export default {
 
             var parent_node = null
             let path = branch.split(":")
-            var children = this.contenttree.structure.children
+            var children = this.CTREE.contenttree.structure.children
             for(let key in path) {
                 let junction = Number(path[key])
                 if (!junction) {
@@ -218,14 +222,14 @@ export default {
             if(node_id===null) {
                 return(null)
             }
-            var obj = this.contenttree.entries[node_id]
+            var obj = this.CTREE.contenttree.entries[node_id]
             console.assert(obj)
             var parent_id = obj.content.parent_id
             var branch = ":" + node_id
             console.assert(obj)
             while(parent_id!==null) {
                 branch = ":" + parent_id + branch
-                obj = this.contenttree.entries[parent_id]
+                obj = this.CTREE.contenttree.entries[parent_id]
                 parent_id = obj.content.parent_id
             }
             console.assert(branch)
@@ -239,7 +243,7 @@ export default {
             // return(node)
 
             if(node_id===null) {
-                return(this.contenttree.structure)
+                return(this.CTREE.contenttree.structure)
             }
 
             let branch = this.get_branch_by_id(node_id)
@@ -269,18 +273,20 @@ export default {
 
         // set expanded branches
         if(this.expanded === null) {
-            console.assert(this.contenttree)
+            console.assert(this.CTREE.contenttree)
           
             // first: check in 
-            this.expanded = this.get_default_expanded_branches_from_store({contenttreeID: this.contenttreeID, startingContentID: this.startingContentID})
+            this.expanded = this.get_default_expanded_branches_from_store({
+                contenttreeID: this.CTREE.contenttreeID, 
+                startingContentID: this.CTREE.startingContentID})
         }
 
         if(this.expanded===null) {
             this.expanded = this.calculate_default_expanded_branches()
             // console.log(this.expanded)
             this.update_expanded_branches({
-                contenttreeID: this.contenttreeID, 
-                startingContentID: this.startingContentID, 
+                contenttreeID: this.CTREE.contenttreeID, 
+                startingContentID: this.CTREE.startingContentID, 
                 expanded: this.expanded})
         }
         // console.log(this.expanded)
@@ -288,7 +294,6 @@ export default {
     },
 
     mounted: function() {
-        console.log("finished loading")
         this.$emit("tree_is_mounted");
     }
 }

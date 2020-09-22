@@ -90,7 +90,7 @@ const getters = {
     return (stages[stageID])
   },
 
-  get_current_stageID:  (state) => (assemblyIdentifier) => {
+  getCachedStageID:  (state) => (assemblyIdentifier) => {
 
     // return state.things.find(thing => thing.identifier === id)
     if(!(assemblyIdentifier in state.current_stages)) {
@@ -135,8 +135,8 @@ const actions = {
     commit('set_random_seed')
   },
 
-  set_current_stageID({commit}, {assembly, stageID}) {
-    commit('set_current_stageID', {assembly, stageID})
+  setCachedStageID({commit}, {assembly, stageID}) {
+    commit('setCachedStageID', {assembly, stageID})
   },
 
   syncAssembly: ({state, dispatch, localgetters, rootState, rootGetters}, {assemblyIdentifier}) => {
@@ -197,7 +197,7 @@ const actions = {
       }
     },
 
-    set_current_stageID(state, {assembly, stageID}) {
+    setCachedStageID(state, {assembly, stageID}) {
 
       // keep list of opened contents (if previously available)
       console.log("update current  stage id for the given assembly")

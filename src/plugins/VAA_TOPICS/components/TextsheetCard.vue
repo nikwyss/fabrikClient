@@ -4,8 +4,6 @@
     <span v-on:click.stop v-if="standalone" style="float:right;">
       <ContentToolbar
         :obj="item"
-        :acl="acl"
-        :stage="stage"
         @afterdeletion="openIndex()">
       </ContentToolbar>
     </span>
@@ -33,12 +31,9 @@
 
     <ComponentContentTree
       v-if="show_discussion"
-      :acl="acl"
       class="bg-grey-3 q-pa-md col-10 q-ml-xl "
       :dense="true"
       label="Offene Diskussion"
-      :stage="stage.stage" 
-      :contenttree="contenttree" 
       :custom_starting_node="startingContent_node" 
     /> 
   </Fragment>
@@ -54,7 +49,7 @@ import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
 
 export default {
   name: 'TextsheetCard',
-  props: ['stage','contenttree', 'item', 'acl', 'standalone', 'heading_number', 'questions', 'comments'],
+  props: ['item', 'standalone', 'heading_number', 'questions', 'comments'],
   components: { Fragment, ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
   data: function() {
     return({
@@ -76,38 +71,6 @@ export default {
     startingContent_node: function() {
       var node = {children: this.comments}
       return(node)
-    }
-  },
-
-  methods: {
-
-    
-
-    openIndex: function(parent_id) {
-
-      console.log("redirect to pros_and_cons_index")
-
-      // REDIRECT TO ARGUMENT PAGE
-      var identifier = this.$route.params.assemblyIdentifier
-      this.$router.push({name: 'TEXTSHEET', params: {
-        assemblyIdentifier: identifier,
-        stageID: this.stage.id }})
-    },
-
-    openArgument: function() {
-
-      if (this.standalone) {
-        return
-      }
-
-      // REDIRECT TO ARGUMENT PAGE
-      // console.log(this.item)
-      var identifier = this.$route.params.assemblyIdentifier
-      this.$router.push({name: 'TEXTSHEET_CONTENT', params: {
-        assemblyIdentifier: identifier,
-        stageID: this.stage.id,
-        contentID: item.content.id
-      }})
     }
   }
 }

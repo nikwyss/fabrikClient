@@ -3,8 +3,6 @@
         <span v-on:click.stop v-if="standalone" style="float:right;">
          <ContentToolbar
             :obj="content"
-            :acl="acl"
-            :stage="stage"
             @afterdeletion="openIndex()">
           </ContentToolbar>
         </span>
@@ -33,7 +31,7 @@
 
         <!-- <ContentRating
           name="`elRating${content.content.id}`"
-          v-if="standalone && acl.includes('contribute')"
+          v-if="standalone && ABLY.assembly_acls.includes('contribute')"
           :content="content"
         /> -->
 
@@ -58,10 +56,9 @@
         <q-space />
 
         <ContentEditor
-            v-if="acl.includes('contribute')"
-            :stageID="stage.id"
+            v-if="ABLY.assembly_acls.includes('contribute')"
             :content_type="default_content_type"
-            @zoom-to-content="openArgument"
+            @zoom-to-content="openArgument(content.content)"
             btnlabel="Add Argument"
             icon="mdi-folder-plus-outline"
             />
@@ -79,39 +76,8 @@ import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
 
 export default {
   name: 'ArgumentCard',
-  props: ['stage', 'content', 'acl', 'standalone', 'default_content_type'],
+  props: ['content', 'standalone', 'default_content_type'],
   components: { Fragment, ContentRating, ContentEditor, ContentToolbar},
-
-  methods: {
-
-    openIndex: function(parent_id) {
-
-      console.log("redirect to pros_and_cons_index")
-
-      // REDIRECT TO ARGUMENT PAGE
-      var identifier = this.$route.params.assemblyIdentifier
-      this.$router.push({name: 'CIR_PROS_AND_CONS', params: {
-        assemblyIdentifier: identifier,
-        stageID: this.stageID,
-        contenttreeID: this.contenttreeID
-      }})
-    },
-
-    openArgument: function(content) {
-
-      if (this.standalone) {
-        return
-      }
-
-      // REDIRECT TO ARGUMENT PAGE
-      // console.log(this.content)
-      var identifier = this.$route.params.assemblyIdentifier
-      this.$router.push({name: 'CIR_PROS_AND_CONS_CONTENT', params: {
-        assemblyIdentifier: identifier,
-        stageID: this.stage.stage.id,
-        contentID: content.id
-      }})
-    }
-  }
+  inject: ['ABLY', 'openIndex', 'openArgument']
 }
 </script>

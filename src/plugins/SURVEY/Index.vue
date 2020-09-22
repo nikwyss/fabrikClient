@@ -2,23 +2,18 @@
     <q-page class="doc_content">
 
 
-        <div v-if="stage">
-
-            <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
-            This Stage is disabled and, therefore, not visible for users.
-            </q-banner>
+        <div v-if="routedStage">
 
             <!-- EDIT CONTENT -->
-            <ComponentStageEditor 
+            <!-- <ComponentStageEditor 
                 v-if="assembly_acls.includes('manage')"
                 :assembly_id="assembly.id"
-                :model="stage" />
+                :model="routedStage" /> -->
 
 
             <!-- MISCONFIGURATION -->
-            <div v-if="stage && !is_survey_completed && !check_data">
-                <h2>{{stage.stage.title}}</h2>
+            <div v-if="routedStage && !isCompleted(routedStage) && !check_data">
+                <h2>{{routedStage.stage.title}}</h2>
 
                 <q-banner class="bg-grey-3 q-mb-lg">
                     <template v-slot:avatar>
@@ -32,88 +27,65 @@
                     </template>
                 </q-banner>
             </div>
-   
 
-            <!-- ALREADY COMPLETED? -->
-            <div v-if="stage && is_survey_completed">
-                <h2>{{stage.stage.title}}</h2>
-
-                <q-banner class="bg-grey-3 q-mb-lg">
-                    <template v-slot:avatar>
-                        <q-icon name="mdi-check" color="primary" />
-                    </template>
-                    {{ $t('survey.already_completed_error') }}
-                    <template v-slot:action>
-                        <q-btn flat 
-                            :label="$t('assemblies.go_back_to_assembly_home')" 
-                            @click="gotoAssemblyHome()" />
-                    </template>
-                </q-banner>
+            <!-- AM-OVERVIEW -->
+            <div class="q-mb-xl">
+                <ArtificialModeratorSURVEYIndexTop
+                v-if="check_data"
+                :ongoing="!ABLY.routedStage || oauth_authenticated === null" 
+                align="left" />
             </div>
 
-            <!-- REDIRECT TO SURVEY  -->
-            <div v-if="stage && check_data && !is_survey_completed"  align="center">
-                <!-- <p>{{stage.stage.info}}</p> -->
 
+            <!-- Redirect Spinner  -->
+            <div v-if="ABLY.routedStage && check_data && !isCompleted(routedStage)"  align="center">
                 <q-spinner-gears
                     color="grey"
                     class="q-mb-lg"
                     size="5em"/>
-                <div class="text-italic">
-                    {{ $t("survey.redirect_to_survey")}}
-                </div>
             </div>
-
         </div>
-
     </q-page>
 </template>
 
 
 <script>
-import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import StageMixin from "src/mixins/stage"
 import i18nPluginMixin from "./i18n"
 import Configuration from 'src/utils/configuration'
+import ArtificialModeratorSURVEYIndexTop from './artificialmoderation/IndexTop'
+// import {mapGetters} from 'vuex'
 
 export default {
     name: 'Survey',
-    components: {
-        ComponentStageEditor
-    },
+    components: {ArtificialModeratorSURVEYIndexTop},
 
     mixins: [StageMixin, i18nPluginMixin],
 
     data() {
         return {
-            MonitorSurveyCompleting: 'MonitorSurveyCompleting'
+            // Events
+            MonitorSurveyCompleting: 'MonitorSurveyCompleting',
         }
     },
 
     computed: {
 
         check_data: function () {
-            if (this.stage === undefined) {
+            console.log("check survey data..")
+
+            if (this.routedStage === undefined) {
                 // not yet loaded...
                 return (null)
             }
 
-            if (!this.stage.stage.custom_data ||
-                !this.stage.stage.custom_data.provider ||
-                !this.stage.stage.custom_data.SID) {
+            if (!this.routedStage.stage.custom_data ||
+                !this.routedStage.stage.custom_data.provider ||
+                !this.routedStage.stage.custom_data.SID) {
+                    console.log("no survey data provided at this stage..")
+                    console.log(this.routedStage.stage.custom_data)
                     return (false)
             }
-            if (this.is_a_survey_response && !this.is_survey_completed){
-                this.monitorApi2()
-                return (true)
-            }
-
-
-            if (!this.is_a_survey_response && !this.is_survey_completed){
-                this.redirect()
-            }
-
-
             return (true)
         },
 
@@ -121,18 +93,17 @@ export default {
             if (this.$route.query.completed){
                 return (true)
             }
-        },
+        }
+    },
 
-        is_survey_completed() {
-            return (this.stage && this.stage.progression && this.stage.progression.completed)
-        },
+    methods: {
 
         redirect: function () {
 
             // all data available
-            const SID = this.stage.stage.custom_data.SID
-            const USERID = this.stage.stage.access_sub
-            const STAGEID = this.stage.stage.id
+            const SID = this.routedStage.stage.custom_data.SID
+            const USERID = this.oauth_userid
+            const STAGEID = this.routedStageID
             // const RETURNURL = window.location.href
             let url = Configuration.value('ENV_SURVEY_URL')
             var re = /:SID:/g
@@ -143,18 +114,24 @@ export default {
             newurl = newurl.replace(re, STAGEID)
             // re = /:RETURN:/g
             // newurl = newurl.replace(re, RETURNURL)
+            console.log(USERID)
             window.location.href=newurl
 
             return (true)
-        }
-    },
+        },
 
-    methods: {
+        monitorApi: function(event, force) {
+            if (!event) {
+                event = this.MonitorStageEntering
+            }
 
-        monitorApi2: function() {
-            /* By this method we allow the API to monitor user activities */
-            const STAGEID = this.stage.stage.id
-            const USERID = this.stage.stage.access_sub
+            console.log("Force MonitorApi: " + event + " - " + force)
+
+
+            /* By this method we allow the API to monitor userz activities */
+            const STAGEID = this.routedStageID
+            const USERID = this.oauth_userid
+            console.log(this.oauth_userid + 'oauth_userid')
             if (this.$route.query.S != STAGEID ||
                 this.$route.query.U != USERID) {
                     console.log("wrong response data...")
@@ -167,12 +144,34 @@ export default {
                 stage_id:STAGEID,
                 sub: USERID
             }
-            
+
             this.$store.dispatch('monitorApi', {
-                event: this.MonitorSurveyCompleting,
-                data: data})
+                event: event,
+                data: data,
+                timeout: 0,
+                force: force})
 
         }
+    },
+
+    mounted: function () {
+        
+        // Completed Response?
+        if (this.is_a_survey_response && !this.isCompleted(this.routedStage)){
+            console.log("Completed response..?")
+            const event = this.MonitorSurveyCompleting
+            const force = true
+            this.monitorApi(event, force)
+            return (true)
+        }
+    
+        // Initiating Survey => redirect to Provider 
+        if (!this.is_a_survey_response && !this.isCompleted(this.routedStage)){
+            console.log("Redirect to Provider..?")
+            this.redirect()
+            return (true)
+        }
+
     }
 }
 </script>

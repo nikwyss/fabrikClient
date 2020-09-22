@@ -8,29 +8,26 @@
             icon="mdi-arrow-left"
             @click="gotoAssemblyHome()" />
 
-        <div v-if="assembly && stage">
+        <div v-if="assembly && routedStage">
 
             <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="stage.disabled" style="padding:2em; margin-bottom:1em;">
+            <q-banner dense inline-actions class="text-white bg-red" v-if="routedStage.stage.disabled" style="padding:2em; margin-bottom:1em;">
             This ContentTree Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
             <StagePeerReview />
 
             <!-- EDIT CONTENT -->
-            <ComponentStageEditor 
-                v-if="assembly_acls.includes('manage')"
-                :assembly_id="assembly.id"
-                :model="stage" />
+            <ComponentStageEditor v-if="assembly_acls.includes('manage')" />
 
-            <div class="text-h4">{{stage.title}}</div>
+            <div class="text-h4">{{routedStage.stage.title}}</div>
 
-            <p>{{stage.info}}</p>
+            <p>{{routedStage.stage.info}}</p>
         </div>
 
         <q-spinner-dots color="secondary" size="7em" v-if="!contenttree"/>
 
-        <div class="" v-if="stage && contenttree">
+        <div class="" v-if="routedStage.stage && contenttree">
             <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
             <div class="row justify-between gt-xs ">
 
@@ -45,17 +42,13 @@
             <div class="row justify-between" v-for="row in maxrows" :key="row">
                 <div class="col-12 col-sm-6  ">
                     <ArgumentCard 
-                        :acl="assembly_acls" 
                         :default_content_type="column_types[0]"
-                        :stage="stage" 
                         :content="get_content_entry(row,0)"/>
 
                 </div>
                 <div class="col-12 col-sm-6">
                     <ArgumentCard 
-                        :acl="assembly_acls" 
                         :default_content_type="column_types[1]"
-                        :stage="stage"
                         :content="get_content_entry(row,1)"/>
                 </div>
 
@@ -109,8 +102,8 @@ export default {
         },
         random_column_order: function() {
             // Return 0 or 1
-            console.assert(this.stage.stage)
-            return(this.stage.stage.RANDOM_LEFTRIGHT_ASSIGNMENT)
+            console.assert(this.routedStage.stage)
+            return(this.routedStage.stage.RANDOM_LEFTRIGHT_ASSIGNMENT)
         },
         column_args: function() {
             console.assert(this.random_column_order!==undefined)
@@ -141,7 +134,6 @@ export default {
 
             // return content
             let contentID = args[row-1].id
-            console.log(contentID)
             return(this.contenttree.entries[contentID])
         }
     }

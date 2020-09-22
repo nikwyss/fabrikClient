@@ -1,7 +1,7 @@
 <template>
 
 <Fragment>
- <q-dialog v-model="peerreview_small"  position="bottom" seamless  >
+ <q-dialog v-model="peerreview_small" v-if="peerreview_small"  position="bottom" seamless  >
    <q-card style="width: 350px" @click="peerreview_small=false; peerreview_large=true;">
         <q-card-section class="row items-center no-wrap">
           <div>
@@ -15,7 +15,7 @@
       </q-card>
     </q-dialog> 
 
-   <q-dialog v-model="peerreview_large" persistent position="top" class="q-ma-lg">
+   <q-dialog v-model="peerreview_large" v-if="peerreview_large" persistent position="top" class="q-ma-lg">
     <!-- position="bottom" seamless-->
 
    <!-- <q-layout view="Lhh lpR fff" contenttree class="bg-white">
@@ -228,15 +228,7 @@ import { Fragment } from 'vue-fragment'
 
 export default {
   name: "ContentTreePeerReview",
-  props: ["contenttreeID"],
   components: {Fragment},
-  
-  computed: {
-    contentSize () {
-      return this.moreContent ? 150 : 5
-    }
-  },
-
   data () {
     return {
       peerreview_small: false,
@@ -246,6 +238,12 @@ export default {
     }
   },
 
+  computed: {
+    contentSize () {
+      return this.moreContent ? 150 : 5
+    }
+  },
+  
   mounted: function() {
     this.peerreview_small = true;
   }

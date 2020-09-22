@@ -135,7 +135,7 @@ export default {
       enter_first: `Wir möchten gerne hier anfangen. Sind Sie bereit?`,
       enter_continue: `Wir möchten nun gerne hier weiterfahren. Sind Sie bereit?`,
       enter_end: `Bevor wir für heute Schluss machen: Darf ich Sie bitten mir zu folgen.`,
-      already_seen: 'Möchten Sie sich das noch einmal ansehen?',
+      already_seen: 'Möchten Sie sich das noch einmal ansehen? Ansonsten gehen wir weiter mit dem nächsten Punkt.',
       already_completed: 'Dieser Bereich haben Sie bereits abgeschlossen.',
       attention_needed: 'Hierzu hätten wir noch einen Wunsch. Folgen Sie uns bitte.',
       enter_unique_stage: `Dies ist heute der einzige Punkt auf dem Programm. Sind Sie bereit?`,

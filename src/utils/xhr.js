@@ -202,7 +202,7 @@ const ApiService = {
       // What if the second attempt fails?
       if (response.retry && response.retoken) {
         console.log("token could not be renewed.. 2nd attempt failed.")
-        LayoutEventBus.$emit('showAuthorizationError')        
+        LayoutEventBus.$emit('showAuthorizationError')
       }
       // Headers are set again. dont neet to this.
       temp_oauth_jwt = null

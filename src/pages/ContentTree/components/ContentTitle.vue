@@ -24,7 +24,7 @@ import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 
 export default {
     name: "ContentTreeEntryTitle",
-    props: ["obj", "node", "acl", "expanded", "currently_selected_contentID", 
+    props: ["obj", "node", "expanded", "currently_selected_contentID", 
         "contenttree"],
     components: {ContentToolbar},
 

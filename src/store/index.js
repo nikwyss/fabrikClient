@@ -34,7 +34,8 @@ export default new Vuex.Store({
 
   actions: {
 
-    monitorApi: ({state, dispatch, commit}, { event, data, timeout}) => {
+    /* If force= true: send monitor request in any case.. */
+    monitorApi: ({state, dispatch, commit}, { event, data, timeout, force}) => {
 
       // add some timelag for this monitor method: all other ajax call have priority.
       // take 3 seconds as default value
@@ -42,16 +43,20 @@ export default new Vuex.Store({
       if (!timeout && timeout !== 0){ timeout = default_timeout}
       setTimeout(function(){
 
+        console.log("initiate Monitor " + event)
+
         // Check if monitor intervall is passed
         const MonitorFrequency = 5 // TODO: put this in environment variable.
         const now = Vue.moment(new Date())
         const timeThreshold = now.clone()
         timeThreshold.subtract(MonitorFrequency, 'minutes')
         console.log("MONITOR STAGE VISIT: " + event)
-        if (state.monitors[event] && timeThreshold.isBefore(state.monitors[event]) ){
-          return ('No Monitor action needed')
+        
+        if (!force) {
+          if (state.monitors[event] && timeThreshold.isBefore(state.monitors[event]) ){
+            return ('No Monitor action needed')
+          }
         }
-
         // Send API Monitor
         commit('monitor_date', {event, now})
         api.monitorActivities({event: event, data: data}).then(response => {
@@ -60,7 +65,7 @@ export default new Vuex.Store({
           // Most monitors do not give a response. However, when progression entry has just been
           // created or significantly modified, then progression entry is returned.
           if (!response.data){ return (null) }
-          console.log("API Monnitored." + event)
+          console.log("API Monitored." + event)
 
           // stage monitor
           if (response.data && 'stage_progression' in response.data){

@@ -1,9 +1,23 @@
 import {mapGetters, mapActions} from 'vuex'
 import StageMixin from "src/mixins/stage"
+import { ReactiveProvideMixin } from 'vue-reactive-provide'
+
+/* Make available all the properties and methods in any descendant object.*/
+const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
+  name: 'CTREE',
+  include: ['contenttreeID', 'contenttree', 'startingContentID', 'startingContent'],
+})
 
 export default {
+  mixins: [StageMixin, ReactiveProvidePropertiesMixin],
 
-  mixins: [StageMixin],
+  provide() {
+    return {
+      openIndex: this.openIndex,
+      openArgument: this.openArgument
+    }
+  },
+  
   data() {
     return {
       is_loaded: false,
@@ -15,10 +29,8 @@ export default {
 
     contenttreeID: function() {
       // contenttreeID is defined in the URL
-      const contenttreeID = this.$route.params.contenttreeID
       // Mixin is only usable for pages with assemblyIdentifier in the URL
-      console.assert(contenttreeID)
-      console.log(contenttreeID)
+      const contenttreeID = this.$route.params.contenttreeID
       return (contenttreeID)
     },
 
@@ -79,6 +91,40 @@ export default {
       })
     },
 
+    openIndex: function() {
+
+      console.log("redirect to pros_and_cons_index")
+      console.log(this.routedStage.stage)
+      console.log("WHICH IS THE TYPE??")
+      console.log(this.routedStage.stage.type)
+      // REDIRECT TO ARGUMENT PAGE
+      var identifier = this.$route.params.assemblyIdentifier
+      this.$router.push({name: this.routedStage.stage.type, params: {
+        assemblyIdentifier: identifier,
+        stageID: this.routedStageID,
+        contenttreeID: this.contenttreeID
+      }})
+    },
+
+    openArgument: function(contentID) {
+
+      if (this.standalone) {
+        return
+      }
+
+      // REDIRECT TO ARGUMENT PAGE
+      // console.log(this.item)
+      var identifier = this.$route.params.assemblyIdentifier
+      this.$router.push({
+        name: this.routedStage.stage.type, 
+        params: {
+          assemblyIdentifier: this.assemblyIdentifier,
+          stageID: this.routedStageID,
+          contentID: contentID
+        }
+      })
+    },
+
     filter_entries: function(nodes, TYPES) {
 
       console.assert(this.contenttreeID && this.contenttree!==null)
@@ -100,7 +146,7 @@ export default {
     }
   },
 
-  mounted: function() {
+  mounted: function() {   
     console.assert(this.assemblyIdentifier)
     console.assert(this.contenttreeID)
     this.$store.dispatch('contentstore/syncContenttree', {
