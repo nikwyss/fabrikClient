@@ -1,44 +1,65 @@
+<style>
+.q-tree .q-focus-helper {
+    background-color:transparent !important;
+}
+</style>
+
 <template>
-<div>
+<div class="full-width">
 
-    <!-- AM-ContentTree Index -->
-    <div class="q-mb-xl">
-        <component 
-            v-if="artificialmoderationComponents && 'ContentTreeIndex' in artificialmoderationComponents"
-            :is="artificialmoderationComponents.ContentTreeIndex"
-            :startingContentNode="startingContentNode"
-            :ongoing="!startingContentNode || oauth_authenticated === null" 
-            align="left"
-        />
-    </div>
-
-    <div v-if="startingContentNode.children && startingContentNode.children.length">
-        <span style="float:right; margin-bottom:1.8em; margin-right:0.3em; display:inline-block">
-            <q-btn
+    <div v-if="startingContentNode.children && startingContentNode.children.length" class="full-width " align="right">
+        <!-- <div style="margin-bottom:1.8em; margin-right:0.3em"> -->
+        <div>
+            <!-- <q-btn
                     size="md"
-                    round
+                    flat
                     @click="expand_more()"
                     :disabled="expanded.length>=this.total_nof_contents"
-                    title="expand more"
+                    label="Expand more"
                     color="secondary"
-                    icon="mdi-expand-all"
-                    />
-            <q-btn
+                    _icon="mdi-expand-all"
+                    class="q-pr-sm"
+                    /> -->
+
+            <q-chip clickable 
+                @click="expand_more" 
+                :disabled="expanded.length>=this.total_nof_contents"
+                align="right" icon="mdi-expand-all">
+              {{ $t('contenttree.expand_all') }}
+            </q-chip>
+
+            <!-- <q-btn
                     size="md"
-                    round
+                    flat
                     @click="expand_none()"
-                    color="secondary"
                     :disabled="expanded.length==0"
-                    title="collapse all"
-                    icon="mdi-collapse-all"
+                    label="Collapse all"
+                    class="q-pr-sm"
+                    _icon="mdi-collapse-all"
                     />
-            <q-btn
+             -->
+            <q-chip clickable 
+                @click="expanded.length==0" 
+                :disabled="expanded.length==0"
+                align="right" icon="mdi-collapse-all">
+              {{ $t('contenttree.collapse_all') }}
+          </q-chip>
+
+            <!-- <q-btn
+                flat
                 size="md"
-                round
                 @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : '';"
-                color="secondary"
-                icon="mdi-feature-search"
-            />
+                _icon="mdi-feature-search"
+                label="Search"
+                class="q-pr-sm"
+            /> -->
+
+          <q-chip clickable 
+                @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : '';" 
+                align="right" icon="mdi-feature-search">
+              {{ $t('contenttree.search_button') }}
+          </q-chip>
+
 
             <div class="q-gutter-md"><q-input
                 ref="filter"
@@ -48,10 +69,26 @@
                 label="Search">
                     </q-input>
             </div>
-        </span>
-    </div> 
+        </div>
+    </div>
 
-    <span class="text-h6" v-if="label">{{label}}</span>
+    <br />
+    <q-separator inset />
+
+    <!-- AM-ContentTree Index -->
+    <div class="q-mb-xl full-width">
+    <component 
+        v-if="artificialmoderationComponents && 'ContentTreeIndex' in artificialmoderationComponents"
+        :is="artificialmoderationComponents.ContentTreeIndex"
+        :startingContentNode="startingContentNode"
+        :ongoing="!startingContentNode || oauth_authenticated === null" 
+        align="left"
+    />
+    </div>
+
+    <div class="text-h6" v-if="label">{{label}}</div>
+
+    <!-- <q-separator inset /> -->
 
     <!-- AFTER LOADING -->
     <div class="q-pa-none q-ma-none q-gutter-sm" v-if="startingContentNode">
@@ -64,6 +101,7 @@
             ref="qtree"
             :nodes="startingContentNode.children"
             label-key="id"
+            :expandable="false"
             nodeKey="id"
             icon="mdi-play"
             :expanded.sync="expanded"
@@ -77,41 +115,53 @@
 
             <!-- Content Header -->
             <template v-slot:default-header="prop">
-                    <!-- v-if="root_node_ids.includes(prop.node.id) || is_currently_expanded(cachedNode(prop.node.id).content.parent_id)" -->
-                <!-- v-if="startingContentNode.children.map(x=> x.id).includes(prop.node.id) || is_currently_expanded(cachedNode(prop.node.id).content.parent_id)" -->
-                <ContentTitle
-                    :node="prop.node"
-                    :obj="cachedNode(prop.node.id)" 
-                    :expanded="prop.expanded"
-                    :key="prop.node.id" />
+
+                <div @click.stop @keypress.stop style="cursor:default" class="full-width">
+
+                    <!-- <div :id="`arg${prop.node.id}`" class="full-width" > -->
+                    <!-- v-if="real_expanded" -->
+                    <span style="position:absolute; top:-0.75em; right:0px">
+                    <ContentToolbar :obj="cachedNode(prop.node.id)" />
+                    </span>
+
+                    <span>
+                        <q-icon name="mdi-comment-outline" size="xs" />
+                        <span class="text-date"> {{cachedNode(prop.node.id).content.date_created | moment("calendar")}}</span>
+                        <span v-if="cachedNode(prop.node.id).creator" class="text-user"> {{ $t('contenttree.created_by', {username: cachedNode(prop.node.id).creator}) }} </span><br>
+                    </span>
+                    <q-badge color="blue" v-if="!real_expanded" align="top">click to see {{prop.node.nof_descendants}} more</q-badge>
+                </div>
             </template>
 
             <!-- Content Body -->
             <template v-slot:default-body="prop">
-                <div style="margin-bottom:0.5em" size="text-body1">
-                    <span class="text-user">
-                        {{cachedNode(prop.node.id).creator}}: 
-                    </span>
-
+                <div 
+                    size="text-body1"
+                    class="q-mb-lg"
+                    :style="!prop.node.nof_descendants && rootNodeIDs.includes(prop.node.id) ? 'margin-left:1.5em' : ''">
+                    <span class="text-bold "> {{ cachedNode(prop.node.id).content.title }}</span><br>
                     {{ cachedNode(prop.node.id).content.text }}
-
-                    <ContentEditor
-                        v-if="ABLY.assembly_acls.includes('contribute')" :parent_id="prop.node.id"
-                    />
+                    <!-- style="margin-bottom:0.5em"  -->
                 </div>
             </template>
         </q-tree>
 
-        <!-- Add a new top-level entry -->
-        <ContentEditor 
-            :hideAddNewEntryButton="hideAddNewEntryButton"
-            ref="content_editor"
-            v-if="ABLY.assembly_acls.includes('contribute')"
-            :parent_id="startingContentID" />
+        <q-separator inset />
 
-        <!-- Disclaimer -->
-        <AlgorithmDisclaimer :text="disclaimerText" />
+        <div class="full-width" align="right">
+                <!-- class="bg-accent" -->
+            <q-chip
+                v-if="ABLY.assembly_acls.includes('contribute')"
+                icon="mdi-tooltip-plus-outline" clickable @click="popup_edit">
+                {{ $t('contenttree.add_comment_or_question') }}
+            </q-chip>
 
+            <!-- Disclaimer -->
+            <AlgorithmDisclaimer :text="disclaimerText" v-if="startingContentNode.nof_descendants > 1"/>
+    
+            <slot name="actions"></slot>
+
+        </div>
     </div>
 
 
@@ -120,22 +170,34 @@
         <q-spinner-rings color="primary" size="2em"/>
         <q-tooltip :offset="[0, 8]">Bitte warten. Die Daten werden geladen.</q-tooltip>
     </div>
+
+    
+    <!-- EDIT/CREATE FORM -->
+    <ContentEditor 
+        ref="content_editor"
+        v-if="ABLY.assembly_acls.includes('contribute')"
+        :parent_id="startingContentID" />
+
 </div>
 </template>
 
 <script>
 import QTreeMixin from "src/mixins/qtree"
-import ContentTitle from "./ContentTitle"
+import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 import ContentEditor from "./ContentEditor"
 import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer"
+// import ContentRating from "./ContentRating";
 
 export default {
     name: "ContentTree",
-    props: ["artificialmoderationComponents", 'hideNoEntryText', 'hideNofEntriesText', 
-        'hideAddNewEntryButton'],
+    props: ["artificialmoderationComponents", 'hideNoEntryText', 'hideNofEntriesText'],
     mixins: [QTreeMixin],
-    components: {ContentTitle, AlgorithmDisclaimer, ContentEditor},
+    components: {AlgorithmDisclaimer, ContentEditor, ContentToolbar},
     computed: {
+       real_expanded: function() {
+            return(this.expanded || this.node.children.length==0)
+        },
+        
         disclaimerText: function () {
             var text = this.$i18n.t('disclaimer.contenttree.basic')
 

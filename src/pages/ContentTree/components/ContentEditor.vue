@@ -1,56 +1,43 @@
 <template>
-  <span>
-    <q-btn 
-      v-if="!hideAddNewEntryButton"
-      size="md"
-      flat
-      round
-      color="primary"
-      :label="btnlabel"
-      :icon="icon">
-      <template v-slot:action>
-      <q-btn flat color="white" label="Modify" />
-      </template>
-    </q-btn>
+<span>
+  <q-popup-edit buttons v-model="localmodel" ref="popup_editor"
+    auto-save
+    v-on:save="saveContent">
+    <div class="q-pa-md bg-grey-2">
+      <div class="q-gutter-y-md column" style="max-width: 600px">
+        <!-- HTML -->
+        <b>Title:</b>
+        <q-input type="text" v-model="localmodel['title']"
+          shadow-text="Enter a short title."
+          counter maxlength="60"
+          dense autofocus />
+        <br />
 
-    <q-popup-edit buttons v-model="localmodel" ref="popup_editor"
-      auto-save
-      v-on:save="saveContent">
-      <div class="q-pa-md bg-grey-2">
-        <div class="q-gutter-y-md column" style="max-width: 600px">
-          <!-- HTML -->
-          <b>Title:</b>
-          <q-input type="text" v-model="localmodel['title']"
-            shadow-text="Enter a short title."
-           counter maxlength="60"
-            dense autofocus />
-          <br />
+        <b>Text:</b>
+        <q-input 
+          v-model="localmodel['text']"
+          shadow-text="Outline your idea"
+          hint="Please, try to makeshort statements only."
+          autogrow
+          counter maxlength="300"
+          dense />
+        
+        <br />
 
-          <b>Text:</b>
-          <q-input 
-            v-model="localmodel['text']"
-            shadow-text="Outline your idea"
-            hint="Please, try to makeshort statements only."
-            autogrow
-            counter maxlength="300"
-            dense />
-         
-          <br />
-
-          <q-select
-            v-if="type_options"
-            class="q-ma-none"
-            style="max-width:270px"
-            dense
-            dropdown-icon="mdi-menu-down"
-            v-model="localmodel['type']"
-            :options="type_options"
-            hint="What kind of content is this?"
-            label="Type of Content"
-          />
-        </div>
+        <q-select
+          v-if="typeOptions"
+          class="q-ma-none"
+          style="max-width:270px"
+          dense
+          dropdown-icon="mdi-menu-down"
+          v-model="localmodel['type']"
+          :options="typeOptions"
+          hint="What kind of content is this?"
+          label="Type of Content"
+        />
       </div>
-    </q-popup-edit>
+    </div>
+  </q-popup-edit>
   </span>
 </template>
 
@@ -61,55 +48,75 @@ import Configuration from 'src/utils/configuration'
 
 export default {
   name: 'ContentEditor',
-  props: {
-    hideAddNewEntryButton: {type: Boolean},
-    contenttreeID: { type: Number },
-    parent_id: {
-      type: Number,
-      required: false
-    },
-    icon: {
-      type: String,
-      default: 'mdi-comment-plus'
-    },
-    btnlabel: {
-      type: String,
-      default: ''
-    },
-    content_type: {
-      type: String
-    },
-    type_options: {
-      type: Array
-    },
-    model: {
-      type: Object,
-      default: function () {
-        // EMPTY CONTENT MODEL as default value
-        return ({
-          id: null,
-          title: '',
-          text: '',
-          parent_id: this.parent_id
-        })
-      }
-    }
-  },
+  inject: ['QTREE'],
+  // props: {
+  //   contenttreeID: { type: Number },
+  //   parent_id: {
+  //     type: Number,
+  //     required: false
+  //   },
+  //   icon: {
+  //     type: String,
+  //     default: 'mdi-comment-plus'
+  //   },
+  //   btnlabel: {
+  //     type: String,
+  //     default: ''
+  //   },
+  //   content_type: {
+  //     type: String
+  //   },
+  //   type_options: {
+  //     type: Array
+  //   },
+  //   model: {
+  //     type: Object,
+  //     default: function () {
+  //       // EMPTY CONTENT MODEL as default value
+  //       return ({
+  //         id: null,
+  //         title: '',
+  //         text: '',
+  //         parent_id: this.parent_id
+  //       })
+  //     }
+  //   }
+  // },
 
   data: function () {
     return {
-      localmodel: this.model
+      localmodel: {
+        id: null,
+        title: '',
+        text: '',
+        parent_id: null
+      },
+      icon: '',
+      btnlabel: '',
+      contentType: '',
+      typeOptions: {}
     }
   },
 
   methods: {
 
+    setup: function (model, parent_id) {
+
+      if (model) {
+        this.localmodel = model
+      }
+
+      if (parent_id) {
+        this.localmodel.parent_id = parent_id
+      }
+    },
+
     saveContent: function(model) {
       console.log("Save content")
-      console.assert( this.$route.params.contenttreeID)
+      console.assert( QTREE.contenttreeID)
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier)
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${this.$route.params.contenttreeID}`
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${QTREE.contenttreeID}`
       var create_action = true
       if (model.id) {
           // this is an update
@@ -134,7 +141,7 @@ export default {
             // update the whole tree
             if ('contenttree' in response.data) {
             this.add_or_update_contenttree({
-              contenttreeID:  this.contenttreeID,
+              contenttreeID:  QTREE.contenttreeID,
               contenttree: response.data.contenttree});
             }
             
@@ -162,8 +169,8 @@ export default {
   },
 
   created: function () {
-    if (this.content_type) {
-      this.localmodel['type'] = this.content_type
+    if (this.contentType) {
+      this.localmodel['type'] = this.contentType
     }
   }
 }

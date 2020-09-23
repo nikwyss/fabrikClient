@@ -73,7 +73,10 @@ export default{
               //     assembly: response.data.contenttree,
               //     contenttree: response.data.contenttree})
               
-              this.update_contents({modifiedContents: response.data.modifiedContents})
+              console.log(response.data)
+              if (response.data.modified_contents) {
+                this.update_contents({modifiedContents: response.data.modified_contents})
+              }
           }
 
           this.$q.notify({

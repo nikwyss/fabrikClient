@@ -14,7 +14,6 @@
                 :model="routedStage" />
 
             <div class="text-h4">{{routedStage.stage.title}}</div>
-            <!-- <div class="text-h4 q-mt-sm q-mb-xs">{{routedStage.stage.title}}</div> -->
 
             <p>{{routedStage.stage.info}}</p>
         </div>

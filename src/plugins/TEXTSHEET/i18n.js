@@ -14,10 +14,10 @@ const messages = {
         },
         contenttree: {
             comment_section_tooltip: 'Haben Sie an dieser Stelle Fragen oder Anregungen?',
-            add_comment_or_question: 'Neuer Beitrag eingeben',
+            close_comment_section_tooltip: 'Klicken Sie hier um die Kommentarspalte wieder zu schliessen',
             am: {
                 index: `Haben an dieser Stelle Fragen oder Anregungen? Die anderen Delegierten
-                würde das sicher auch interessieren. | Hier ist Platz für Fragen und Kommentare zum obigen Abschnitt. | Hier wurden schon Beiträge eingegeben.`
+                würde das sicher auch interessieren. | Hier ist Platz für Fragen und Kommentare zum obigen Abschnitt. | Hier wurden von anderen Besuchern bereits Beiträge eingegeben.`
             }
         }
     }

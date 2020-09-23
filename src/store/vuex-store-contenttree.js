@@ -148,10 +148,23 @@ const mutations = {
   
   update_contents(state, {modifiedContents}) {
     // in case content or progression changes (without changing hirarchy...)
+    console.assert(modifiedContents !== undefined)
+    console.assert(modifiedContents !== null)
     for(let contentID in modifiedContents) {
+      console.log("modified contents: " + contentID)
+      
       let modifiedContent = modifiedContents[contentID]
-      let contenttreeID = modifiedContent.content.contenttreeID
-      Vue.set(state.contenttree[contenttreeID].entries, modifiedContent.content.id, modifiedContent)
+      console.log(modifiedContent)
+      let contenttreeID = modifiedContent.content.contenttree_id
+      if (modifiedContent.progression) {
+        Vue.set(state.contenttree[contenttreeID].entries[modifiedContent.content.id], 'progression', modifiedContent.progression)
+      }
+      if (modifiedContent.content) {
+        Vue.set(state.contenttree[contenttreeID].entries[modifiedContent.content.id], 'content', modifiedContent.content)
+      }
+      if (modifiedContent.creator) {
+        Vue.set(state.contenttree[contenttreeID].entries[modifiedContent.content.id], 'creator', modifiedContent.creator)
+      }
     }
   },
 

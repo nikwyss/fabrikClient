@@ -33,6 +33,7 @@ export default {
     provide() {
         return {
             popup_edit: this.popup_edit,
+            contenttreeID: this.CTREE.contenttreeID
         }
     },
     inject: ['CTREE', 'ABLY'],
@@ -65,6 +66,16 @@ export default {
                 return (this.CTREE.contenttree.structure)
                 // return(this.get_node_by_id(this.startingContentID))
             }
+        },
+
+        startingContentNodeLevel: function() {
+            console.log("get startingContentNode")
+            if(this.customStartingContentNode) {
+                return(this.customStartingContentNode.level)
+            }
+            console.log("kkkkkkkkk")
+            console.log(this.CTREE.contenttree.structure)
+            return (null)
         },
 
         customStartingContentNode: function() {

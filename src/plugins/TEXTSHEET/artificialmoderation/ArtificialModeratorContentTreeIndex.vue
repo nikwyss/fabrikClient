@@ -11,8 +11,8 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip 
-            v-if="ABLY.assembly_acls.includes('contribute')"
+        <q-chip
+            v-if="startingContentNode.children.length < 2 && ABLY.assembly_acls.includes('contribute')"
             icon="mdi-tooltip-plus-outline" clickable @click="popup_edit">
             {{ $t('contenttree.add_comment_or_question') }}
         </q-chip>
@@ -24,7 +24,6 @@
 
 <script>
 import ArtificialModerator from 'src/artificialmoderation/components/ArtificialModerator'
-
 export default{
     name: "ArtificialModeratorContentTreeIndex",
     // inject: ['ABLY', 'assemblyIdentifier', 'gotoAssemblyHome', 'clickGotoIndexAndMoveOn',

@@ -21,7 +21,7 @@ export default {
   },
 
   disclaimer: {
-    btnLabel: 'Algorithmus-Disclaimer',
+    btnLabel: 'Transparenzerklärung',
     contenttree: {
       basic: `Die Inhalte in diesem Forum werden in hierarchischer (und nicht in chronologischer) Reihenfolge aufgelistet.
       Die Reihenfolge der Inhalte auf gleicher Hierarchiestufe ist zufällig und variiert von Benutzer zu Benutzer.`,
@@ -270,6 +270,12 @@ export default {
 
   contenttree: {
     no_entries: "Es sind noch keine Kommentare oder Fragen vorhanden. Machen Sie den Anfang?",
-    no_filter_results: "Keine Einträge passen zu dieser Sucheingabe!"
+    no_filter_results: "Keine Einträge passen zu dieser Sucheingabe!",
+    created_by: "von {username}",
+    add_comment_or_question: 'Neuer Beitrag',
+    close_comment_section: 'Forum schliessen',
+    search_button: "Suche",
+    expand_all: "Beiträge ausklappen",
+    collapse_all: "Beiträge schliessen",
   }
 }

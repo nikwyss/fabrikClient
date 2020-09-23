@@ -4,96 +4,114 @@
 }
 </style>
 <template>
-    <div class="q-pa-none full-height" style="float:right;" >
+    <div class="q-pa-none" style="" >
 
-      <q-toolbar class="rounded-borders full-height" > 
-
-        <!-- Reply -->
-        <ContentEditor
-            v-if="ABLY.assembly_acls.includes('contribute')"
-            :model="obj.content"
-            :parent_id="obj.content.parent_id"
-            @zoom-to-content="$emit('zoomToContent')"
-            />
-        <q-separator vertical inset />
-
-        <!-- DELETE -->
-        <q-btn  
-          round dense flat
-          v-if="obj.content.delete_permission" 
-          @click="deletePrompt(obj.content)"
-          class="q-mr-sm"
-          :title="obj.content.common_property ? 'Delete this Entry' : 'Subject a Delete Proposal'"
-          :icon="obj.content.common_property ? 'mdi-delete-outline' : 'mdi-delete-circle-outline'" />
-        <q-separator v-if="obj.content.delete_permission" vertical inset />
-
-        <!-- Track changes -->
-        <q-btn  @click="switchTrackChanges" :color="track_changes_color"
-          class="q-mr-sm primary red" round dense flat  title="Track changes" :icon="track_changes_icon" />
-        <q-separator vertical inset />
-
-
-        <!-- Background Popup -->
-        <q-btn flat round dense icon="mdi-calculator-variant-outline" class="q-mr-sm" >
-          <q-popup-edit v-model="obj" ref="contentpopup">
-              <q-icon 
-                name="mdi-close" 
-                class="cursor-pointer"
-                size="sm"
-                style="float:right; padding:0.3em;" 
-                @click="$refs.contentpopup.cancel()"/>
-
-            <div class="q-pa-md doc-contenttree" width="400px">
-                <q-badge color="blue">Authors</q-badge>
-                <div class="row items-start">
-                  <div class="col-7">Created</div>
-                  <div class="col-5">@APS202 at Monday, 2020</div>
-                </div>
-                <div class="row items-start">
-                  <div class="col-7">Revisions</div>
-                  <div class="col-5">
-                    @APS202 20.02.2020<br>
-                    @EPU111 20.02.2020</div>
-                </div>
-            </div>
-            <div class="q-pa-md doc-contenttree" width="400px">
-                <q-badge color="blue">Peer Review</q-badge>
-                <div class="row items-start">
-                  <div class="col-7">Acceptance:</div>
-                  <div class="col-5">70%</div>
-                </div>
-                <div class="row items-start">
-                  <div class="col-7">Reviewers:</div>
-                  <div class="col-5">3</div>
-                </div>
-              </div>
-            <div class="q-pa-md doc-contenttree" width="400px">
-                <q-badge color="blue">Overall Interactions</q-badge>
-                <div class="row items-start">
-                  <div class="col-7">Viewed:</div>
-                  <div class="col-5">1000x times</div>
-                </div>
-                <div class="row items-start">
-                  <div class="col-7">Open Rating:</div>
-                  <div class="col-5">60 times</div>
-                </div>
-                <div class="row items-start">
-                  <div class="col-7">Rate average:</div>
-                  <div class="col-5">2.3 (1-3)</div>
-                </div>
-              </div>
-          </q-popup-edit>
-        </q-btn>
-        <q-separator vertical inset />
-
-        <ContentRating
+      <!-- EDIT FORM -->
+      <ContentEditor
           v-if="ABLY.assembly_acls.includes('contribute')"
-          name="`elRating${obj.content.id}`"
-          :content="obj"
-        />
+          :model="obj.content"
+          :parent_id="obj.content.parent_id"
+          ref="contentEditor"
+          @zoom-to-content="$emit('zoomToContent')"
+      />
 
-      </q-toolbar>
-      <!-- </div> -->
+      <q-toolbar class="rounded-borders full-height">
+
+      <!-- EDIT BUTTON -->
+      <q-btn 
+        size="md"
+        flat
+        @click="popup_edit"
+        round
+        color="primary"
+        icon="mdi-reply-outline">
+        <template v-slot:action>
+        <q-btn flat color="white" label="Modify" />
+        </template>
+      </q-btn>
+
+      <q-separator vertical inset />
+
+      <!-- DELETE -->
+      <q-btn  
+        round dense flat
+        v-if="obj.content.delete_permission" 
+        @click="deletePrompt(obj.content)"
+        class="q-mr-sm"
+        :title="obj.content.common_property ? 'Delete this Entry' : 'Subject a Delete Proposal'"
+        :icon="obj.content.common_property ? 'mdi-delete-outline' : 'mdi-delete-circle-outline'" 
+      />
+      
+      <q-separator v-if="obj.content.delete_permission" vertical inset />
+
+      <!-- Track changes -->
+      <q-btn  @click="switchTrackChanges" :color="track_changes_color"
+        class="q-mr-sm primary red" round dense flat  title="Track changes" :icon="track_changes_icon" />
+      <q-separator vertical inset />
+
+
+      <!-- Background Popup -->
+      <q-btn flat round dense icon="mdi-calculator-variant-outline" class="q-mr-sm" >
+        <q-popup-edit v-model="obj" ref="contentpopup">
+            <q-icon 
+              name="mdi-close" 
+              class="cursor-pointer"
+              size="sm"
+              style="float:right; padding:0.3em;" 
+              @click="$refs.contentpopup.cancel()"/>
+
+          <div class="q-pa-md doc-contenttree" width="400px">
+              <q-badge color="blue">Authors</q-badge>
+              <div class="row items-start">
+                <div class="col-7">Created</div>
+                <div class="col-5">@APS202 at Monday, 2020</div>
+              </div>
+              <div class="row items-start">
+                <div class="col-7">Revisions</div>
+                <div class="col-5">
+                  @APS202 20.02.2020<br>
+                  @EPU111 20.02.2020</div>
+              </div>
+          </div>
+          <div class="q-pa-md doc-contenttree" width="400px">
+              <q-badge color="blue">Peer Review</q-badge>
+              <div class="row items-start">
+                <div class="col-7">Acceptance:</div>
+                <div class="col-5">70%</div>
+              </div>
+              <div class="row items-start">
+                <div class="col-7">Reviewers:</div>
+                <div class="col-5">3</div>
+              </div>
+            </div>
+          <div class="q-pa-md doc-contenttree" width="400px">
+              <q-badge color="blue">Overall Interactions</q-badge>
+              <div class="row items-start">
+                <div class="col-7">Viewed:</div>
+                <div class="col-5">1000x times</div>
+              </div>
+              <div class="row items-start">
+                <div class="col-7">Open Rating:</div>
+                <div class="col-5">60 times</div>
+              </div>
+              <div class="row items-start">
+                <div class="col-7">Rate average:</div>
+                <div class="col-5">2.3 (1-3)</div>
+              </div>
+            </div>
+        </q-popup-edit>
+      </q-btn>
+
+      
+      <q-separator vertical inset />
+
+      <ContentRating
+        v-if="ABLY.assembly_acls.includes('contribute')"
+        name="`elRating${obj.content.id}`"
+        :content="obj"
+      />
+
+    </q-toolbar>
   </div>
 </template>
 
@@ -108,7 +126,7 @@ export default {
     name: "ContentToolbarComponent",
     props:["obj"],
     components: {ContentRating, ContentEditor},
-    inject: ['ABLY','CTREE'],  // is injecting ctree needed: only for contenttree_id, right?
+    inject: ['ABLY','QTREE', 'contenttreeID', 'popup_edit'],  // is injecting ctree needed: only for contenttree_id, right?
     data () {
         return {
             confirm_deletion: false,
@@ -161,7 +179,7 @@ export default {
       console.log("deleteEntry")
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier);
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${CTREE.contenttreeID}/content/${content.id}`
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${QTREE.contenttreeID}/content/${content.id}`
       var data = {'justification': justification}
       ApiService.delete(url, data).then(
         response => {
@@ -173,7 +191,7 @@ export default {
 
               // update the whole tree
               this.add_or_update_contenttree({
-                contenttreeID: CTREE.contenttreeID,
+                contenttreeID: QTREE.contenttreeID,
                 contenttree: response.data.contenttree})
 
               // Zoom to parent entry (if catched)

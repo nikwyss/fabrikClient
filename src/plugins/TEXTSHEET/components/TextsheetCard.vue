@@ -20,7 +20,7 @@
     <q-card class="q-ma-none full-width"  flat v-if="item">
       <q-card-section class="full-width" >
         <div class="col-12" >
-          <div class="q-mt-lg q-mb-xs" :class="header_class">{{heading_number}} {{item.content.title}}</div>
+          <div :class="header_class">{{heading_number}} {{item.content.title}}</div>
           <div class="text-body1 text-justify" v-if="item.content.text" v-html="$sanitize(item.content.text)"/>
         </div>
       </q-card-section>
@@ -37,8 +37,9 @@
         size="md"
       >
         <q-badge color="red" v-if="comments.length" floating>{{comments.length}}</q-badge> 
-        <q-tooltip anchor="top left" self="bottom left">{{$t('contenttree.comment_section_tooltip')}}</q-tooltip>
-                &nbsp;{{'Fragen und Kommentare'}}
+        <q-tooltip v-if="!show_discussion" anchor="top left" self="bottom left">{{$t('contenttree.comment_section_tooltip')}}</q-tooltip>
+        <q-tooltip v-if="show_discussion" anchor="top left" self="bottom left">{{$t('contenttree.close_comment_section_tooltip')}}</q-tooltip>
+        &nbsp;{{'Fragen und Kommentare'}}
       </q-btn>
     </div>
 
@@ -51,9 +52,15 @@
         :customStartingParentID="item.content.id"
         :hideNoEntryText="true"
         :hideNofEntriesText="true"
-        :hideAddNewEntryButton="true"
         :artificialmoderationComponents="artificialmoderationComponents"
-      />
+      >
+        <template v-slot:actions>
+          <!-- Close when possible -->
+          <q-chip clickable @click="show_discussion = false" align="right" icon="mdi-close">
+              {{ $t('contenttree.close_comment_section') }}
+          </q-chip>
+        </template>
+      </ComponentContentTree>
     </transition>
   </div>
 </template>
@@ -82,11 +89,11 @@ export default {
     header_class: function() {
       switch (this.item.content.type) {
         case 'SECTION':
-          return('text-h4')
+          return('text-h4 q-mt-lg q-mb-xs')
         case 'SUBSECTION':
-          return('text-subtitle1')
+          return('text-subtitle1 q-mt-sm q-mb-xs')
         case 'PARAGRAPH':
-          return('text-subtitle2')
+          return('text-subtitle2 q-mt-none q-mb-xs')
       }
     }
   }
