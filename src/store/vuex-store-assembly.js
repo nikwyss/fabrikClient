@@ -202,12 +202,13 @@ const actions = {
       // keep list of opened contents (if previously available)
       console.log("update current  stage id for the given assembly")
 
-      // preprare folder
+      // prepare folder
       if (!(assembly.identifier in state.current_stages)) {
         Vue.set(state.current_stages, assembly.identifier, null)
       }
       // Vue.set  makes the change reactive!!
       Vue.set(state.current_stages, assembly.identifier, stageID)
+      console.log("...store: new stage has been set...")
     },
 
     storeAssembly (state, {assemblyIdentifier, data}) {

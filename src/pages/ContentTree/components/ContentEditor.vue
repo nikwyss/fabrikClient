@@ -1,17 +1,19 @@
 <template>
-  <span class="cursor-pointer">
-    <q-btn size="md"
-            flat
-            round
-            color="primary"
-            :label="btnlabel"
-            :icon="icon">
-        <template v-slot:action>
-            <q-btn flat color="white" label="Modify" />
-          </template>
+  <span>
+    <q-btn 
+      v-if="!hideAddNewEntryButton"
+      size="md"
+      flat
+      round
+      color="primary"
+      :label="btnlabel"
+      :icon="icon">
+      <template v-slot:action>
+      <q-btn flat color="white" label="Modify" />
+      </template>
     </q-btn>
 
-    <q-popup-edit buttons v-model="localmodel" 
+    <q-popup-edit buttons v-model="localmodel" ref="popup_editor"
       auto-save
       v-on:save="saveContent">
       <div class="q-pa-md bg-grey-2">
@@ -60,6 +62,7 @@ import Configuration from 'src/utils/configuration'
 export default {
   name: 'ContentEditor',
   props: {
+    hideAddNewEntryButton: {type: Boolean},
     contenttreeID: { type: Number },
     parent_id: {
       type: Number,

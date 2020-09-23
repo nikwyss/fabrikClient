@@ -8,10 +8,9 @@
 
       <q-toolbar class="rounded-borders full-height" > 
 
-        <!-- DELETE -->
+        <!-- Reply -->
         <ContentEditor
-            v-if="acl.includes('contribute')"
-            :contenttreeID="contenttree.id"
+            v-if="ABLY.assembly_acls.includes('contribute')"
             :model="obj.content"
             :parent_id="obj.content.parent_id"
             @zoom-to-content="$emit('zoomToContent')"
@@ -35,7 +34,7 @@
 
 
         <!-- Background Popup -->
-        <q-btn flat round dense icon="mdi-menu" class="q-mr-sm" >
+        <q-btn flat round dense icon="mdi-calculator-variant-outline" class="q-mr-sm" >
           <q-popup-edit v-model="obj" ref="contentpopup">
               <q-icon 
                 name="mdi-close" 
@@ -88,7 +87,7 @@
         <q-separator vertical inset />
 
         <ContentRating
-          v-if="acl.includes('contribute')"
+          v-if="ABLY.assembly_acls.includes('contribute')"
           name="`elRating${obj.content.id}`"
           :content="obj"
         />
@@ -107,8 +106,9 @@ import { mapActions } from 'vuex'
 
 export default {
     name: "ContentToolbarComponent",
-    props:["obj", "acl", "contenttree"],
+    props:["obj"],
     components: {ContentRating, ContentEditor},
+    inject: ['ABLY','CTREE'],  // is injecting ctree needed: only for contenttree_id, right?
     data () {
         return {
             confirm_deletion: false,
@@ -159,10 +159,9 @@ export default {
     // TODO: move deleteentry to contenttre.js
     deleteEntry(content, justification) {
       console.log("deleteEntry")
-      let contenttreeID = this.$route.params.contenttreeID
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier);
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${contenttreeID}/content/${content.id}`
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${CTREE.contenttreeID}/content/${content.id}`
       var data = {'justification': justification}
       ApiService.delete(url, data).then(
         response => {
@@ -174,7 +173,7 @@ export default {
 
               // update the whole tree
               this.add_or_update_contenttree({
-                contenttreeID: contenttreeID,
+                contenttreeID: CTREE.contenttreeID,
                 contenttree: response.data.contenttree})
 
               // Zoom to parent entry (if catched)

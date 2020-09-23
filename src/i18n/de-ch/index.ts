@@ -13,15 +13,21 @@ export default {
     version: 'v1.0',
     error: {
       service_error_title: 'Betriebsstörung',
-      service_error_body: 'Im Betrieb der Demokratiefabrik ist eine Störung aufgetreten. Wir bitten Sie um Entschuldigung. Bitte versuchen Sie es bitte erneut.',
+      service_error_body: 'Im Betrieb der Demokratiefabrik ist eine Störung aufgetreten. Wir bitten Sie um Entschuldigung.',
+      service_network_title: 'Netzwerkstörung',
+      service_network_body: 'Die Kommunikation zur Demokratiefabrik ist momentan fehlerhaft. Wir bitten Sie um Entschuldigung. Bitte versuchen Sie es bitte erneut.',
       btn_close: 'Diese Meldung schliessen.'
     }
   },
 
-  general: {
-    button: {
-      iam_ready: 'Ja, ich bin bereit'
-    }
+  disclaimer: {
+    btnLabel: 'Algorithmus-Disclaimer',
+    contenttree: {
+      basic: `Die Inhalte in diesem Forum werden in hierarchischer (und nicht in chronologischer) Reihenfolge aufgelistet.
+      Die Reihenfolge der Inhalte auf gleicher Hierarchiestufe ist zufällig und variiert von Benutzer zu Benutzer.`,
+      extensionExtraLarge: `Die Diskussion ist schon recht umfassend. Damit die Diskussion übersichtlich bleibt, wurden nur 30 zufällig ausgewählte Beiträge vollständig aufgeklappt.
+      Sie können die restlichen Beiträge selbst per Mausklick öffnen.`
+    }  
   },
 
   am: {
@@ -80,6 +86,7 @@ export default {
   },
 
   index: {
+    iam_ready: 'Ja, ich bin bereit',
     am: {
       general_greeting: '{salutation} Wir sind @:am.actor.1 und @:am.actor.2 und freuen uns sehr, dass Sie die Demokratiefabrik besuchen.',
       salutation_for_authenticated: 'Guten Tag {username}!',
@@ -259,5 +266,10 @@ export default {
         ]
       }
     }
+  },
+
+  contenttree: {
+    no_entries: "Es sind noch keine Kommentare oder Fragen vorhanden. Machen Sie den Anfang?",
+    no_filter_results: "Keine Einträge passen zu dieser Sucheingabe!"
   }
 }

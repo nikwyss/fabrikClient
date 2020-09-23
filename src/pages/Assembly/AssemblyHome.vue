@@ -20,7 +20,7 @@
             :ongoing="!sorted_stages || oauth_authenticated === null" 
             align="left" />
         </div>
-
+        
         <!-- STAGES -->
         <q-stepper
             v-if="sorted_stages &&  oauth_authenticated !== null"

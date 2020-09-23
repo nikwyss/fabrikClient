@@ -74,6 +74,8 @@ const actions = {
       .then(
         response => {
           // update
+          console.assert(response.data)
+          
           LayoutEventBus.$emit('hideLoading')
           console.log('save full contenttree to cache.')
           console.assert ('OK' in response.data)

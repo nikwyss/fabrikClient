@@ -50,7 +50,7 @@
         </q-chip>
 
         <q-chip size="md" icon="mdi-launch" v-if="oauth_authenticated === true && IsUserDelegateOfOngoingAssembly === true" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickInitLink">
-            {{ $t('general.button.iam_ready') }}
+            {{ $t('index.iam_ready') }}
         </q-chip>
 
         </template>

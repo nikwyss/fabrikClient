@@ -76,17 +76,25 @@ export default {
               // this._flash.show({ status: 'error', title: msg_title, message: msg_body })
               console.log("Network error")
               console.warn(`${msg_title} ${msg_body}`);
-              LayoutEventBus.$emit('showServiceError')
-              return(false)
+              LayoutEventBus.$emit('showNetworkError')
+              return Promise.reject(error)
 
             } else if (error.response.status == 400) {
               // 400 errors (parse errors)
               if (Allow400Status(error.config)) {
                   // dont raise 400 errors, if this is made explicit
-                  // console.log("AXIOS: Pass Error 400")
-                  LayoutEventBus.$emit('showServiceError')
+                  console.log("AXIOS: Pass Error 400")
                   return (true)
               }
+
+              return Promise.reject(error)
+
+            // } else if (error.response.status == 500) {
+            //   // 400 errors (parse errors)
+            //   // dont raise 400 errors, if this is made explicit
+            //   console.log("AXIOS: Pass Error 500")
+            //   LayoutEventBus.$emit('showServiceError')
+            //   return Promise.reject(error)
 
             } else if (error.response.status == 403) {
 
@@ -102,7 +110,7 @@ export default {
                   }else{
                     LayoutEventBus.$emit('showAuthenticationWarning')
                   }
-                  console.log("Oauth Permission request error")                  
+                  console.log("Oauth Permission request error")
                   return Promise.reject(error)
                 }
 
@@ -120,8 +128,8 @@ export default {
 
             // All other errors:
             console.log("Unknown oauth request error")
+            console.log("status: " + error.response.status)
             LayoutEventBus.$emit('showServiceError')
-
             return Promise.reject(error)
           }
 

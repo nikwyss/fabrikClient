@@ -1,6 +1,6 @@
 <template>
     <q-page class="doc_content">
-
+dddddddddddddddd
         <q-btn align="around" 
             class="btn-fixed-width" color="brown-5" 
             label="Back to the assembly home"

@@ -18,7 +18,7 @@
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
         <q-chip v-if="!isNew(ABLY.routedStage)" icon="mdi-arrow-left" clickable 
-                @click="clickGotoIndexAndMoveOn(ABLY.routedStage)">
+                @click="clickGotoIndexAndMoveOn">
             {{ $t('index.leave_a_preliminary_completed_stage') }}
         </q-chip>
         </template>

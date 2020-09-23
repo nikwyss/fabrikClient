@@ -1,6 +1,15 @@
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .4s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  height: 0px;
+}
+</style>
 <template>
-<Fragment>
-  
+  <div class="full-width">
+
     <span v-on:click.stop v-if="standalone" style="float:right;">
       <ContentToolbar
         :obj="item"
@@ -9,40 +18,47 @@
     </span>
 
     <q-card class="q-ma-none full-width"  flat v-if="item">
-      <q-card-section horizontal class="full-width ">
-        <div class=" col-11">
+      <q-card-section class="full-width" >
+        <div class="col-12" >
           <div class="q-mt-lg q-mb-xs" :class="header_class">{{heading_number}} {{item.content.title}}</div>
           <div class="text-body1 text-justify" v-if="item.content.text" v-html="$sanitize(item.content.text)"/>
-          <!-- <q class="L T">Die Demokratiefabrik legt grossen Wert auf Sicherheit und Datenschutz.</q> -->
         </div>
-
-        <q-card-actions class=" col-1" align="right">
-          <q-btn  @click="show_discussion=!show_discussion" dense text-color="purple" round 
-              icon="mdi-comment-outline" size="sm" class="">
-            <q-badge color="red" v-if="comments.length" floating>{{comments.length}}</q-badge>
-          </q-btn>
-          <!-- <q-btn @click="show_discussion=!show_discussion" dense text-color="green" round icon="mdi-help-circle-outline" class=""  size="sm">
-            <q-badge color="red" v-if="questions.length" floating>{{questions.length}}</q-badge>
-          </q-btn> -->
-        </q-card-actions>
-      
       </q-card-section>
+    </q-card>
 
-    </q-card><br>
+    <div align="right">
+      <q-btn v-if="!!item.content.text" 
+        flat
+        align="right"
+        @click="show_discussion = !show_discussion"
+        text-color="grey-7"
+        :class="[show_discussion ? 'bg-grey-3' : '']"
+        :icon="show_discussion ? 'mdi-comment' : 'mdi-comment-outline'"
+        size="md"
+      >
+        <q-badge color="red" v-if="comments.length" floating>{{comments.length}}</q-badge> 
+        <q-tooltip anchor="top left" self="bottom left">{{$t('contenttree.comment_section_tooltip')}}</q-tooltip>
+                &nbsp;{{'Fragen und Kommentare'}}
+      </q-btn>
+    </div>
 
-    <ComponentContentTree
-      v-if="show_discussion"
-      class="bg-grey-3 q-pa-md col-10 q-ml-xl "
-      :dense="true"
-      label="Offene Diskussion"
-      :custom_starting_node="startingContent_node" 
-    />
-  </Fragment>
+    <transition name="fade">
+      <ComponentContentTree
+        class="q-pa-md col-12 bg-grey-3"
+        v-if="show_discussion"
+        :dense="true"
+        :customStartingNodes="this.comments"
+        :customStartingParentID="item.content.id"
+        :hideNoEntryText="true"
+        :hideNofEntriesText="true"
+        :hideAddNewEntryButton="true"
+        :artificialmoderationComponents="artificialmoderationComponents"
+      />
+    </transition>
+  </div>
 </template>
 
-
 <script>
-import { Fragment } from 'vue-fragment'
 import ContentRating from "src/pages/ContentTree/components/ContentRating"
 import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
@@ -50,12 +66,16 @@ import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
 
 export default {
   name: 'TextsheetCard',
-  props: ['item', 'standalone', 'heading_number', 'questions', 'comments'],
+  props: ['item', 'standalone', 'heading_number', 'comments'],
   inject: ['openIndex'],
-  components: { Fragment, ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
+  components: { ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
   data: function() {
     return({
-        show_discussion: false
+        show_discussion: false,
+        // hover_discussion: false, // TODO: this?
+        artificialmoderationComponents: {
+          ContentTreeIndex: () => import('../artificialmoderation/ArtificialModeratorContentTreeIndex')
+        }
     })
   },
   computed: {
@@ -68,11 +88,6 @@ export default {
         case 'PARAGRAPH':
           return('text-subtitle2')
       }
-    },
-
-    startingContent_node: function() {
-      var node = {children: this.comments}
-      return(node)
     }
   }
 }

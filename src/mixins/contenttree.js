@@ -2,10 +2,11 @@ import {mapGetters, mapActions} from 'vuex'
 import StageMixin from "src/mixins/stage"
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 
+
 /* Make available all the properties and methods in any descendant object.*/
 const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
   name: 'CTREE',
-  include: ['contenttreeID', 'contenttree', 'startingContentID', 'startingContent'],
+  include: ['contenttreeID', 'contenttree'],
 })
 
 export default {
@@ -17,7 +18,7 @@ export default {
       openArgument: this.openArgument
     }
   },
-  
+
   data() {
     return {
       is_loaded: false,
@@ -45,22 +46,6 @@ export default {
         contenttreeID: this.contenttreeID
       })
       return (contenttree)
-    },
-
-    startingContentID: function() {
-
-      if (this.$route.params.contentID!==undefined) {
-        return(Number(this.$route.params.contentID))
-      }
-      return(null)
-    },
-
-    startingContent: function() {
-      if(this.startingContentID && this.contenttree !== null) {
-        console.log("starting content found")
-        return(this.contenttree.entries[this.startingContentID])
-      }
-      return(null)
     },
 
     ...mapGetters({

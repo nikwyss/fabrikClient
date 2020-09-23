@@ -32,7 +32,7 @@
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
         <q-chip v-if="stage && !isLastStage(stage, stageNr) && isSkippable(stage, stageNr)" :size="isSkippable(stage, stageNr) ? 'md' : 'md'" icon="mdi-arrow-down" 
-            clickable @click="clickGotoNextStageNr(stageNr)">
+            clickable @click="clickGotoNextStageNr">
             {{ $t('stages.goto_next_stage') }}
         </q-chip>
         <q-chip :size="isSkippable(stage, stageNr) ? 'md' : 'md'" icon="mdi-arrow-right" v-if="stage && !isCompleted(stage, stageNr)" 

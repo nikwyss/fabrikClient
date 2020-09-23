@@ -1,8 +1,19 @@
 <template>
 <div>
-    <div v-if="startingContent_node.nof_descendants">
 
-            <span style="float:right; margin-bottom:1.8em; margin-right:0.3em; display:inline-block">
+    <!-- AM-ContentTree Index -->
+    <div class="q-mb-xl">
+        <component 
+            v-if="artificialmoderationComponents && 'ContentTreeIndex' in artificialmoderationComponents"
+            :is="artificialmoderationComponents.ContentTreeIndex"
+            :startingContentNode="startingContentNode"
+            :ongoing="!startingContentNode || oauth_authenticated === null" 
+            align="left"
+        />
+    </div>
+
+    <div v-if="startingContentNode.children && startingContentNode.children.length">
+        <span style="float:right; margin-bottom:1.8em; margin-right:0.3em; display:inline-block">
             <q-btn
                     size="md"
                     round
@@ -22,39 +33,36 @@
                     icon="mdi-collapse-all"
                     />
             <q-btn
-                    size="md"
-                    round
-                    @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : '';"
-                    color="secondary"
-                    icon="mdi-feature-search"
-                    />
+                size="md"
+                round
+                @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : '';"
+                color="secondary"
+                icon="mdi-feature-search"
+            />
 
-                    <div class="q-gutter-md"><q-input
-                        ref="filter"
-                        filled
-                        v-show="expanded_filter"
-                        v-model="filter"
-                        label="Search">
-                         </q-input>
-                    </div>
-                </span>
-    </div>                
+            <div class="q-gutter-md"><q-input
+                ref="filter"
+                filled
+                v-show="expanded_filter"
+                v-model="filter"
+                label="Search">
+                    </q-input>
+            </div>
+        </span>
+    </div> 
 
-    <span class="text-h6" v-if="!dense">{{label}}</span>
-    
+    <span class="text-h6" v-if="label">{{label}}</span>
+
     <!-- AFTER LOADING -->
-    <div class="q-pa-none q-ma-none q-gutter-sm" v-if="CTREE.contenttree">
-        
-        <span v-if="startingContent_node.nof_descendants">
-            {{startingContent_node.nof_descendants}} Beiträge
+    <div class="q-pa-none q-ma-none q-gutter-sm" v-if="startingContentNode">
+
+        <span v-if="startingContentNode.nof_descendants && !hideNofEntriesText">
+        {{startingContentNode.nof_descendants}} Beiträge
         </span>
 
-        <!-- TREE MENU -->
-        <br>
-        <!-- Tree -->
         <q-tree
             ref="qtree"
-            :nodes="startingContent_node.children"
+            :nodes="startingContentNode.children"
             label-key="id"
             nodeKey="id"
             icon="mdi-play"
@@ -64,70 +72,45 @@
             color="teal-10"
             style="clear:both;"
             :filter-method="treeFilterMethod"
-            no-results-label="No matching entries found"
-            no-nodes-label="Es sind noch keine Kommentare oder Fragen vorhanden. Machen Sie den Anfang?">
+            :no-results-label="$t('contenttree.no_filter_results')"
+            :no-nodes-label="hideNoEntryText ? ' ' : $t('contenttree.no_entries')">
 
             <!-- Content Header -->
-            <!-- OPTION: <template v-slot:header-topic="prop">-->
-                <!-- @deleteentry="deleteentry($event)" -->
             <template v-slot:default-header="prop">
-            <ContentTitle
-                v-if="root_node_ids.includes(prop.node.id) || is_currently_expanded(cachedNode(prop.node.id).content.parent_id)"
-                :node="prop.node"
-                :obj="cachedNode(prop.node.id)" 
-                :expanded="prop.expanded"
-                :key="prop.node.id" />
+                    <!-- v-if="root_node_ids.includes(prop.node.id) || is_currently_expanded(cachedNode(prop.node.id).content.parent_id)" -->
+                <!-- v-if="startingContentNode.children.map(x=> x.id).includes(prop.node.id) || is_currently_expanded(cachedNode(prop.node.id).content.parent_id)" -->
+                <ContentTitle
+                    :node="prop.node"
+                    :obj="cachedNode(prop.node.id)" 
+                    :expanded="prop.expanded"
+                    :key="prop.node.id" />
             </template>
 
             <!-- Content Body -->
             <template v-slot:default-body="prop">
+                <div style="margin-bottom:0.5em" size="text-body1">
+                    <span class="text-user">
+                        {{cachedNode(prop.node.id).creator}}: 
+                    </span>
 
-                <div style="margin-bottom:0.5em;"  size="text-body1" >
+                    {{ cachedNode(prop.node.id).content.text }}
 
-                {{ cachedNode(prop.node.id).content.text }}
-
-                <ContentEditor
-                    v-if="ABLY.assembly_acls.includes('contribute')"
-                    :parent_id="prop.node.id"
-                    @zoom-to-content="zoomToContent"
+                    <ContentEditor
+                        v-if="ABLY.assembly_acls.includes('contribute')" :parent_id="prop.node.id"
                     />
                 </div>
             </template>
-
         </q-tree>
 
+        <!-- Add a new top-level entry -->
+        <ContentEditor 
+            :hideAddNewEntryButton="hideAddNewEntryButton"
+            ref="content_editor"
+            v-if="ABLY.assembly_acls.includes('contribute')"
+            :parent_id="startingContentID" />
 
-            <!-- Add a new top-level entry -->
-            <ContentEditor
-                v-if="ABLY.assembly_acls.includes('contribute')"
-                @zoom-to-content=zoomToContent
-                :parent_id="CTREE.startingContentID"
-                                class="full-width"
-                 />
-
-            <!-- Disclaimer -->
-
-        <q-expansion-item
-            v-if="startingContent_node.children.length>1"
-            expand-separator
-            icon="mdi-format-paragraph"
-            label="Algorithmus-Disclaimer:"
-            class="full-width"
-        >
-                        <!-- caption="John Doe" -->
-            <q-card>
-            <q-card-section>
-                <span>
-                Die Inhalte in diesem Forum werden in hierarchischer (und nicht in chronologischer) Reihenfolge aufgelistet.
-                Die Reihenfolge der Inhalte auf gleicher Hierarchiestufe ist zufällig und variiert von Benutzer zu Benutzer.
-                </span>
-                <span v-if="startingContent_node.children.length>30">
-                Die Diskussion ist schon recht umfassend. Damit die Diskussion übersichtlich bleibt, wurden nur 30 zufällig ausgewählte Beiträge vollständig aufgeklappt.
-                Sie können die restlichen Beiträge selbst per Mausklick öffnen.
-                </span>
-            </q-card-section>
-            </q-card>
-        </q-expansion-item>
+        <!-- Disclaimer -->
+        <AlgorithmDisclaimer :text="disclaimerText" />
 
     </div>
 
@@ -143,14 +126,25 @@
 <script>
 import QTreeMixin from "src/mixins/qtree"
 import ContentTitle from "./ContentTitle"
-import Fragment from 'vue-fragment'
-// import ContentBody from "./ContentBody"
 import ContentEditor from "./ContentEditor"
+import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer"
 
 export default {
     name: "ContentTree",
+    props: ["artificialmoderationComponents", 'hideNoEntryText', 'hideNofEntriesText', 
+        'hideAddNewEntryButton'],
     mixins: [QTreeMixin],
-    props: ['custom_starting_node', 'label', 'dense'],
-    components: {ContentTitle, ContentEditor, Fragment}
+    components: {ContentTitle, AlgorithmDisclaimer, ContentEditor},
+    computed: {
+        disclaimerText: function () {
+            var text = this.$i18n.t('disclaimer.contenttree.basic')
+
+            if (this.startingContentNode.children.length>30) {
+                text += ' ' + this.$i18n.t('disclaimer.contenttree.extensionExtraLarge')
+            }
+
+            return (text)
+        }
+    }
 }
 </script>

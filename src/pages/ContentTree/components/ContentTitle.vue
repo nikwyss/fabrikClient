@@ -6,10 +6,7 @@
 <template>
     <div :id="`arg${node.id}`" class="full-width text-h6" >
             <span v-on:click.stop v-if="real_expanded" style="float:right; " class="full-height">
-                <ContentToolbar
-                    :acl="acl"
-                    :obj="obj"
-                    :contenttree="contenttree"/>
+                <ContentToolbar :obj="obj" />
             </span>
             <div style="margin-top:10px;">{{ content.title }} </div>
             <q-badge color="blue" v-if="!real_expanded" align="top">click to see {{node.nof_descendants}} more</q-badge>
@@ -24,21 +21,11 @@ import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 
 export default {
     name: "ContentTreeEntryTitle",
-    props: ["obj", "node", "expanded", "currently_selected_contentID", 
-        "contenttree"],
+    props: ["obj", "node", "expanded"],
+    inject:  ['CTREE'],
     components: {ContentToolbar},
 
-    // data () {
-    //     return {
-    //         colors: ["red", "purple", "green", "indigo", "cyan", "amber", "brown"],
-    //     }
-    // },
     computed: {
-        // bgColor: function() {
-        //     let mod = this.content.level % this.colors.length
-        //     let color = this.colors[mod]
-        //     return("background-color:" + color)
-        // },
         content: function() {
             return(this.obj.content)
         },

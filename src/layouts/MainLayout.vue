@@ -183,6 +183,9 @@ export default {
           this.NotificationBannerVisible = false
         }, 3000)
       }
+
+      // scroll to top
+      window.scrollTo(0, 0)
     },
 
     hideNotificationBanner () {
@@ -223,6 +226,14 @@ export default {
     LayoutEventBus.$on('showServiceError', data => {
       let msg_title = this.$i18n.t('app.error.service_error_title')
       let msg_body = this.$i18n.t('app.error.service_error_body')
+      let icon = 'mdi-alarm-light-outline'
+      let type = 'error'
+      this.showNotificationBanner(type, msg_title, msg_body, icon)
+
+    })
+    LayoutEventBus.$on('showNetworkError', data => {
+      let msg_title = this.$i18n.t('app.error.network_error_title')
+      let msg_body = this.$i18n.t('app.error.network_error_body')
       let icon = 'mdi-alarm-light-outline'
       let type = 'error'
       this.showNotificationBanner(type, msg_title, msg_body, icon)

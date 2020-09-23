@@ -85,9 +85,29 @@ const getters = {
       return el.endsWith(`@${assemblyIdentifier}`);
     });
 
-    var assembly_acls = assembly_roles.map(function (el) {
+    var assembly_roles = assembly_roles.map(function (el) {
       return el.split('@')[0]
     });
+
+    const assembly_acls = []
+    if (assembly_roles.includes('administrator')) {
+      assembly_acls.push('administrate', 'manage', 'observe')
+    }
+    if (assembly_roles.includes('manager')) {
+      assembly_acls.push('manage', 'observe')
+    }
+    if (assembly_roles.includes('delegate')) {
+      assembly_acls.push('delegate', 'contribute', 'observe')
+    }
+    if (assembly_roles.includes('contributor')) {
+      assembly_acls.push('contribute', 'observe')
+    }
+    if (assembly_roles.includes('expert')) {
+      assembly_acls.push('contribute', 'observe')
+    }
+    if (getters.oauth_authenticated (state)) {
+      assembly_acls.push('observe')
+    }
 
     return (assembly_acls)
   }

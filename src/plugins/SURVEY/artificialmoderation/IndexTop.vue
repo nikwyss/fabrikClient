@@ -16,7 +16,7 @@
 
         <template  v-slot:actions>
         <q-chip v-if="isCompleted(ABLY.routedStage)" icon="mdi-arrow-left" clickable 
-                @click="clickGotoIndexAndMoveOn(ABLY.routedStage)">
+                @click="clickGotoIndexAndMoveOn">
             {{ $t('assemblies.go_back_to_assembly_home') }}
         </q-chip>
         </template>

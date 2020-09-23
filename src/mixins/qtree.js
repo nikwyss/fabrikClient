@@ -4,6 +4,12 @@ i.e.  filtering and management of expanded content .
 */
 
 import { mapActions, mapGetters } from 'vuex'
+import { ReactiveProvideMixin } from 'vue-reactive-provide'
+/* Make available all the properties and methods in any descendant object.*/
+const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
+    name: 'QTREE',
+    include: ['startingContentID', 'startingContent', 'startingContentNode'],
+})
 
 export default {
 
@@ -17,32 +23,84 @@ export default {
         }
     },
 
+    /*
+    Which <label> should be displayed on top of the ContentTree?
+    SHould the Tree be displayed in <dense> layout?
+    SHould the whole ContentTree be displayed or only a specific <customStartingNodes>?
+    */
+    props: ['label', 'dense', 'customStartingNodes', 'customStartingParentID'],
+    mixins: [ReactiveProvidePropertiesMixin],
+    provide() {
+        return {
+            popup_edit: this.popup_edit,
+        }
+    },
     inject: ['CTREE', 'ABLY'],
     computed: {
 
-        // contenttreeID: function() {
-        //     return(CTREE.contenttree.id)
+        startingContentID: function() {
+
+            if (this.customStartingParentID) {
+                return (this.customStartingParentID)
+            }
+
+            // Show full contenttree (then take the ID from the URL)
+            return(Number(this.$route.params.contentID))
+        },
+
+        // startingContent: function() {
+        //     if(this.startingContentID && this.contenttree !== null) {
+        //         console.log("starting content found")
+        //         return(this.contenttree.entries[this.startingContentID])
+        //     }
+        //     return(null)
         // },
 
-        root_node_ids: function() {
-            if(this.CTREE.startingContentID) {
-                return(this.CTREE.startingContent_node.children.map(x=> x.id))
+        startingContentNode: function() {
+            console.log("get startingContentNode")
+            if(this.customStartingContentNode) {
+                return(this.customStartingContentNode)
+            }else{
+                // console.assert(this.startingContentID)
+                return (this.CTREE.contenttree.structure)
+                // return(this.get_node_by_id(this.startingContentID))
             }
-            return(this.CTREE.contenttree.structure.children.map(x=> x.id))
         },
 
-        startingContent_node: function() {
-            console.log("get startingContent_node")
-            if(this.custom_starting_node) {
-                return(this.custom_starting_node)
-            }else{
-                console.assert(this.CTREE.startingContentID)
-                return(this.get_node_by_id(this.CTREE.startingContentID))
+        customStartingContentNode: function() {
+            if (!this.customStartingParentID) {
+                return (null)
             }
+
+            var nof_descendants = 0
+            if (this.customStartingNodes.length) {
+                nof_descendants = this.customStartingNodes.reduce((a, b) => (a.nof_descendants + b.nof_descendants + 1))
+            }
+            var node = {
+                children: this.customStartingNodes,
+                nof_descendants: nof_descendants,
+                nof_children: this.customStartingNodes.length,
+                id: this.customStartingParentID
+            }
+            return(node)
         },
+
+
+        rootNodeIDs: function() {
+            return(this.startingContentNode.children.map(x=> x.id))
+            // if(this.startingContentID) {
+            // }
+            // return(this.contenttree.structure.children.map(x=> x.id))
+        },
+
 
         total_nof_contents: function() {
-            return(this.CTREE.startingContent_node["nof_descendants"])
+            if (!this.startingNode) {
+                return (null)
+            }
+            
+            console.log(this.startingNode)
+            return(this.startingNode["nof_descendants"])
         },
 
         ...mapGetters({ 
@@ -130,7 +188,7 @@ export default {
         calculate_default_expanded_branches: function () {
             
             // get default values
-            let node = this.startingContent_node
+            let node = this.startingContentNode
            // TODO: do a while and loop the x level until 25 are reached...
             //    let branches = Object.keys(node.children)
            let branches = node.children.map(function (x) { return x.id});
@@ -260,6 +318,12 @@ export default {
                 }
             }
             return(this.get_node_by_id_via_branch(node_id))
+        },
+
+        popup_edit: function () {
+            console.log(this.$refs.content_editor)
+            console.log(this.$refs.content_editor.$refs.popup_editor)
+            this.$refs.content_editor.$refs.popup_editor.show()
         },
 
         ...mapActions({

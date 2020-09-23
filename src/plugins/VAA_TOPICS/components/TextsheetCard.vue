@@ -34,7 +34,7 @@
       class="bg-grey-3 q-pa-md col-10 q-ml-xl "
       :dense="true"
       label="Offene Diskussion"
-      :custom_starting_node="startingContent_node" 
+      :startingNode="startingContentNode"
     /> 
   </Fragment>
 </template>
@@ -49,7 +49,7 @@ import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
 
 export default {
   name: 'TextsheetCard',
-  props: ['item', 'standalone', 'heading_number', 'questions', 'comments'],
+  props: ['item', 'standalone', 'heading_number', 'comments'],
   components: { Fragment, ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
   data: function() {
     return({
@@ -68,8 +68,12 @@ export default {
       }
     },
 
-    startingContent_node: function() {
-      var node = {children: this.comments}
+    startingContentNode: function() {
+     // TODO: add nof_descendants to this node object
+     // TODO extract this in method...
+      var node = {
+        children: this.comments, 
+        id: this.item.content.id}
       return(node)
     }
   }

@@ -9,7 +9,7 @@
 
             <!-- EDIT CONTENT -->
             <ComponentStageEditor 
-                v-if="acl.includes('manage')" 
+                v-if="assembly_acls.includes('manage')" 
                 @syncstorestage="syncstorestage"
                 :model="routedStage" />
 

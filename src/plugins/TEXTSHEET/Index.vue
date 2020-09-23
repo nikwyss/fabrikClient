@@ -4,6 +4,7 @@
 
     <div align="center">
 
+
         <!-- <div v-if="routedStage"> -->
             <!-- EDIT CONTENT -->
             <!-- <ComponentStageEditor 
@@ -16,13 +17,11 @@
         <!-- AM-OVERVIEW -->
         <div class="q-mb-xl">
             <ArtificialModeratorTEXTSHEETIndexTop 
-            :ongoing="!routedStage || oauth_authenticated === null" 
-            align="left" />
+            :ongoing="!routedStage || oauth_authenticated === null" align="left" />
         </div>
 
 
         <div v-if="routedStage && contenttree" class="text-vessel">
-            <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
 
 
             <h2>{{routedStage.stage.title}}</h2>
@@ -36,8 +35,7 @@
 
                 <TextsheetCard 
                     :level="1"
-                    :comments="filter_entries(nodeL1.children, ['COMMENT'])"
-                    :questions="filter_entries(nodeL1.children, ['QUESTION'])"
+                    :comments="filter_entries(nodeL1.children, ['COMMENT','QUESTION'])"
                     :heading_number="(keyL1+1)"
                     :item="contenttree.entries[nodeL1.id]"/>
 
@@ -47,8 +45,7 @@
 
                     <TextsheetCard
                         :level="2"
-                        :comments="filter_entries(nodeL2.children, ['COMMENT'])"
-                        :questions="filter_entries(nodeL2.children, ['QUESTION'])"
+                        :comments="filter_entries(nodeL2.children, ['COMMENT', 'QUESTION'])"
                         :heading_number="`${(keyL1+1)}.${(keyL2+1)}`"
                         :item="contenttree.entries[nodeL2.id]"/>
 
@@ -57,8 +54,7 @@
                             :key="`L3${nodeL3.id}`">
 
                         <TextsheetCard
-                            :comments="filter_entries(nodeL3.children, ['COMMENT'])"
-                            :questions="filter_entries(nodeL3.children, ['QUESTION'])"
+                            :comments="filter_entries(nodeL3.children, ['COMMENT', 'QUESTION'])"
                             :level="3"
                             :item="contenttree.entries[nodeL3.id]"/>
                     </div>
