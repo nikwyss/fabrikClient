@@ -272,9 +272,11 @@ export default {
     no_entries: "Es sind noch keine Kommentare oder Fragen vorhanden. Machen Sie den Anfang?",
     no_filter_results: "Keine Einträge passen zu dieser Sucheingabe!",
     created_by: "von {username}",
+    search_button: "Suche",
+    search_field_label: "Suchbegriff...",
     add_comment_or_question: 'Neuer Beitrag',
     close_comment_section: 'Forum schliessen',
-    search_button: "Suche",
+    notification_number_of_expanded: `Sie sehen aktuell {nof_shown} von {nof_total} Beiträgen.`,
     expand_all: "Beiträge ausklappen",
     collapse_all: "Beiträge schliessen",
   }

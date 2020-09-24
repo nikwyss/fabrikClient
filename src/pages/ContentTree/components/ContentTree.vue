@@ -5,69 +5,40 @@
 </style>
 
 <template>
-<div class="full-width">
+<div class="full-width q-mb-lg">
 
     <div v-if="startingContentNode.children && startingContentNode.children.length" class="full-width " align="right">
-        <!-- <div style="margin-bottom:1.8em; margin-right:0.3em"> -->
-        <div>
-            <!-- <q-btn
-                    size="md"
-                    flat
-                    @click="expand_more()"
-                    :disabled="expanded.length>=this.total_nof_contents"
-                    label="Expand more"
-                    color="secondary"
-                    _icon="mdi-expand-all"
-                    class="q-pr-sm"
-                    /> -->
 
-            <q-chip clickable 
-                @click="expand_more" 
+        <div>
+
+            <q-chip :clickable="expanded.length < this.total_nof_contents"
+                @click="expand_more"
                 :disabled="expanded.length>=this.total_nof_contents"
                 align="right" icon="mdi-expand-all">
               {{ $t('contenttree.expand_all') }}
             </q-chip>
 
-            <!-- <q-btn
-                    size="md"
-                    flat
-                    @click="expand_none()"
-                    :disabled="expanded.length==0"
-                    label="Collapse all"
-                    class="q-pr-sm"
-                    _icon="mdi-collapse-all"
-                    />
-             -->
-            <q-chip clickable 
-                @click="expanded.length==0" 
+            <q-chip 
+                :clickable="expanded.length>0"
+                @click="expand_none" 
                 :disabled="expanded.length==0"
                 align="right" icon="mdi-collapse-all">
               {{ $t('contenttree.collapse_all') }}
-          </q-chip>
+            </q-chip>
 
-            <!-- <q-btn
-                flat
-                size="md"
-                @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : '';"
-                _icon="mdi-feature-search"
-                label="Search"
-                class="q-pr-sm"
-            /> -->
-
-          <q-chip clickable 
-                @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : '';" 
-                align="right" icon="mdi-feature-search">
-              {{ $t('contenttree.search_button') }}
-          </q-chip>
-
-
-            <div class="q-gutter-md"><q-input
-                ref="filter"
-                filled
-                v-show="expanded_filter"
-                v-model="filter"
-                label="Search">
-                    </q-input>
+            <q-chip clickable 
+                    @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : '';" 
+                    align="right" icon="mdi-feature-search">
+                {{ $t('contenttree.search_button') }}
+            </q-chip>
+            <div class="q-gutter-md">
+                <q-input
+                    ref="filter"
+                    filled
+                    v-show="expanded_filter"
+                    v-model="filter"
+                    :label="$t('contenttree.search_field_label')">
+                </q-input>
             </div>
         </div>
     </div>
@@ -86,9 +57,8 @@
     />
     </div>
 
+    <!-- ContentTree Title (optional) -->
     <div class="text-h6" v-if="label">{{label}}</div>
-
-    <!-- <q-separator inset /> -->
 
     <!-- AFTER LOADING -->
     <div class="q-pa-none q-ma-none q-gutter-sm" v-if="startingContentNode">
@@ -119,12 +89,11 @@
                 <div @click.stop @keypress.stop style="cursor:default" class="full-width">
 
                     <!-- <div :id="`arg${prop.node.id}`" class="full-width" > -->
-                    <!-- v-if="real_expanded" -->
                     <span style="position:absolute; top:-0.75em; right:0px">
                     <ContentToolbar :obj="cachedNode(prop.node.id)" />
                     </span>
 
-                    <span>
+                    <span @click="toggle_node(prop.node.id)" :class="[prop.node.nof_descendants ? 'cursor-pointer' : '']">
                         <q-icon name="mdi-comment-outline" size="xs" />
                         <span class="text-date"> {{cachedNode(prop.node.id).content.date_created | moment("calendar")}}</span>
                         <span v-if="cachedNode(prop.node.id).creator" class="text-user"> {{ $t('contenttree.created_by', {username: cachedNode(prop.node.id).creator}) }} </span><br>

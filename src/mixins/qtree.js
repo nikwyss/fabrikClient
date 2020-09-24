@@ -106,12 +106,11 @@ export default {
 
 
         total_nof_contents: function() {
-            if (!this.startingNode) {
+            if (!this.startingContentNode) {
                 return (null)
             }
-            
-            console.log(this.startingNode)
-            return(this.startingNode["nof_descendants"])
+
+            return(this.startingContentNode["nof_descendants"] + 1)
         },
 
         ...mapGetters({ 
@@ -144,6 +143,19 @@ export default {
             return(true)
         },
 
+        toggle_node: function(node_id) {
+            if (this.expanded.includes(node_id)) {
+                this.collapse_node(node_id)
+            } else {
+                this.expand_node(node_id)
+            }
+        },
+
+        collapse_node: function(node_id) {
+            const index = this.expanded.indexOf(node_id)
+            this.expanded = this.expanded.filter(x => x != node_id)
+        },
+
         expand_node: function(node_id) {
             this.expanded.push(node_id)
         },
@@ -155,8 +167,9 @@ export default {
             var new_ids = []
             var child_ids = []
             let nodes = this.$refs.qtree.getExpandedNodes()
+
             if (nodes) {
-                for(let key in nodes) {
+                for (let key in nodes) {                   
                     let node = nodes[key]
                     if (node) {
                         child_ids = node.children.map(y => y.id)
@@ -166,9 +179,14 @@ export default {
             }
 
             /// expand all root nodes
-            let root_ids = this.root_node_ids
-            new_ids = new_ids.concat(root_ids)
+            new_ids = new_ids.concat(this.rootNodeIDs)
             let all_ids = this.expanded.concat(new_ids)
+
+            // Remove empty/undefineds
+            all_ids = all_ids.filter(x => !!x)
+            // Remove duplicates
+            all_ids = [...new Set(all_ids)]
+
             this.expanded = all_ids
             this.updateExpanded()
 
@@ -178,7 +196,11 @@ export default {
             // TODO: consider alos search/filtering.
             this.$q.notify({
                 type: 'info',
-                message: `${nof_shown} of ${nof_total} are expanded.`
+                message: this.$i18n.t("contenttree.notification_number_of_expanded",
+                    {
+                        nof_shown: nof_shown, 
+                        nof_total: nof_total
+                    })
               })
         },
 
@@ -187,13 +209,13 @@ export default {
             this.expanded = []
             this.updateExpanded()
 
-            // Notify
-            var nof_shown =  0
-            var nof_total =  this.total_nof_contents
-            this.$q.notify({
-                type: 'info',
-                message: `${nof_shown} of ${nof_total} are expanded.`
-            })
+            // // Notify
+            // var nof_shown =  0
+            // var nof_total =  this.total_nof_contents
+            // this.$q.notify({
+            //     type: 'info',
+            //     message: `${nof_shown} of ${nof_total} are expanded.`
+            // })
         },
 
         calculate_default_expanded_branches: function () {
@@ -208,10 +230,11 @@ export default {
            return(branches)
         },
 
+        /* Method store list of expanded array in localstorage */
         updateExpanded: function() {
             this.update_expanded_branches({
-                contenttreeID: this.CTREE.contenttreeID, 
-                startingContentID: this.CTREE.startingContentID, 
+                contenttreeID: this.CTREE.contenttreeID,
+                startingContentID: this.CTREE.startingContentID,
                 expanded: this.expanded})
         },
 
@@ -269,7 +292,7 @@ export default {
             var parent_node = null
             let path = branch.split(":")
             var children = this.CTREE.contenttree.structure.children
-            for(let key in path) {
+            for (let key in path) {
                 let junction = Number(path[key])
                 if (!junction) {
                     continue

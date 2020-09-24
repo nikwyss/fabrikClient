@@ -19,7 +19,7 @@ export default {
       IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
       IsUserDelegateOfOngoingAssembly: 'publicindexstore/IsUserDelegateOfOngoingAssembly',
       IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn',
-      retrieveCredentials: 'oauthstore/retrieveCredentials',      
+      retrieveCredentials: 'oauthstore/retrieveCredentials',
     })
   },
 
