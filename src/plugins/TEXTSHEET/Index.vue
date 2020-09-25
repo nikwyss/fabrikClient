@@ -20,9 +20,7 @@
             :ongoing="!routedStage || oauth_authenticated === null" align="left" />
         </div>
 
-
         <div v-if="routedStage && contenttree" class="text-vessel">
-
 
             <h2>{{routedStage.stage.title}}</h2>
             <p class="text-body1">{{routedStage.stage.info}}</p>
@@ -37,7 +35,8 @@
                     :level="1"
                     :comments="filter_entries(nodeL1.children, ['COMMENT','QUESTION'])"
                     :heading_number="(keyL1+1)"
-                    :item="contenttree.entries[nodeL1.id]"/>
+                    :item="contenttree.entries[nodeL1.id]"
+                />
 
                 <div class="row justify-between"
                         v-for="(nodeL2, keyL2) in filter_entries(nodeL1.children, TEXTTYPES)"
@@ -47,10 +46,10 @@
                         :level="2"
                         :comments="filter_entries(nodeL2.children, ['COMMENT', 'QUESTION'])"
                         :heading_number="`${(keyL1+1)}.${(keyL2+1)}`"
-                        :item="contenttree.entries[nodeL2.id]"/>
+                        :item="contenttree.entries[nodeL2.id]"
+                    />
 
-
-                    <div class="row justify-between" v-for="(nodeL3, keyL3)  in filter_entries(nodeL2.children, TEXTTYPES)" 
+                    <div class="row justify-between" v-for="(nodeL3, keyL3) in filter_entries(nodeL2.children, TEXTTYPES)" 
                             :key="`L3${nodeL3.id}`">
 
                         <TextsheetCard

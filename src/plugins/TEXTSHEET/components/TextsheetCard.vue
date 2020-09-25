@@ -36,7 +36,7 @@
         :icon="show_discussion ? 'mdi-comment' : 'mdi-comment-outline'"
         size="md"
       >
-        <q-badge color="red" v-if="comments.length" floating>{{comments.length}}</q-badge> 
+        <q-badge :color="nof_descendants_unread ? 'red' : 'green'" v-if="comments.length" floating>{{nof_descendants_unread ? nof_descendants_unread: nof_descendants}}</q-badge> 
         <q-tooltip v-if="!show_discussion" anchor="top left" self="bottom left">{{$t('contenttree.comment_section_tooltip')}}</q-tooltip>
         <q-tooltip v-if="show_discussion" anchor="top left" self="bottom left">{{$t('contenttree.close_comment_section_tooltip')}}</q-tooltip>
         &nbsp;{{'Fragen und Kommentare'}}
@@ -48,8 +48,9 @@
         class="q-pa-md col-12 bg-grey-3"
         v-if="show_discussion"
         :dense="true"
-        :customStartingNodes="this.comments"
+        :customStartingNodes="comments"
         :customStartingParentID="item.content.id"
+        :customLimitNodeTypes="['COMMENT', 'QUESTION', 'ANSWER']"
         :hideNoEntryText="true"
         :hideNofEntriesText="true"
         :artificialmoderationComponents="artificialmoderationComponents"
@@ -74,7 +75,7 @@ import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
 export default {
   name: 'TextsheetCard',
   props: ['item', 'standalone', 'heading_number', 'comments'],
-  inject: ['openIndex'],
+  inject: ['openIndex', 'CTREE'],
   components: { ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
   data: function() {
     return({
@@ -95,6 +96,26 @@ export default {
         case 'PARAGRAPH':
           return('text-subtitle2 q-mt-none q-mb-xs')
       }
+    },
+    
+    nof_descendants_unread: function () {
+      // summ up descendants_unread of the root elements
+      const that = this
+      const counting = function (node) {
+        if (Number.isInteger(node)) {return (node)}
+        return (that.CTREE.isRead(that.CTREE.contenttree.entries[node.id])
+                + node.nof_descendants_unread)
+      }
+      var nof_descendants_unread = this.comments.reduce(function(prev, cur) {
+        return (counting(prev) + counting(cur))
+      })
+      return (nof_descendants_unread)
+    },
+
+    nof_descendants: function () {
+      console.log(this.comments)
+      const nof_descendants = this.comments.reduce((a, b) => (a.nof_descendants + b.nof_descendants))
+      return (nof_descendants + this.comments.length)
     }
   }
 }

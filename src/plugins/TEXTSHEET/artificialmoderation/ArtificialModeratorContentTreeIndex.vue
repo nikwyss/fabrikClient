@@ -1,6 +1,5 @@
 <template>
 <div class="justify-center center">
-
     <!-- RIGHT SIDE:  -->
     <!-- <div align="right"> -->
     <ArtificialModerator alignment="right" role="2" amGroup='textsheetPage' :ongoing="ongoing">
@@ -13,7 +12,7 @@
         <template  v-slot:actions>
         <q-chip
             v-if="startingContentNode.children.length < 2 && ABLY.assembly_acls.includes('contribute')"
-            icon="mdi-tooltip-plus-outline" clickable @click="popup_edit">
+            icon="mdi-tooltip-plus-outline" clickable @click="popup_create">
             {{ $t('contenttree.add_comment_or_question') }}
         </q-chip>
         </template>
@@ -31,6 +30,11 @@ export default{
     // ], // see provide attribute in the antecedents
     components: {ArtificialModerator},
     props: ['ongoing', 'startingContentNode'],
-    inject: ['ABLY', 'popup_edit']
+    inject: ['ABLY', 'popup_content_form'],
+    methods: {
+        popup_create () {
+            this.popup_content_form('create', {parent_id: this.startingContentNode.id})
+        }
+    }
 }
 </script>

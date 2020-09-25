@@ -1,126 +1,183 @@
 <template>
-<span>
-  <q-popup-edit buttons v-model="localmodel" ref="popup_editor"
-    auto-save
-    v-on:save="saveContent">
+<div full-width class=" bg-red">
+  <q-popup-edit buttons 
+      v-model="localmodel" 
+      ref="popup_content_formor"
+      v-on:save="saveContent">
+      <!-- auto-save -->
+
     <div class="q-pa-md bg-grey-2">
       <div class="q-gutter-y-md column" style="max-width: 600px">
         <!-- HTML -->
-        <b>Title:</b>
+        <!-- <b>{{$t('contenttree.editor.content_title')}}</b> -->
         <q-input type="text" v-model="localmodel['title']"
-          shadow-text="Enter a short title."
+          :shadow-text="$t('contenttree.editor.content_title_shadow')"
           counter maxlength="60"
           dense autofocus />
-        <br />
 
-        <b>Text:</b>
+        <!-- <b>{{$t('contenttree.editor.content_text')}}</b> -->
         <q-input 
           v-model="localmodel['text']"
-          shadow-text="Outline your idea"
-          hint="Please, try to makeshort statements only."
-          autogrow
+          :shadow-text="$t('contenttree.editor.content_text_shadow')"
+          :hint="$t('contenttree.editor.content_text_hint')"
+          type="textarea"
           counter maxlength="300"
           dense />
-        
+
         <br />
 
-        <q-select
-          v-if="typeOptions"
-          class="q-ma-none"
-          style="max-width:270px"
-          dense
-          dropdown-icon="mdi-menu-down"
-          v-model="localmodel['type']"
-          :options="typeOptions"
-          hint="What kind of content is this?"
-          label="Type of Content"
-        />
+        <span :hidden="contextNodeTypesOptions.length <= 1">
+          <b>{{$t('contenttree.editor.content_type')}}</b><br>
+          {{$t('contenttree.editor.content_type_hint')}}
+          <q-option-group
+            name="preferred_genre"
+            v-model="localmodel['type']"
+            :options="contextNodeTypesOptions"
+            dense
+            color="primary"
+            inline
+          />
+        </span>
       </div>
     </div>
+
+    <template v-slot:title>
+      <div v-if="action=='create'" class="text-italic text-primary">
+       {{ $t('contenttree.editor.head_create') }}
+      </div>
+      <div v-if="action=='reply'" class="text-italic text-primary">
+       {{ $t('contenttree.editor.head_reply') }}
+      </div>
+      <div v-if="action=='edit'" class="text-italic text-primary">
+       {{ $t('contenttree.editor.head_edit') }}
+      </div>
+    </template>
   </q-popup-edit>
-  </span>
+</div>
 </template>
 
 <script>
 import ApiService from 'src/utils/xhr'
 import { mapActions } from 'vuex'
 import Configuration from 'src/utils/configuration'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ContentEditor',
-  inject: ['QTREE'],
-  // props: {
-  //   contenttreeID: { type: Number },
-  //   parent_id: {
-  //     type: Number,
-  //     required: false
-  //   },
-  //   icon: {
-  //     type: String,
-  //     default: 'mdi-comment-plus'
-  //   },
-  //   btnlabel: {
-  //     type: String,
-  //     default: ''
-  //   },
-  //   content_type: {
-  //     type: String
-  //   },
-  //   type_options: {
-  //     type: Array
-  //   },
-  //   model: {
-  //     type: Object,
-  //     default: function () {
-  //       // EMPTY CONTENT MODEL as default value
-  //       return ({
-  //         id: null,
-  //         title: '',
-  //         text: '',
-  //         parent_id: this.parent_id
-  //       })
-  //     }
-  //   }
-  // },
+  inject: ['QTREE', 'CTREE', 'limitNodeTypes'],
 
   data: function () {
     return {
-      localmodel: {
-        id: null,
-        title: '',
-        text: '',
-        parent_id: null
-      },
-      icon: '',
-      btnlabel: '',
-      contentType: '',
-      typeOptions: {}
+      localmodel: {},
+      error: false,
+      errormsg: '',
+      action: null,
+      btnlabel: ''
     }
+  },
+
+  computed: {
+
+    /* Get all context types that are allowed at this position.
+    There are a) general contenttree restrictions (See Configuration.CONTENT_TYPES),
+    There are b) parentType restrictions (See Configuration.ONTOLOGY),
+    and there are c) context restrictions (See QTree.customLimitNodeTypes-Prop)),
+     */
+    contextNodeTypes: function () {
+      if (!('id' in this.localmodel)){
+        return ([])
+      }
+
+      var parentType = null
+      if (this.localmodel.parent_id) {
+        console.log(this.localmodel.parent_id)
+        const parent = this.CTREE.contenttree.entries[this.localmodel.parent_id].content
+        parentType = parent.type
+      }
+
+      var context_node_types = this.get_allowed_node_types({
+        contenttreeID: this.CTREE.contenttreeID,
+        parentType: parentType
+      })
+
+      // are there any filtered node types in this context?
+      context_node_types = context_node_types.filter(v => this.limitNodeTypes.includes(v))
+      if (!context_node_types) {
+        this.error = true
+        this.errormsg = this.$i18n.t('contentree.editor.error.type_misconfiguration')
+        // this.$refs.popup_content_formor.disabled = true
+      }
+      // this.$refs.popup_content_formor.disable = true
+      return (context_node_types)
+    },
+
+    contextNodeTypesOptions: function () {
+      const options = Object.values(this.contextNodeTypes.reduce((obj, cur, i) => {
+        return { ...obj, [i]: {value: cur, label: this.$i18n.t(`contenttree.types.${cur}`)}}
+      }, []))
+      return (options) 
+    },
+
+    ...mapGetters({
+          get_allowed_node_types: 'contentstore/get_allowed_node_types'
+      }),
   },
 
   methods: {
 
-    setup: function (model, parent_id) {
+    initialize: function (action, model) {
+      console.log('Initialize popup action '  +  action)
+      this.action = action
 
-      if (model) {
-        this.localmodel = model
+      const template = {
+        id: null,
+        title: '',
+        text: '',
+        parent_id: null
       }
 
-      if (parent_id) {
-        this.localmodel.parent_id = parent_id
+      // take template as default values
+      model = {
+          ...template,
+          ...model
+      };
+
+      // remove all keys that are not in the template object
+      const keys_to_keep = Object.keys(template)
+      for (var k in model) {
+          if (keys_to_keep.indexOf(k) < 0) {
+              delete model[k];
+          }
       }
+
+      // store model
+      this.localmodel = model
+
+      // validate / and pre-select type
+      const types = this.contextNodeTypes
+      if (this.localmodel.type) {
+        if (!types.includes(this.localmodel.type)){
+            this.error = true
+            this.errormsg = this.$i18n.t('contentree.editor.error.wrong_contenttype')
+        }
+      }
+      if (types.length == 1 && !this.localmodel.type) {
+        this.localmodel.type = types[0]
+      }
+      this.$refs.popup_content_formor.show()
     },
 
-    saveContent: function(model) {
+    saveContent: function() {
+      // console.log(this.localmodel)
       console.log("Save content")
-      console.assert( QTREE.contenttreeID)
+      console.assert( this.CTREE.contenttreeID)
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier)
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${QTREE.contenttreeID}`
+      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${this.CTREE.contenttreeID}`
       var create_action = true
-      if (model.id) {
+      if (this.localmodel.id) {
           // this is an update
-          url += `/content/{model.id}`
+          url += `/content/${this.localmodel.id}`
           create_action = false
       } else {
           create_action = true
@@ -128,7 +185,7 @@ export default {
       }
       console.log("Save content2")
  
-      ApiService.put(url, {content: model}).then (
+      ApiService.put(url, {content: this.localmodel}).then (
         response => {
 
           console.log(response.data)
@@ -166,12 +223,12 @@ export default {
     ...mapActions({
       add_or_update_contenttree: 'contentstore/add_or_update_contenttree'
     })
-  },
-
-  created: function () {
-    if (this.contentType) {
-      this.localmodel['type'] = this.contentType
-    }
   }
+
+  // created: function () {
+  //   if (this.contentType) {
+  //     this.localmodel['type'] = this.contentType
+  //   }
+  // }
 }
 </script>

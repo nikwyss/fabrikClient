@@ -1,115 +1,68 @@
 <style>
 .q-btn__wrapper{
-  padding:0px !important;
+  /* padding:0px !important; */
 }
 </style>
 <template>
-    <div class="q-pa-none" style="" >
+  <div class="q-pa-none" style="">
 
-      <!-- EDIT FORM -->
-      <ContentEditor
-          v-if="ABLY.assembly_acls.includes('contribute')"
-          :model="obj.content"
-          :parent_id="obj.content.parent_id"
-          ref="contentEditor"
-          @zoom-to-content="$emit('zoomToContent')"
-      />
+    <q-toolbar shrink class="rounded-borders q-pr-none">
 
-      <q-toolbar class="rounded-borders full-height">
-
-      <!-- EDIT BUTTON -->
+      <!-- REPLY BUTTON -->
       <q-btn 
-        size="md"
         flat
-        @click="popup_edit"
+        @click="popup_create"
         round
         color="primary"
         icon="mdi-reply-outline">
-        <template v-slot:action>
-        <q-btn flat color="white" label="Modify" />
-        </template>
+        <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.reply_proposal') : $t('contenttree.toolbar.reply')}}</q-tooltip>
       </q-btn>
 
-      <q-separator vertical inset />
+      <!-- EDIT BUTTON -->
+      <q-btn
+        padding="0px"
+        flat
+        @click="popup_edit"
+        round
+        v-if="obj.content.edit_permission"
+        color="primary"
+        icon="mdi-playlist-edit">
+        <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.edit_proposal') : $t('contenttree.toolbar.edit')}}</q-tooltip>
+      </q-btn>
 
       <!-- DELETE -->
       <q-btn  
+        padding="0px"
         round dense flat
-        v-if="obj.content.delete_permission" 
+        size="sm"
+        v-if="obj.content.delete_permission"
         @click="deletePrompt(obj.content)"
-        class="q-mr-sm"
-        :title="obj.content.common_property ? 'Delete this Entry' : 'Subject a Delete Proposal'"
         :icon="obj.content.common_property ? 'mdi-delete-outline' : 'mdi-delete-circle-outline'" 
-      />
-      
-      <q-separator v-if="obj.content.delete_permission" vertical inset />
+      >
+        <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.delete_proposal') : $t('contenttree.toolbar.delete')}}</q-tooltip>
+      </q-btn>      
+      <!-- <q-separator v-if="obj.content.delete_permission" vertical inset /> -->
 
       <!-- Track changes -->
-      <q-btn  @click="switchTrackChanges" :color="track_changes_color"
-        class="q-mr-sm primary red" round dense flat  title="Track changes" :icon="track_changes_icon" />
-      <q-separator vertical inset />
+      <!-- <q-btn  @click="switchTrackChanges" :color="track_changes_color"
+        size="sm"
+        class="q-mr-sm primary red" round dense flat  title="Track changes" :icon="track_changes_icon">
+        <q-tooltip>{{$t('contenttree.toolbar.track_changes')}}</q-tooltip>
+      </q-btn> -->
 
+      <!-- <q-separator vertical inset /> -->
 
-      <!-- Background Popup -->
-      <q-btn flat round dense icon="mdi-calculator-variant-outline" class="q-mr-sm" >
-        <q-popup-edit v-model="obj" ref="contentpopup">
-            <q-icon 
-              name="mdi-close" 
-              class="cursor-pointer"
-              size="sm"
-              style="float:right; padding:0.3em;" 
-              @click="$refs.contentpopup.cancel()"/>
+      <ContentBackground
+        v-if="ABLY.assembly_acls.includes('observe')"
+        name="`elBackground${obj.content.id}`"
+        :obj="obj"
+      />
 
-          <div class="q-pa-md doc-contenttree" width="400px">
-              <q-badge color="blue">Authors</q-badge>
-              <div class="row items-start">
-                <div class="col-7">Created</div>
-                <div class="col-5">@APS202 at Monday, 2020</div>
-              </div>
-              <div class="row items-start">
-                <div class="col-7">Revisions</div>
-                <div class="col-5">
-                  @APS202 20.02.2020<br>
-                  @EPU111 20.02.2020</div>
-              </div>
-          </div>
-          <div class="q-pa-md doc-contenttree" width="400px">
-              <q-badge color="blue">Peer Review</q-badge>
-              <div class="row items-start">
-                <div class="col-7">Acceptance:</div>
-                <div class="col-5">70%</div>
-              </div>
-              <div class="row items-start">
-                <div class="col-7">Reviewers:</div>
-                <div class="col-5">3</div>
-              </div>
-            </div>
-          <div class="q-pa-md doc-contenttree" width="400px">
-              <q-badge color="blue">Overall Interactions</q-badge>
-              <div class="row items-start">
-                <div class="col-7">Viewed:</div>
-                <div class="col-5">1000x times</div>
-              </div>
-              <div class="row items-start">
-                <div class="col-7">Open Rating:</div>
-                <div class="col-5">60 times</div>
-              </div>
-              <div class="row items-start">
-                <div class="col-7">Rate average:</div>
-                <div class="col-5">2.3 (1-3)</div>
-              </div>
-            </div>
-        </q-popup-edit>
-      </q-btn>
-
-      
-      <q-separator vertical inset />
-
-      <ContentRating
+      <!-- <ContentRating
         v-if="ABLY.assembly_acls.includes('contribute')"
         name="`elRating${obj.content.id}`"
         :content="obj"
-      />
+      /> -->
 
     </q-toolbar>
   </div>
@@ -117,16 +70,17 @@
 
 
 <script>
-import ContentRating from "./ContentRating";
-import ContentEditor from "./ContentEditor"
+// import ContentRating from "./ContentRating";
+import ContentBackground from "./ContentBackground";
+// import ContentEditor from "./ContentEditor"
 import ApiService from 'src/utils/xhr'
 import { mapActions } from 'vuex'
 
 export default {
     name: "ContentToolbarComponent",
     props:["obj"],
-    components: {ContentRating, ContentEditor},
-    inject: ['ABLY','QTREE', 'contenttreeID', 'popup_edit'],  // is injecting ctree needed: only for contenttree_id, right?
+    components: {ContentBackground},
+    inject: ['ABLY','QTREE', 'contenttreeID', 'popup_content_form'],  // is injecting ctree needed: only for contenttree_id, right?
     data () {
         return {
             confirm_deletion: false,
@@ -149,6 +103,14 @@ export default {
 
    methods: {
 
+    popup_edit() {
+      this.popup_content_form('edit', this.obj.content)
+    },
+
+    popup_create() {
+      this.popup_content_form('reply', {parent_id: this.obj.content.id})
+    },
+
     deletePrompt (content) {
       
       var message = ''
@@ -159,11 +121,11 @@ export default {
       }
 
       this.$q.dialog({
-        title: content.common_property ? 'Submit a Delete-Proposal' : 'Deletion of Private Content' ,
+        title: content.common_property ? this.$i18n.t('contenttree.toolbar.submit_delete_proposal') : this.$i18n.t('contenttree.toolbar.delete'),
         message: message,
         prompt: {
           model: '',
-          isValid: val => val.length > 5, // << here is the magic
+          isValid: val => val.length > 3, // << here is the magic
           type: 'text' // optional
         },
         cancel: true,

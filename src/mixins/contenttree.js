@@ -6,7 +6,7 @@ import { ReactiveProvideMixin } from 'vue-reactive-provide'
 /* Make available all the properties and methods in any descendant object.*/
 const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
   name: 'CTREE',
-  include: ['contenttreeID', 'contenttree'],
+  include: ['contenttreeID', 'contenttree', 'isRead'],
 })
 
 export default {
@@ -119,6 +119,11 @@ export default {
       )
       return(filtered)
     },
+
+    isRead: function (content) {
+      console.assert('progression' in content)
+      return (!content.progression)
+    }
   },
 
   watch: {

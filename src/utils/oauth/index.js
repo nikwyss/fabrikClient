@@ -7,7 +7,7 @@ import oauthLibrary from './library'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { ApiService } from '../xhr'
 import { Allow400Status, ReloginOnStatus403 } from '../xhr'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 
 console.log('Installing the Oauth Plugin!')
@@ -61,7 +61,7 @@ export default {
          */
         async oauth_initialize() {
           var that = this
-
+          console.log("init oauth")
 
           async function onAxiosReject(error) {
             // onAxiosReject = async function (error) {
@@ -89,12 +89,11 @@ export default {
 
               return Promise.reject(error)
 
-            // } else if (error.response.status == 500) {
-            //   // 400 errors (parse errors)
-            //   // dont raise 400 errors, if this is made explicit
-            //   console.log("AXIOS: Pass Error 500")
-            //   LayoutEventBus.$emit('showServiceError')
-            //   return Promise.reject(error)
+            } else if (error.response.status == 405) {
+              // 405 errors (parse errors)
+              console.log("AXIOS: Pass Error 405")
+              LayoutEventBus.$emit('showAuthorizationError')
+              return Promise.reject(error)
 
             } else if (error.response.status == 403) {
 
@@ -118,7 +117,7 @@ export default {
                 // Hence, we specify the token refresh function and th status 449 ("retry with")
                 console.log("try to refresh token and then relaunch xhr (2)")
                 error.response.status = 449
-                error.config.retoken = await that.$store.dispatch('oauthstore/retrieveNewJWT', {})
+                error.config.retoken = await that.retrieveNewJWT({})
                 error.config.retry = true
 
                 // Token should now be up to date!
@@ -147,7 +146,7 @@ export default {
             return (true)
           }
 
-          this.$store.dispatch('oauthstore/oauthUpdate', {})
+          LayoutEventBus.$emit('oauthUpdate')
 
           // at least refresh token is available. Thats okay so far.
           return (true)
@@ -171,26 +170,25 @@ export default {
           LayoutEventBus.$on('oauthUpdate', jwt => {
             console.log("oauthUpdate Listener...")
              let newdate = new Date ()
-             this.$store.dispatch('oauthstore/oauthUpdate', {newdate, jwt})
+             this.oauthUpdate({newdate, jwt})
           })
 
-           
           /* This Method Removes all Oauth Artefats from session and localstorage  */
           LayoutEventBus.$on('oauthResetEverything', jwt => {
             console.log("oauthResetEverything Listener...")
             let newdate = new Date ()
-            this.$store.dispatch('oauthstore/resetEverything', {})
+            this.resetEverything() // passing {}??
           })
- 
+
           /* Event is raised when Authentication process ends. (success or error)
-          * Goals: 
-          * 1) inform user about error or success. 
+          * Goals:
+          * 1) inform user about error or success.
           * 2) in case of popups: notify potential Opener Window and close popup
           */
 
           LayoutEventBus.$on('oauthAuthenticationEnds', data => {
             console.log("oauthAuthenticationEnds Listener...")
-  
+
             // Anyway: hide loading messages...
             LayoutEventBus.$emit('hideLoading')
 
@@ -233,7 +231,13 @@ export default {
           LayoutEventBus.$emit('resetLayoutToDefault')
           LayoutEventBus.$emit('hideNotificationBanners')
           LayoutEventBus.$emit('oauthUpdate')
-        }
+        },
+
+        ...mapActions({
+          retrieveNewJWT: 'oauthstore/retrieveNewJWT',
+          oauthUpdate: 'oauthstore/oauthUpdate',
+          resetEverything: 'oauthstore/resetEverything'
+        }),
       }
     })
   }

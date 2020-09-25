@@ -12,10 +12,12 @@ export default {
     name: 'Demokratiefabrik',
     version: 'v1.0',
     error: {
+      authorization_error_title: 'Zugang verweigert',
+      authorization_error_body: 'Sie sind nicht berechtig auf diesen Bereich der Demokratiefabrik zuzugreifen. Bitte kontaktieren Sie die Organisatoren.',
       service_error_title: 'Betriebsstörung',
       service_error_body: 'Im Betrieb der Demokratiefabrik ist eine Störung aufgetreten. Wir bitten Sie um Entschuldigung.',
-      service_network_title: 'Netzwerkstörung',
-      service_network_body: 'Die Kommunikation zur Demokratiefabrik ist momentan fehlerhaft. Wir bitten Sie um Entschuldigung. Bitte versuchen Sie es bitte erneut.',
+      network_error_title: 'Netzwerkstörung',
+      network_error_body: 'Die Kommunikation innnerhalb der Demokratiefabrik ist momentan suboptimal. Wir bitten Sie um Entschuldigung. Bitte versuchen Sie es bitte erneut.',
       btn_close: 'Diese Meldung schliessen.'
     }
   },
@@ -279,5 +281,44 @@ export default {
     notification_number_of_expanded: `Sie sehen aktuell {nof_shown} von {nof_total} Beiträgen.`,
     expand_all: "Beiträge ausklappen",
     collapse_all: "Beiträge schliessen",
+    toolbar: {
+      reply: 'Möchten Sie diesem Beitrag antworten?',
+      edit: 'Möchten Sie diesen Beitrag bearbeiten?',
+      delete: 'Möchten Sie diesen Beitrag löschen?',
+      reply_proposal: 'Möchten Sie eine Antwort vorschlagen?',
+      edit_proposal: 'Möchten Sie eine Überarbeitung vorschlagen?',
+      delete_proposal: 'Möchten Sie eine Löschung dieses Beitrags vorschlagen?',
+      track_changes: 'Möchten Sie diesen zur Nachverfolgung kennzeichnen?',
+      show_background: 'Beitragssummarium anzeigen.'
+    },
+    types: {
+      'COMMENT': 'Kommentar',
+      'QUESTION': 'Frage',
+      'ANSWER': 'Antwort',
+      'PARAGRAPH': 'Absatz',
+      'SECTION': 'Kapitel',
+      'SUBSECTION': 'Unterkapitel'
+    },
+    rating: {
+      1: 'Schlechter Beitrag',
+      2: 'Mittelmässiger Beitrag',
+      3: 'Guter Beitrag'
+    },
+    editor: {
+      head_create: 'Neuer Beitrag',
+      head_reply: 'Beitrag Beantworten',
+      head_edit: 'Beitrag Bearbeiten',
+      content_title: 'Überschrift',
+      content_title_shadow: 'Geben Sie Ihrem Beitrag eine prägnante Überschrift',
+      content_text: 'Text',
+      content_text_shadow: 'Geben Sie hier Ihren Beitrag ein.',
+      content_text_hint: 'Schreiben Sie prägnant. Niemand möchte hier ganze Romane lesen.',
+      content_type: 'Art des Beitrags',
+      content_type_hint: 'Zu welcher Kategorie gehört der Beitrag am ehesten?',
+      error: {
+        wrong_contenttype: 'The content has a wrong type.',
+        type_misconfiguration: 'The Contenttree is misconfigured. No type can be assigned to the content.'
+      }
+    }
   }
 }

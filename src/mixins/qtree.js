@@ -27,13 +27,17 @@ export default {
     Which <label> should be displayed on top of the ContentTree?
     SHould the Tree be displayed in <dense> layout?
     SHould the whole ContentTree be displayed or only a specific <customStartingNodes>?
-    */
-    props: ['label', 'dense', 'customStartingNodes', 'customStartingParentID'],
+
+    <customLimitNodeTypes>: You may additionaly limit the nodetypes to insert:...
+    If nothing is indicated: every type is allowed, that is allowed for the given parent. */
+
+    props: ['label', 'dense', 'customStartingNodes', 'customStartingParentID', 'customLimitNodeTypes'],
     mixins: [ReactiveProvidePropertiesMixin],
     provide() {
         return {
-            popup_edit: this.popup_edit,
-            contenttreeID: this.CTREE.contenttreeID
+            // popup_content_form: this.popup_content_form,
+            contenttreeID: this.CTREE.contenttreeID,
+            limitNodeTypes: this.limitNodeTypes
         }
     },
     inject: ['CTREE', 'ABLY'],
@@ -49,6 +53,7 @@ export default {
             return(Number(this.$route.params.contentID))
         },
 
+        // TODO: overlap with cachedContent?
         // startingContent: function() {
         //     if(this.startingContentID && this.contenttree !== null) {
         //         console.log("starting content found")
@@ -73,8 +78,6 @@ export default {
             if(this.customStartingContentNode) {
                 return(this.customStartingContentNode.level)
             }
-            console.log("kkkkkkkkk")
-            console.log(this.CTREE.contenttree.structure)
             return (null)
         },
 
@@ -84,18 +87,32 @@ export default {
             }
 
             var nof_descendants = 0
+            var nof_descendants_unread = 0
             if (this.customStartingNodes.length) {
                 nof_descendants = this.customStartingNodes.reduce((a, b) => (a.nof_descendants + b.nof_descendants + 1))
+                nof_descendants_unread = this.customStartingNodes.reduce((a, b) => (a.nof_descendants_unread + b.nof_descendants_unread + 1))
             }
             var node = {
                 children: this.customStartingNodes,
                 nof_descendants: nof_descendants,
+                nof_descendants_unread: nof_descendants_unread,
                 nof_children: this.customStartingNodes.length,
                 id: this.customStartingParentID
             }
             return(node)
         },
 
+        /* Which node types are allowed within this contenttree/branch? */
+        limitNodeTypes: function () {
+            // get customLimitNodeTypes
+            var allowed_node_types = this.get_allowed_node_types({contenttreeID: this.CTREE.contenttreeID})
+            console.log(allowed_node_types)
+            if (this.customLimitNodeTypes) {
+                allowed_node_types = allowed_node_types.filter(v => this.customLimitNodeTypes.includes(v))
+            }
+            console.log(allowed_node_types)
+            return (allowed_node_types)
+        },
 
         rootNodeIDs: function() {
             return(this.startingContentNode.children.map(x=> x.id))
@@ -113,7 +130,8 @@ export default {
             return(this.startingContentNode["nof_descendants"] + 1)
         },
 
-        ...mapGetters({ 
+        ...mapGetters({
+            get_allowed_node_types: 'contentstore/get_allowed_node_types',
             get_default_expanded_branches_from_store: 'contentstore/get_default_expanded_branches_from_store',
         }),
     },
@@ -169,7 +187,7 @@ export default {
             let nodes = this.$refs.qtree.getExpandedNodes()
 
             if (nodes) {
-                for (let key in nodes) {                   
+                for (let key in nodes) {
                     let node = nodes[key]
                     if (node) {
                         child_ids = node.children.map(y => y.id)
@@ -352,12 +370,6 @@ export default {
                 }
             }
             return(this.get_node_by_id_via_branch(node_id))
-        },
-
-        popup_edit: function () {
-            console.log(this.$refs.content_editor)
-            console.log(this.$refs.content_editor.$refs.popup_editor)
-            this.$refs.content_editor.$refs.popup_editor.show()
         },
 
         ...mapActions({

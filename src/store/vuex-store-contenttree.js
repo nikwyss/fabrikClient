@@ -29,8 +29,20 @@ const getters = {
     
     return(state.expanded_branches[key])
   },
-  
-  
+
+  get_allowed_node_types: (state) => ({contenttreeID, parentType}) => {
+    
+    if (parentType===undefined) {
+      console.log("ccccccck")
+      console.log(state.contenttree[contenttreeID].configuration)
+      return (state.contenttree[contenttreeID].configuration.CONTENTTYPES)
+    }
+    console.log(parentType)
+    console.log("kkk")
+    
+    return (state.contenttree[contenttreeID].configuration.ONTOLOGY[parentType])
+  },
+
   /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
   currently logged in user */
   checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID}) {
@@ -81,7 +93,11 @@ const actions = {
           console.assert ('OK' in response.data)
           console.assert ('contenttree' in response.data)
           // this.add_or_update_contenttree({contenttreeID: contenttreeID, contenttree: response.data.contenttree})
-          commit('add_or_update_contenttree', {contenttreeID: contenttreeID, contenttree: response.data.contenttree});
+          commit('add_or_update_contenttree', {
+            contenttreeID: contenttreeID,
+            contenttree: response.data.contenttree,
+            configuration: response.data.configuration
+          });
         }
       )
       .catch(
@@ -90,8 +106,8 @@ const actions = {
     })
   },
 
-  add_or_update_contenttree({commit}, {contenttreeID, contenttree}) {
-    commit('add_or_update_contenttree', {contenttreeID, contenttree});
+  add_or_update_contenttree({commit}, {contenttreeID, contenttree, configuration}) {
+    commit('add_or_update_contenttree', {contenttreeID, contenttree, configuration});
   },
 
   update_contents({commit}, {modifiedContents}) {
@@ -130,7 +146,7 @@ const actions = {
 
 const mutations = {
 
-  add_or_update_contenttree(state, {contenttreeID, contenttree}) {
+  add_or_update_contenttree(state, {contenttreeID, contenttree, configuration}) {
 
     // keep list of opened contents (if previously available)
     console.log("update contenttree")
@@ -143,16 +159,17 @@ const mutations = {
     }
 
     console.log("new copy saved...")
+    contenttree.configuration = configuration
     Vue.set(state.contenttree, contenttreeID, contenttree)
   },
-  
+
   update_contents(state, {modifiedContents}) {
     // in case content or progression changes (without changing hirarchy...)
     console.assert(modifiedContents !== undefined)
     console.assert(modifiedContents !== null)
     for(let contentID in modifiedContents) {
       console.log("modified contents: " + contentID)
-      
+
       let modifiedContent = modifiedContents[contentID]
       console.log(modifiedContent)
       let contenttreeID = modifiedContent.content.contenttree_id

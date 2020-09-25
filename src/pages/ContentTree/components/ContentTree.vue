@@ -20,14 +20,14 @@
 
             <q-chip 
                 :clickable="expanded.length>0"
-                @click="expand_none" 
+                @click="expand_none"
                 :disabled="expanded.length==0"
                 align="right" icon="mdi-collapse-all">
               {{ $t('contenttree.collapse_all') }}
             </q-chip>
 
             <q-chip clickable 
-                    @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : '';" 
+                    @click="expanded_filter = !expanded_filter; filter = expanded_filter ? filter : ''"
                     align="right" icon="mdi-feature-search">
                 {{ $t('contenttree.search_button') }}
             </q-chip>
@@ -104,16 +104,31 @@
 
             <!-- Content Body -->
             <template v-slot:default-body="prop">
-                <div 
-                    size="text-body1"
+                <div size="text-body1"
                     class="q-mb-lg"
                     :style="!prop.node.nof_descendants && rootNodeIDs.includes(prop.node.id) ? 'margin-left:1.5em' : ''">
+                      <div class="float-right q-pa-null">
+                    <ContentRating
+                        v-if="ABLY.assembly_acls.includes('contribute')"
+                        name="`elRating${obj.content.id}`"
+                        :content="cachedNode(prop.node.id)"
+                    />
+                    </div>
+
                     <span class="text-bold "> {{ cachedNode(prop.node.id).content.title }}</span><br>
                     {{ cachedNode(prop.node.id).content.text }}
                     <!-- style="margin-bottom:0.5em"  -->
+
+                  
                 </div>
             </template>
         </q-tree>
+
+        <!-- EDIT/CREATE FORM -->
+        <ContentEditor
+            ref="content_editor"
+            v-if="ABLY.assembly_acls.includes('contribute')"
+            :parent_id="startingContentID" />
 
         <q-separator inset />
 
@@ -121,7 +136,7 @@
                 <!-- class="bg-accent" -->
             <q-chip
                 v-if="ABLY.assembly_acls.includes('contribute')"
-                icon="mdi-tooltip-plus-outline" clickable @click="popup_edit">
+                icon="mdi-tooltip-plus-outline" clickable @click="popup_create">
                 {{ $t('contenttree.add_comment_or_question') }}
             </q-chip>
 
@@ -141,12 +156,6 @@
     </div>
 
     
-    <!-- EDIT/CREATE FORM -->
-    <ContentEditor 
-        ref="content_editor"
-        v-if="ABLY.assembly_acls.includes('contribute')"
-        :parent_id="startingContentID" />
-
 </div>
 </template>
 
@@ -155,13 +164,19 @@ import QTreeMixin from "src/mixins/qtree"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 import ContentEditor from "./ContentEditor"
 import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer"
-// import ContentRating from "./ContentRating";
+import ContentRating from "./ContentRating";
 
 export default {
     name: "ContentTree",
     props: ["artificialmoderationComponents", 'hideNoEntryText', 'hideNofEntriesText'],
     mixins: [QTreeMixin],
-    components: {AlgorithmDisclaimer, ContentEditor, ContentToolbar},
+    components: {AlgorithmDisclaimer, ContentEditor, ContentToolbar, ContentRating},
+    provide() {
+        return {
+            popup_content_form: this.popup_content_form
+        }
+    },
+
     computed: {
        real_expanded: function() {
             return(this.expanded || this.node.children.length==0)
@@ -175,6 +190,18 @@ export default {
             }
 
             return (text)
+        }
+    },
+
+    methods: {
+
+        popup_content_form: function (action, model) {
+            console.log("popup action " + action )
+            this.$refs.content_editor.initialize(action, model)
+        },
+
+        popup_create () {
+            this.popup_content_form ('create', {parent_id: this.startingContentID})
         }
     }
 }

@@ -217,11 +217,11 @@ export default {
       this.showLoadingGif()
     })
     LayoutEventBus.$on('showAuthorizationError', data => {
-      let msg_title = 'Permission denied'
-      let msg_body = 'You are not allowed to perform this action. Please notify the event organizers.'
-      let icon = 'mdi-alarm-light-outline'
+      let msg_title = this.$i18n.t('app.error.authorization_error_title')
+      let msg_body = this.$i18n.t('app.error.authorization_error_body')
+      let icon = 'mdi-key-outline'
       let type = 'error'
-      this.showNotificationBanner(type, msg_title, msg_body, icon, false, [])
+      this.showNotificationBanner(type, msg_title, msg_body, icon)
     })
     LayoutEventBus.$on('showServiceError', data => {
       let msg_title = this.$i18n.t('app.error.service_error_title')
