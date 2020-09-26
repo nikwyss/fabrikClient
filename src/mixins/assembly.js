@@ -235,9 +235,10 @@ export default {
 
     monitorApi: function() {
       /* By this method we allow the API to monitor user activities */
-    
+
       // Monitor about stage visit
       let data = {
+        key: this.assemblyIdentifier,
         assembly_identifier: this.assemblyIdentifier
       }
       this.$store.dispatch('monitorApi', {

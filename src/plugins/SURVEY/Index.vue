@@ -140,6 +140,7 @@ export default {
 
             // Notify API
             const data = {
+                key: STAGEID,
                 assembly_identifier: this.assemblyIdentifier,
                 stage_id:STAGEID,
                 sub: USERID

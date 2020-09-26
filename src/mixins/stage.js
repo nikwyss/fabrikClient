@@ -35,6 +35,7 @@ export default {
     
       // Monitor about stage visit
       let data = {
+        key: this.stageID,
         assembly_identifier: this.assemblyIdentifier,
         stage_id: this.stageID
       }

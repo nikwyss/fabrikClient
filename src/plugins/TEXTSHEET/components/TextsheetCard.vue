@@ -108,7 +108,7 @@ export default {
       }
       var nof_descendants_unread = this.comments.reduce(function(prev, cur) {
         return (counting(prev) + counting(cur))
-      })
+      }, 0)
       return (nof_descendants_unread)
     },
 

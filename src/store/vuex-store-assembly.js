@@ -160,6 +160,11 @@ const actions = {
 
     return(null)
   },
+ 
+  storeAssemblyProgression({commit}, {assemblyIdentifier, stageID, progression}) {
+    console.log("Store stage progression in localstorage")
+    commit('storeAssemblyProgression', {assemblyIdentifier, stageID, progression})
+  },
 
   retrieveAssembly({commit}, {assemblyIdentifier}) {
 
@@ -215,7 +220,16 @@ const actions = {
       console.log(`Store assembly ${assemblyIdentifier}`)
       // Vue.set  makes the change reactive!!
       Vue.set(state.assemblydata, assemblyIdentifier, data)
+    },
 
+    storeAssemblyProgression (state, {assemblyIdentifier, stageID, progression}) {
+      console.log(`Store assembly progression ${assemblyIdentifier}`)
+      // Vue.set  makes the change reactive!!
+      if (!(stageID in state.assemblydata[assemblyIdentifier].stages) ){
+        Vue.set(state.assemblydata[assemblyIdentifier], 'stages', stageID)
+        Vue.set(state.assemblydata[assemblyIdentifier].stages, stageID, {'progression': null})
+      }
+      Vue.set(state.assemblydata[assemblyIdentifier].stages[stageID], 'progression', progression)
     }
   }
 

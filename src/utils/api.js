@@ -11,21 +11,22 @@ export default {
   async monitorActivities({event, data}) {
     /* Notify Resource Server about certain user activities in the client app. */
     let url = `${Configuration.value('ENV_APISERVER_URL')}/monitor/${event}`
-    return ApiService.post(url, {content: data})
+    console.log("monitor activies in API")
+    return await ApiService.post(url, {content: data})
   },
 
   async retrievePublicIndex() {
     let url = `${Configuration.value('ENV_APISERVER_URL')}/assemblies`
-    return ApiService.get(url)
+    return await ApiService.get(url)
   },
 
   async retrieveAssembly(assemblyIdentifier) {
     let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${assemblyIdentifier}`
-    return ApiService.get(url)
+    return await ApiService.get(url)
   },
 
   async retrieveContenttree(assemblyIdentifier, contenttreeID) {
     let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${assemblyIdentifier}/contenttree/${contenttreeID}/contenttree`
-    return ApiService.get(url)
+    return await ApiService.get(url)
   }
 }

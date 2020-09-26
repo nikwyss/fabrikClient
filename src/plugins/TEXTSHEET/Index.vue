@@ -60,6 +60,13 @@
                 </div>
             </div>
         </div>
+        
+        <!-- AM-END -->
+        <div class="q-mb-xl">
+            <ArtificialModeratorTEXTSHEETIndexBottom 
+            :ongoing="!routedStage || oauth_authenticated === null" align="left" />
+        </div>
+
     </div>
     </q-page>
 </template>
@@ -69,6 +76,7 @@ import ContentTreeMixin from "src/mixins/contenttree"
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import TextsheetCard from "./components/TextsheetCard";
 import ArtificialModeratorTEXTSHEETIndexTop from './artificialmoderation/IndexTop'
+import ArtificialModeratorTEXTSHEETIndexBottom from './artificialmoderation/IndexBottom'
 import i18nPluginMixin from "./i18n"
 
 export default {
@@ -82,7 +90,8 @@ export default {
     components: {
         ComponentStageEditor,
         TextsheetCard,
-        ArtificialModeratorTEXTSHEETIndexTop
+        ArtificialModeratorTEXTSHEETIndexTop,
+        ArtificialModeratorTEXTSHEETIndexBottom
     }
 }
 

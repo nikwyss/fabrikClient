@@ -55,27 +55,6 @@ export default {
 
   methods: {
 
-    /* By this method we allow the API to monitor user activities 
-    In this case, we monitor contenttree access.
-    */
-    monitorApi: function () {
-      if (!this.contenttreeID){
-        return (null)
-      }
-
-      // dont monitor if contenttree has not been loaded.
-      console.log('Monitor contenttree activities')
-      let data = {
-        assembly_identifier: this.assemblyIdentifier,
-        contenttreeID: this.contenttreeID
-      }
-
-      this.$store.dispatch('monitorApi', {
-        event: this.MonitorContenttreeEntering,
-        data: data
-      })
-    },
-
     openIndex: function() {
 
       console.log("redirect to pros_and_cons_index")

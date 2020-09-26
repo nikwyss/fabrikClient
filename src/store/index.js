@@ -40,21 +40,23 @@ export default new Vuex.Store({
       // add some timelag for this monitor method: all other ajax call have priority.
       // take 3 seconds as default value
       const default_timeout = 3000
+      console.assert(data.key)
       if (!timeout && timeout !== 0){ timeout = default_timeout}
       setTimeout(function(){
 
-        console.log("initiate Monitor " + event)
-
         // Check if monitor intervall is passed
+        const eventkey = `${event}${data.key}`
+        console.log("initiate Monitor " + eventkey)
         const MonitorFrequency = 5 // TODO: put this in environment variable.
         const now = Vue.moment(new Date())
         const timeThreshold = now.clone()
         timeThreshold.subtract(MonitorFrequency, 'minutes')
-        console.log("MONITOR STAGE VISIT: " + event)
+        console.log("MONITOR STAGE VISIT: " + eventkey)
         
         if (!force) {
-          if (state.monitors[event] && timeThreshold.isBefore(state.monitors[event]) ){
-            return ('No Monitor action needed')
+          if (state.monitors[eventkey] && timeThreshold.isBefore(state.monitors[eventkey]) ){
+            console.log("no monitor action needed")
+            return (null)
           }
         }
         // Send API Monitor
@@ -69,9 +71,9 @@ export default new Vuex.Store({
 
           // stage monitor
           if (response.data && 'stage_progression' in response.data){
-            dispatch('assemblystore/add_or_update_stage_progression', {
-                assembly_identifier: response.data.assembly_identifier,
-                stage_id: response.data.stage_id,
+            dispatch('assemblystore/storeAssemblyProgression', {
+                assemblyIdentifier: response.data.assembly_identifier,
+                stageID: response.data.stage_id,
                 progression: response.data.stage_progression
             })
           }
