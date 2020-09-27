@@ -35,17 +35,17 @@ export default new Vuex.Store({
   actions: {
 
     /* If force= true: send monitor request in any case.. */
-    monitorApi: ({state, dispatch, commit}, { event, data, timeout, force}) => {
+    monitorApi: ({state, dispatch, commit}, { event, data, key, timeout, force}) => {
 
       // add some timelag for this monitor method: all other ajax call have priority.
       // take 3 seconds as default value
       const default_timeout = 3000
-      console.assert(data.key)
+      console.assert(key)
       if (!timeout && timeout !== 0){ timeout = default_timeout}
       setTimeout(function(){
 
         // Check if monitor intervall is passed
-        const eventkey = `${event}${data.key}`
+        const eventkey = `${event}${key}`
         console.log("initiate Monitor " + eventkey)
         const MonitorFrequency = 5 // TODO: put this in environment variable.
         const now = Vue.moment(new Date())
@@ -60,7 +60,7 @@ export default new Vuex.Store({
           }
         }
         // Send API Monitor
-        commit('monitor_date', {event, now})
+        commit('monitor_date', {eventkey, now})
         api.monitorActivities({event: event, data: data}).then(response => {
 
           // Dealing with Data response)
@@ -81,16 +81,16 @@ export default new Vuex.Store({
       }, timeout)
     },
 
-    manually_update_monitor_date({state, commit}, {event}) {
+    manually_update_monitor_date({state, commit}, {eventkey}) {
       const now = Vue.moment(new Date())
-      commit('monitor_date', {event, now})
+      commit('monitor_date', {eventkey, now})
     }
   },
 
   mutations: {
 
-    monitor_date (state, {event, now}) {
-      Vue.set(state.monitors, event, now)
+    monitor_date (state, {eventkey, now}) {
+      Vue.set(state.monitors, eventkey, now)
     },
 
     // oauth_update_date (state, {newdate}) {

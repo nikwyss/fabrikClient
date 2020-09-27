@@ -140,7 +140,6 @@ export default {
 
             // Notify API
             const data = {
-                key: STAGEID,
                 assembly_identifier: this.assemblyIdentifier,
                 stage_id:STAGEID,
                 sub: USERID
@@ -149,6 +148,7 @@ export default {
             this.$store.dispatch('monitorApi', {
                 event: event,
                 data: data,
+                key: STAGEID,
                 timeout: 0,
                 force: force})
 
