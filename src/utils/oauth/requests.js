@@ -24,14 +24,14 @@ const oAuthService = {
 
   redirectToProvider (provider, randomState) {
 
-    // Provider funcitonality is not implemented yet. 
+    // Provider funcitonality is not implemented yet.
     console.assert(provider)
-    
+
     var clientId = Configuration.value('ENV_OAUTH_CLIENT_ID')
     var baseUrl = Configuration.value('ENV_OAUTH_BASE_URL')
     console.assert(clientId)
     console.assert(baseUrl)
-    // http://localhost:8000/o/authorize/?client_id=3wtT6b469YwVKPSfenC3M6KNSw2WL70sCNEWAAWq&response_type=code&state=random_state_string
+    // http://localhost:8010/o/authorize/?client_id=3wtT6b469YwVKPSfenC3M6KNSw2WL70sCNEWAAWq&response_type=code&state=random_state_string
     const url = `${baseUrl}/o/authorize/?client_id=${clientId}&response_type=code&state=${randomState}`
     console.assert(clientId)
     console.assert(baseUrl)

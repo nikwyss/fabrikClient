@@ -6,7 +6,7 @@ import api from 'src/utils/api';
 import { contentstore } from './vuex-store-contenttree'
 import { assemblystore } from './vuex-store-assembly'
 import { publicindexstore } from './vuex-store-publicindex'
-import { pluginstore } from 'src/plugins/vuex-store'
+import { pluginstore } from './vuex-plugin_store'
 import { oauthstore } from 'src/utils/oauth/vuex-store-oauth'
 
 Vue.use(Vuex)
