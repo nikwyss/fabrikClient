@@ -3,7 +3,7 @@ import Configuration from 'src/utils/configuration'
 // TODO: replace by vue-cookie ???
 
 
-
+// TODO: https://github.com/js-cookie/js-cookie => use domain -specific cookies, samesite, secure..
 const nonull = function (val) {
   if (val === undefined || val === 'null' || val === '' || val === {}) {
     return (null)
@@ -24,8 +24,10 @@ export const set_cookie_value = function (name, value, durable=false) {
   // let domain = Configure.value('DOMAIN').replace(/(^\w+:|^)\/\//, '');
 
   const options = {
-    // domain: domain,
+    // domain: Configuration.value('ENV_DOMAIN'), (Default is okay...)
     sameSite: 'lax'
+    // httpOnly: true, // not possible to read cookies by js 
+    // secure: true 
   }
 
   if (durable) {

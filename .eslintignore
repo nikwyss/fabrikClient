@@ -1,4 +1,5 @@
 /dist
+/public/fabrikauth
 /src-bex/www
 /src-capacitor
 /src-cordova

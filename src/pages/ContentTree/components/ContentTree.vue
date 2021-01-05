@@ -1,6 +1,6 @@
 <style>
 .q-tree .q-focus-helper {
-    background-color:transparent !important;
+    background-color:transparent !important
 }
 </style>
 

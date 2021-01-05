@@ -1,7 +1,7 @@
 <style lang="sass" scoped>
 .assemblycard
-    margin-top: 4em;
-    margin-bottom: 4em;
+    margin-top: 4em
+    margin-bottom: 4em
 </style>
 
 <template>

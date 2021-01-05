@@ -3,7 +3,7 @@
  */
 
 import ApiService from '../xhr'
-import popupLibrary from './lib/popup'
+// import popupLibrary from './lib/popup'
 import Configuration from 'src/utils/configuration'
 
 // interface oAuthServiceInstance {
@@ -37,8 +37,8 @@ const oAuthService = {
     console.assert(baseUrl)
     if(clientId && baseUrl) {
       // window.open(url)
-      popupLibrary.openpopup(url)
-      // window.location.href = url
+      // popupLibrary.openpopup(url)
+      window.location.href = url
     }
   },
 

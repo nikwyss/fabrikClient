@@ -1,6 +1,6 @@
 <style lang="sass" scoped>
 .assemblycard
-    margin-bottom: 6em;
+    margin-bottom: 6em
 </style>
 
 <template>

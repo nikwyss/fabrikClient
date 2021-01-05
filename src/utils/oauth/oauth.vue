@@ -6,11 +6,8 @@
         <!-- Show Loading -->
         <!-- </div> -->
 
-        <!-- Successful Login -->
-        <div v-if="oauth_authenticated">Okay. Login was successfully.</div>
-
         <!-- Not logged in -->
-        <div v-if="!oauth_authenticated && !oauth_ongoing"></div>
+        <div v-if="!oauth_authenticated && !oauth_ongoing">...</div>
 
         <!-- Login Error -->
         <!-- <div v-if="loginerror">
@@ -21,6 +18,7 @@
 
 <script>
 import { LayoutEventBus } from 'src/utils/eventbus.js'
+import Configuration from 'src/utils/configuration'
 
 export default {
     name: 'OngoingAuthentication',
@@ -37,7 +35,16 @@ export default {
             console.log("ongoing authorization...")
             LayoutEventBus.$emit('showLoading')
             const response = this.$session.authorize_by_authentication_code()
+        }else if (this.oauth_authenticated){
+
+            // Missing Email...
+            // TODO: remember url before redirect to auth...
+            let url = Configuration.value('ENV_DOMAIN')
+            window.location.href=url
+
         }
+
+
     },
 
     beforeDestroy () {

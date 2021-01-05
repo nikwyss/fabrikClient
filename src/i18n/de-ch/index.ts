@@ -54,8 +54,8 @@ export default {
         tooltip: 'Wo alles beginnt!'
       },
       assembly: {
-        label: 'Produktionsstätte',
-        tooltip: 'Hier finden unsere BürgerInnenversammlungen statt.'
+        label: 'Mitarbeit',
+        tooltip: 'Hier finden die BürgerInnenversammlungen statt.'
       },
       showcase: {
         label: 'Schaufenster',

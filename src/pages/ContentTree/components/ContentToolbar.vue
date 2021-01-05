@@ -1,7 +1,4 @@
 <style>
-.q-btn__wrapper{
-  /* padding:0px !important; */
-}
 </style>
 <template>
   <div class="q-pa-none" style="">

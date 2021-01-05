@@ -1,7 +1,7 @@
 <style lang="sass" scoped>
 .q-stepper__dot
-    width: 50px  !important;
-    height: 50px !important;
+    width: 50px  !important
+    height: 50px !important
 </style>
 <template>
     <q-page class="doc_content" >

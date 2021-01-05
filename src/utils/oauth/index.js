@@ -8,6 +8,7 @@ import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { ApiService } from '../xhr'
 import { Allow400Status, ReloginOnStatus403 } from '../xhr'
 import {mapGetters, mapActions} from 'vuex'
+import Configuration from 'src/utils/configuration'
 
 
 console.log('Installing the Oauth Plugin!')
@@ -31,7 +32,7 @@ export default {
       // },
 
       mounted () {
-        // TODO: this is run mulitple times in each component that used the mixins. 
+        // TODO: this is run mulitple times in each component that used the mixins.
         // how to limit this on root. Seems to be freaky.
         if(this.$root === this) {
           // initialize oauth library on browser startup
@@ -151,9 +152,9 @@ export default {
           // at least refresh token is available. Thats okay so far.
           return (true)
         },
-    
+
         clickAuthLink(route) {
-          if (!route) { 
+          if (!route) {
             var route = {name: 'assemblies'}
           }
           route = this.$router.resolve(route)
@@ -212,12 +213,14 @@ export default {
               }
 
               // On Popup
-              if (window.opener !== null){
-                window.opener.publicVueUpdateMethod(notification)
-                window.close()
-              }else{
-                this.$q.notify(notification)
-              }
+              // if (window.opener !== null){
+              let url = Configuration.value('ENV_DOMAIN')
+              window.location.href=url
+              //.publicVueUpdateMethod(notification)
+              // window.close()
+              // }else{
+              // this.$q.notify(notification)
+              // }
             }
           })
         },
