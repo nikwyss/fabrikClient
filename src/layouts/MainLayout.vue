@@ -156,6 +156,11 @@ export default {
   },
 
   methods: {
+        
+    clickAuthLink: function () {
+        const destination_route = {name: 'assemblies_ongoing_list'}
+        this.oauth.login(destination_route)
+    },
 
     emitGlobalClickEvent() {
       EventBus.$emit('i-got-clicked', 'extra data')

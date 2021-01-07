@@ -174,9 +174,9 @@ const actions = {
         response => {
 
           console.log('save retrieved assembly to cache.')
-          console.log(assemblyIdentifier)
+          // console.log(assemblyIdentifier)
+          // console.log(response)
           const data = response.data
-          console.log(response)
           commit('storeAssembly', {assemblyIdentifier, data})
 
           // end loading
@@ -185,6 +185,7 @@ const actions = {
         }
       )
       .catch((error) => {
+        console.warn(error)
         // Error Handling is done in Axios Interceptor
         console.warn("Request Error")
       })

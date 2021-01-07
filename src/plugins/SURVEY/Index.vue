@@ -102,7 +102,7 @@ export default {
 
             // all data available
             const SID = this.routedStage.stage.custom_data.SID
-            const USERID = this.oauth_userid
+            const USERID = this.oauth.userid
             const STAGEID = this.routedStageID
             // const RETURNURL = window.location.href
             let url = Configuration.value('ENV_SURVEY_URL')
@@ -130,8 +130,8 @@ export default {
 
             /* By this method we allow the API to monitor userz activities */
             const STAGEID = this.routedStageID
-            const USERID = this.oauth_userid
-            console.log(this.oauth_userid + 'oauth_userid')
+            const USERID = this.oauth.userid
+            console.log(this.oauth.userid + 'oauth_userid')
             if (this.$route.query.S != STAGEID ||
                 this.$route.query.U != USERID) {
                     console.log("wrong response data...")

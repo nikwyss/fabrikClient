@@ -51,6 +51,7 @@ const ApiService = {
    */
   setHeader(token) {
 
+    console.log("Set axios header: " + token.length > 0)
     console.log("Set XHR Request header. Including token:" + !!token)
     if (typeof (token) !== 'string' && token !== null) {
       return (null)
@@ -62,21 +63,6 @@ const ApiService = {
     } else {
       delete axios.defaults.headers.common[HTTP_HEADER]
     }
-
-    // axios.defaults.headers.get['responseType'] = 'json';
-    // axios.defaults.headers.get['Response-Encoding'] = 'raw';
-    // axios.defaults.headers.get['responseEncoding'] = 'raw';
-    // axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
-    // axios.defaults.headers.get['Data-Type'] = 'text';
-    // axios.defaults.headers.get['dataType'] = 'text';
-
-      // See the global options here (Request Config)
-      //   encoding: "raw",
-      //   reponseEncoding: 'raw',
-      //   dataType: "text",
-      //   contentType: "application/text",
-  
-
   },
 
   /**
@@ -84,14 +70,13 @@ const ApiService = {
    */
   removeHeader() {
     axios.defaults.headers.common = {}
-    // console.log("Remove axios header")
+    console.log("Remove axios header")
   },
 
   /**
    * Returns currently set default authentication header (without prefix)
    */
   getHeader () {
-    // Not sure if this is still needed. (saved in cookie)
     if (HTTP_HEADER in axios.defaults.headers.common) {
       let header = axios.defaults.headers.common[HTTP_HEADER]
       if (header) {
@@ -115,15 +100,6 @@ const ApiService = {
       method: 'GET',
       url: resource
     }
-    // // var request = require('request');
-    // var options = {
-    //   'method': 'get',
-    //   'url': resource,
-    //   'headers': {
-    //     'Accept': 'application/json, text/plain, */*',
-    //     'Authorization': 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOjcsImlzcyI6ImRlbW9rcmF0aWVmYWJyaWsvZmFicmlrQXV0aCIsInVzZXJOYW1lIjoiZGVsZWdhdGUiLCJyb2xlcyI6WyJkZWxlZ2F0ZUBkaWdpa29uMjAyMiIsImRlbGVnYXRlQGluaXRpYXRpdmVYWSJdLCJleHAiOjE3ODAyODc2MDB9.YUvqRbRVkYfTBxLFoLCgvJYCvw025LWQgCNKw99VaeSCV0aJKMDyip3kIcJsNmF88srjoG7YBnatx1nShypdPg',
-    //     'Content-Type': 'application/json'
-    //   },
     return (await this.customRequest(options))
   },
 
@@ -175,8 +151,7 @@ const ApiService = {
       this.removeHeader()
     }
 
-// console.log()
-// isHTTPDecoratorActive
+
 
     var response = null
     response = await axios(data)
@@ -189,7 +164,7 @@ const ApiService = {
     // retry parameter is set within the interceptor on 403 errors.
     // At this point, the jwt token is already refreshed (within the interceptor) 
     console.log("PERMISSION ERROR: Initiate a secont attempt")
-    if (response.retry && response.retoken) {
+    if (response.retoken) {
       
       // Re-issue tokens (in ApiService)
       // console.log("refresh token status set")
@@ -203,7 +178,7 @@ const ApiService = {
       console.log(response)
 
       // What if the second attempt fails?
-      if (response.retry && response.retoken) {
+      if (response.retoken) {
         console.log("token could not be renewed.. 2nd attempt failed.")
         LayoutEventBus.$emit('showAuthorizationError')
       }
@@ -211,6 +186,7 @@ const ApiService = {
       temp_oauth_jwt = null
     }
 
+    
     if (temp_oauth_jwt && WithoutAuthHeader(data)) {
       // re-set the header
       console.log("header re-set")
@@ -220,6 +196,7 @@ const ApiService = {
     return (response)
   },
 
+  
 
   /**
    * Refresh Token: if Api request returns 401
@@ -238,5 +215,6 @@ const ApiService = {
   }
 }
 
-export { ApiService, ReloginOnStatus403, WithoutAuthHeader, Allow400Status };
+
+export { ApiService, ReloginOnStatus403 };
 export default ApiService

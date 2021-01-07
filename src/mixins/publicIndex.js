@@ -1,4 +1,3 @@
-// import ApiService from "src/utils/xhr"
 import {mapGetters, mapActions} from 'vuex'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 

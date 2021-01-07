@@ -111,8 +111,9 @@ const actions = {
         }
       )
       .catch((error) => {
-        // Error Handling is done in Axios Interceptor
+        console.warn(error)
         console.warn("Request Error")
+        
       })
   }
 }

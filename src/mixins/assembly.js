@@ -1,4 +1,3 @@
-// import ApiService from "src/utils/xhr"
 import {mapGetters, mapActions} from 'vuex'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
@@ -96,7 +95,7 @@ export default {
     },
 
     assembly_acls: function() {
-      return (this.oauth_acls(this.assemblyIdentifier))
+      return (this.oauth.acls(this.assemblyIdentifier))
     },
 
     isAgendaFinished: function () {

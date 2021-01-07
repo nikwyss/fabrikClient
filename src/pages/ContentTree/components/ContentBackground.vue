@@ -58,10 +58,6 @@
 
 <script>
 
-// import {mapActions} from 'vuex'
-// import ApiService from "src/utils/xhr";
-// import Configuration from 'src/utils/configuration'
-
 export default{
   name: "ContentRating",
   props: ["obj"],
