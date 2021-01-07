@@ -1,6 +1,5 @@
 import UserContentDefault from 'src/pages/ContentTree/Default'
 import plugin_routes from './plugin_routes.js'
-import oauth_routes from "../utils/oauth/routes.js"
 
 // Application Routes
 const meta4AssemblyPages = {topmenu: 'assemblies_ongoing_list'}
@@ -12,6 +11,7 @@ const routes = [
 
       // Main Menues
       { path: '', name: 'home', component: () => import('pages/Index.vue') },
+      { path: '/authorization', name: 'authorization', component: () => import(/* webpackPrefetch: true */ 'pages/Oauth.vue') },
       { path: '/background', name: 'background', component: () => import(/* webpackPrefetch: true */ 'pages/Background.vue') },
       // { path: '/showcase', name: 'showcase', component: () => import(/* webpackPrefetch: true */ 'pages/Assembly/AssemblyListShowcase.vue') },
       { path: '/ongoing', name: 'assemblies_ongoing_list', component: () => import('pages/Assembly/AssemblyListOngoing.vue') },
@@ -27,9 +27,6 @@ const routes = [
 
   // Add Plugin Routes
   ...plugin_routes,
-
-  // Authentication Routes
-  ...oauth_routes,
 
   // Catch all routes
   // Always leave this as last one,

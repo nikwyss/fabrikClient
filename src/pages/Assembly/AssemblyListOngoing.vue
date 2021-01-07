@@ -34,7 +34,7 @@
                   <!-- <q-card-section> -->
                 <q-card-section class="col-12 " align="right">
                     <ArtificialModeratorAssemblyListOngoingSelection 
-                        :ongoing="assembly===null || oauth_authenticated===null"
+                        :ongoing="assembly===null || oauth.authorized===null"
                         :assembly="assembly" />
                 </q-card-section>
 

@@ -41,25 +41,20 @@
             />
         </template>
 
-        <template v-if="oauth_authenticated && !assembly_acls.length">
+        <template v-if="oauth.authorized && !assembly_acls.length">
             Wir können Sie im Moment nicht zu der Veranstaltung zulassen.
         </template>
 
-        <template v-if="!oauth_authenticated && !assembly_acls.length">
+        <template v-if="!oauth.authorized && !assembly_acls.length">
         {{$t('assemblies.am.invitation_to_authenticate')}}
         </template>
-
-        <!-- Repeated Entering
-        <template  v-if="IsUserDelegateOfOngoingAssembly">
-        {{$t('assemblies.am.you_may_enter_this_assembly_for_the_repeatedly')}}
-        </template> -->
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
         <q-chip size="md" icon="mdi-forward" v-if="assembly_acls.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink(assembly)">
             {{ $t('assemblies.please_enter') }}
         </q-chip>
-        <q-chip size="md" icon="mdi-forward" v-if="!oauth_authenticated" outline color="primary" 
+        <q-chip size="md" icon="mdi-forward" v-if="!oauth.authorized" outline color="primary" 
                 text-color="primary" class="bg-white cursor-pointer" 
                 clickable @click="clickAuthLink">
             {{ $t('auth.goto_authentication_form') }}
@@ -83,12 +78,20 @@ export default{
     computed: {
 
         assembly_acls: function() {
-            return (this.store_assembly_acls(this.assembly.identifier))
-        },
-
-        ...mapGetters({
-            store_assembly_acls: 'oauthstore/assembly_acls'
-        })
+            return (this.oauth.acls(this.assembly.identifier))
+        }
     },
+
+    methods: {
+        clickInitLink: function () {
+            const route = { name: 'assemblies_ongoing_list' }
+            this.$router.push(route)
+        },
+        
+        clickAuthLink: function () {
+            const destination_route = {name: 'assembly_home', assemblyIdentifier: this.assembly.identifier}
+            this.oauth.login(destination_route)
+        }
+    }
 }
 </script>

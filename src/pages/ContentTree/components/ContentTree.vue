@@ -52,7 +52,7 @@
         v-if="artificialmoderationComponents && 'ContentTreeIndex' in artificialmoderationComponents"
         :is="artificialmoderationComponents.ContentTreeIndex"
         :startingContentNode="startingContentNode"
-        :ongoing="!startingContentNode || oauth_authenticated === null" 
+        :ongoing="!startingContentNode || oauth.authorized === null" 
         align="left"
     />
     </div>

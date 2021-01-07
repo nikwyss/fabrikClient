@@ -6,7 +6,7 @@
             :ongoing="IsThereAnAssemblyOngoing===null">
 
         <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
-        <!-- <template v-if="!oauth_authenticated && IsThereAnAssemblyOngoing === true">
+        <!-- <template v-if="!oauth.authorized && IsThereAnAssemblyOngoing === true">
         {{$t('assemblies.am.invitation_to_authenticate')}}
         </template> -->
 
@@ -16,21 +16,15 @@
         </template> -->
 
         <!-- No ongoing and accesible assembly ongoing -->
-        <template  v-if="oauth_authenticated && IsUserDelegateOfOngoingAssembly === false">
+        <template  v-if="oauth.authorized && IsUserDelegateOfOngoingAssembly === false">
         {{$t('assemblies.am.no_assemblies_accessible')}}
         </template>
 
         <!-- No ongoing and accesible assembly ongoing -->
-        <template  v-if="!oauth_authenticated && IsThereAnAssemblyOngoing === false">
+        <template  v-if="!oauth.authorized && IsThereAnAssemblyOngoing === false">
         {{$t('assemblies.am.no_assemblies_accessible')}}
         </template>
 
-        <!-- ACTION CHIPS -->
-        <!-- <template  v-slot:actions>
-        <q-chip size="md" icon="mdi-key-outline" v-if="!oauth_authenticated && IsThereNothingGoingOn === false" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAuthLink">
-            {{ $t('auth.goto_authentication_form') }}
-        </q-chip>
-        </template> -->
     </ArtificialModerator>
 
     </div>
@@ -48,8 +42,7 @@ export default{
 
         ...mapGetters({
             IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
-            IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn',
-            IsUserDelegateOfOngoingAssembly: 'publicindexstore/IsUserDelegateOfOngoingAssembly',
+            IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn'
         })
     }
 }

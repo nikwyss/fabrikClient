@@ -105,14 +105,16 @@ export default {
     }
   },
 
-  watch: {
-    oauth_authenticated (before, after) {
+  created () {
+
+    // Catch all authentication status changes
+    LayoutEventBus.$on('AfterAuthenticationStatusChanged', data => {
       console.assert(this.contenttreeID)
       this.$store.dispatch('contentstore/syncContenttree', {
         assemblyIdentifier: this.assemblyIdentifier,
         contenttreeID: this.contenttreeID
       })
-    }
+    })
   },
 
   mounted: function() {   

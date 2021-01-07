@@ -4,7 +4,7 @@
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="1" 
         amGroup='publicassemblyPage'
-        :ongoing="assembly===null || oauth_authenticated===null">
+        :ongoing="assembly===null || oauth.authorized===null">
 
         <!-- First Time Entering -->
         <!-- <template v-else-if="assembly_acls.includes('observe')"> -->

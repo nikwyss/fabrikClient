@@ -32,7 +32,7 @@
             <div class="q-mb-xl">
                 <ArtificialModeratorSURVEYIndexTop
                 v-if="check_data"
-                :ongoing="!ABLY.routedStage || oauth_authenticated === null" 
+                :ongoing="!ABLY.routedStage || oauth.authorized === null" 
                 align="left" />
             </div>
 

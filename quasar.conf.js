@@ -2,7 +2,6 @@
  * This file runs in a Node context (it's NOT transpiled by Babel), so use only
  * the ES6 features that are supported by your Node version. https://node.green/
  */
-
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
@@ -33,9 +32,8 @@ module.exports = configure(function (ctx) {
     //   'axios'
     // ],
     boot: [
-      // 'axios',
       'helpers',
-      'oauth',
+      'oauth2',
       'i18n'
     ],
 

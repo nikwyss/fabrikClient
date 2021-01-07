@@ -17,13 +17,13 @@
         <div class="q-mb-xl">
             <ArtificialModeratorAssemblyHome 
             v-if="!isAgendaFinished"
-            :ongoing="!sorted_stages || oauth_authenticated === null" 
+            :ongoing="!sorted_stages || oauth.authorized === null" 
             align="left" />
         </div>
         
         <!-- STAGES -->
         <q-stepper
-            v-if="sorted_stages &&  oauth_authenticated !== null"
+            v-if="sorted_stages &&  oauth.authorized !== null"
             v-model="cachedStageNr"
             vertical
             header-nav

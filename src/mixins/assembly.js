@@ -96,7 +96,7 @@ export default {
     },
 
     assembly_acls: function() {
-      return (this.store_assembly_acls(this.assemblyIdentifier))
+      return (this.oauth_acls(this.assemblyIdentifier))
     },
 
     isAgendaFinished: function () {
@@ -218,7 +218,7 @@ export default {
 
     ...mapGetters({
       getCachedStageID: 'assemblystore/getCachedStageID',
-      store_assembly_acls: 'oauthstore/assembly_acls',
+      // store_assembly_acls: 'oauthstore/assembly_acls',
       get_assembly: 'assemblystore/get_assembly',
       get_assembly_stages: 'assemblystore/get_assembly_stages',
       get_assembly_progression: 'assemblystore/get_assembly_progression',
@@ -453,14 +453,17 @@ export default {
 
   },
 
-  watch: {
-    // if route changes, hide TextLoading
-    oauth_authenticated (before, after) {
+
+  created () {
+
+    // Catch all authentication status changes
+    LayoutEventBus.$on('AfterAuthenticationStatusChanged', data => {
+      console.log(">> AfterAuthenticationStatusChanged listener in assembly")
       const assemblyIdentifier = this.assemblyIdentifier
-      console.log(">> oauth watcher")
       this.$store.dispatch('assemblystore/syncAssembly', {assemblyIdentifier})
-    }
+    })
   },
+
 
   mounted: function() {
     const assemblyIdentifier = this.assemblyIdentifier

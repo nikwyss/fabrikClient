@@ -11,7 +11,7 @@
           <q-item-label caption  v-t="'auth.login_button_text'" />
         </q-item-section>
       </q-item>
-
+<!-- oauth.authorized.redirect_to_provider() -->
       <q-item
         clickable
         v-ripple
@@ -39,7 +39,7 @@
       <q-item
         clickable
         v-ripple
-        @click="oauth.logout(); $emit('close_drawer_right')"
+        @click="oauth.logout()"
         active-class="my-menu-link"
       >
         <q-item-section avatar>
@@ -77,7 +77,7 @@
       </q-item>
 
     </q-item-section>
-      
+
 </q-list>
 </div>
 </template>
@@ -94,7 +94,6 @@ export default {
         langs: SUPPORTED_LOCALES,
         user_setting_notification_email: true,
         user_setting_session_cookie: true
-        // currentLanguage: i18n.locale
     }
   }
 }

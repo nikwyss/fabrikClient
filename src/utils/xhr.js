@@ -175,6 +175,9 @@ const ApiService = {
       this.removeHeader()
     }
 
+// console.log()
+// isHTTPDecoratorActive
+
     var response = null
     response = await axios(data)
     

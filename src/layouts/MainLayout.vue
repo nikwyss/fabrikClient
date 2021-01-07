@@ -30,24 +30,22 @@
 
     <div class="fixed-top-right z-top" align="right" style="width:320px">
     <q-toolbar style="width:320px">
-
       <!-- ACCOUNT CHIP -->
-      <q-chip :icon="oauth_authenticated ? 'mdi-account-circle-outline' : 'mdi-incognito'"
+      <q-chip :icon="oauth.authorized ? 'mdi-account-circle-outline' : 'mdi-incognito'"
           @click="right = !right" text-color="primary" class="cursor-pointer" clickable>
-        <span v-if="oauth_authenticated">
-          {{ $t('auth.registered_as', {username: oauth_username}) }}
+        <span v-if="oauth.authorized">
+          {{ $t('auth.registered_as', {username: oauth.username}) }}
           <q-tooltip max-width="300px">{{ $t('auth.tooltip_authenticated') }} </q-tooltip>
         </span>
-        <span v-if="!oauth_authenticated">
+        <span v-if="!oauth.authorized">
           {{ $t('auth.not_registered') }}
           <q-tooltip max-width="300px">{{ $t('auth.tooltip_non_authenticated') }} </q-tooltip>
         </span>
       </q-chip>
-
-      <LanguageSwitch />
+      <!-- <LanguageSwitch /> -->
 
     </q-toolbar>
-    </div>
+  </div>
 
   <div align="center" style="min-height:40px">
 
@@ -216,13 +214,7 @@ export default {
     LayoutEventBus.$on('showLoading', data => {
       this.showLoadingGif()
     })
-    LayoutEventBus.$on('showAuthorizationError', data => {
-      let msg_title = this.$i18n.t('app.error.authorization_error_title')
-      let msg_body = this.$i18n.t('app.error.authorization_error_body')
-      let icon = 'mdi-key-outline'
-      let type = 'error'
-      this.showNotificationBanner(type, msg_title, msg_body, icon)
-    })
+
     LayoutEventBus.$on('showServiceError', data => {
       let msg_title = this.$i18n.t('app.error.service_error_title')
       let msg_body = this.$i18n.t('app.error.service_error_body')
@@ -238,6 +230,13 @@ export default {
       let type = 'error'
       this.showNotificationBanner(type, msg_title, msg_body, icon)
     })
+    LayoutEventBus.$on('showAuthorizationError', data => {
+      let msg_title = this.$i18n.t('app.error.authorization_error_title')
+      let msg_body = this.$i18n.t('app.error.authorization_error_body')
+      let icon = 'mdi-key-outline'
+      let type = 'error'
+      this.showNotificationBanner(type, msg_title, msg_body, icon)
+    })    
     LayoutEventBus.$on('showAuthenticationWarning', data => {
       let type = 'warning'
       let icon = 'mdi-emoticon-cool-outline'
@@ -252,6 +251,24 @@ export default {
       let msg_body = this.$i18n.t('auth.authentication_error_body')
       this.showNotificationBanner(type, msg_title, msg_body, icon)
     })
+
+    LayoutEventBus.$on('AfterLogout', data => {
+      let msg_title = this.$i18n.t('auth.logout_succeeded_title')
+      let msg_caption = this.$i18n.t('auth.logout_succeeded_caption')
+      this.$q.notify({
+        type: 'info',
+        caption: `${msg_caption}`,
+        message: `${msg_title}`
+      })
+      this.close_drawer_right()
+    })
+
+    LayoutEventBus.$on('AfterLogin', destination_route => {
+      if(destination_route) {
+        this.$router.push(destination_route)
+      }
+    })
+
     LayoutEventBus.$on('hideNotificationBanners', data => {
       this.hideNotificationBanner()
     })

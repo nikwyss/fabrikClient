@@ -72,29 +72,11 @@ const getters = {
     }
 
     return (!getters.IsThereAnAssemblyOngoing(state) && !getters.IsThereAnAssemblyInPublicState(state))
-  },
-
-  IsUserDelegateOfOngoingAssembly(state, localgetters, rootState, rootGetters) {
-
-    // data not yet loaded
-    const ongoing_assemblies = getters.ongoing_assemblies(state);
-    if (ongoing_assemblies === null) {
-      return (null)
-    }
-    // Check if there is at least one ongoing assembly.
-    if (ongoing_assemblies.length === 0) {
-      return (false)
-    }
-
-    // Check permissions:
-    const compare_func = rootGetters['oauthstore/assembly_acls']
-    let accessibleAssemblies = Object.filter(ongoing_assemblies, x => compare_func(x.identifier))
-    return (Object.values(accessibleAssemblies).length > 0)
   }
 }
 
 const actions = {
-
+  
   syncPublicIndex: ({state, dispatch, localgetters, rootState, rootGetters}) => {
 
     if(state.publicIndex===null || state.publicIndex === undefined) {

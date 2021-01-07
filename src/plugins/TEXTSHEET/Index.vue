@@ -17,7 +17,7 @@
         <!-- AM-OVERVIEW -->
         <div class="q-mb-xl">
             <ArtificialModeratorTEXTSHEETIndexTop 
-            :ongoing="!routedStage || oauth_authenticated === null" align="left" />
+            :ongoing="!routedStage || oauth.authorized === null" align="left" />
         </div>
 
         <div v-if="routedStage && contenttree" class="text-vessel">
@@ -64,7 +64,7 @@
         <!-- AM-END -->
         <div class="q-mb-xl">
             <ArtificialModeratorTEXTSHEETIndexBottom 
-            :ongoing="!routedStage || oauth_authenticated === null" align="left" />
+            :ongoing="!routedStage || oauth.authorized === null" align="left" />
         </div>
 
     </div>

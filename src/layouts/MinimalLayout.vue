@@ -4,14 +4,14 @@
     <q-page-container>
       
       <!-- Login Banner -->
-      <q-banner class="secondary" v-if="!oauth_authenticated" 
-              @click="$session.redirect_to_provider()">
+      <q-banner class="secondary" v-if="!oauth.authorized" 
+              @click="oauth.login()">
       <template v-slot:avatar>
         <q-icon name="mdi-login" color="primary" />
       </template>
       You are not logged on!  Please login to participate.
       <template v-slot:action>
-        <q-btn flat color="primary" label="Anmeldung" @click="$session.redirect_to_provider()" />
+        <q-btn flat color="primary" label="Anmeldung" @click="oauth.login()" />
       </template>
     </q-banner>
 

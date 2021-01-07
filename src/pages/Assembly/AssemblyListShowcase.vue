@@ -10,7 +10,7 @@
         <h1>{{$tc('showcase.h1', nLength(published_assemblies))}}</h1>
 
         <ArtificialModeratorAssemblyListShowcase
-            :ongoing="published_assemblies === null || oauth_authenticated===null"
+            :ongoing="published_assemblies === null || oauth.authorized===null"
             :published_assemblies="published_assemblies"/>
 
         <!-- SOME PUBLIC ASSEMBLIES -->
