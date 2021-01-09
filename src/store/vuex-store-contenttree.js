@@ -33,19 +33,16 @@ const getters = {
   get_allowed_node_types: (state) => ({contenttreeID, parentType}) => {
     
     if (parentType===undefined) {
-      console.log("ccccccck")
-      console.log(state.contenttree[contenttreeID].configuration)
+      // console.log(state.contenttree[contenttreeID].configuration)
       return (state.contenttree[contenttreeID].configuration.CONTENTTYPES)
     }
-    console.log(parentType)
-    console.log("kkk")
-    
+    // console.log(parentType)
     return (state.contenttree[contenttreeID].configuration.ONTOLOGY[parentType])
   },
 
   /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
   currently logged in user */
-  checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID}) {
+  checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID, oauthUserID}) {
     console.log('check assembly status')
     
     // not access_date available
@@ -61,9 +58,8 @@ const getters = {
     }
 
     // Wrong user?
-    const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
     const cached_userid = state.contenttree[contenttreeID].access_sub
-    return (compare_func(cached_userid))
+    return (cached_userid == oauthUserID)
   }
 }
 
@@ -92,11 +88,12 @@ const actions = {
           console.log('save full contenttree to cache.')
           console.assert ('OK' in response.data)
           console.assert ('contenttree' in response.data)
-          // this.add_or_update_contenttree({contenttreeID: contenttreeID, contenttree: response.data.contenttree})
+          let configuration = 'configuration' in response.data ? response.data.configuration : null 
+
           commit('add_or_update_contenttree', {
             contenttreeID: contenttreeID,
             contenttree: response.data.contenttree,
-            configuration: response.data.configuration
+            configuration: configuration
           });
         }
       )
@@ -119,7 +116,7 @@ const actions = {
     commit('update_expanded_branches', {contenttreeID, startingContentID, expanded});
   },
 
-  syncContenttree: ({state, dispatch, localgetters, rootState, rootGetters}, {assemblyIdentifier, contenttreeID}) => {
+  syncContenttree: ({state, dispatch, localgetters, rootState, rootGetters}, {assemblyIdentifier, contenttreeID, oauthUserID}) => {
     console.log(` sync contenttree ${contenttreeID}`)
     console.assert(contenttreeID)
     if(!state.contenttree || !(contenttreeID in state.contenttree)) {
@@ -130,7 +127,7 @@ const actions = {
     }
     
     // renew cache all x- minutes
-    if (!getters.checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID})) {
+    if (!getters.checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID, oauthUserID})) {
       // too old cache: load the data from resource server...
       console.log("Cache expired: reload contenttree")
       dispatch('retrieveContenttree', {
@@ -150,16 +147,20 @@ const mutations = {
 
     // keep list of opened contents (if previously available)
     console.log("update contenttree")
+    let configuration_old = null;
+    let expanded_old = null;
     if(contenttreeID in state.contenttree) {
-      let expanded = state.contenttree[contenttreeID].expanded_by_default
-      if(expanded) {
-        console.log("restore list of expanded entries")
-        content.expanded_by_default = expanded
-      }
+      expanded_old = state.contenttree[contenttreeID].expanded_by_default
+      configuration_old = state.contenttree[contenttreeID].configuration
     }
+    console.log(configuration)
 
+    contenttree.configuration = configuration ? configuration : configuration_old
+    if (expanded_old) {
+      contenttree.expanded =  expanded_old
+    }
+    console.log(contenttree)
     console.log("new copy saved...")
-    contenttree.configuration = configuration
     Vue.set(state.contenttree, contenttreeID, contenttree)
   },
 

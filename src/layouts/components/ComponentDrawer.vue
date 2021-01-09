@@ -15,7 +15,7 @@
       <q-item
         clickable
         v-ripple
-        @click="oauth.login()"
+        @click="oauth.login($router.currentRoute.fullPath)"
         active-class="my-menu-link"
       >
         <q-item-section avatar>
@@ -31,7 +31,7 @@
 
       <q-item tag="label" v-ripple>
         <q-item-section>
-          <q-item-label>Dear {{oauth.username}}</q-item-label>
+          <q-item-label>Guten Tag {{oauth.username}}</q-item-label>
           <q-item-label caption>Klicken Sie auf Logout, wenn Sie sich abmelden möchten. </q-item-label>
         </q-item-section>
       </q-item>
@@ -62,18 +62,6 @@
             this period, we will asap remove your Emailadress from the Newsletter.
           </q-item-label>
         </q-item-section>
-      </q-item>
-
-      <q-item tag="label" v-ripple  v-if="oauth.authorized">
-        <q-item-section side top>
-          <q-checkbox v-model="user_setting_session_cookie" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>Stay logged in (recommended)</q-item-label>
-          <q-item-label caption>
-            A cookie is stored to keep the session open during the days of the assembly. Afterwards, the cookie will be automatically removed.
-          </q-item-label>
-        </q-item-section>        
       </q-item>
 
     </q-item-section>

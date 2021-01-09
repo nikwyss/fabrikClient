@@ -21,9 +21,15 @@
         </template>
 
         <!-- Already authenticated delegate -->
+        <!-- <template  v-else-if="oauth.authorized === true && !oauth.payload.userEmail">
+        {{$t('index.am.email_required')}} 
+        </template> -->
+
+        <!-- Already authenticated delegate -->
         <template  v-else-if="oauth.authorized === true && IsUserDelegateOfOngoingAssembly === true">
         {{$t('index.am.delegates_redirect')}} 
         </template>
+
 
         <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
         <template v-else-if="oauth.authorized !== undefined && IsThereAnAssemblyInPublicState === true">
@@ -42,6 +48,7 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
+
         <q-chip size="md" icon="mdi-key-outline" 
                 v-if="oauth.authorized === false && IsThereAnAssemblyOngoing === true" 
                 outline color="primary" text-color="primary" class="bg-white cursor-pointer" 
@@ -49,7 +56,12 @@
             {{ $t('auth.goto_authentication_form') }}
         </q-chip>
 
-        <q-chip size="md" icon="mdi-launch" v-if="oauth.authorized === true && IsUserDelegateOfOngoingAssembly === true" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickInitLink">
+        <!-- <q-chip size="md" icon="mdi-launch" v-else-if="oauth.authorized === true && !oauth.payload.userEmail" 
+            outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickOpenProfile">
+            {{ $t('index.goto_userprofile') }}
+        </q-chip> -->
+
+        <q-chip size="md" icon="mdi-launch" v-else-if="oauth.authorized === true && IsUserDelegateOfOngoingAssembly === true" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickInitLink">
             {{ $t('index.iam_ready') }}
         </q-chip>
 
@@ -71,7 +83,6 @@ export default{
     computed: {
 
         salutation: function() {
-
             if (this.oauth.authorized) {
 
                 const salutation = this.$i18n.t(
@@ -95,9 +106,14 @@ export default{
         },
         
         clickAuthLink: function () {
-            destination_route = {name: 'assemblies_ongoing_list'}
+            const destination_route = {name: 'assemblies_ongoing_list'}
             this.oauth.login(destination_route)
-        }
+        },
+        
+        // clickOpenProfile: function () {
+            // const destination_route = {name: 'assemblies_ongoing_list'}
+        //     this.oauth.login(destination_route)
+        // }        
     }
 }
 </script>

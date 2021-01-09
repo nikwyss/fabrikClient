@@ -18,7 +18,8 @@ export default {
       service_error_body: 'Im Betrieb der Demokratiefabrik ist eine Störung aufgetreten. Wir bitten Sie um Entschuldigung.',
       network_error_title: 'Netzwerkstörung',
       network_error_body: 'Die Kommunikation innnerhalb der Demokratiefabrik ist momentan suboptimal. Wir bitten Sie um Entschuldigung. Bitte versuchen Sie es bitte erneut.',
-      btn_close: 'Diese Meldung schliessen.'
+      btn_close: 'Diese Meldung schliessen',
+      btn_home: 'Zur Startseite'
     }
   },
 
@@ -89,12 +90,14 @@ export default {
 
   index: {
     iam_ready: 'Ja, ich bin bereit',
+    goto_userprofile: 'Zum Benutzerprofil',
     am: {
       general_greeting: '{salutation} Wir sind @:am.actor.1 und @:am.actor.2 und freuen uns sehr, dass Sie die Demokratiefabrik besuchen.',
       salutation_for_authenticated: 'Guten Tag {username}!',
       salutation_for_guests: 'Guten Tag lieber Gast!',
       invitation_to_authenticate: 'Gehören Sie zu den 1000 für eine digitale Bürgerversammlung ausgelosten Teilnehmenden? Dann möchten wir Sie bitten sich anzumelden.',
       delegates_redirect: 'Wir können gleich zum Thema kommen. Sind Sie bereit?',
+      email_required: 'Für die Dauer des Projektes benötigen wir eine Möglichkeit Sie zu kontaktieren. Dürfen wir Sie um eine Kontaktangabe bitten?',
       information_for_public_visitors: 'Auf dieser Webseite finden Sie spannende Ergebnisse von unseren Digitalen-Bürgerversammlungen. Schauen Sie sich bitte um!',
       factory_holiday: 'Wir haben zwar gerade Betriebsferien. Dennoch finden Sie auf dieser Seite viele Informationen über die Demokratiefabrik.',
       authenticated_user_without_permission_for_ongoing_assembly: 'Wir sind aktuell gerade an der Durchführung eines BürgerInnenversammlungen. Sie finden auf dieser Webseite viele Informationen dazu.',

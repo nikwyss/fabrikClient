@@ -7,7 +7,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 /* Make available all the properties and methods in any descendant object.*/
 const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
-    name: 'QTREE',
+    name: 'QUASAR_TREE',
     include: ['startingContentID', 'startingContent', 'startingContentNode'],
 })
 
@@ -52,15 +52,6 @@ export default {
             // Show full contenttree (then take the ID from the URL)
             return(Number(this.$route.params.contentID))
         },
-
-        // TODO: overlap with cachedContent?
-        // startingContent: function() {
-        //     if(this.startingContentID && this.contenttree !== null) {
-        //         console.log("starting content found")
-        //         return(this.contenttree.entries[this.startingContentID])
-        //     }
-        //     return(null)
-        // },
 
         startingContentNode: function() {
             console.log("get startingContentNode")
@@ -373,8 +364,6 @@ export default {
         },
 
         ...mapActions({
-            // add_or_update_contenttree: 'contenttree/add_or_update_contenttree',
-            // update_contenttree: 'contenttreestore/update_contenttree',
             update_expanded_branches: 'contentstore/update_expanded_branches'
         }),
     },

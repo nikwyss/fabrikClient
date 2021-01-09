@@ -1,9 +1,5 @@
 
 <style scoped>
-.hallo{
-  background-color: red !important;
-}
-
 .transitionlogo-enter,
 .transitionlogo-leave-to {
   height: 40px;
@@ -25,9 +21,6 @@
 <template>
 <q-layout view="hHh Lpr lFf" class="rounded-borders">
   <q-header  class="text-primary shadow-1 bg-white" >
-
-
-
     <div class="fixed-top-right z-top" align="right" style="width:320px">
     <q-toolbar style="width:320px">
       <!-- ACCOUNT CHIP -->
@@ -42,6 +35,8 @@
           <q-tooltip max-width="300px">{{ $t('auth.tooltip_non_authenticated') }} </q-tooltip>
         </span>
       </q-chip>
+
+      <!-- DISABLED: at the moment. only de_CH -->
       <!-- <LanguageSwitch /> -->
 
     </q-toolbar>
@@ -68,14 +63,14 @@
         <CustomQRouteTab  name="home" icon="mdi-door" exact to="/" :label="$t('menu.items.home.label')">
           <q-tooltip :offset="menuOffset">{{$t('menu.items.home.tooltip')}}</q-tooltip>
         </CustomQRouteTab>
-        <CustomQRouteTab name="background" icon="mdi-help-circle-outline" to="/background" :label="$t('menu.items.background.label')">
-          <q-tooltip :offset="menuOffset" max-width="300px">{{ $t('menu.items.background.tooltip') }} </q-tooltip> 
-        </CustomQRouteTab>
         <!-- <CustomQRouteTab name="showcase" icon="mdi-eye-outline" to="/showcase" :label="$t('menu.items.showcase.label')">
           <q-tooltip :offset="menuOffset" max-width="300px">{{$t('menu.items.showcase.tooltip')}}</q-tooltip>
         </CustomQRouteTab> -->
         <CustomQRouteTab name="assemblies" :to="{name: 'assemblies_ongoing_list'}" icon="mdi-lead-pencil" :label="$t('menu.items.assembly.label')" >
           <q-tooltip :offset="menuOffset" max-width="300px">{{$t('menu.items.assembly.tooltip')}}</q-tooltip>
+        </CustomQRouteTab>
+        <CustomQRouteTab name="background" icon="mdi-help-circle-outline" to="/background" :label="$t('menu.items.background.label')">
+          <q-tooltip :offset="menuOffset" max-width="300px">{{ $t('menu.items.background.tooltip') }} </q-tooltip> 
         </CustomQRouteTab>
     </q-tabs>
     </div>
@@ -107,6 +102,9 @@
 
         <q-chip v-if="NotificationBannerButtons.includes('hide')" size="md" icon="mdi-close"  outline  color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable @click="hideNotificationBanner">
           {{ $t('app.error.btn_close') }}
+        </q-chip>
+        <q-chip v-if="NotificationBannerButtons.includes('home')" size="md" icon="mdi-home"  outline  color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable @click="gotoHome">
+          {{ $t('app.error.btn_home') }}
         </q-chip>
         <q-chip v-if="NotificationBannerButtons.includes('auth')" size="md" icon="mdi-forward"  outline  
             color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable 
@@ -197,18 +195,25 @@ export default {
     hideLoadingGif () {
       this.TextLoadingVisible = false
     },
+    gotoHome () {
+      this.$router.push({name: 'home'})
+    },
 
     close_drawer_right: function() {
       this.right = false
     }
   },
 
+  /**
+   * Ensure that all (error) messages disappear, when route changes...
+   **/ 
   watch: {
     // if route changes, hide TextLoading
     $route (to, from) {
-        this.hideLoadingGif()
-        this.hideNotificationBanner()
+      this.hideLoadingGif()
+      this.hideNotificationBanner()
     }
+
   },
 
   created () {
@@ -247,7 +252,7 @@ export default {
       let icon = 'mdi-emoticon-cool-outline'
       let msg_title = this.$i18n.t('auth.authentication_warning_title')
       let msg_body = this.$i18n.t('auth.authentication_warning_body')
-      this.showNotificationBanner(type, msg_title, msg_body, icon, false, ['auth'])
+      this.showNotificationBanner(type, msg_title, msg_body, icon, false, ['auth', 'home'])
     })
     LayoutEventBus.$on('showAuthenticationError', data => {
       let type = 'error'
@@ -294,5 +299,10 @@ export default {
     }
   },
 
+
+//   mounted: function() {
+// console.log(this.$router.currentRoute)
+
+//   }
 }
 </script>

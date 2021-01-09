@@ -102,19 +102,18 @@ export default {
 
             // all data available
             const SID = this.routedStage.stage.custom_data.SID
-            const USERID = this.oauth.userid
-            const STAGEID = this.routedStageID
-            // const RETURNURL = window.location.href
+            // this.$router.currentRoute.path
             let url = Configuration.value('ENV_SURVEY_URL')
             var re = /:SID:/g
             var newurl = url.replace(re, SID)
             re = /:USERID:/g
-            newurl = newurl.replace(re, USERID)
+            newurl = newurl.replace(re, this.oauth.userid)
             re = /:STAGEID:/g
-            newurl = newurl.replace(re, STAGEID)
-            // re = /:RETURN:/g
-            // newurl = newurl.replace(re, RETURNURL)
-            console.log(USERID)
+            newurl = newurl.replace(re, this.routedStageID)
+            re = /:ASSEMBLYIDENTIFIER:/g
+            newurl = newurl.replace(re, this.assemblyIdentifier)
+            // console.log(USERID)
+            // console.log(newurl)
             window.location.href=newurl
 
             return (true)
@@ -132,8 +131,8 @@ export default {
             const STAGEID = this.routedStageID
             const USERID = this.oauth.userid
             console.log(this.oauth.userid + 'oauth_userid')
-            if (this.$route.query.S != STAGEID ||
-                this.$route.query.U != USERID) {
+            if (!this.stage ||
+                this.$route.query.DFUSER != USERID) {
                     console.log("wrong response data...")
                     return (false)
             }

@@ -1,6 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { OAuth2AuthCodePKCE} = require('@bity/oauth2-auth-code-pkce')
-// require @bity/oauth2-auth-code-pkce
 import Configuration from 'src/utils/configuration'
 import { ApiService, ReloginOnStatus403} from 'src/utils/xhr'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
@@ -10,32 +9,9 @@ var baseUrl = Configuration.value('ENV_OAUTH_BASE_URL')
 var app_domain = Configuration.value('ENV_DOMAIN')
 var oauthUrl = Configuration.value('ENV_OAUTH_LOCAL_REDIRECTION_URI')
 
-
-const pkce = new OAuth2AuthCodePKCE({
-  authorizationUrl: baseUrl + '/o/authorize/',
-  tokenUrl: baseUrl + '/o/token/',
-  clientId: Configuration.value('ENV_OAUTH_CLIENT_ID'),
-  scopes: ['read'], // TODO
-  redirectUrl: `${app_domain}${oauthUrl}`,
-
-  onAccessTokenExpiry (refreshAccessToken) {
-    console.log('Expired! Access token needs to be renewed.')
-    console.log('We will try to get a new access token via grant code or refresh token.')
-    return refreshAccessToken()
-  },
-
-  onInvalidGrant (refreshAuthCodeOrRefreshToken) {
-    console.log('Expired! Auth code or refresh token needs to be renewed.')
-    console.log('...Redirecting to auth server to obtain a new auth grant code.')
-    return refreshAuthCodeOrRefreshToken()
-  }
-})
-
 export default ({ Vue }) => {
 
-
   Vue.prototype.oauth = new Vue({
-
     data: function() {
         return {
           // authorized: false,
@@ -50,7 +26,7 @@ export default ({ Vue }) => {
       authorized: function(){
         // enforce_reactivity: changing enforce_reactivity allows onthefly modifications of oauth data (username, logoin  status)  
         // just change this property, and all computed data is reloaded...
-        const authorized =  this.enforce_reactivity > 0 && this.pkce.state && this.pkce.state.accessToken && this.pkce.state.accessToken.value && this.pkce.isAuthorized()
+        const authorized =  this.enforce_reactivity > 0 && this.pkce.state && 'accessToken' in this.pkce.state && pkce.state.accessToken.value && this.pkce.isAuthorized()
         console.log(`...OAUTH: authorized: ${authorized}`)
         return (authorized)
       } ,
@@ -59,7 +35,7 @@ export default ({ Vue }) => {
       payload: function(){
         console.log("...OAUTH: loaeding payload..")
         // || !this.oauth.state || !oauth.state.accessToken || !this.oauth.state.accessToken.value
-        if (!this.authorized) {
+        if (!this.authorized ||  !('accessToken' in this.pkce.state)) {
           ApiService.removeHeader()
           console.log("...OAUTH: not authorized")
           return (null)
@@ -70,7 +46,9 @@ export default ({ Vue }) => {
         ApiService.setHeader(jwt)
         // this.authorized = true
         console.log("...OAUTH: jwt token is established")
-        return(JSON.parse(window.atob(jwt.split('.')[1])));
+        const payload = JSON.parse(window.atob(jwt.split('.')[1]))
+        // console.log(payload)
+        return(payload);
       },  
 
       username: function(){
@@ -106,48 +84,23 @@ export default ({ Vue }) => {
         LayoutEventBus.$emit('AfterLogout')
       },
       
+
+      /**
+       * Returns a list of all roles obtained by the authenticated user for the given assembly
+       * @param {*} assemblyIdentifier 
+       */
       acls: function(assemblyIdentifier){
-
-        // console.log(this.payload);
-
-        /* Returns a list of all roles obtained by the authenticated user for the given assembly */
-        // assembly_acls: (state) => (assemblyIdentifier) => {
-        // console.log("CHECK ACLs for current assembly...........")
         if (!this.payload || !this.payload.roles) {
           return([])
-        }
+        }  
+        return(translate_auth_roles_to_acls(this.payload.roles, assemblyIdentifier))
+      },
 
-        var assembly_roles = this.payload.roles.filter(function (el) {
-          return el.endsWith(`@${assemblyIdentifier}`);
-        });
-
-        var assembly_roles = assembly_roles.map(function (el) {
-          return el.split('@')[0]
-        });
-
-        const assembly_acls = []
-        if (assembly_roles.includes('administrator')) {
-          assembly_acls.push('administrate', 'manage', 'observe')
-        }
-        if (assembly_roles.includes('manager')) {
-          assembly_acls.push('manage', 'observe')
-        }
-        if (assembly_roles.includes('delegate')) {
-          assembly_acls.push('delegate', 'contribute', 'observe')
-        }
-        if (assembly_roles.includes('contributor')) {
-          assembly_acls.push('contribute', 'observe')
-        }
-        if (assembly_roles.includes('expert')) {
-          assembly_acls.push('contribute', 'observe')
-        }
-        if (this.oauth.authorized) {
-          assembly_acls.push('observe')
-        }
-        return (assembly_acls)
+      currentRouteObject: function($router) {
+        return ({name: $router.currentRoute.name, params: $router.currentRoute.params})
       }
-    },
 
+    },
     
     created: function() {
 
@@ -176,82 +129,93 @@ export default ({ Vue }) => {
   })
 
   // install axios Interceptor to for all errors and invalid tokens
-  ApiService.mountAxiosInterceptor(onAxiosReject)
+  ApiService.mountAxiosInterceptor(axiosErrorHandling)
 }
 
 
+/**
+ * OAuth2AuthCodePKCE Instance
+ * require @bity/oauth2-auth-code-pkce
+ */
+const pkce = new OAuth2AuthCodePKCE({
+  authorizationUrl: baseUrl + '/o/authorize/',
+  tokenUrl: baseUrl + '/o/token/',
+  clientId: Configuration.value('ENV_OAUTH_CLIENT_ID'),
+  scopes: ['read'], // TODO
+  redirectUrl: `${app_domain}${oauthUrl}`,
 
+  onAccessTokenExpiry (refreshAccessToken) {
+    console.log('Expired! Access token needs to be renewed.')
+    console.log('We will try to get a new access token via grant code or refresh token.')
+    return refreshAccessToken()
+  },
+  onInvalidGrant (refreshAuthCodeOrRefreshToken) {
+    console.log('Expired! Auth code or refresh token needs to be renewed.')
+    console.log('...Redirecting to auth server to obtain a new auth grant code.')
+    return refreshAuthCodeOrRefreshToken()
+  }
+})
 
-async function onAxiosReject(error) {
-  // onAxiosReject = async function (error) {
+/**
+ * Axios Error Handler: => Auth Functionality. 
+ * Deals with Request Errors: e.g. Authorization, Authentication, and 400 Errors. 
+ * => Show error messages 
+ * => and refresh token, if token has been expired...
+ */
+async function axiosErrorHandling(error) {
+  // axiosErrorHandling = async function (error) {
   // enfoce that ApiService Wrapper is used, (and not pure Axios)
-  console.log("XHR ERROR")
+  // console.log("XHR ERROR")
   ApiService.is_api_service_used_as_axios_wrapper(error.config)
 
   // No remote connection established
+  // Invalid URL or Server not reachable...
   if (!error.response) {
     console.log("Network error")
     LayoutEventBus.$emit('showNetworkError')
     return Promise.reject(error)
 
+  // Server Error
   } else if (error.response.status == 400) {
     // 400 errors (parse errors)
     console.log("400 Error")
     if (Allow400Status(error.config)) {
-        // dont raise 400 errors, if this is made explicit
+        // dont raise 400 errors, if this is desired explicitly
         console.log("AXIOS: Pass Error 400")
         return (true)
     }
-
     return Promise.reject(error)
 
+    // 405 Authorization errors : probaly not enough privileges...
   } else if (error.response.status == 405) {
     // 405 errors (parse errors)
     console.log("AXIOS: Pass Error 405")
     LayoutEventBus.$emit('showAuthorizationError')
     return Promise.reject(error)
 
-
+    // 403 Permission errors : probaly token expired...
   } else if (error.response.status == 403) {
-
-    // 403 errors: Permission errors : probaly token expired...
     console.log("403 Error")
 
     if (ReloginOnStatus403(error.config)) {
       console.log("AXIOS: ReloginOnStatus403")
-
-      // Not too bad: only a token refresh might fix this.
-      // Hence, we specify the token refresh function and th status 449 ("retry with")
-      console.log("try to refresh token and relaunch XHR")
       error.response.status = 449
       if (pkce.isAuthorized()) {
 
-        try {
-          await pkce.exchangeRefreshTokenForAccessToken()
+        // Refresh Token
+        await pkce.exchangeRefreshTokenForAccessToken()
+        if (pkce.state && pkce.state.accessToken) {          
           const jwt = pkce.state.accessToken.value
           ApiService.setHeader(jwt)
           error.config.retoken = true
-          // Token should now be up to date!
           return (error.config)
-
-        }catch (error){
-
-          // Unsuccessful Refresh:-(
-            if (pkce.isAuthorized()) {
-              LayoutEventBus.$emit('showAuthorizationError')
-            }else{
-              LayoutEventBus.$emit('showAuthenticationWarning')
-            }
-
-            console.log('permission/authorization error')
-            console.log(error)
-            return Promise.reject(error)
-          }
-      } else {
-        LayoutEventBus.$emit('showAuthenticationWarning')
-        console.log("Oauth Permission request error")
-        return Promise.reject(error)
+        }        
       }
+
+      // Token Refresh, seems not be possible / desired :-(
+      LayoutEventBus.$emit('showAuthenticationWarning')
+      console.log("Invalid Authentication Token")
+      return Promise.reject(error)
     }
   }
 
@@ -259,6 +223,45 @@ async function onAxiosReject(error) {
   console.log("Unknown oauth request error")
   console.log("status: " + error.response.status)
   LayoutEventBus.$emit('showServiceError')
-
   return Promise.reject(error)
+}
+
+
+
+/**
+ * oAuth Server delivers user roles in the format "<role>@<assemblyIdentifier>".
+ * THis method translates thes roles in a list of acls for the given Assembly.
+ * => such as  ['delegate', 'contribute', 'observe']
+ */
+const translate_auth_roles_to_acls = function (roles, assemblyIdentifier) {
+
+  var assembly_roles = roles.filter(function (el) {
+    return el.endsWith(`@${assemblyIdentifier}`);
+  });
+  var assembly_roles = assembly_roles.map(function (el) {
+    return el.split('@')[0]
+  });
+
+  const assembly_acls = []
+  if (assembly_roles.includes('administrator')) {
+    assembly_acls.push('administrate', 'manage', 'observe')
+  }
+  if (assembly_roles.includes('manager')) {
+    assembly_acls.push('manage', 'observe')
+  }
+  if (assembly_roles.includes('delegate')) {
+    assembly_acls.push('delegate', 'contribute', 'observe')
+  }
+  if (assembly_roles.includes('contributor')) {
+    assembly_acls.push('contribute', 'observe')
+  }
+  if (assembly_roles.includes('expert')) {
+    assembly_acls.push('expert', 'observe')
+  }
+
+  // TODO: Are visitors welcome within this assembly???
+  if (pkce.isAuthorized()) {
+    assembly_acls.push('observe')
+  }
+  return (assembly_acls)
 }

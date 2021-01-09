@@ -76,12 +76,7 @@ export default{
         response => {
           // store changed contents to vuex
           if(response.data.OK) {
-              console.log("rating received")
-
-              // this.syncContentTree({
-              //     assembly: response.data.contenttree,
-              //     contenttree: response.data.contenttree})
-              
+              console.log("rating received")            
               console.log(response.data)
               if (response.data.modified_contents) {
                 this.update_contents({modifiedContents: response.data.modified_contents})

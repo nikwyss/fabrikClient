@@ -4,5 +4,10 @@
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
   "files.autoGuessEncoding":true,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "vetur.experimental.templateInterpolationService": true
+  "vetur.experimental.templateInterpolationService": true,
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#541436",
+    "titleBar.activeBackground": "#761C4B",
+    "titleBar.activeForeground": "#FEFCFD"
+  }
 }

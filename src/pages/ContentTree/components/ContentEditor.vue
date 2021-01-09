@@ -64,7 +64,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'ContentEditor',
-  inject: ['QTREE', 'CTREE', 'limitNodeTypes'],
+  inject: ['QUASAR_TREE', 'CTREE', 'limitNodeTypes'],
 
   data: function () {
     return {
@@ -198,7 +198,7 @@ export default {
             // update the whole tree
             if ('contenttree' in response.data) {
             this.add_or_update_contenttree({
-              contenttreeID:  QTREE.contenttreeID,
+              contenttreeID:  this.CTREE.contenttreeID,
               contenttree: response.data.contenttree});
             }
             

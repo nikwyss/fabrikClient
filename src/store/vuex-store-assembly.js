@@ -37,11 +37,10 @@ const getters = {
       return (null)
     }
 
-    if (!('configuration' in state.assemblydata[assemblyIdentifier])) {
-      return (null)
+    if ('configuration' in state.assemblydata[assemblyIdentifier]) {
+      return (state.assemblydata[assemblyIdentifier].configuration)
     }
 
-    return (state.assemblydata[assemblyIdentifier].configuration)
   },
 
   get_assembly_progression: (state) => (assemblyIdentifier) => {
@@ -101,7 +100,7 @@ const getters = {
 
   /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
   currently logged in user */
-  checkAssemblyStatus({state, getters, rootState, rootGetters}, {assemblyIdentifier}) {
+  checkAssemblyStatus({state, getters, rootState, rootGetters}, {assemblyIdentifier, oauthUserID}) {
     console.log('check assembly status')
     console.assert(assemblyIdentifier)
 
@@ -123,9 +122,8 @@ const getters = {
     }
 
     // Wrong user?
-    const compare_func = rootGetters['oauthstore/is_current_oauth_userid']
     const cached_userid = state.assemblydata[assemblyIdentifier].access_sub
-    return (compare_func(cached_userid))
+    return (cached_userid == oauthUserID)
   }
 }
 
@@ -139,7 +137,7 @@ const actions = {
     commit('setCachedStageID', {assembly, stageID})
   },
 
-  syncAssembly: ({state, dispatch, localgetters, rootState, rootGetters}, {assemblyIdentifier}) => {
+  syncAssembly: ({state, dispatch, localgetters, rootState, rootGetters}, {assemblyIdentifier, oauthUserID}) => {
     console.log(` sync assembly ${assemblyIdentifier}`)
 
     console.assert(assemblyIdentifier)
@@ -152,7 +150,7 @@ const actions = {
     }
 
     // renew cache all x- minutes
-    if (!getters.checkAssemblyStatus({state, getters, rootState, rootGetters}, {assemblyIdentifier})) {
+    if (!getters.checkAssemblyStatus({state, getters, rootState, rootGetters}, {assemblyIdentifier, oauthUserID})) {
       // too old cache: load the data from resource server...
       console.log(` not in sync...`)
       dispatch('retrieveAssembly', {assemblyIdentifier: assemblyIdentifier})

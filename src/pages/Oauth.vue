@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { LayoutEventBus } from 'src/utils/eventbus.js'
+// import { LayoutEventBus } from 'src/utils/eventbus.js'
 import Configuration from 'src/utils/configuration'
 
 export default {

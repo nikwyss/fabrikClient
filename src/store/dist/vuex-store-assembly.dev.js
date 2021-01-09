@@ -74,11 +74,9 @@ var getters = {
         return null;
       }
 
-      if (!('configuration' in state.assemblies[assemblyIdentifier])) {
-        return null;
+      if ('configuration' in state.assemblies[assemblyIdentifier]) {
+        return state.assemblies[assemblyIdentifier].configuration;
       }
-
-      return state.assemblies[assemblyIdentifier].configuration;
     };
   },
 

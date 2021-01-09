@@ -459,14 +459,30 @@ export default {
     LayoutEventBus.$on('AfterAuthenticationStatusChanged', data => {
       console.log(">> AfterAuthenticationStatusChanged listener in assembly")
       const assemblyIdentifier = this.assemblyIdentifier
-      this.$store.dispatch('assemblystore/syncAssembly', {assemblyIdentifier})
+      this.$store.dispatch('assemblystore/syncAssembly', {
+        assemblyIdentifier, 
+        oauthUserID: this.oauth.userid
+      })
     })
+  },
+
+  watch: {
+    // if route changes, hide TextLoading
+    $route (to, from) {
+      console.log("NEW ASSEMBLY ROUTE")
+      // console.log(to)
+      //   this.hideLoadingGif()
+      //   this.hideNotificationBanner()
+    }
+
   },
 
 
   mounted: function() {
     const assemblyIdentifier = this.assemblyIdentifier
     console.log(">> mounter")
-    this.$store.dispatch('assemblystore/syncAssembly', {assemblyIdentifier})
+    this.$store.dispatch('assemblystore/syncAssembly', {
+      assemblyIdentifier, 
+      oauthUserID: this.oauth.userid})
   }
 }
