@@ -7,6 +7,7 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers')
+// const webpack = require('webpack')
 // const env = require('quasar-dotenv').config()
 // env: env,
 
@@ -45,14 +46,15 @@ module.exports = configure(function (ctx) {
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
-      // 'ionicons-v4',
       'mdi-v5'
+      // 'roboto-font' // optional, you are not bound to it
+      // 'ionicons-v4',
       // 'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
+      // 'open-sans'
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
-      // 'roboto-font', // optional, you are not bound to it
       // 'material-icons' // optional, you are not bound to it
     ],
 
@@ -80,7 +82,14 @@ module.exports = configure(function (ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/handling-webpack
+      // added by NIK: this allows that all js is build to app.js
+      // (which allows refering from auth.demokratiefabrik.ch)
       extendWebpack (cfg) {
+        // cfg.plugins.push(
+        //   new webpack.optimize.LimitChunkCountPlugin({
+        //     maxChunks: 1
+        //   })
+        // )
         // disabled temporary (oauth ts class)
         // linting is slow in TS projects, we execute it only for production builds
         if (ctx.prod) {
