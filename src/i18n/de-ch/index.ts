@@ -81,7 +81,7 @@ export default {
     login_button_label: 'Anmeldung',
     login_button_text: "Klicken Sie auf 'Anmeldung', wenn Sie sich anmelden möchten. Eine Anmeldung ist notwendig, um sich aktiv in der Fabrik zu beteiligen.",
     registered_as: 'Angemeldet als {username}',
-    not_registered: 'Anonymer Gast',
+    not_registered: 'Nicht angmeldet',
     profile_last_name: 'Pseudonym',
     profile_email: 'Email',
     profile_email_hint: 'Falls Sie keine Email Adresse besitzen, dann können sie auch ihre Handy Nummer eingeben. Wir werden Sie dann via SMS kontaktieren.',
@@ -192,7 +192,7 @@ export default {
   },
 
   background: {
-    h1: 'Was Sie über die Demokratiefabrik zu wissen brauchen',
+    h1: 'Alles über die Demokratiefabrik!',
     citizen_assemblies: {
       label: 'Sinn und Zweck von (digitalen) BürgerInnenversammlungen',
       text: `Bürger*innen mittels Beteiligungsformaten wie Bürger*innenversammlungen stärker in

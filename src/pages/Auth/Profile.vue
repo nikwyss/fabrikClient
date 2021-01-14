@@ -20,17 +20,21 @@
 
           <p v-if="!loading">            
             {{ this.profile.original_email ?  'Sie können hier Ihre Kontaktdaten ändern' :  'Daneben benötigen wir Ihre Emailadresse:' }}
+
+
           <q-input :bg-color="isValidContact ? 'lime' : 'orange'" outlined v-model="profile.email" :dense="true" >
           <template v-slot:prepend>
             <q-icon :name="isPhone ? 'mdi-phone' : 'mdi-email' " />
           </template>
-
           </q-input>
           <small>{{$t('auth.profile_email_hint')}}</small>
           </p>
         </div>
 
       </div>
+            
+          <br />
+          <br />
 
       <q-btn class="q-ma-xs" :loading="loading" color="primary" :label="$t('auth.profile_update_action')" 
         :disabled="!isEnabledSubmitButton" @click="saveProfile" >

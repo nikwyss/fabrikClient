@@ -20,48 +20,92 @@
 </style>
 <template>
 <q-layout view="hHh Lpr lFf" class="rounded-borders">
+
+
   <q-header  class="text-primary shadow-1 bg-white" >
-    <div class="fixed-top-right z-top" align="right" style="width:320px">
-    <q-toolbar style="width:320px">
-      <!-- ACCOUNT CHIP -->
-
- <!-- <q-btn color="primary" label="Basic Menu">
-        
-      </q-btn> -->
 
 
-      <q-chip :icon="oauth.authorized ? 'mdi-account-circle-outline' : 'mdi-incognito'"
-          text-color="primary" class="cursor-pointer" clickable>
+
+
+  <q-toolbar class=" ">
+   <!-- <q-toolbar-title v-if="oauth.authorized"> -->
+      <!-- Demokratiefabrik -->
+    <!-- </q-toolbar-title> -->
+
+
+      <q-space />
+
+      <div class="q-pr-lg">
+
+      <!-- <div stretch  :icon="oauth.authorized ? 'mdi-account-circle-outline' : 'mdi-incognito'" > -->
         <span v-if="oauth.authorized">
           {{ $t('auth.registered_as', {username: oauth.username}) }}
           <!-- <q-tooltip max-width="300px">{{ $t('auth.tooltip_authenticated') }} </q-tooltip> -->
         </span>
-        <span v-if="!oauth.authorized">
+        <span v-if="!oauth.authorized"> 
           {{ $t('auth.not_registered') }}
           <!-- <q-tooltip max-width="300px">{{ $t('auth.tooltip_non_authenticated') }} </q-tooltip> -->
         </span>
+</div>
+      <q-separator vertical />
 
-        <q-menu fit>
-          <q-list style="min-width: 100px">
-            <q-item clickable v-close-popup @click="gotoProfile()" v-if="oauth.authorized">
-              <q-item-section>Profil</q-item-section>
-            </q-item>
-            <q-separator />
-            <q-item clickable v-close-popup @click="clickAuthLink()" v-if="!oauth.authorized">
-              <q-item-section>Login</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup @click="oauth.logout()" v-if="oauth.authorized">
-              <q-item-section>Logout</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-chip>
+      <q-btn stretch flat label="Anmelden" v-if="!oauth.authorized" @click="clickAuthLink" />
+
+      <q-btn-dropdown stretch flat label="Mitteiliungen" v-if="oauth.authorized">
+        <q-list>
+          <q-item clickable v-close-popup tabindex="0">
+            <!-- <q- avatar>
+              <q-avatar icon="mdi-logout" color="red" text-color="white" />
+            </q-> -->
+           <q-item-section @click="oauth.logout()">
+              <q-item-label>Keine Mitteilungen</q-item-label>
+              <q-item-label caption></q-item-label>
+            </q-item-section>
+          </q-item>         
+        </q-list>
+      </q-btn-dropdown>
+
+      <q-separator vertical v-if="oauth.authorized" />
+      
+      <q-btn-dropdown stretch flat label="Menü" v-if="oauth.authorized">
+        <q-list>
+          <!-- <q-item-label header>Benutzer</q-item-label> -->
+          <q-item clickable v-close-popup tabindex="0">
+            <!-- <q- avatar>
+              <q-avatar icon="mdi-account" color="blue" text-color="white" />
+            </q-> -->
+           <q-item-section @click="gotoProfile()" v-if="oauth.authorized">
+              <q-item-label>Profil</q-item-label>
+              <q-item-label caption>Benutzereinstellungen</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-close-popup tabindex="0">
+            <!-- <q- avatar>
+              <q-avatar icon="mdi-logout" color="red" text-color="white" />
+            </q-> -->
+           <q-item-section @click="oauth.logout()" v-if="oauth.authorized">
+              <q-item-label>Logout</q-item-label>
+              <q-item-label caption>Demokratiefabrik verlassen</q-item-label>
+            </q-item-section>
+          </q-item>       
+        </q-list>
+      </q-btn-dropdown>
+
+    </q-toolbar>
+
+
+
+
+
+
+
+
 
       <!-- DISABLED: at the moment. only de_CH -->
       <!-- <LanguageSwitch /> -->
 
     </q-toolbar>
-  </div>
+  <!-- </div> -->
 
   <div align="center" style="min-height:40px">
 
@@ -81,7 +125,7 @@
     <div align="center">
 
       <q-tabs v-model="currenttab">
-        <CustomQRouteTab  name="home" icon="mdi-door" exact to="/" :label="$t('menu.items.home.label')">
+        <CustomQRouteTab  name="home"  icon="mdi-door" exact to="/" :label="$t('menu.items.home.label')">
           <q-tooltip :offset="menuOffset">{{$t('menu.items.home.tooltip')}}</q-tooltip>
         </CustomQRouteTab>
         <!-- <CustomQRouteTab name="showcase" icon="mdi-eye-outline" to="/showcase" :label="$t('menu.items.showcase.label')">
@@ -97,15 +141,59 @@
     </div>
   </q-header>
 
+
+
   <!-- CONTENT -->
   <q-page-container>
         
     <!-- MAIN PAGE CONTENT -->
     <!-- <div align="center"> -->
     <router-view />
-    <!-- </div> -->
 
+
+  
+  
+  <!-- Footer  bg-blue-grey-2-->
+  <br><br>
+    <div class=" full-width" style="border-top: 1px solid black">
+      <br><br>
+      <br>
+      <q-page class="doc_content">
+
+        <div class="q-col-gutter-md row items-start">
+
+          <div class="col-4 q-pr-xl">
+            <!-- {{ $t('app.name') }} {{ $t('app.version') }} <br> -->
+            <b>Impressum:</b><br> 
+            Année Politique Suisse<br>
+            Institut für Politikwissenschaft<br>
+            Universität Bern<br>
+            Fabrikstrasse 8<br>
+            CH-3012 Bern<br>
+            Tel. +41 (0)31 631 83 31<br>
+            Fax +41 (0)31 631 48 17<br>
+
+          </div>
+
+          <div class="col-2">
+            <q-img src='~assets/logo_aps.svg'   :ratio="1" contain class="q-ma-sm" style="height: 100px; "></q-img>
+
+          </div>
+
+          <div class="col-2">
+                      <q-img src='~assets/logo_unibe.png' :ratio="1" contain style="height: 100px; "></q-img>
+
+          </div>
+
+          <div class="col-2">
+                      <q-img src='~assets/logo_snf.jpg'   :ratio="1" contain class="q-ma-sm"  style="height: 100px;"></q-img>
+          </div>
+
+        </div>
+
+        
     <!-- DATA LOADING GIF -->
+    <!-- TODO: remove -->
     <q-inner-loading :showing="TextLoadingVisible"  style="z-index:100">
         <q-spinner-dots size="50px" color="primary" />
     </q-inner-loading>
@@ -139,13 +227,10 @@
         </q-chip>
       </div>
     </q-inner-loading>
+      </q-page>
+    </div>
+  
   </q-page-container>
-
-  <!-- Footer -->
-  <q-footer class="bg-grey-8 text-white">
-  <div>{{ $t('app.name') }} {{ $t('app.version') }} </div>
-  </q-footer>
-
 </q-layout>
 </template>
 
