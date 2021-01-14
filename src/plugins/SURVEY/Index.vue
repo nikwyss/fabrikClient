@@ -1,7 +1,6 @@
 <template>
     <q-page class="doc_content">
 
-
         <div v-if="routedStage">
 
             <!-- EDIT CONTENT -->
@@ -9,7 +8,6 @@
                 v-if="assembly_acls.includes('manage')"
                 :assembly_id="assembly.id"
                 :model="routedStage" /> -->
-
 
             <!-- MISCONFIGURATION -->
             <div v-if="routedStage && !isCompleted(routedStage) && !check_data">
@@ -45,6 +43,7 @@
                     size="5em"/>
             </div>
         </div>
+
     </q-page>
 </template>
 
@@ -120,19 +119,18 @@ export default {
         },
 
         monitorApi: function(event, force) {
+            console.log("Force MonitorApi: " + event + " - " + force)
+
             if (!event) {
                 event = this.MonitorStageEntering
             }
-
-            console.log("Force MonitorApi: " + event + " - " + force)
-
 
             /* By this method we allow the API to monitor userz activities */
             const STAGEID = this.routedStageID
             const USERID = this.oauth.userid
             console.log(this.oauth.userid + 'oauth_userid')
-            if (!this.stage ||
-                this.$route.query.DFUSER != USERID) {
+
+            if (!STAGEID || this.$route.query.U != USERID) {
                     console.log("wrong response data...")
                     return (false)
             }
@@ -155,23 +153,25 @@ export default {
     },
 
     mounted: function () {
-        
+        console.log("mounted3")
         // Completed Response?
-        if (this.is_a_survey_response && !this.isCompleted(this.routedStage)){
-            console.log("Completed response..?")
-            const event = this.MonitorSurveyCompleting
-            const force = true
-            this.monitorApi(event, force)
-            return (true)
-        }
-    
-        // Initiating Survey => redirect to Provider 
-        if (!this.is_a_survey_response && !this.isCompleted(this.routedStage)){
-            console.log("Redirect to Provider..?")
-            this.redirect()
-            return (true)
-        }
+        if (!this.isCompleted(this.routedStage)) {
 
+            if (this.is_a_survey_response){                  
+                console.log("Completed response!")
+                const event = this.MonitorSurveyCompleting
+                const force = true
+                this.monitorApi(event, force)
+                return (true)
+        
+            // Initiating Survey => redirect to Provider 
+            } else {
+
+                console.log("Redirect to Provider..?")
+                this.redirect()
+                return (true)
+            }
+        }
     }
 }
 </script>

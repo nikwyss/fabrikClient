@@ -51,7 +51,7 @@
 
       <q-btn stretch flat label="Anmelden" v-if="!oauth.authorized" @click="clickAuthLink" />
 
-      <q-btn-dropdown stretch flat label="Mitteiliungen" v-if="oauth.authorized">
+      <q-btn-dropdown stretch flat label="Mitteilungen" v-if="oauth.authorized">
         <q-list>
           <q-item clickable v-close-popup tabindex="0">
             <!-- <q- avatar>
