@@ -11,14 +11,12 @@
         {{$t('assemblies.am.you_may_enter_this_assembly_for_the_first_time')}}
         </template> -->
 
-        <!-- <template v-if="assembly_acls.includes('delegate') && !oauth.payload.userEmail">
-            Ich sehe gerade, dass wir von Ihnen noch gar keine Kontaktangabe haben. 
-            Können Sie uns bitte Ihre Email-Adresse oder die Handy-Nummer eintragen.
+        <template v-if="assembly_acls.includes('delegate') && !oauth.payload.userEmail">
+            Bevor es los geht, müsssen Sie noch kurz beim Empfang vorbei. Dort wird noch eine Kontaktangabe von Ihnen benötigt. 
+        </template>
 
-        </template> -->
-
-        <template v-if="assembly_acls.includes('delegate')">
-        In dem Sie hier teilnehmen, helfen Sie den KönizerInnen eine gute Wahlentscheidung zu treffen!
+        <template v-else-if="assembly_acls.includes('delegate')">
+        In dem Sie hier teilnehmen, helfen Sie den BewohnerInnen Ihrer Gemeinde eine gute Wahlentscheidung zu treffen!
         </template>
 
         <template v-else-if="assembly_acls.includes('expert') || assembly_acls.includes('manage')">
@@ -56,7 +54,12 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip size="md" icon="mdi-forward" v-if="assembly_acls.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink(assembly)">
+        <q-chip size="md" icon="mdi-forward" v-if="assembly_acls.includes('delegate') && !oauth.payload.userEmail" outline color="primary" text-color="primary" class="bg-white cursor-pointer" 
+                clickable @click="gotoProfile(assembly.identifier)">
+            {{ $t('app.btn_goto_profile') }}
+        </q-chip>
+
+        <q-chip size="md" icon="mdi-forward" v-else-if="assembly_acls.length > 0" outline color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickAssemblyLink(assembly)">
             {{ $t('assemblies.please_enter') }}
         </q-chip>
 
@@ -89,15 +92,20 @@ export default{
     },
 
     methods: {
-        clickInitLink: function () {
+        clickInitLink(){
             const route = { name: 'assemblies_ongoing_list' }
             this.$router.push(route)
         },
         
-        clickAuthLink: function (assemblyIdentifier) {
+        clickAuthLink(assemblyIdentifier) {
             const destination_route = {name: 'assembly_home', params: {assemblyIdentifier}}
             this.oauth.login(destination_route)
-        }
+        },
+
+        gotoProfile(assemblyIdentifier) {
+            const destination_route = {name: 'assembly_home', params: {assemblyIdentifier}}
+            this.$router.push({name: 'profile', params: {destination_route: destination_route}})
+        },
     }
 }
 </script>

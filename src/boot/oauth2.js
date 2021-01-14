@@ -80,8 +80,8 @@ export default ({ Vue }) => {
 
       logout: function() {
         pkce.reset();
-        LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
         LayoutEventBus.$emit('AfterLogout')
+        // LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
       },
       
 

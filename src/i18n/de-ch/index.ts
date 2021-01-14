@@ -18,9 +18,16 @@ export default {
       service_error_body: 'Im Betrieb der Demokratiefabrik ist eine Störung aufgetreten. Wir bitten Sie um Entschuldigung.',
       network_error_title: 'Netzwerkstörung',
       network_error_body: 'Die Kommunikation innnerhalb der Demokratiefabrik ist momentan suboptimal. Wir bitten Sie um Entschuldigung. Bitte versuchen Sie es bitte erneut.',
-      btn_close: 'Diese Meldung schliessen',
-      btn_home: 'Zur Startseite'
-    }
+    },
+    btn_close: 'Diese Meldung schliessen',
+    btn_back: 'Zurück',
+    btn_next: 'Weiter',
+    btn_skip: 'Überspringen',
+    btn_cancel: 'Abbrechen',
+    btn_home: 'Zur Startseite',
+    btn_goto_profile: 'Zum Empfang',
+    ask_for_bookmark_title: 'Hinweis:',
+    ask_for_bookmark: 'Möchten Sie diese Webseite während dem Event in Ihren Favoriten/Lesezeichen speichern? Dann drücken Sie die beiden Tasten {bookmarkKeys}'
   },
 
   disclaimer: {
@@ -55,7 +62,7 @@ export default {
         tooltip: 'Wo alles beginnt!'
       },
       assembly: {
-        label: 'Mitarbeit',
+        label: 'Mitwirkung',
         tooltip: 'Hier finden die BürgerInnenversammlungen statt.'
       },
       showcase: {
@@ -75,11 +82,20 @@ export default {
     login_button_text: "Klicken Sie auf 'Anmeldung', wenn Sie sich anmelden möchten. Eine Anmeldung ist notwendig, um sich aktiv in der Fabrik zu beteiligen.",
     registered_as: 'Angemeldet als {username}',
     not_registered: 'Anonymer Gast',
+    profile_last_name: 'Pseudonym',
+    profile_email: 'Email',
+    profile_email_hint: 'Falls Sie keine Email Adresse besitzen, dann können sie auch ihre Handy Nummer eingeben. Wir werden Sie dann via SMS kontaktieren.',
+    profile_email_disclaimer: 'Sie fragen sich, wozu wir Ihre Emailadresse benötigen? Wir werden Ihnen in den kommenden Tagen eine Handvoll Emails zusenden. (Benachrichtigungen über wichtige Ereignisse auf der Plattform, Nachbefragung für die wissenschaftliche Begleitstudie und für die Benachrichtung über die Gewinnausschreibung). Gleich nach Ende des Projektes werden wir sämtliche Emailadressen wieder von unserm Server an der Universität Bern löschen. Zu keinem Zeitpunkt werden wir Ihre Emailadresse an Dritte weiterreichen.',
+    profile_update_action: 'Speichern',
+    profile_update_success: 'Das Benutzerprofil wurde gespeichert',
+    profile_update_error: 'Das Benutzerprofil konnte nicht gespeichert werden',
+    profile_load_error: 'Das Benutzerprofil konnte nicht geladen werden',
     goto_authentication_form: 'Zur Anmeldung',
+    goto_profile_page: 'Benutzerprofil überarbeiten',
     tooltip_authenticated: 'Klicken Sie hier um Ihr Benutzerprofil einzusehen oder sich abzumelden.',
     tooltip_non_authenticated: 'Sie sind noch nicht in der Demokratiefabrik angemeldet. Hier können Sie dies tun.',
-    logout_succeeded_title: 'Die Session wurde beendet!',
-    logout_succeeded_caption: 'Natürlich freuen wir uns auf einen erneuten Besuch.',
+    logout_succeeded_title: 'Vielen Dank und auf Wiedersehen',
+    logout_succeeded_caption: 'Natürlich freuen wir uns auf einen erneuten Besuch. Wie wärs gleich morgen?',
     authentication_succeeded_title: 'Anmeldung erfolgreich.',
     authentication_succeeded_caption: 'Sie haben sich erfolgreich bei der Demokratiefabrik angemeldet. Wir danken Ihnen schon jetzt für Ihre Mithilfe.',
     authentication_warning_title: 'Anmeldung erforderlich.',
@@ -92,7 +108,7 @@ export default {
     iam_ready: 'Ja, ich bin bereit',
     goto_userprofile: 'Zum Benutzerprofil',
     am: {
-      general_greeting: '{salutation} Wir sind @:am.actor.1 und @:am.actor.2 und freuen uns sehr, dass Sie die Demokratiefabrik besuchen.',
+      general_greeting: '{salutation} Wir sind @:am.actor.1 und @:am.actor.2 und freuen uns sehr, dass Sie hier sind.',
       salutation_for_authenticated: 'Guten Tag {username}!',
       salutation_for_guests: 'Guten Tag lieber Gast!',
       invitation_to_authenticate: 'Gehören Sie zu den 1000 für eine digitale Bürgerversammlung ausgelosten Teilnehmenden? Dann möchten wir Sie bitten sich anzumelden.',
@@ -119,7 +135,7 @@ export default {
   assemblies: {
     h1: 'Aktuelle BürgerInnenversammlung | Aktuelle BürgerInnenversammlungen',
     home_caption: 'Konferenz der BürgerInnen: {assembly_title}',
-    home_description: 'Bis zum Ende der Konferenz {relative_end_date} finden Sie hier täglich eine Übersicht der anstehenden Aufgaben.',
+    home_description: 'Bis zum Ende der BürgerInnenversammlung {relative_end_date} finden Sie hier täglich eine Übersicht der anstehenden Aufgaben.',
     please_enter: 'Bitte Eintreten',
     date_end: 'Noch {relative_end_date}',
     go_back_to_assembly_home: 'Zur Tagesübersicht',

@@ -24,16 +24,37 @@
     <div class="fixed-top-right z-top" align="right" style="width:320px">
     <q-toolbar style="width:320px">
       <!-- ACCOUNT CHIP -->
+
+ <!-- <q-btn color="primary" label="Basic Menu">
+        
+      </q-btn> -->
+
+
       <q-chip :icon="oauth.authorized ? 'mdi-account-circle-outline' : 'mdi-incognito'"
-          @click="right = !right" text-color="primary" class="cursor-pointer" clickable>
+          text-color="primary" class="cursor-pointer" clickable>
         <span v-if="oauth.authorized">
           {{ $t('auth.registered_as', {username: oauth.username}) }}
-          <q-tooltip max-width="300px">{{ $t('auth.tooltip_authenticated') }} </q-tooltip>
+          <!-- <q-tooltip max-width="300px">{{ $t('auth.tooltip_authenticated') }} </q-tooltip> -->
         </span>
         <span v-if="!oauth.authorized">
           {{ $t('auth.not_registered') }}
-          <q-tooltip max-width="300px">{{ $t('auth.tooltip_non_authenticated') }} </q-tooltip>
+          <!-- <q-tooltip max-width="300px">{{ $t('auth.tooltip_non_authenticated') }} </q-tooltip> -->
         </span>
+
+        <q-menu fit>
+          <q-list style="min-width: 100px">
+            <q-item clickable v-close-popup @click="gotoProfile()" v-if="oauth.authorized">
+              <q-item-section>Profil</q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item clickable v-close-popup @click="clickAuthLink()" v-if="!oauth.authorized">
+              <q-item-section>Login</q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="oauth.logout()" v-if="oauth.authorized">
+              <q-item-section>Logout</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
       </q-chip>
 
       <!-- DISABLED: at the moment. only de_CH -->
@@ -76,14 +97,9 @@
     </div>
   </q-header>
 
-  <!-- Right Drawer -->
-  <q-drawer v-model="right" side="right" behavior="mobile">
-    <ComponentDrawer @close_drawer_right="close_drawer_right()" />
-  </q-drawer>
-
   <!-- CONTENT -->
   <q-page-container>
-
+        
     <!-- MAIN PAGE CONTENT -->
     <!-- <div align="center"> -->
     <router-view />
@@ -101,15 +117,25 @@
         <div>{{NotificationBannerBody}}</div>
 
         <q-chip v-if="NotificationBannerButtons.includes('hide')" size="md" icon="mdi-close"  outline  color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable @click="hideNotificationBanner">
-          {{ $t('app.error.btn_close') }}
+          {{ $t('app.btn_close') }}
         </q-chip>
         <q-chip v-if="NotificationBannerButtons.includes('home')" size="md" icon="mdi-home"  outline  color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable @click="gotoHome">
-          {{ $t('app.error.btn_home') }}
+          {{ $t('app.btn_home') }}
         </q-chip>
         <q-chip v-if="NotificationBannerButtons.includes('auth')" size="md" icon="mdi-forward"  outline  
             color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable 
             @click="clickAuthLink">
           {{ $t('auth.goto_authentication_form') }}
+        </q-chip>
+        <q-chip v-if="NotificationBannerButtons.includes('profile')" size="md" icon="mdi-account"  outline  
+            color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable 
+            @click="hideNotificationBanner">
+          {{ $t('auth.goto_profile_page') }}
+        </q-chip>
+        <q-chip v-if="NotificationBannerButtons.includes('redirect')" size="md" icon="mdi-forward"  outline  
+            color="primary" text-color="primary" class="bg-white cursor-pointer q-mt-md" clickable 
+            @click="$router.push(NotificationBannerRedirectRoute)">
+          {{ $t('app.btn_next') }}
         </q-chip>
       </div>
     </q-inner-loading>
@@ -124,8 +150,9 @@
 </template>
 
 <script>
-import ComponentDrawer from './components/ComponentDrawer.vue'
-import LanguageSwitch from './components/LanguageSwitch.vue'
+// import ComponentDrawer from './components/ComponentDrawer.vue'
+// import LanguageSwitch from './components/LanguageSwitch.vue'
+// import PopupProfile from './components/PopupProfile.vue'
 import CustomQRouteTab from './components/CustomQRouteTab.vue'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 
@@ -133,20 +160,21 @@ export default {
   name: 'MainLayout',
 
   components: {
-    ComponentDrawer,
-    LanguageSwitch,
+    // ComponentDrawer,
+    // LanguageSwitch,
     CustomQRouteTab
+    // PopupProfile
   },
 
   data () {
     return {
       currenttab: 'assemblies',
       menuOffset: [0, 3],
-      right: false,
       TextLoadingVisible: false,
       NotificationBannerVisible: false,
       NotificationBannerType: 'info',
       NotificationBannerTitle: '',
+      NotificationBannerRedirectRoute: {},
       NotificationBannerBody: '',
       NotificationBannerIcon: '',
       NotificationBannerButtons: []
@@ -154,7 +182,14 @@ export default {
   },
 
   methods: {
-        
+
+    gotoProfile(destination_route) {
+      if (!destination_route) {
+        destination_route = this.oauth.currentRouteObject(this.$router)
+      }
+      this.$router.push({name: 'profile', params: {destination_route: destination_route}})
+    },
+
     clickAuthLink: function () {
         const destination_route = {name: 'assemblies_ongoing_list'}
         this.oauth.login(destination_route)
@@ -171,13 +206,20 @@ export default {
       }, 5000)
     },
 
-    showNotificationBanner (type, title, body, icon, settimer=false, buttons=['hide']) {
+    showNotificationBanner (type, title, body, icon, settimer=false, buttons=['hide'], redirectRoute=null) {
       this.NotificationBannerVisible = true
       this.NotificationBannerBody = body
       this.NotificationBannerTitle = title
       this.NotificationBannerType = type
       this.NotificationBannerIcon = icon
       this.NotificationBannerButtons = buttons
+      this.NotificationBannerRedirectRoute = redirectRoute
+      if (!this.NotificationBannerRedirectRoute) {
+        this.NotificationBannerRedirectRoute = {name: 'home'}
+      }
+                console.log(redirectRoute)
+                console.log("redirectRoute")
+
       this.hideLoadingGif()
       if (settimer) {
         setTimeout(() => {
@@ -197,10 +239,6 @@ export default {
     },
     gotoHome () {
       this.$router.push({name: 'home'})
-    },
-
-    close_drawer_right: function() {
-      this.right = false
     }
   },
 
@@ -262,29 +300,35 @@ export default {
       this.showNotificationBanner(type, msg_title, msg_body, icon)
     })
 
+    LayoutEventBus.$on('AfterProfileUpdate', data => {
+      const type = 'info'
+      const icon = 'mdi-account'
+      const msg_title = 'Benutzerprofil gespeichert' // this.$i18n.t('auth.authentication_error_title')
+      const msg_body = `Das Benutzerprofil wurde erfolgreich gespeichert. Überprüfen Sie bitte ein letztes Mal ob die folgende Kontaktangabe korrekt ist: ${data.userEmail}`
+      const buttons = ['redirect','profile']
+      this.showNotificationBanner(type, msg_title, msg_body, icon, false, buttons, data.destination_route)
+    })
+
     LayoutEventBus.$on('AfterLogout', data => {
-      let msg_title = this.$i18n.t('auth.logout_succeeded_title')
-      let msg_caption = this.$i18n.t('auth.logout_succeeded_caption')
-      this.$q.notify({
-        type: 'info',
-        caption: `${msg_caption}`,
-        message: `${msg_title}`
-      })
-      this.close_drawer_right()
+      this.$router.push({name: 'logout'})
     })
 
     LayoutEventBus.$on('AfterLogin', destination_route => {
-      if(destination_route) {
-        this.$router.push(destination_route)
+
+      // is email already set: if not => redirect to userprofile...
+      if (this.oauth.payload.userEmail) {
+        // ok, already set (not the first login)
+        if(destination_route) {
+          this.$router.push(destination_route)
+        }
+      }else{
+        // console.log(this.oauth.payload)
+        this.gotoProfile(destination_route)
       }
     })
 
     LayoutEventBus.$on('hideNotificationBanners', data => {
       this.hideNotificationBanner()
-    })
-    LayoutEventBus.$on("resetLayoutToDefault", data => {
-      console.log("resetLayoutToDefault Listener...")
-      this.close_drawer_right()
     })
   },
 

@@ -7,7 +7,7 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers')
-// const webpack = require('webpack')
+const webpack = require('webpack')
 // const env = require('quasar-dotenv').config()
 // env: env,
 
@@ -24,14 +24,6 @@ module.exports = configure(function (ctx) {
     // https://quasar.dev/quasar-cli/prefetch-feature
     // preFetch: true,
 
-    // app boot file (/src/boot)
-    // --> boot files are part of "main.js"
-    // https://quasar.dev/quasar-cli/boot-files
-    // boot: [
-    //   'composition-api',
-    //   'i18n',
-    //   'axios'
-    // ],
     boot: [
       'helpers',
       'oauth2',
@@ -44,18 +36,9 @@ module.exports = configure(function (ctx) {
       // 'app.scss'
     ],
 
-    // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
       'mdi-v5'
       // 'roboto-font' // optional, you are not bound to it
-      // 'ionicons-v4',
-      // 'fontawesome-v5',
-      // 'eva-icons',
-      // 'themify',
-      // 'open-sans'
-      // 'line-awesome',
-      // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
-      // 'material-icons' // optional, you are not bound to it
     ],
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
@@ -63,10 +46,26 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // publicPath: 'app-extension-dotenv',
       uglifyOptions: {
-        compress: { drop_console: true }
+        compress: { drop_console: true },
+        extractComments: 'all',
+        warnings: false,
+        parse: {},
+        mangle: true, // Note `mangle.properties` is `false` by default.
+        output: null,
+        toplevel: false,
+        nameCache: null,
+        ie8: false,
+        keep_fnames: false
       },
-      // transpile: false,
 
+      // ptimization: {
+      //   minimizer: [new UglifyJsPlugin()],
+      // },
+      // new webpack.optimize.LimitChunkCountPlugin({
+      //   // maxChunks: 1
+      // }
+
+      // transpile: false,
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
       // Applies only if "transpile" is set to true.
@@ -75,20 +74,19 @@ module.exports = configure(function (ctx) {
       // rtl: false, // https://quasar.dev/options/rtl-support
       // preloadChunks: true,
       // showProgress: false,
-      // gzip: true,
+      gzip: true,
       // analyze: true,
 
       // Options below are automatically set depending on the env, set them if you want to override
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/handling-webpack
-      // added by NIK: this allows that all js is build to app.js
-      // (which allows refering from auth.demokratiefabrik.ch)
       extendWebpack (cfg) {
-        // cfg.plugins.push(
-        //   new webpack.optimize.LimitChunkCountPlugin({
-        //     maxChunks: 1
-        //   })
+        cfg.plugins.push(
+          // keep only de locales
+          // new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /de|en/),
+          new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /de/)
+        )
         // )
         // disabled temporary (oauth ts class)
         // linting is slow in TS projects, we execute it only for production builds
@@ -217,7 +215,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'fabrikclient'
+        appId: 'www.demokratiefabrik.ch'
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
