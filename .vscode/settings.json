@@ -1,13 +1,9 @@
 {
-  "vetur.validation.template": false,
-  "vetur.format.enable": false,
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
-  "files.autoGuessEncoding":true,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  
   "vetur.experimental.templateInterpolationService": true,
   "workbench.colorCustomizations": {
-    "activityBar.background": "#541436",
-    "titleBar.activeBackground": "#761C4B",
-    "titleBar.activeForeground": "#FEFCFD"
+    "activityBar.background": "#4B0170",
+    "titleBar.activeBackground": "#68019C",
+    "titleBar.activeForeground": "#FEFDFF"
   }
 }

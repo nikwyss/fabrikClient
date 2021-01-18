@@ -6,7 +6,7 @@
 
 <template>
   <!-- <ArtificialModerator :text="['had']"> -->
-  <Fragment>
+  <span>
     <div style="max-width:450px">
       <q-chat-message align="left" size=7 :text="text" :sent="alignment=='right' ? false : true" :class="['artificialmoderation', actorClass]">
 
@@ -35,17 +35,16 @@
         <slot name="actions"></slot>
     </div>
 
-  </Fragment>
+  </span>
 </template>
 
 <script>
-import { Fragment } from 'vue-fragment'
+// import { Fragment } from 'vue-fragment'
 import { mapGetters } from 'vuex'
 
 const numberOfActors = 2
 
 export default {
-  components: { Fragment },
 
   /*
   Props:
