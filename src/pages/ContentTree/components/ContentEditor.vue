@@ -59,7 +59,7 @@
 <script>
 import ApiService from 'src/utils/xhr'
 import { mapActions } from 'vuex'
-import Configuration from 'src/utils/configuration'
+// import Configuration from 'src/utils/configuration'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -173,7 +173,7 @@ export default {
       console.assert( this.CTREE.contenttreeID)
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier)
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${this.CTREE.contenttreeID}`
+      let url = `${provess.env.ENV_APISERVER_URL}/assembly/${identifier}/contenttree/${this.CTREE.contenttreeID}`
       var create_action = true
       if (this.localmodel.id) {
           // this is an update

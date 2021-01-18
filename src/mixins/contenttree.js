@@ -1,5 +1,5 @@
 import { mapGetters, mapActions } from 'vuex'
-import StageMixin from "src/mixins/stage"
+import StageMixin from 'src/mixins/stage'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 
@@ -37,7 +37,7 @@ export default {
 
     contenttree: function () {
 
-      console.log("start fetching the contenttree")
+      console.log('start fetching the contenttree')
       console.assert(this.contenttreeID)
       console.assert(this.assemblyIdentifier)
 
@@ -57,9 +57,9 @@ export default {
 
     openIndex: function () {
 
-      console.log("redirect to pros_and_cons_index")
+      console.log('redirect to pros_and_cons_index')
       console.log(this.routedStage.stage)
-      console.log("WHICH IS THE TYPE??")
+      console.log('WHICH IS THE TYPE??')
       console.log(this.routedStage.stage.type)
       // REDIRECT TO ARGUMENT PAGE
       var identifier = this.$route.params.assemblyIdentifier

@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 import api from 'src/utils/api'
+import { date } from 'quasar'
+
 
 var state = {
   contenttree: {},
@@ -22,7 +24,7 @@ const getters = {
   },
   
   get_default_expanded_branches_from_store: (state) => ({contenttreeID, startingContentID}) => {
-    let key = contenttreeID + "-" + startingContentID
+    let key = contenttreeID + '-' + startingContentID
     if(!(key in state.expanded_branches)) {
       return(null)
     }
@@ -46,13 +48,13 @@ const getters = {
     console.log('check assembly status')
     
     // not access_date available
-    const timeDownloaded = Vue.moment(state.contenttree[contenttreeID].access_date)
+    const timeDownloaded = state.contenttree[contenttreeID].access_date
     if (!timeDownloaded) { return (false)}
 
     // Cache expired
     const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
-    const timeThreshold = Vue.moment(new Date())
-    timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
+    var timeThreshold = Date.now()
+    timeThreshold = date.subtractFromDate(timeThreshold, { minutes: CacheDurabilityMinutes})    
     if (timeDownloaded < timeThreshold) {
       return (false)
     }
@@ -76,7 +78,7 @@ const actions = {
     const timeout = timelag ? 5 : 0
     setTimeout(() => {
 
-      console.log("Retrieve contenttree from resource server" + contenttreeID)
+      console.log('Retrieve contenttree from resource server' + contenttreeID)
       console.assert(contenttreeID)
       api.retrieveContenttree(assemblyIdentifier, contenttreeID)
       .then(
@@ -98,7 +100,7 @@ const actions = {
         }
       )
       .catch(
-        console.log("request error")
+        console.log('request error')
       )
     })
   },
@@ -121,7 +123,7 @@ const actions = {
     console.assert(contenttreeID)
     if(!state.contenttree || !(contenttreeID in state.contenttree)) {
       // no cached version exists: load the data from resource server...
-      console.log("First time load of contenttree")
+      console.log('First time load of contenttree')
       dispatch('retrieveContenttree', {assemblyIdentifier: assemblyIdentifier, contenttreeID: contenttreeID})
       return(null)
     }
@@ -129,7 +131,7 @@ const actions = {
     // renew cache all x- minutes
     if (!getters.checkContentTreeStatus({state, getters, rootState, rootGetters}, {contenttreeID, oauthUserID})) {
       // too old cache: load the data from resource server...
-      console.log("Cache expired: reload contenttree")
+      console.log('Cache expired: reload contenttree')
       dispatch('retrieveContenttree', {
         assemblyIdentifier: assemblyIdentifier,
         contenttreeID: contenttreeID,
@@ -146,7 +148,7 @@ const mutations = {
   add_or_update_contenttree(state, {contenttreeID, contenttree, configuration}) {
 
     // keep list of opened contents (if previously available)
-    console.log("update contenttree")
+    console.log('update contenttree')
     let configuration_old = null;
     let expanded_old = null;
     if(contenttreeID in state.contenttree) {
@@ -160,7 +162,7 @@ const mutations = {
       contenttree.expanded =  expanded_old
     }
     console.log(contenttree)
-    console.log("new copy saved...")
+    console.log('new copy saved...')
     Vue.set(state.contenttree, contenttreeID, contenttree)
   },
 
@@ -169,7 +171,7 @@ const mutations = {
     console.assert(modifiedContents !== undefined)
     console.assert(modifiedContents !== null)
     for(let contentID in modifiedContents) {
-      console.log("modified contents: " + contentID)
+      console.log('modified contents: ' + contentID)
 
       let modifiedContent = modifiedContents[contentID]
       console.log(modifiedContent)
@@ -188,7 +190,7 @@ const mutations = {
 
   update_expanded_branches(state, {contenttreeID, startingContentID, expanded}) {
     // in case content or progression changes (without changing hierarchy...)
-    let key = contenttreeID + "-" + startingContentID
+    let key = contenttreeID + '-' + startingContentID
     console.log(expanded)
     Vue.set(state.expanded_branches, key, expanded)
   }

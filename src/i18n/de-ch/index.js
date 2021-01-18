@@ -12,8 +12,10 @@ export default {
     name: 'Demokratiefabrik',
     version: 'v1.0',
     error: {
+      toomanyrequests_error_title: 'Es ist gerade sehr viel los.',
+      toomanyrequests_error_body: 'Haben Sie etwas Geduld. Es kann vereinzelnt zu Störungen kommen.',
       authorization_error_title: 'Zugang verweigert',
-      authorization_error_body: 'Sie sind nicht berechtig auf diesen Bereich der Demokratiefabrik zuzugreifen. Bitte kontaktieren Sie die Organisatoren.',
+      authorization_error_body: 'Sie sind nicht berechtigt auf diesen Bereich der Demokratiefabrik zuzugreifen. Bitte kontaktieren Sie die Organisatoren.',
       service_error_title: 'Betriebsstörung',
       service_error_body: 'Im Betrieb der Demokratiefabrik ist eine Störung aufgetreten. Wir bitten Sie um Entschuldigung.',
       network_error_title: 'Netzwerkstörung',
@@ -79,7 +81,7 @@ export default {
   auth: {
     salutation_for_guests: 'Lieber Gast!',
     login_button_label: 'Anmeldung',
-    login_button_text: "Klicken Sie auf 'Anmeldung', wenn Sie sich anmelden möchten. Eine Anmeldung ist notwendig, um sich aktiv in der Fabrik zu beteiligen.",
+    login_button_text: 'Klicken Sie auf \'Anmeldung\', wenn Sie sich anmelden möchten. Eine Anmeldung ist notwendig, um sich aktiv in der Fabrik zu beteiligen.',
     registered_as: 'Angemeldet als {username}',
     not_registered: 'Nicht angmeldet',
     profile_last_name: 'Pseudonym',
@@ -149,24 +151,24 @@ export default {
   
   stages: {
     home_title: 'Ihre Agenda für den {current_date}',
-    status_completed: `Bereits beendet`,
+    status_completed: 'Bereits beendet',
     status_not_yet_accessible: 'Noch nicht zugänglich',
-    status_disabled: `Deaktiviert`,
-    status_deleted: `Gelöscht`,
+    status_disabled: 'Deaktiviert',
+    status_deleted: 'Gelöscht',
     please_enter_stage: 'Öffnen',
     goto_next_stage: 'Weiter zum nächsten Punkt',
     goto_final_message: 'Zum Abschluss',
     am: {
-      welcome_full_schedule: `Willkommen! Heute sind {numberOfStages} Punkte auf Ihrer Agenda.`,
-      welcome_partial_schedule: `Nun gibt es nur noch einen offenen Punkt. | Es gilt heute noch {numberOfScheduledStages} Punkte anzusehen.`,
-      welcome_empty_schedule: `Heute sind {numberOfStages} Punkte auf Ihrer Agenda.`,
-      enter_first: `Wir möchten gerne hier anfangen. Sind Sie bereit?`,
-      enter_continue: `Wir möchten nun gerne hier weiterfahren. Sind Sie bereit?`,
-      enter_end: `Bevor wir für heute Schluss machen: Darf ich Sie bitten mir zu folgen.`,
+      welcome_full_schedule: 'Willkommen! Heute sind {numberOfStages} Punkte auf Ihrer Agenda.',
+      welcome_partial_schedule: 'Nun gibt es nur noch einen offenen Punkt. | Es gilt heute noch {numberOfScheduledStages} Punkte anzusehen.',
+      welcome_empty_schedule: 'Heute sind {numberOfStages} Punkte auf Ihrer Agenda.',
+      enter_first: 'Wir möchten gerne hier anfangen. Sind Sie bereit?',
+      enter_continue: 'Wir möchten nun gerne hier weiterfahren. Sind Sie bereit?',
+      enter_end: 'Bevor wir für heute Schluss machen: Darf ich Sie bitten mir zu folgen.',
       already_seen: 'Möchten Sie sich das noch einmal ansehen? Ansonsten gehen wir weiter mit dem nächsten Punkt.',
       already_completed: 'Dieser Bereich haben Sie bereits abgeschlossen.',
       attention_needed: 'Hierzu hätten wir noch einen Wunsch. Folgen Sie uns bitte.',
-      enter_unique_stage: `Dies ist heute der einzige Punkt auf dem Programm. Sind Sie bereit?`,
+      enter_unique_stage: 'Dies ist heute der einzige Punkt auf dem Programm. Sind Sie bereit?',
     }
   },
 
@@ -185,7 +187,7 @@ export default {
           `Das von den Stimmbürgern erarbeitete Material ist ungemein hilfreich, wenn man sich selber ein Bild über ein politisches 
           Thema machen will.`,
           // Tooltips for the first AM displayed on the page
-          `Das warten lohnt sich auf jeden Fall. Besuchen Sie uns einfach später wieder.`
+          'Das warten lohnt sich auf jeden Fall. Besuchen Sie uns einfach später wieder.'
         ]
       }
     }
@@ -283,23 +285,23 @@ export default {
       tooltip: {
         2: [
           // Tooltips for the second AM displayed on the page
-          `Ziemlich innovativ das Ganze. Finden Sie nicht?`
+          'Ziemlich innovativ das Ganze. Finden Sie nicht?'
         ]
       }
     }
   },
 
   contenttree: {
-    no_entries: "Es sind noch keine Kommentare oder Fragen vorhanden. Machen Sie den Anfang?",
-    no_filter_results: "Keine Einträge passen zu dieser Sucheingabe!",
-    created_by: "von {username}",
-    search_button: "Suche",
-    search_field_label: "Suchbegriff...",
+    no_entries: 'Es sind noch keine Kommentare oder Fragen vorhanden. Machen Sie den Anfang?',
+    no_filter_results: 'Keine Einträge passen zu dieser Sucheingabe!',
+    created_by: 'von {username}',
+    search_button: 'Suche',
+    search_field_label: 'Suchbegriff...',
     add_comment_or_question: 'Neuer Beitrag',
     close_comment_section: 'Forum schliessen',
-    notification_number_of_expanded: `Sie sehen aktuell {nof_shown} von {nof_total} Beiträgen.`,
-    expand_all: "Beiträge ausklappen",
-    collapse_all: "Beiträge schliessen",
+    notification_number_of_expanded: 'Sie sehen aktuell {nof_shown} von {nof_total} Beiträgen.',
+    expand_all: 'Beiträge ausklappen',
+    collapse_all: 'Beiträge schliessen',
     toolbar: {
       reply: 'Möchten Sie diesem Beitrag antworten?',
       edit: 'Möchten Sie diesen Beitrag bearbeiten?',

@@ -95,7 +95,7 @@
 
                     <span @click="toggle_node(prop.node.id)" :class="[prop.node.nof_descendants ? 'cursor-pointer' : '']">
                         <q-icon name="mdi-comment-outline" size="xs" />
-                        <span class="text-date"> {{cachedNode(prop.node.id).content.date_created | moment("calendar")}}</span>
+                        <span class="text-date"> {{cachedNode(prop.node.id).content.date_created | formatDate}}</span>
                         <span v-if="cachedNode(prop.node.id).creator" class="text-user"> {{ $t('contenttree.created_by', {username: cachedNode(prop.node.id).creator}) }} </span><br>
                     </span>
                     <q-badge color="blue" v-if="!real_expanded" align="top">click to see {{prop.node.nof_descendants}} more</q-badge>

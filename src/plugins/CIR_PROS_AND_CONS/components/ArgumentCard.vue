@@ -1,5 +1,5 @@
 <template>
-<Fragment>
+<span>
         <span v-on:click.stop v-if="standalone" style="float:right;">
          <ContentToolbar
             :obj="content"
@@ -64,12 +64,12 @@
             />
       </q-card-actions>
     </q-card>
-</Fragment>
+</span>
 </template>
 
 
 <script>
-import { Fragment } from 'vue-fragment'
+// import { Fragment } from 'vue-fragment'
 import ContentRating from "src/pages/ContentTree/components/ContentRating"
 import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
@@ -77,7 +77,7 @@ import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
 export default {
   name: 'ArgumentCard',
   props: ['content', 'standalone', 'default_content_type'],
-  components: { Fragment, ContentRating, ContentEditor, ContentToolbar},
+  components: { ContentRating, ContentEditor, ContentToolbar},
   inject: ['ABLY', 'openIndex', 'openArgument']
 }
 </script>

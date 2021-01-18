@@ -3,7 +3,7 @@ FROM node:lts-alpine as develop-stage
 WORKDIR /app
 COPY package*.json ./
 
-#RUN npm install
+# RUN npm install
 RUN yarn --silent
 RUN yarn --silent global add @quasar/cli
 # copy everything but the node-modules directory (which is ignored in .dockerignore file)

@@ -34,7 +34,7 @@
         
         <ComponentContentTree
             :acl="assembly_acls"
-            label="Offene Diskussion"
+            label='Offene Diskussion'
             :contenttree="contenttree" 
             :startingContentID="startingContentID" 
         /> 
@@ -44,9 +44,9 @@
 
 
 <script>
-import ContentTreeMixin from "src/mixins/contenttree"
-import ComponentContentTree  from "src/pages/ContentTree/components/ContentTree";
-import TextsheetCard from "./components/TextsheetCard";
+import ContentTreeMixin from 'src/mixins/contenttree'
+import ComponentContentTree  from 'src/pages/ContentTree/components/ContentTree';
+import TextsheetCard from './components/TextsheetCard';
 
 export default {
     name: 'Content',

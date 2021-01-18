@@ -3,9 +3,11 @@
  * 
  * Provides methods for XHR-calls using Axios.
  */
+import Vue from 'vue'
 import axios from 'axios'
-import Configuration from 'src/utils/configuration'
-import { LayoutEventBus } from 'src/utils/eventbus.js'
+import { LayoutEventBus } from 'src/utils/eventbus'
+
+
 
 /* 
 One more thing to keep in mind, Axios by default has the timeout set to 0, which means no timeout. But in most cases, we need to set request timeouts in our application along with a retry period. We will discuss how to retry a failed request in the below sections but you can change the default timeout of our httpClient while creating it.
@@ -27,40 +29,39 @@ const RequestOrigin = 'ApiService'
 
 
 const ReloginOnStatus403 = (config = {}) => {
-  return Object.prototype.hasOwnProperty.call(config, "ReloginOnStatus403") && !config.ReloginOnStatus403 ?
+  return Object.prototype.hasOwnProperty.call(config, 'ReloginOnStatus403') && !config.ReloginOnStatus403 ?
     false : true
 }
 const Allow400Status = (config = {}) => {
-  return Object.prototype.hasOwnProperty.call(config, "Allow400Status") && config.Allow400Status ?
+  return Object.prototype.hasOwnProperty.call(config, 'Allow400Status') && config.Allow400Status ?
     true : false
 }
 const WithoutAuthHeader = (config = {}) => {
-  return Object.prototype.hasOwnProperty.call(config, "WithoutAuthHeader") && config.WithoutAuthHeader ?
+  return Object.prototype.hasOwnProperty.call(config, 'WithoutAuthHeader') && config.WithoutAuthHeader ?
     true : false
 }
 
 const ApiService = {
 
   init () {
-    const baseURL = `${Configuration.value('ENV_APISERVER_URL')}`;
     axios.defaults.timeout = 2000
-    axios.defaults.baseURL = baseURL}
-  ,
+    axios.defaults.baseURL = process.env.ENV_APISERVER_URL
+  },
 
   /**
    * Sets the transmitted JWT token as current default authentication header
    */
   setHeader(token) {
 
-    console.log("Set axios header: " + token.length > 0)
-    console.log("Set XHR Request header. Including token:" + !!token)
+    console.log('Set axios header: ' + token.length > 0)
+    console.log('Set XHR Request header. Including token:' + !!token)
     if (typeof (token) !== 'string' && token !== null) {
       return (null)
     }
 
     // console.error(typeof (token))
     if (token) {
-      axios.defaults.headers.common[HTTP_HEADER] = "JWT " + token
+      axios.defaults.headers.common[HTTP_HEADER] = 'JWT ' + token
     } else {
       delete axios.defaults.headers.common[HTTP_HEADER]
     }
@@ -71,7 +72,7 @@ const ApiService = {
    */
   removeHeader() {
     axios.defaults.headers.common = {}
-    console.log("Remove axios header")
+    console.log('Remove axios header')
   },
 
   /**
@@ -138,24 +139,25 @@ const ApiService = {
    * Perform a custom Axios request.
    **/
   async customRequest(data) {
-    console.log("launch XHR custom request")
+    console.log('launch XHR custom request')
 
     // Assert that header is set, when somebody is authenticated.
     var temp_oauth_jwt = null
 
     data['origin'] = RequestOrigin
+    data['timeout'] = 30000 // 30 seconds till timeout
 
     if (WithoutAuthHeader(data)) {
       // cache the current header and remove it
-      console.log("remove XHR header")
+      console.log('remove XHR header')
       temp_oauth_jwt = this.getHeader()
       this.removeHeader()
     }
 
 
-
     var response = null
     response = await axios(data)
+    console.log('just launched')
     
     // TOKEN SHOULD BE ALRIGHT NOW:
     // DO the secont attempt
@@ -164,7 +166,7 @@ const ApiService = {
 
     // retry parameter is set within the interceptor on 403 errors.
     // At this point, the jwt token is already refreshed (within the interceptor) 
-    console.log("PERMISSION ERROR: Initiate a secont attempt")
+    console.log('PERMISSION ERROR: Initiate a secont attempt')
     if (response.retoken) {
       
       // Re-issue tokens (in ApiService)
@@ -173,14 +175,14 @@ const ApiService = {
 
       // Re-axios (same as before...)
       // (token should already be refreshed...)
-      console.log("Second attempt....")
+      console.log('Second attempt....')
       response = await axios(data)
-      console.log("second try")
+      console.log('second try')
       console.log(response)
 
       // What if the second attempt fails?
       if (response.retoken) {
-        console.log("token could not be renewed.. 2nd attempt failed.")
+        console.log('token could not be renewed.. 2nd attempt failed.')
         LayoutEventBus.$emit('showAuthorizationError')
       }
       // Headers are set again. dont neet to this.
@@ -190,7 +192,7 @@ const ApiService = {
     
     if (temp_oauth_jwt && WithoutAuthHeader(data)) {
       // re-set the header
-      console.log("header re-set")
+      console.log('header re-set')
       this.setHeader(temp_oauth_jwt)
     }
 
@@ -217,5 +219,87 @@ const ApiService = {
 }
 
 
-export { ApiService, ReloginOnStatus403 };
+
+// AXIOS  INTERCEPTOR
+/////////////////////////////////
+const axiosErrorHandling = async function(error) {
+  // axiosErrorHandling = async function (error) {
+  // enfoce that ApiService Wrapper is used, (and not pure Axios)
+  // console.log("XHR ERROR")
+  ApiService.is_api_service_used_as_axios_wrapper(error.config)
+
+  // No remote connection established
+  // Invalid URL or Server not reachable...
+  if (!error.response) {
+    console.log('Network error')
+    LayoutEventBus.$emit('showNetworkError')
+    return Promise.reject(error)
+
+  // Server Error
+  } else if (error.response.status == 400) {
+    // 400 errors (parse errors)
+    console.log('400 Error')
+    if (Allow400Status(error.config)) {
+        // dont raise 400 errors, if this is desired explicitly
+        console.log('AXIOS: Pass Error 400')
+        return (true)
+    }
+    return Promise.reject(error)
+
+    // 405 Authorization errors : probaly not enough privileges...
+  } else if (error.response.status == 405) {
+    // 405 errors (parse errors)
+    console.log('AXIOS: Pass Error 405')
+    LayoutEventBus.$emit('showAuthorizationError')
+    return Promise.reject(error)
+
+  // 429 Too Many Requests...
+  } else if (error.response.status == 429) {
+    console.log('AXIOS: Pass Error 429')
+    LayoutEventBus.$emit('showTooManyRequestsError')
+    return Promise.reject(error)
+
+    // 403 Permission errors : probaly token expired...
+  } else if (error.response.status == 403) {
+    console.log('403 Error')
+
+    if (ReloginOnStatus403(error.config)) {
+      console.log('AXIOS: ReloginOnStatus403')
+      error.response.status = 449
+      if (Vue.prototype.pkce.isAuthorized()) {
+
+        // Refresh Token
+        await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
+        if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {          
+          const jwt = Vue.prototype.pkce.state.accessToken.value
+          ApiService.setHeader(jwt)
+          error.config.retoken = true
+          return (error.config)
+        }        
+      }
+
+      // Token Refresh, seems not be possible / desired :-(
+      LayoutEventBus.$emit('showAuthenticationWarning')
+      console.log('Invalid Authentication Token')
+      return Promise.reject(error)
+    }
+  }
+
+  // All other errors:
+  console.log('Unknown API Request Error')
+  console.log('status: ' + error.response.status)
+  LayoutEventBus.$emit('showServiceError')
+  return Promise.reject(error)
+}
+ApiService.mountAxiosInterceptor(axiosErrorHandling)
+
+LayoutEventBus.$on('AfterTokenChanged',  jwt => {
+  if (jwt) {
+    ApiService.setHeader(jwt)
+  }else{
+    ApiService.removeHeader()
+  }
+})
+
+export { ApiService, ReloginOnStatus403, Allow400Status };
 export default ApiService

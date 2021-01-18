@@ -5,6 +5,7 @@
 import Vue from 'vue'
 import api from 'src/utils/api'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
+import { date } from 'quasar'
 
 var state = {
   assemblydata: {},
@@ -110,13 +111,13 @@ const getters = {
     }
 
     // not access_date available
-    const timeDownloaded = Vue.moment(state.assemblydata[assemblyIdentifier].access_date)
+    const timeDownloaded = state.assemblydata[assemblyIdentifier].access_date
     if (!timeDownloaded) { return (false)}
 
     // Cache expired
     const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
-    const timeThreshold = Vue.moment(new Date())
-    timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
+    var timeThreshold = Date.now()
+    timeThreshold = date.subtractFromDate(timeThreshold, { minutes: CacheDurabilityMinutes})    
     if (timeDownloaded < timeThreshold) {
       return (false)
     }
@@ -145,14 +146,14 @@ const actions = {
     if(!state.assemblydata || !(assemblyIdentifier in state.assemblydata)) {
       // no cached version exists: load the data from resource server...
       dispatch('retrieveAssembly', {assemblyIdentifier: assemblyIdentifier})
-      console.log(` not yet fetched...`)
+      console.log(' not yet fetched...')
       return(null)
     }
 
     // renew cache all x- minutes
     if (!getters.checkAssemblyStatus({state, getters, rootState, rootGetters}, {assemblyIdentifier, oauthUserID})) {
       // too old cache: load the data from resource server...
-      console.log(` not in sync...`)
+      console.log(' not in sync...')
       dispatch('retrieveAssembly', {assemblyIdentifier: assemblyIdentifier})
     }
 
@@ -160,13 +161,13 @@ const actions = {
   },
  
   storeAssemblyProgression({commit}, {assemblyIdentifier, stageID, progression}) {
-    console.log("Store stage progression in localstorage")
+    console.log('Store stage progression in localstorage')
     commit('storeAssemblyProgression', {assemblyIdentifier, stageID, progression})
   },
 
   retrieveAssembly({commit}, {assemblyIdentifier}) {
 
-    console.log("Retrieve assembly from resource server")
+    console.log('Retrieve assembly from resource server')
     api.retrieveAssembly(assemblyIdentifier)
       .then(
         response => {
@@ -185,17 +186,19 @@ const actions = {
       .catch((error) => {
         console.warn(error)
         // Error Handling is done in Axios Interceptor
-        console.warn("Request Error")
+        console.warn('Request Error')
       })
+
+      // console.log("just launched in vuex")
     }
   }
 
   const mutations = {
 
     set_random_seed (state) {
-      console.log("SET RANDOM SEED IF NOT YET DONE")
+      console.log('SET RANDOM SEED IF NOT YET DONE')
       if (!state.randomSeed) {
-        console.log("setter")
+        console.log('setter')
         let randomSeed = Math.floor(Math.random() * Math.floor(99)) + 1
         state.randomSeed = randomSeed
       }
@@ -204,7 +207,7 @@ const actions = {
     setCachedStageID(state, {assembly, stageID}) {
 
       // keep list of opened contents (if previously available)
-      console.log("update current  stage id for the given assembly")
+      console.log('update current  stage id for the given assembly')
 
       // prepare folder
       if (!(assembly.identifier in state.current_stages)) {
@@ -212,7 +215,7 @@ const actions = {
       }
       // Vue.set  makes the change reactive!!
       Vue.set(state.current_stages, assembly.identifier, stageID)
-      console.log("...store: new stage has been set...")
+      console.log('...store: new stage has been set...')
     },
 
     storeAssembly (state, {assemblyIdentifier, data}) {

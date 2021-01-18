@@ -1,12 +1,16 @@
 import {mapGetters, mapActions} from 'vuex'
-import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 export default {
-  include: ['IsUserDelegateOfOngoingAssembly'],
+
   provide() {
     // can be incected on all child components.
     return {
-      clickAssemblyLink: this.clickAssemblyLink
+      published_assemblies: this.published_assemblies,
+      clickAssemblyLink: this.clickAssemblyLink,
+      IsThereNothingGoingOn: this.IsThereNothingGoingOn,
+      IsThereAnAssemblyInPublicState: this.IsThereAnAssemblyInPublicState,
+      IsThereAnAssemblyOngoing: this.IsThereAnAssemblyOngoing,
+      IsUserDelegateOfOngoingAssembly: this.IsUserDelegateOfOngoingAssembly // Vue.observable(this.IsUserDelegateOfOngoingAssembly)
     }
   },
 
@@ -49,7 +53,6 @@ export default {
   },
 
   mounted: function() {
-    this.$store.dispatch('publicindexstore/syncPublicIndex')
-    
+    this.$store.dispatch('publicindexstore/syncPublicIndex')    
   }
 }

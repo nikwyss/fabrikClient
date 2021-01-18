@@ -1,6 +1,6 @@
 <template>
 
-<Fragment>
+<span>
  <q-dialog v-model="peerreview_small" v-if="peerreview_small"  position="bottom" seamless  >
    <q-card style="width: 350px" @click="peerreview_small=false; peerreview_large=true;">
         <q-card-section class="row items-center no-wrap">
@@ -220,15 +220,15 @@
     </q-layout> -->
 
     </q-dialog>
-  </Fragment>
+  </span>
 </template>
 
 <script>
-import { Fragment } from 'vue-fragment'
+// import { Fragment } from 'vue-fragment'
 
 export default {
   name: "ContentTreePeerReview",
-  components: {Fragment},
+  // components: {Fragment},
   data () {
     return {
       peerreview_small: false,

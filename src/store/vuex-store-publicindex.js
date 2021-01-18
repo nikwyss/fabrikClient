@@ -5,6 +5,8 @@
 import Vue from 'vue'
 import api from 'src/utils/api'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
+import { date } from 'quasar'
+
 
 var state = {
   publicIndex: null
@@ -37,21 +39,20 @@ const getters = {
     // console.log(rootGetters)
 
     // not access_date available
-    const timeDownloaded = Vue.moment(state.publicIndex.access_date)
+    const timeDownloaded = state.publicIndex.access_date
     if (!timeDownloaded) { return (false)}
     
     // Cache expired
     const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
-    const timeThreshold = Vue.moment(new Date())
-    timeThreshold.subtract(CacheDurabilityMinutes, 'minutes')
-
+    var timeThreshold = Date.now()
+    timeThreshold = date.subtractFromDate(timeThreshold, { minutes: CacheDurabilityMinutes})    
     return (timeDownloaded < timeThreshold)
   },
 
   /* SHORTCUTS: mainly for artificial moderators */
   IsThereAnAssemblyInPublicState: (state) => {
     console.log(state.published_assemblies)
-    console.log("xxxxxxxxxxx")
+    console.log('xxxxxxxxxxx')
     
     if (state.published_assemblies == null) {
       return (null)
@@ -95,7 +96,7 @@ const actions = {
   },
 
   retrievePublicIndex({commit}) {
-    console.log("Retrieve publicIndex from resource server")
+    console.log('Retrieve publicIndex from resource server')
     api.retrievePublicIndex()
       .then(
         response => {
@@ -112,7 +113,7 @@ const actions = {
       )
       .catch((error) => {
         console.warn(error)
-        console.warn("Request Error")
+        console.warn('Request Error')
         
       })
   }

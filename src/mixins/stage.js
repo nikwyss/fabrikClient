@@ -1,5 +1,5 @@
 import {mapGetters} from 'vuex'
-import AssemblyMixin from "src/mixins/assembly"
+import AssemblyMixin from 'src/mixins/assembly'
 
 export default {
   
@@ -40,7 +40,7 @@ export default {
       }
 
       this.$store.dispatch('monitorApi', {
-        event: this.MonitorStageEntering,
+        event: this.MONITOR_STAGE_ENTERING,
         data: data,
         key: this.stageID
       })

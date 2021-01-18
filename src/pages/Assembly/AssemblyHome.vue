@@ -9,8 +9,8 @@
         <!-- ASSEMBLY DESCRIPTION -->
         <div v-if="assembly">
             <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div>
-            <h2>{{$t('stages.home_title', {current_date: $moment().format('l')})}}</h2>
-            <span>{{ $t('assemblies.home_description', {relative_end_date: $moment(assembly.date_end).fromNow()}) }}</span>
+            <h2>{{$t('stages.home_title', {current_date: $options.filters.formatDate(Date.now())})}}</h2>
+            <span>{{ $t('assemblies.home_description', {relative_end_date: $options.filters.formatTimeLeft(assembly.date_end)}) }}</span>
         </div>
 
         <!-- AM-OVERVIEW -->

@@ -136,7 +136,7 @@
 import ApiService from "src/utils/xhr";
 import ContentTreeMixin from "src/mixins/contenttree"
 import {mapActions} from 'vuex'
-import Configuration from 'src/utils/configuration'
+// import Configuration from 'src/utils/configuration'
 
 export default {
   name: "ContentTreeEditor",
@@ -231,7 +231,7 @@ export default {
           this.localmodel['order_position'] = this.contenttree_count + 1
         }
 
-        let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${this.assembly.identifier}/contenttree`
+        let url = `${process.env.ENV_APISERVER_URL}/assembly/${this.assembly.identifier}/contenttree`
         if(localmodel['id']) {
 
           // MODIFY
@@ -264,7 +264,7 @@ export default {
     delete: function (localmodel) {
         console.log("DELETE ContentTree")
         console.assert(this.assembly.identifier)
-        let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${this.assembly.identifier}/contenttree`
+        let url = `${process.env.ENV_APISERVER_URL}/assembly/${this.assembly.identifier}/contenttree`
         url += `/{this.localmodel['id']}`
 
         ApiService.delete(url).then(

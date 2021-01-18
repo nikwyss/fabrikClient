@@ -2,70 +2,57 @@
  * This file runs in a Node context (it's NOT transpiled by Babel), so use only
  * the ES6 features that are supported by your Node version. https://node.green/
  */
+
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
-/* eslint-env node */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { configure } = require('quasar/wrappers')
-const webpack = require('webpack')
-// const env = require('quasar-dotenv').config()
-// env: env,
 
-module.exports = configure(function (ctx) {
+module.exports = function (/* ctx */) {
   return {
-
     // https://quasar.dev/quasar-cli/supporting-ts
-    supportTS: {
-      tsCheckerConfig: {
-        eslint: true
-      }
-    },
+    supportTS: false,
 
     // https://quasar.dev/quasar-cli/prefetch-feature
     // preFetch: true,
 
+    // app boot file (/src/boot)
+    // --> boot files are part of "main.js"
+    // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      'helpers',
-      'oauth2',
-      'i18n'
+      'main',
+      'i18n',
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
       'app.sass'
-      // 'app.scss'
     ],
 
+    // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
-      'mdi-v5'
-      // 'roboto-font' // optional, you are not bound to it
+      'mdi-v5',
     ],
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // publicPath: 'app-extension-dotenv',
-      uglifyOptions: {
-        compress: { drop_console: true },
-        extractComments: 'all',
-        warnings: false,
-        parse: {},
-        mangle: true, // Note `mangle.properties` is `false` by default.
-        output: null,
-        toplevel: false,
-        nameCache: null,
-        ie8: false,
-        keep_fnames: false
-      },
-
-      // ptimization: {
-      //   minimizer: [new UglifyJsPlugin()],
+      
+      // uglifyOptions: {
+      //   compress: { drop_console: true },
+      //   extractComments: 'all',
+      //   warnings: false,
+      //   parse: {},
+      //   mangle: true, // Note `mangle.properties` is `false` by default.
+      //   output: null,
+      //   toplevel: false,
+      //   nameCache: null,
+      //   ie8: false,
+      //   keep_fnames: false
       // },
-      // new webpack.optimize.LimitChunkCountPlugin({
-      //   // maxChunks: 1
-      // }
+      
 
       // transpile: false,
+
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
       // Applies only if "transpile" is set to true.
@@ -74,7 +61,7 @@ module.exports = configure(function (ctx) {
       // rtl: false, // https://quasar.dev/options/rtl-support
       // preloadChunks: true,
       // showProgress: false,
-      gzip: true,
+      // gzip: true,
       // analyze: true,
 
       // Options below are automatically set depending on the env, set them if you want to override
@@ -82,23 +69,7 @@ module.exports = configure(function (ctx) {
 
       // https://quasar.dev/quasar-cli/handling-webpack
       extendWebpack (cfg) {
-        cfg.plugins.push(
-          // keep only de locales
-          // new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /de|en/),
-          new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /de/)
-        )
-        // )
-        // disabled temporary (oauth ts class)
-        // linting is slow in TS projects, we execute it only for production builds
-        if (ctx.prod) {
-          cfg.module.rules.push({
-            enforce: 'pre',
-            test: /\.(js|vue)$/,
-            loader: 'eslint-loader',
-            exclude: /node_modules/
-          })
-        }
-      }
+      },
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -127,16 +98,12 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Loading', 'Dialog', 'Notify']
+      plugins: []
     },
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
     animations: [],
-    // animations: [
-    //   'fadeInDown',
-    //   'fadeOutUp'
-    // ],
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
@@ -148,9 +115,9 @@ module.exports = configure(function (ctx) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: 'fabrikClient',
-        short_name: 'fabrikClient',
-        description: 'A demokratiefabrik Vue-js Client',
+        name: `demokratiefabrik`,
+        short_name: `demokratiefabrik`,
+        description: `A Quasar Framework app`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
@@ -215,7 +182,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'www.demokratiefabrik.ch'
+        appId: 'demokratiefabrik'
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
@@ -227,4 +194,4 @@ module.exports = configure(function (ctx) {
       }
     }
   }
-})
+}

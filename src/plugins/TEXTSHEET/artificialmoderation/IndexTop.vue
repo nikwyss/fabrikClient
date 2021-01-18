@@ -31,7 +31,7 @@
 import ArtificialModerator from 'src/artificialmoderation/components/ArtificialModerator'
 
 export default{
-    name: "ArtificialModeratorTEXTSHEETMain",
+    name: 'ArtificialModeratorTEXTSHEETMain',
     inject: ['ABLY', 'assemblyIdentifier', 'gotoAssemblyHome', 'clickGotoIndexAndMoveOn',
         'isSkippable', 'isNew', 'isLastStage', 'isCompleted', 'isAlert', 'isFirstStage'
     ], // see provide attribute in the antecedents

@@ -1,15 +1,12 @@
-import messages from 'src/i18n'
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-// require('moment/locale/de')
-
-
+import messages from 'src/i18n'
 
 Vue.use(VueI18n)
 
 const i18n = new VueI18n({
-  locale: 'de-ch',
-  fallbackLocale: 'de-ch',
+  locale: process.env.ENV_I18N_LOCALE,
+  fallbackLocale: process.env.ENV_I18N_FALLBACK_LOCALE,
   messages
 })
 
@@ -19,9 +16,3 @@ export default ({ app }) => {
 }
 
 export { i18n }
-
-// Localization
-const moment = require('moment')
-// require('moment/locale/de')
-moment.defineLocale('de-ch', {parentLocale: 'de',});
-Vue.use(require('vue-moment'), {moment})

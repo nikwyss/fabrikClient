@@ -2,6 +2,7 @@ import {mapGetters, mapActions} from 'vuex'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { scroll } from 'quasar'
+// TODO: do without: vue-reactive-provide, instead write a plugin...
 
 const { getScrollTarget, setScrollPosition } = scroll
 
@@ -45,7 +46,7 @@ export default {
     },
 
     assembly: function () {
-      console.log("ASSEMBLY GETTER" + this.assemblyIdentifier)
+      console.log('ASSEMBLY GETTER' + this.assemblyIdentifier)
 
       LayoutEventBus.$emit('showLoading')
 
@@ -62,12 +63,12 @@ export default {
     },
 
     assembly_stages: function() {
-      console.log("get assembly_stages")
+      console.log('get assembly_stages')
       console.assert(this.assemblyIdentifier)
 
       // not yet ready?
       if (!this.assembly){
-        console.log("assembly not yet loaded...1923")
+        console.log('assembly not yet loaded...1923')
         return (null)
       }
 
@@ -78,7 +79,7 @@ export default {
       console.assert(this.assemblyIdentifier)
       // not yet ready?
       if (!this.assembly){ 
-        console.log("assembly not yet loaded...1922")
+        console.log('assembly not yet loaded...1922')
         return (null)
       }
       return (this.get_assembly_configuration(this.assemblyIdentifier))
@@ -88,7 +89,7 @@ export default {
       console.assert(this.assemblyIdentifier)
       // not yet ready?
       if (!this.assembly){ 
-        console.log("assembly not yet loaded...1921")
+        console.log('assembly not yet loaded...1921')
         return (null)
       }
       return (this.get_assembly_progression(this.assemblyIdentifier))
@@ -199,7 +200,7 @@ export default {
 
       set: function(stageNr) {
 
-          console.log("SET NEW STAGE" + stageNr)
+          console.log('SET NEW STAGE' + stageNr)
 
           if (stageNr === null) {
             this.setCachedStageID({assembly: this.assembly, stageID: null })
@@ -239,18 +240,13 @@ export default {
       let data = {
         assembly_identifier: this.assemblyIdentifier
       }
+
       this.$store.dispatch('monitorApi', {
-        event: this.MonitorAssemblyEntering,
+        event: this.MONITOR_ASSEMBLY_ENTERING,
         data: data,
         key: this.assemblyIdentifier
       })
     },
-
-
-        // // SCROLL POSITION
-    // setTimeout(() => {
-    //   this.scrollToStage()
-    // }, 340)
 
     stageTransition: function(newVal, oldVal) {
       this.scrollToStage()
@@ -264,7 +260,7 @@ export default {
 
     scrollToStage: function() {
       // SCROLL POSITION
-      console.log("Do the scrolling...")
+      console.log('Do the scrolling...')
       // let anchorid = `stage${this.cachedStageNr}`
       var element = document.getElementsByClassName('q-stepper__tab--active');
       if (element) {
@@ -276,7 +272,7 @@ export default {
         setScrollPosition(target, offset, duration)
         
       }else{
-        console.log("scroll element not found..")
+        console.log('scroll element not found..')
       }
     },
 
@@ -305,7 +301,7 @@ export default {
 
     findNextValidateStageNr: function (currentStageNr) {
 
-      console.log("validator: " + currentStageNr)
+      console.log(`validator: ${currentStageNr}`)
       var stageNr = currentStageNr + 1
 
       // is the current stage accessible (i.e. not completed)
@@ -318,18 +314,18 @@ export default {
       // Not valid
       if (stageNr == this.numberOfStages) {
         // Last stage is completed. This is the end of todays agenda.
-        console.log("last stage is finished. End of Agenda.")
+        console.log('last stage is finished. End of Agenda.')
         return (null)
 
       }
 
-      console.log("This stage is not accessible: Check the next one...")
+      console.log('This stage is not accessible: Check the next one...')
       return (this.findNextValidateStageNr(stageNr))
     },
 
     validateStageNr: function (stageNr) {
 
-      console.log("validator: " + stageNr)
+      console.log('validator: ' + stageNr)
 
       // is there a unskipable stage before the current stage?
       // Or: is the current stage beyond highgest allowed stageNr?
@@ -349,9 +345,9 @@ export default {
 
     clickGotoIndexAndMoveOn: function() {
       // const stageNr = this.sorted_stages.indexOf(this.cachedStageNr)
-      console.log("update stage")
+      console.log('update stage')
       this.gotoNextStageNr()
-      console.log("stage has been updated: goto home")
+      console.log('stage has been updated: goto home')
       this.gotoAssemblyHome()
       // this.scrollToStage()
 
@@ -362,11 +358,11 @@ export default {
     },
 
     gotoNextStageNr: function() {
-      console.log("clcik goto next stage nr. CURRENT: ")
+      console.log('clcik goto next stage nr. CURRENT: ')
       const nextStageNr = this.findNextValidateStageNr(this.cachedStageNr)
-      console.log(" next stage found: " + nextStageNr)
+      console.log(' next stage found: ' + nextStageNr)
       this.cachedStageNr = nextStageNr
-      console.log("ok, new stage is set to " + nextStageNr )
+      console.log('ok, new stage is set to ' + nextStageNr )
     },
 
     getIDbyNr: function (stageNr) { 
@@ -420,7 +416,7 @@ export default {
     },
     isDisabled: function (stage) {
         // only admins see deleted attribute.
-        return(("disabled" in stage.stage && stage.stage.disabled) || ("deleted" in stage.stage && stage.stage.deleted))
+        return(('disabled' in stage.stage && stage.stage.disabled) || ('deleted' in stage.stage && stage.stage.deleted))
     },
     isCompleted: function (stage) {
       console.assert(stage)
@@ -457,7 +453,7 @@ export default {
 
     // Catch all authentication status changes
     LayoutEventBus.$on('AfterAuthenticationStatusChanged', data => {
-      console.log(">> AfterAuthenticationStatusChanged listener in assembly")
+      console.log('>> AfterAuthenticationStatusChanged listener in assembly')
       const assemblyIdentifier = this.assemblyIdentifier
       this.$store.dispatch('assemblystore/syncAssembly', {
         assemblyIdentifier, 
@@ -469,7 +465,7 @@ export default {
   watch: {
     // if route changes, hide TextLoading
     $route (to, from) {
-      console.log("NEW ASSEMBLY ROUTE")
+      console.log('NEW ASSEMBLY ROUTE')
       // console.log(to)
       //   this.hideLoadingGif()
       //   this.hideNotificationBanner()
@@ -480,7 +476,7 @@ export default {
 
   mounted: function() {
     const assemblyIdentifier = this.assemblyIdentifier
-    console.log(">> mounter")
+    console.log('>> mounter')
     this.$store.dispatch('assemblystore/syncAssembly', {
       assemblyIdentifier, 
       oauthUserID: this.oauth.userid})

@@ -1,5 +1,5 @@
 <template>
-<Fragment>
+<span>
   
     <span v-on:click.stop v-if="standalone" style="float:right;">
       <ContentToolbar
@@ -36,12 +36,12 @@
       label="Offene Diskussion"
       :startingNode="startingContentNode"
     /> 
-  </Fragment>
+  </span>
 </template>
 
 
 <script>
-import { Fragment } from 'vue-fragment'
+// import { Fragment } from 'vue-fragment'
 import ContentRating from "src/pages/ContentTree/components/ContentRating"
 import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
@@ -50,7 +50,7 @@ import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
 export default {
   name: 'TextsheetCard',
   props: ['item', 'standalone', 'heading_number', 'comments'],
-  components: { Fragment, ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
+  components: { ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
   data: function() {
     return({
         show_discussion: false

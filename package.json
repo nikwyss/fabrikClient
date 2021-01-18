@@ -1,7 +1,6 @@
 {
-  "name": "Demokratiefabrik",
-  "version": "0.0.1",
-  "license": "GPL-3.0",
+  "name": "demokratiefabrik",
+  "version": "0.5.1",
   "description": "A Demokratiefabrik Vue-js Client",
   "productName": "Demokratiefabrik",
   "author": "Dominik Wyss",
@@ -9,42 +8,25 @@
   "scripts": {
     "start-dev": "quasar dev",
     "build_docker_image": "docker build -f Dockerfile -t demokratiefabrik/fabrikclient . && docker push demokratiefabrik/fabrikclient",
-    "lint": "eslint --ext .js,.ts,.vue ./",
+
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
     "@bity/oauth2-auth-code-pkce": "^2.11.0",
-    "@quasar/extras": "^1.9.5",
-    "axios": "^0.18.1",
+    "@quasar/extras": "^1.0.0",
+    "@quasar/quasar-app-extension-dotenv": "^1.0.5",
+    "axios": "^0.21.0",
     "core-js": "^3.6.5",
-    "js-cookie": "^2.2.1",
-    "qs": "^6.9.4",
+
     "quasar": "^1.0.0",
-    "query-string": "^6.13.8",
-    "vue-fragment": "^1.5.1",
     "vue-i18n": "^8.0.0",
-    "vue-moment": "^4.1.0",
     "vue-reactive-provide": "^0.3.0",
-    "vue-sanitize": "^0.2.0",
-    "vuex-persistedstate": "^3.1.0"
+    "vue-sanitize": "^0.2.1",
+    "vuex-persistedstate": "^4.0.0"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",
-    "@quasar/quasar-app-extension-dotenv": "^1.0.5",
-    "@types/node": "^10.17.15",
-    "@typescript-eslint/eslint-plugin": "^3.3.0",
-    "@typescript-eslint/parser": "^3.3.0",
-    "babel-eslint": "^10.0.1",
-    "dotenv": "^8.2.0",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-loader": "^3.0.3",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "eslint-plugin-vue": "^6.1.2",
-    "quasar-dotenv": "^1.0.5"
+    "quasar-app-extension-dotenv-plus": "^2.0.0"
   },
   "browserslist": [
     "ie >= 11",

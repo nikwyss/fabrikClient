@@ -138,7 +138,7 @@ export default {
       console.log("deleteEntry")
       var identifier = this.$route.params.assemblyIdentifier
       console.assert(identifier);
-      let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/contenttree/${QUASAR_TREE.contenttreeID}/content/${content.id}`
+      let url = `${process.env.ENV_APISERVER_URL}/assembly/${identifier}/contenttree/${QUASAR_TREE.contenttreeID}/content/${content.id}`
       var data = {'justification': justification}
       ApiService.delete(url, data).then(
         response => {

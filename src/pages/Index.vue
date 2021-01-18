@@ -1,6 +1,7 @@
 <template>
   <q-page class="doc_content">
     <div align="center">
+
       <ArtificialModeratorIndexPage />
     </div>
   </q-page>

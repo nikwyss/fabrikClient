@@ -1,5 +1,5 @@
 <template>
-  <div id="q-app">
+  <div id="q-app">   
     <router-view />
   </div>
 </template>
@@ -16,6 +16,7 @@ export default {
   },
   mounted: function () {
     this.touchRandomSeed()
+    // console.log(this.$nLength([1,2]))
     console.log("APP mounted...")
   }
 }

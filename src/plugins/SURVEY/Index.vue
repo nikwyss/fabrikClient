@@ -51,7 +51,7 @@
 <script>
 import StageMixin from "src/mixins/stage"
 import i18nPluginMixin from "./i18n"
-import Configuration from 'src/utils/configuration'
+// import Configuration from 'src/utils/configuration'
 import ArtificialModeratorSURVEYIndexTop from './artificialmoderation/IndexTop'
 // import {mapGetters} from 'vuex'
 
@@ -102,7 +102,7 @@ export default {
             // all data available
             const SID = this.routedStage.stage.custom_data.SID
             // this.$router.currentRoute.path
-            let url = Configuration.value('ENV_SURVEY_URL')
+            let url = process.env.ENV_SURVEY_URL
             var re = /:SID:/g
             var newurl = url.replace(re, SID)
             re = /:USERID:/g
@@ -120,10 +120,10 @@ export default {
 
         monitorApi: function(event, force) {
             console.log("Force MonitorApi: " + event + " - " + force)
-
-            if (!event) {
-                event = this.MonitorStageEntering
-            }
+            console.assert(event)
+            // if (!event) {
+            //     event = this.MONITOR_STAGE_ENTERING
+            // }
 
             /* By this method we allow the API to monitor userz activities */
             const STAGEID = this.routedStageID

@@ -8,7 +8,7 @@
           <!-- <b>{{$t('contenttree.editor.content_title')}}</b> -->
 
           <p>
-            {{ this.profile.original_email ?  '' :  'Willkommen!' }}
+            {{ profile.original_email ?  '' :  'Willkommen!' }}
             Folgendes Pseudonym wurde Ihnen zugewiesen: Andere Teilnehmende werden Sie unter diesem Namen ansprechen können.      <br />
             <q-input disable outlined v-model="profile.pseudonym" :dense="true">
               <template v-slot:prepend>
@@ -181,7 +181,10 @@ export default {
         }
 
         this.loading = false
-    })
+    }).catch(e => {
+      console.log(e);
+      this.loading = false
+  })
   }
 }
 </script>

@@ -47,7 +47,7 @@
 
 import {mapActions} from 'vuex'
 import ApiService from "src/utils/xhr";
-import Configuration from 'src/utils/configuration'
+// import Configuration from 'src/utils/configuration'
 
 export default{
     name: "ContentRating",
@@ -68,7 +68,7 @@ export default{
     console.assert(identifier);
     this.progression_rating = rating
 
-    let url = `${Configuration.value('ENV_APISERVER_URL')}/assembly/${identifier}/content/${this.content.content.id}/rating/${rating}`
+    let url = `${process.env.ENV_APISERVER_URL}/assembly/${identifier}/content/${this.content.content.id}/rating/${rating}`
     console.log(url)
     console.log("xhr request")
     ApiService.get(url).then(

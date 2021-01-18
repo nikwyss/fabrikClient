@@ -115,7 +115,7 @@
       v-if="expanded_logo"
       :ratio="1"
       style="max-width: 241px; max-height:120px;"
-      src="~assets/logoweb.png"
+      src="layout/logoweb.png"
       />
 
       </transition>
@@ -146,60 +146,17 @@
   <!-- CONTENT -->
   <q-page-container>
         
-    <!-- MAIN PAGE CONTENT -->
-    <!-- <div align="center"> -->
-    <router-view />
 
 
-  
-  
-  <!-- Footer  bg-blue-grey-2-->
-  <br><br>
-    <div class=" full-width" style="border-top: 1px solid black">
-      <br><br>
-      <br>
-      <q-page class="doc_content">
-
-        <div class="q-col-gutter-md row items-start">
-
-          <div class="col-4 q-pr-xl">
-            <!-- {{ $t('app.name') }} {{ $t('app.version') }} <br> -->
-            <b>Impressum:</b><br> 
-            Année Politique Suisse<br>
-            Institut für Politikwissenschaft<br>
-            Universität Bern<br>
-            Fabrikstrasse 8<br>
-            CH-3012 Bern<br>
-            Tel. +41 (0)31 631 83 31<br>
-            Fax +41 (0)31 631 48 17<br>
-
-          </div>
-
-          <div class="col-2">
-            <q-img src='~assets/logo_aps.svg'   :ratio="1" contain class="q-ma-sm" style="height: 100px; "></q-img>
-
-          </div>
-
-          <div class="col-2">
-                      <q-img src='~assets/logo_unibe.png' :ratio="1" contain style="height: 100px; "></q-img>
-
-          </div>
-
-          <div class="col-2">
-                      <q-img src='~assets/logo_snf.jpg'   :ratio="1" contain class="q-ma-sm"  style="height: 100px;"></q-img>
-          </div>
-
-        </div>
-
-        
     <!-- DATA LOADING GIF -->
-    <!-- TODO: remove -->
+    <!-- TODO: remove??  -->
     <q-inner-loading :showing="TextLoadingVisible"  style="z-index:100">
         <q-spinner-dots size="50px" color="primary" />
     </q-inner-loading>
 
     <!-- NOTIFICATION BANNER -->
     <q-inner-loading :showing="NotificationBannerVisible" style="z-index:100; justify-content:flex-start; padding-top: 100px;" class="bg-white">
+      HALLO
       <div class="q-ma-xl" style="max-width: 400px">
         <h1><q-icon v-if="NotificationBannerIcon" :name="NotificationBannerIcon" /> {{NotificationBannerTitle}}</h1>
         <div>{{NotificationBannerBody}}</div>
@@ -227,6 +184,52 @@
         </q-chip>
       </div>
     </q-inner-loading>
+
+
+    <!-- MAIN PAGE CONTENT -->
+    <!-- <div align="center"> -->
+    <router-view />
+
+  
+  <!-- Footer  -->
+  <br><br>
+    <div class="bg-blue-grey-2 full-width" style="border-top: 1px solid black">
+      <br><br>
+      <br>
+      <q-page class="doc_content">
+
+        <div class="q-col-gutter-md row items-start">
+
+          <div class="col-4 q-pr-xl">
+            <!-- {{ $t('app.name') }} {{ $t('app.version') }} <br> -->
+            <b>Impressum:</b><br> 
+            Année Politique Suisse<br>
+            Institut für Politikwissenschaft<br>
+            Universität Bern<br>
+            Fabrikstrasse 8<br>
+            CH-3012 Bern<br>
+            Tel. +41 (0)31 631 83 31<br>
+            Fax +41 (0)31 631 48 17<br>
+
+          </div>
+
+          <div class="col-2">
+            <q-img src='layout/logoaps.png'   :ratio="1" contain class="q-ma-sm" style="height: 100px; "></q-img>
+
+          </div>
+
+          <div class="col-2">
+                      <q-img src='layout/logounibe.png' :ratio="1" contain class="q-ma-sm" style="height: 100px; "></q-img>
+
+          </div>
+
+          <div class="col-2">
+                      <q-img src='layout/logosnf.png'   :ratio="1" contain class="q-ma-sm"  style="height: 100px;"></q-img>
+          </div>
+
+        </div>
+
+        
       </q-page>
     </div>
   
@@ -235,11 +238,11 @@
 </template>
 
 <script>
-// import ComponentDrawer from './components/ComponentDrawer.vue'
-// import LanguageSwitch from './components/LanguageSwitch.vue'
-// import PopupProfile from './components/PopupProfile.vue'
-import CustomQRouteTab from './components/CustomQRouteTab.vue'
-import { LayoutEventBus } from 'src/utils/eventbus.js'
+// import ComponentDrawer from './components/ComponentDrawer'
+// import LanguageSwitch from './components/LanguageSwitch'
+// import PopupProfile from './components/PopupProfile'
+import CustomQRouteTab from './components/CustomQRouteTab'
+import { LayoutEventBus } from 'src/utils/eventbus'
 
 export default {
   name: 'MainLayout',
@@ -270,7 +273,7 @@ export default {
 
     gotoProfile(destination_route) {
       if (!destination_route) {
-        destination_route = this.oauth.currentRouteObject(this.$router)
+        destination_route = this.$currentRouteObject(this.$router)
       }
       this.$router.push({name: 'profile', params: {destination_route: destination_route}})
     },
@@ -302,8 +305,6 @@ export default {
       if (!this.NotificationBannerRedirectRoute) {
         this.NotificationBannerRedirectRoute = {name: 'home'}
       }
-                console.log(redirectRoute)
-                console.log("redirectRoute")
 
       this.hideLoadingGif()
       if (settimer) {
@@ -354,7 +355,6 @@ export default {
       let icon = 'mdi-alarm-light-outline'
       let type = 'error'
       this.showNotificationBanner(type, msg_title, msg_body, icon)
-
     })
     LayoutEventBus.$on('showNetworkError', data => {
       let msg_title = this.$i18n.t('app.error.network_error_title')
@@ -369,7 +369,14 @@ export default {
       let icon = 'mdi-key-outline'
       let type = 'error'
       this.showNotificationBanner(type, msg_title, msg_body, icon)
-    })    
+    })
+    LayoutEventBus.$on('showTooManyRequestsError', data => {
+      let msg_title = this.$i18n.t('app.error.toomanyrequests_error_title')
+      let msg_body = this.$i18n.t('app.error.toomanyrequests_error_body')
+      let icon = 'mdi-car-multiple'
+      let type = 'error'
+      this.showNotificationBanner(type, msg_title, msg_body, icon)
+    })        
     LayoutEventBus.$on('showAuthenticationWarning', data => {
       let type = 'warning'
       let icon = 'mdi-emoticon-cool-outline'

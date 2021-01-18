@@ -54,7 +54,7 @@ export default {
         },
 
         startingContentNode: function() {
-            console.log("get startingContentNode")
+            console.log('get startingContentNode')
             if(this.customStartingContentNode) {
                 return(this.customStartingContentNode)
             }else{
@@ -65,7 +65,7 @@ export default {
         },
 
         startingContentNodeLevel: function() {
-            console.log("get startingContentNode")
+            console.log('get startingContentNode')
             if(this.customStartingContentNode) {
                 return(this.customStartingContentNode.level)
             }
@@ -118,7 +118,7 @@ export default {
                 return (null)
             }
 
-            return(this.startingContentNode["nof_descendants"] + 1)
+            return(this.startingContentNode['nof_descendants'] + 1)
         },
 
         ...mapGetters({
@@ -170,7 +170,7 @@ export default {
         },
 
         expand_more: function() {
-            console.log("EXPAND MORE")
+            console.log('EXPAND MORE')
 
             /// expand all children of currently expanded nodes.
             var new_ids = []
@@ -205,7 +205,7 @@ export default {
             // TODO: consider alos search/filtering.
             this.$q.notify({
                 type: 'info',
-                message: this.$i18n.t("contenttree.notification_number_of_expanded",
+                message: this.$i18n.t('contenttree.notification_number_of_expanded',
                     {
                         nof_shown: nof_shown, 
                         nof_total: nof_total
@@ -214,7 +214,7 @@ export default {
         },
 
         expand_none: function() {
-            console.log("expand_none")
+            console.log('expand_none')
             this.expanded = []
             this.updateExpanded()
 
@@ -256,16 +256,16 @@ export default {
             return searchable.toLowerCase().indexOf(filt) > -1
         },
         resetFilter () {
-            console.log("reset filter")
+            console.log('reset filter')
             this.filter = ''
             this.$refs.filter.focus()
         },
         
         zoomToContent: function(content) {
-            console.log("ZOOOM TO CONTENT")
+            console.log('ZOOOM TO CONTENT')
 
             // collapsse all siblings to improve overview
-            console.log("CALL CLOSE CHILDREN FOR PARENT" + content.parent_id)
+            console.log('CALL CLOSE CHILDREN FOR PARENT' + content.parent_id)
             this.collapse_all_children(content.parent_id)
 
             // expand newly added content and its parent...
@@ -296,10 +296,10 @@ export default {
         },
 
         get_node_by_branch: function(branch) {
-            console.log("get node by branch: " + branch)
+            console.log('get node by branch: ' + branch)
 
             var parent_node = null
-            let path = branch.split(":")
+            let path = branch.split(':')
             var children = this.CTREE.contenttree.structure.children
             for (let key in path) {
                 let junction = Number(path[key])
@@ -326,10 +326,10 @@ export default {
             var obj = this.CTREE.contenttree.entries[node_id]
             console.assert(obj)
             var parent_id = obj.content.parent_id
-            var branch = ":" + node_id
+            var branch = `:${node_id}`
             console.assert(obj)
             while(parent_id!==null) {
-                branch = ":" + parent_id + branch
+                branch = `:${parent_id}${branch}`
                 obj = this.CTREE.contenttree.entries[parent_id]
                 parent_id = obj.content.parent_id
             }
@@ -338,7 +338,7 @@ export default {
         },
 
         get_node_by_id_via_branch: function(node_id) {
-            console.log("get node by id via branch: " + node_id)
+            console.log('get node by id via branch: ' + node_id)
             // console.log(this.$refs)
             // let node = this.$refs.qtree.getNodeByKey(node_id)
             // return(node)
@@ -353,8 +353,8 @@ export default {
         },
 
         get_node_by_id: function(node_id) {
-            console.log("get node by id: " + node_id)
-            if("qtree" in this.$refs) {
+            console.log('get node by id: ' + node_id)
+            if('qtree' in this.$refs) {
                 let node = this.$refs.qtree.getNodeByKey(node_id)
                 if(node) {
                     return(node)
@@ -393,6 +393,6 @@ export default {
     },
 
     mounted: function() {
-        this.$emit("tree_is_mounted");
+        this.$emit('tree_is_mounted');
     }
 }

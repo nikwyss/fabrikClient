@@ -1,13 +1,12 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
-import createPersistedState from "vuex-persistedstate";
-
+import createPersistedState from 'vuex-persistedstate';
+import { date } from 'quasar'
 import api from 'src/utils/api';
 import { contentstore } from './vuex-store-contenttree'
 import { assemblystore } from './vuex-store-assembly'
 import { publicindexstore } from './vuex-store-publicindex'
 import { pluginstore } from './vuex-plugin_store'
-// import { oauthstore } from 'src/utils/oauth/vuex-store-oauth'
 
 Vue.use(Vuex)
 
@@ -46,16 +45,15 @@ export default new Vuex.Store({
 
         // Check if monitor intervall is passed
         const eventkey = `${event}${key}`
-        console.log("initiate Monitor " + eventkey)
+        console.log(`initiate Monitor ${eventkey}`)
         const MonitorFrequency = 5 // TODO: put this in environment variable.
-        const now = Vue.moment(new Date())
-        const timeThreshold = now.clone()
-        timeThreshold.subtract(MonitorFrequency, 'minutes')
-        console.log("MONITOR STAGE VISIT: " + eventkey)
+        const now = Date.now()
+        const timeThreshold = date.subtractFromDate(Date.now(), { minutes: MonitorFrequency })
+        console.log(`MONITOR STAGE VISIT: ${eventkey}`)
         
         if (!force) {
-          if (state.monitors[eventkey] && timeThreshold.isBefore(state.monitors[eventkey]) ){
-            console.log("no monitor action needed")
+          if (state.monitors[eventkey] && date.getDateDiff(timeThreshold, state.monitors[eventkey], 'seconds') < 0 ){
+            console.log('no monitor action needed')
             return (null)
           }
         }
@@ -67,7 +65,7 @@ export default new Vuex.Store({
           // Most monitors do not give a response. However, when progression entry has just been
           // created or significantly modified, then progression entry is returned.
           if (!response.data){ return (null) }
-          console.log("API Monitored." + event)
+          console.log('API Monitored.' + event)
 
           // stage monitor
           if (response.data && 'stage_progression' in response.data){
@@ -82,7 +80,7 @@ export default new Vuex.Store({
     },
 
     manually_update_monitor_date({state, commit}, {eventkey}) {
-      const now = Vue.moment(new Date())
+      const now = Date.now()
       commit('monitor_date', {eventkey, now})
     }
   },

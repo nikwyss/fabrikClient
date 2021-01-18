@@ -73,12 +73,11 @@
 <script>
 import ArtificialModerator from './components/ArtificialModerator'
 import {mapGetters} from 'vuex'
-import PublicIndex from "src/mixins/publicIndex"
 
 export default{
     name: "ArtificialModeratorIndexPage",
-    mixins: [PublicIndex],
     components: {ArtificialModerator},
+    inject: ['published_assemblies', 'IsUserDelegateOfOngoingAssembly', 'IsThereAnAssemblyOngoing', 'IsThereNothingGoingOn', 'IsThereAnAssemblyInPublicState'],
 
     computed: {
 
@@ -108,12 +107,7 @@ export default{
         clickAuthLink: function () {
             const destination_route = {name: 'assemblies_ongoing_list'}
             this.oauth.login(destination_route)
-        },
-        
-        // clickOpenProfile: function () {
-            // const destination_route = {name: 'assemblies_ongoing_list'}
-        //     this.oauth.login(destination_route)
-        // }        
+        }
     }
 }
 </script>
