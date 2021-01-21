@@ -21,7 +21,7 @@
       <q-card-section class="full-width" >
         <div class="col-12" >
           <div :class="header_class">{{heading_number}} {{item.content.title}}</div>
-          <div class="text-body1 text-justify" v-if="item.content.text" v-html="$sanitize(item.content.text)"/>
+          <div class="text-body1 text-justify" v-if="item.content.text" v-dompurify-html="item.content.text"/>
         </div>
       </q-card-section>
     </q-card>

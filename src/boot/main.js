@@ -1,17 +1,21 @@
 // ADD POLYFILL FOR IE11 SUPPORT
-import "@babel/polyfill"
+// import "@babel/polyfill"
 
 // everything else..
-import { date } from 'quasar'
 import Vue from 'vue'
-import oAuth2 from 'src/utils/oauth2'
-import Constants from 'src/utils/constants'
-const { getDateDiff, formatDate } = date
+
 
 
 // APP CONSTANTS
 /////////////////////////////////
+import Constants from 'src/utils/constants'
 Vue.prototype.Constants = Constants
+
+
+// SANITIZER
+/////////////////////////////////
+import VueDOMPurifyHTML from 'vue-dompurify-html'
+Vue.use(VueDOMPurifyHTML)
 
 // GLOBAL METHODS
 /////////////////////////////////
@@ -54,6 +58,9 @@ Vue.prototype.$check4OutdatedData = function (dbdatestring, frequencyMinutes) {
 
 // Date Filters:
 /////////////////////////////////
+import { date } from 'quasar'
+const { getDateDiff, formatDate } = date
+
 // Format Date
 Vue.filter('formatDate', function (value) {
   if (value) {
@@ -69,24 +76,27 @@ Vue.filter('formatTimeLeft', function (value) {
 })
 
 
-// SANITIZE OPTIONS (IE11 BUGGY?)
+// Add Object filter: helper...
 /////////////////////////////////
 Object.filter = (obj, predicate) => Object.keys(obj)
   .filter(key => predicate(obj[key]))
   .reduce((res, key) => (res[key] = obj[key], res), {});
 
+// SANITIZE OPTIONS (IE11 BUGGY?)
+/////////////////////////////////
 // Vue.use(VueDOMPurifyHTML)
 // TODO: recheck!!!!!!!! => XSS
-let defaultOptions = {
-  allowedTags: ['a', 'b', 'q'],
-  allowedAttributes: {
-    'a': ['href'],
-    'q': ['class']
-  }
-}
+// let defaultOptions = {
+//   allowedTags: ['a', 'b', 'q'],
+//   allowedAttributes: {
+//     'a': ['href'],
+//     'q': ['class']
+//   }
+// }
 
 
 // AUTH
 /////////////////////////////////
 // enable oAuth2 Functionality
+import oAuth2 from 'src/utils/oauth2'
 Vue.use(oAuth2)

@@ -48,7 +48,7 @@
         header-class="text-secondary"
       >
         <q-card>
-          <q-card-section v-html="$t('background.transparency.text', {iconTechnicalTransparency: iconTechnicalTransparency})"></q-card-section>
+          <q-card-section v-dompurify-html="$t('background.transparency.text', {iconTechnicalTransparency: iconTechnicalTransparency})"></q-card-section>
         </q-card>
       </q-expansion-item>
 
