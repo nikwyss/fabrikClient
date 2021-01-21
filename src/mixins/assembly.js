@@ -242,7 +242,7 @@ export default {
       }
 
       this.$store.dispatch('monitorApi', {
-        event: this.MONITOR_ASSEMBLY_ENTERING,
+        event: this.Constants.MONITOR_ASSEMBLY_ENTERING,
         data: data,
         key: this.assemblyIdentifier
       })
@@ -371,7 +371,7 @@ export default {
 
     // ------ STAGE STATUS -------------------
     isDone: function (stage, stageNr) {
-        // return(this.stageNr in [this.STATUS_COMPLETED])
+        // return(this.stageNr in [this.Constants.STATUS_COMPLETED])
         return(this.highestAllowedStageNr >= stageNr && !this.isCompleted(stage))
     },
 
@@ -403,13 +403,13 @@ export default {
     },
 
     isSkipped: function (stage) {
-        return(stage.progression && stage.progression.status in [this.STATUS_SKIPPED])
+        return(stage.progression && stage.progression.status in [this.Constants.STATUS_SKIPPED])
     },
     isAlert: function (stage) {
-        return(stage.progression && stage.progression.status in [this.STATUS_ALERT])
+        return(stage.progression && stage.progression.status in [this.Constants.STATUS_ALERT])
     },
     isIdle: function (stage) {
-        return(stage.status in [this.STATUS_IDLE])
+        return(stage.status in [this.Constants.STATUS_IDLE])
     },
     isNew: function (stage) {
         return(stage.progression === null || stage.progression === undefined)

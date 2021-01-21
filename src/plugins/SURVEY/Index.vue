@@ -122,7 +122,7 @@ export default {
             console.log("Force MonitorApi: " + event + " - " + force)
             console.assert(event)
             // if (!event) {
-            //     event = this.MONITOR_STAGE_ENTERING
+            //     event = this.Constants.MONITOR_STAGE_ENTERING
             // }
 
             /* By this method we allow the API to monitor userz activities */

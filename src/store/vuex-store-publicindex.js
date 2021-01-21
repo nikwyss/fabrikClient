@@ -14,8 +14,8 @@ var state = {
 
 const getters = {
 
-  published_assemblies: function(state) {
-    if (state.publicIndex===null || state.publicIndex === undefined){
+  published_assemblies: function (state) {
+    if (state.publicIndex === null || state.publicIndex === undefined) {
       return (null)
     }
 
@@ -23,9 +23,9 @@ const getters = {
     return (Object.values(filtered_assemblies))
   },
 
-  ongoing_assemblies: function(state) {
+  ongoing_assemblies: function (state) {
     const publicIndex = state.publicIndex
-    if (publicIndex===null){
+    if (publicIndex === null) {
       return (null)
     }
 
@@ -40,20 +40,17 @@ const getters = {
 
     // not access_date available
     const timeDownloaded = state.publicIndex.access_date
-    if (!timeDownloaded) { return (false)}
-    
+    if (!timeDownloaded) { return (false) }
+
     // Cache expired
     const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
     var timeThreshold = Date.now()
-    timeThreshold = date.subtractFromDate(timeThreshold, { minutes: CacheDurabilityMinutes})    
+    timeThreshold = date.subtractFromDate(timeThreshold, { minutes: CacheDurabilityMinutes })
     return (timeDownloaded < timeThreshold)
   },
 
   /* SHORTCUTS: mainly for artificial moderators */
   IsThereAnAssemblyInPublicState: (state) => {
-    console.log(state.published_assemblies)
-    console.log('xxxxxxxxxxx')
-    
     if (state.published_assemblies == null) {
       return (null)
     }
@@ -77,13 +74,13 @@ const getters = {
 }
 
 const actions = {
-  
-  syncPublicIndex: ({state, dispatch, localgetters, rootState, rootGetters}) => {
 
-    if(state.publicIndex===null || state.publicIndex === undefined) {
+  syncPublicIndex: ({ state, dispatch, localgetters, rootState, rootGetters }) => {
+
+    if (state.publicIndex === null || state.publicIndex === undefined) {
       // no cached version exists: load the data from resource server...
       dispatch('retrievePublicIndex')
-      return(null)
+      return (null)
     }
 
     // renew cache all x- minutes
@@ -92,17 +89,17 @@ const actions = {
       dispatch('retrievePublicIndex')
     }
 
-    return(null)
+    return (null)
   },
 
-  retrievePublicIndex({commit}) {
+  retrievePublicIndex({ commit }) {
     console.log('Retrieve publicIndex from resource server')
     api.retrievePublicIndex()
       .then(
         response => {
 
           // save data
-          console.assert (response.data !== null && response.data !== undefined)
+          console.assert(response.data !== null && response.data !== undefined)
           console.log('save full contenttree to cache.')
           commit('storePublicIndex', response.data)
 
@@ -114,13 +111,13 @@ const actions = {
       .catch((error) => {
         console.warn(error)
         console.warn('Request Error')
-        
+
       })
   }
 }
 
 const mutations = {
-  storePublicIndex (state, publicIndex) {
+  storePublicIndex(state, publicIndex) {
     // Vue.set  makes the change reactive!!
     Vue.set(state, 'publicIndex', publicIndex)
   }

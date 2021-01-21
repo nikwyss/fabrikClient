@@ -5,9 +5,13 @@
 
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+// const {OAuth2AuthCodePKCE} = require('@bity/oauth2-auth-code-pkce')
 
 module.exports = function (/* ctx */) {
   return {
+
+    // supportIE: true,
+
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
 
@@ -32,11 +36,16 @@ module.exports = function (/* ctx */) {
       'mdi-v5',
     ],
 
+    // "babel-polyfill": "^6.26.0",
+    // "babel-preset-es2015-ie": "6.7.0",
+    // "babel-preset-env": "^1.7.0",
+
+
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // publicPath: 'app-extension-dotenv',
-      
+
       // uglifyOptions: {
       //   compress: { drop_console: true },
       //   extractComments: 'all',
@@ -49,14 +58,16 @@ module.exports = function (/* ctx */) {
       //   ie8: false,
       //   keep_fnames: false
       // },
-      
 
-      // transpile: false,
+
+      // transpile: true,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
       // Applies only if "transpile" is set to true.
-      // transpileDependencies: [],
+      // transpileDependencies: ['@bity/oauth2-auth-code-pkce'],
+      // transpileDependencies: ['oauth2-auth-code-pkce'],
+      // transpileDependencies: ['@bity'],
 
       // rtl: false, // https://quasar.dev/options/rtl-support
       // preloadChunks: true,
@@ -68,7 +79,7 @@ module.exports = function (/* ctx */) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/handling-webpack
-      extendWebpack (cfg) {
+      extendWebpack(cfg) {
       },
     },
 
@@ -188,7 +199,7 @@ module.exports = function (/* ctx */) {
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack (/* cfg */) {
+      extendWebpack(/* cfg */) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       }

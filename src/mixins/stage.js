@@ -40,7 +40,7 @@ export default {
       }
 
       this.$store.dispatch('monitorApi', {
-        event: this.MONITOR_STAGE_ENTERING,
+        event: this.Constants.MONITOR_STAGE_ENTERING,
         data: data,
         key: this.stageID
       })

@@ -7,22 +7,28 @@
   "private": false,
   "scripts": {
     "start-dev": "quasar dev",
+    "build": "quasar build",
+    "serve": "/usr/local/bin/quasar serve -p 80 --history ./dist/spa",
     "build_docker_image": "docker build -f Dockerfile -t demokratiefabrik/fabrikclient . && docker push demokratiefabrik/fabrikclient",
-
     "test": "echo \"No test specified\" && exit 0"
+  },
+  "olddependenices": {
+      "babel-polyfill": "^6.26.0"
   },
   "dependencies": {
     "@bity/oauth2-auth-code-pkce": "^2.11.0",
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.9.14",
     "@quasar/quasar-app-extension-dotenv": "^1.0.5",
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
-
-    "quasar": "^1.0.0",
+    "quasar": "^1.15.0",
+    "text-encoding": "^0.7.0",
     "vue-i18n": "^8.0.0",
     "vue-reactive-provide": "^0.3.0",
     "vue-sanitize": "^0.2.1",
-    "vuex-persistedstate": "^4.0.0"
+    "vuex-persistedstate": "^4.0.0",
+    "webcrypto-shim": "^0.1.6",
+    "whatwg-fetch": "^3.5.0"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",
