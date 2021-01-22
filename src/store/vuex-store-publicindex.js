@@ -5,7 +5,6 @@
 import Vue from 'vue'
 import api from 'src/utils/api'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
-import { date } from 'quasar'
 
 
 var state = {
@@ -31,22 +30,6 @@ const getters = {
 
     const filtered_assemblies = Object.filter(publicIndex.assemblies, x => x.is_active)
     return (Object.values(filtered_assemblies))
-  },
-
-  /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
-  currently logged in user */
-  checkPublicIndexStatus(state, getters, rootState, rootGetters) {
-    // console.log(rootGetters)
-
-    // not access_date available
-    const timeDownloaded = state.publicIndex.access_date
-    if (!timeDownloaded) { return (false) }
-
-    // Cache expired
-    const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
-    var timeThreshold = Date.now()
-    timeThreshold = date.subtractFromDate(timeThreshold, { minutes: CacheDurabilityMinutes })
-    return (timeDownloaded < timeThreshold)
   },
 
   /* SHORTCUTS: mainly for artificial moderators */
@@ -76,16 +59,19 @@ const getters = {
 const actions = {
 
   syncPublicIndex: ({ state, dispatch, localgetters, rootState, rootGetters }) => {
-
+    console.log("...is public index in sync?")
     if (state.publicIndex === null || state.publicIndex === undefined) {
       // no cached version exists: load the data from resource server...
+      console.log("...cache is empty")
       dispatch('retrievePublicIndex')
       return (null)
     }
 
     // renew cache all x- minutes
-    if (!getters.checkPublicIndexStatus(state, getters, rootState, rootGetters)) {
+    const expired = api.expiredCacheDate(state.publicIndex.access_date)
+    if (expired) {
       // too old cache: load the data from resource server...
+      console.log("...cache is outdated")
       dispatch('retrievePublicIndex')
     }
 

@@ -5,7 +5,7 @@
 import Vue from 'vue'
 import api from 'src/utils/api'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
-import { date } from 'quasar'
+// import { date } from 'quasar'
 
 var state = {
   assemblydata: {},
@@ -48,11 +48,11 @@ const getters = {
     // return state.things.find(thing => thing.identifier === id)
 
     // return state.things.find(thing => thing.identifier === id)
-    if(!(assemblyIdentifier in state.assemblydata)) {
+    if (!(assemblyIdentifier in state.assemblydata)) {
       return (null)
     }
-    if(!('progression' in state.assemblydata[assemblyIdentifier])) {
-      return(null)
+    if (!('progression' in state.assemblydata[assemblyIdentifier])) {
+      return (null)
     }
 
     return (state.assemblydata[assemblyIdentifier].progression)
@@ -77,10 +77,10 @@ const getters = {
   },
 
 
-  get_assembly_stage: (state) => ({assemblyIdentifier, stageID}) => {
+  get_assembly_stage: (state) => ({ assemblyIdentifier, stageID }) => {
 
     const stages = getters.get_assembly_stages(state)(assemblyIdentifier)
-    if (stages===null) {
+    if (stages === null) {
       return (null)
     }
 
@@ -90,82 +90,55 @@ const getters = {
     return (stages[stageID])
   },
 
-  getCachedStageID:  (state) => (assemblyIdentifier) => {
+  getCachedStageID: (state) => (assemblyIdentifier) => {
 
     // return state.things.find(thing => thing.identifier === id)
-    if(!(assemblyIdentifier in state.current_stages)) {
-      return(null)
+    if (!(assemblyIdentifier in state.current_stages)) {
+      return (null)
     }
-    return(state.current_stages[assemblyIdentifier])
-  },
-
-  /* Refresh cashed data all X minutes, and ensure that data is downloaded by the
-  currently logged in user */
-  checkAssemblyStatus({state, getters, rootState, rootGetters}, {assemblyIdentifier, oauthUserID}) {
-    console.log('check assembly status')
-    console.assert(assemblyIdentifier)
-
-    // not even downloaded:
-    if (!(assemblyIdentifier in state.assemblydata)) {
-      return (false)
-    }
-
-    // not access_date available
-    const timeDownloaded = state.assemblydata[assemblyIdentifier].access_date
-    if (!timeDownloaded) { return (false)}
-
-    // Cache expired
-    const CacheDurabilityMinutes = 10 // TODO: put this in environment variable.
-    var timeThreshold = Date.now()
-    timeThreshold = date.subtractFromDate(timeThreshold, { minutes: CacheDurabilityMinutes})    
-    if (timeDownloaded < timeThreshold) {
-      return (false)
-    }
-
-    // Wrong user?
-    const cached_userid = state.assemblydata[assemblyIdentifier].access_sub
-    return (cached_userid == oauthUserID)
+    return (state.current_stages[assemblyIdentifier])
   }
 }
 
 const actions = {
 
-  touchRandomSeed ({commit}) {
+  touchRandomSeed({ commit }) {
     commit('set_random_seed')
   },
 
-  setCachedStageID({commit}, {assembly, stageID}) {
-    commit('setCachedStageID', {assembly, stageID})
+  setCachedStageID({ commit }, { assembly, stageID }) {
+    commit('setCachedStageID', { assembly, stageID })
   },
 
-  syncAssembly: ({state, dispatch, localgetters, rootState, rootGetters}, {assemblyIdentifier, oauthUserID}) => {
+  syncAssembly: ({ state, dispatch, localgetters, rootState, rootGetters }, { assemblyIdentifier, oauthUserID }) => {
     console.log(` sync assembly ${assemblyIdentifier}`)
 
     console.assert(assemblyIdentifier)
 
-    if(!state.assemblydata || !(assemblyIdentifier in state.assemblydata)) {
+    if (!state.assemblydata || !(assemblyIdentifier in state.assemblydata)) {
       // no cached version exists: load the data from resource server...
-      dispatch('retrieveAssembly', {assemblyIdentifier: assemblyIdentifier})
+      dispatch('retrieveAssembly', { assemblyIdentifier: assemblyIdentifier })
       console.log(' not yet fetched...')
-      return(null)
+      return (null)
     }
 
-    // renew cache all x- minutes
-    if (!getters.checkAssemblyStatus({state, getters, rootState, rootGetters}, {assemblyIdentifier, oauthUserID})) {
-      // too old cache: load the data from resource server...
-      console.log(' not in sync...')
-      dispatch('retrieveAssembly', {assemblyIdentifier: assemblyIdentifier})
+    // wrong user? and renew cache all x- minutes!
+    const wrongUser = oauthUserID != state.assemblydata[assemblyIdentifier].access_sub
+    const expired = !(assemblyIdentifier in state.assemblydata) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
+    if (expired || wrongUser) {
+      console.log(' not in sync  or wrong user...')
+      dispatch('retrieveAssembly', { assemblyIdentifier: assemblyIdentifier })
     }
 
-    return(null)
+    return (null)
   },
- 
-  storeAssemblyProgression({commit}, {assemblyIdentifier, stageID, progression}) {
+
+  storeAssemblyProgression({ commit }, { assemblyIdentifier, stageID, progression }) {
     console.log('Store stage progression in localstorage')
-    commit('storeAssemblyProgression', {assemblyIdentifier, stageID, progression})
+    commit('storeAssemblyProgression', { assemblyIdentifier, stageID, progression })
   },
 
-  retrieveAssembly({commit}, {assemblyIdentifier}) {
+  retrieveAssembly({ commit }, { assemblyIdentifier }) {
 
     console.log('Retrieve assembly from resource server')
     api.retrieveAssembly(assemblyIdentifier)
@@ -176,7 +149,7 @@ const actions = {
           // console.log(assemblyIdentifier)
           // console.log(response)
           const data = response.data
-          commit('storeAssembly', {assemblyIdentifier, data})
+          commit('storeAssembly', { assemblyIdentifier, data })
 
           // end loading
           LayoutEventBus.$emit('hideLoading')
@@ -189,56 +162,56 @@ const actions = {
         console.warn('Request Error')
       })
 
-      // console.log("just launched in vuex")
+    // console.log("just launched in vuex")
+  }
+}
+
+const mutations = {
+
+  set_random_seed(state) {
+    console.log('SET RANDOM SEED IF NOT YET DONE')
+    if (!state.randomSeed) {
+      console.log('setter')
+      let randomSeed = Math.floor(Math.random() * Math.floor(99)) + 1
+      state.randomSeed = randomSeed
     }
-  }
+  },
 
-  const mutations = {
+  setCachedStageID(state, { assembly, stageID }) {
 
-    set_random_seed (state) {
-      console.log('SET RANDOM SEED IF NOT YET DONE')
-      if (!state.randomSeed) {
-        console.log('setter')
-        let randomSeed = Math.floor(Math.random() * Math.floor(99)) + 1
-        state.randomSeed = randomSeed
-      }
-    },
+    // keep list of opened contents (if previously available)
+    console.log('update current  stage id for the given assembly')
 
-    setCachedStageID(state, {assembly, stageID}) {
-
-      // keep list of opened contents (if previously available)
-      console.log('update current  stage id for the given assembly')
-
-      // prepare folder
-      if (!(assembly.identifier in state.current_stages)) {
-        Vue.set(state.current_stages, assembly.identifier, null)
-      }
-      // Vue.set  makes the change reactive!!
-      Vue.set(state.current_stages, assembly.identifier, stageID)
-      console.log('...store: new stage has been set...')
-    },
-
-    storeAssembly (state, {assemblyIdentifier, data}) {
-      console.log(`Store assembly ${assemblyIdentifier}`)
-      // Vue.set  makes the change reactive!!
-      Vue.set(state.assemblydata, assemblyIdentifier, data)
-    },
-
-    storeAssemblyProgression (state, {assemblyIdentifier, stageID, progression}) {
-      console.log(`Store assembly progression ${assemblyIdentifier}`)
-      // Vue.set  makes the change reactive!!
-      if (!(stageID in state.assemblydata[assemblyIdentifier].stages) ){
-        Vue.set(state.assemblydata[assemblyIdentifier], 'stages', stageID)
-        Vue.set(state.assemblydata[assemblyIdentifier].stages, stageID, {'progression': null})
-      }
-      Vue.set(state.assemblydata[assemblyIdentifier].stages[stageID], 'progression', progression)
+    // prepare folder
+    if (!(assembly.identifier in state.current_stages)) {
+      Vue.set(state.current_stages, assembly.identifier, null)
     }
-  }
+    // Vue.set  makes the change reactive!!
+    Vue.set(state.current_stages, assembly.identifier, stageID)
+    console.log('...store: new stage has been set...')
+  },
 
-  export const assemblystore = {
-    namespaced: true,
-    state,
-    mutations,
-    actions,
-    getters
+  storeAssembly(state, { assemblyIdentifier, data }) {
+    console.log(`Store assembly ${assemblyIdentifier}`)
+    // Vue.set  makes the change reactive!!
+    Vue.set(state.assemblydata, assemblyIdentifier, data)
+  },
+
+  storeAssemblyProgression(state, { assemblyIdentifier, stageID, progression }) {
+    console.log(`Store assembly progression ${assemblyIdentifier}`)
+    // Vue.set  makes the change reactive!!
+    if (!(stageID in state.assemblydata[assemblyIdentifier].stages)) {
+      Vue.set(state.assemblydata[assemblyIdentifier], 'stages', stageID)
+      Vue.set(state.assemblydata[assemblyIdentifier].stages, stageID, { 'progression': null })
+    }
+    Vue.set(state.assemblydata[assemblyIdentifier].stages[stageID], 'progression', progression)
   }
+}
+
+export const assemblystore = {
+  namespaced: true,
+  state,
+  mutations,
+  actions,
+  getters
+}

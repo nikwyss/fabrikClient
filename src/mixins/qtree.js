@@ -204,7 +204,7 @@ export default {
             var nof_total =  this.total_nof_contents
             // TODO: consider alos search/filtering.
             this.$q.notify({
-                type: 'info',
+                type: 'nFabrikInfo',
                 message: this.$i18n.t('contenttree.notification_number_of_expanded',
                     {
                         nof_shown: nof_shown, 
@@ -222,7 +222,7 @@ export default {
             // var nof_shown =  0
             // var nof_total =  this.total_nof_contents
             // this.$q.notify({
-            //     type: 'info',
+            //     type: 'nFabrikInfo',
             //     message: `${nof_shown} of ${nof_total} are expanded.`
             // })
         },

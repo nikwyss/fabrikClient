@@ -2,7 +2,7 @@
 import plugin_routes from './plugin_routes.js'
 
 // Application Routes
-const meta4AssemblyPages = {topmenu: 'assemblies_ongoing_list'}
+const meta4AssemblyPages = { topmenu: 'assemblies_ongoing_list' }
 // , acls: ['observe']  // NOT IMPLEMENTED/ NOT NECESSARY=> VUEX 
 
 const routes = [
@@ -23,18 +23,28 @@ const routes = [
       // ASSEMBLY Pages
       // acls = a list of minimum roles required to visit this route...
       // (Note that all delegates have also contribution rights, etc..)
-      { path: '/:assemblyIdentifier/home', name: 'assembly_home', 
-        component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
-      { path: '/:assemblyIdentifier/agenda/:stageID', name: 'assembly_home_stepper', 
-        component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages},
-      { path: '/:assemblyIdentifier/stage/:stageID', name: 'stage', 
-        component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages},
+      {
+        path: '/:assemblyIdentifier/home', name: 'assembly_home',
+        component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages
+      },
+      {
+        path: '/:assemblyIdentifier/agenda/:stageID', name: 'assembly_home_stepper',
+        component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages
+      },
+      {
+        path: '/:assemblyIdentifier/stage/:stageID', name: 'stage',
+        component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages
+      },
       // component: UserContentDefault, meta: meta4AssemblyPages},
-      { path: '/:assemblyIdentifier/stage/:stageID/:contenttreeID', name: 'contenttree', 
-        component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages},
+      {
+        path: '/:assemblyIdentifier/stage/:stageID/:contenttreeID', name: 'contenttree',
+        component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages
+      },
       // component: UserContentDefault, meta: meta4AssemblyPages}, 
-      { path: '/:assemblyIdentifier/stage/:stageID/:contenttreeID/:contentID', name: 'content', 
-        component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages}
+      {
+        path: '/:assemblyIdentifier/stage/:stageID/:contenttreeID/:contentID', name: 'content',
+        component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages
+      }
       // component: UserContentDefault, meta: meta4AssemblyPages}
     ]
   },

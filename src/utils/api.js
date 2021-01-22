@@ -5,9 +5,20 @@
 
 import ApiService from 'src/utils/xhr'
 import Vue from 'vue'
+import { date } from 'quasar'
 
 export default {
-  
+
+  /* checks if the date transmitted is still a valid cache date. */
+  expiredCacheDate(timeDownloaded) {
+    if (!timeDownloaded) { return (false) }
+    timeDownloaded = new Date(timeDownloaded)
+    const expiringDate = date.addToDate(timeDownloaded, { minutes: parseInt(process.env.ENV_APISERVER_CACHE_EXPIRATION_MINUTES) })
+    // console.log(expiringDate)
+    return (new Date(Date.now()) > expiringDate)
+  },
+
+
   // oAuth Server
   // *********************************
   /**
@@ -34,7 +45,7 @@ export default {
 
   // API
   // ******************************
-  async monitorActivities({event, data}) {
+  async monitorActivities({ event, data }) {
 
     // Renew token (if required)
     await Vue.prototype.oauth.refresh_token_if_required()
@@ -42,7 +53,7 @@ export default {
     /* Notify Resource Server about certain user activities in the client app. */
     let url = `${process.env.ENV_APISERVER_URL}/monitor/${event}`
     console.log('monitor activies in API')
-    return await ApiService.post(url, {content: data})
+    return await ApiService.post(url, { content: data })
   },
 
   async retrievePublicIndex() {
@@ -70,5 +81,21 @@ export default {
 
     let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/contenttree/${contenttreeID}/contenttree`
     return await ApiService.get(url)
+  },
+
+  async saveContent(assemblyIdentifier, contenttreeID, data) {
+
+    // compose url
+    let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/contenttree/${contenttreeID}`
+    if (data.id) {
+      // this is an update
+      url += `/content/${data.id}`
+    } else {
+      url += "/addcontent/";
+    }
+
+    // Renew token (if required)
+    await Vue.prototype.oauth.refresh_token_if_required()
+    return await ApiService.put(url, { content: data })
   }
 }

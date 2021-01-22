@@ -34,14 +34,14 @@ export default new Vuex.Store({
   actions: {
 
     /* If force= true: send monitor request in any case.. */
-    monitorApi: ({state, dispatch, commit}, { event, data, key, timeout, force}) => {
+    monitorApi: ({ state, dispatch, commit }, { event, data, key, timeout, force }) => {
 
       // add some timelag for this monitor method: all other ajax call have priority.
       // take 3 seconds as default value
       const default_timeout = 3000
       console.assert(key)
-      if (!timeout && timeout !== 0){ timeout = default_timeout}
-      setTimeout(function(){
+      if (!timeout && timeout !== 0) { timeout = default_timeout }
+      setTimeout(function () {
 
         // Check if monitor intervall is passed
         const eventkey = `${event}${key}`
@@ -50,44 +50,44 @@ export default new Vuex.Store({
         const now = Date.now()
         const timeThreshold = date.subtractFromDate(Date.now(), { minutes: MonitorFrequency })
         console.log(`MONITOR STAGE VISIT: ${eventkey}`)
-        
+
         if (!force) {
-          if (state.monitors[eventkey] && date.getDateDiff(timeThreshold, state.monitors[eventkey], 'seconds') < 0 ){
+          if (state.monitors[eventkey] && date.getDateDiff(timeThreshold, state.monitors[eventkey], 'seconds') < 0) {
             console.log('no monitor action needed')
             return (null)
           }
         }
         // Send API Monitor
-        commit('monitor_date', {eventkey, now})
-        api.monitorActivities({event: event, data: data}).then(response => {
+        commit('monitor_date', { eventkey, now })
+        api.monitorActivities({ event: event, data: data }).then(response => {
 
           // Dealing with Data response)
           // Most monitors do not give a response. However, when progression entry has just been
           // created or significantly modified, then progression entry is returned.
-          if (!response.data){ return (null) }
+          if (!response.data) { return (null) }
           console.log('API Monitored.' + event)
 
           // stage monitor
-          if (response.data && 'stage_progression' in response.data){
+          if (response.data && 'stage_progression' in response.data) {
             dispatch('assemblystore/storeAssemblyProgression', {
-                assemblyIdentifier: response.data.assembly_identifier,
-                stageID: response.data.stage_id,
-                progression: response.data.stage_progression
+              assemblyIdentifier: response.data.assembly_identifier,
+              stageID: response.data.stage_id,
+              progression: response.data.stage_progression
             })
           }
-       })
+        })
       }, timeout)
     },
 
-    manually_update_monitor_date({state, commit}, {eventkey}) {
+    manually_update_monitor_date({ state, commit }, { eventkey }) {
       const now = Date.now()
-      commit('monitor_date', {eventkey, now})
+      commit('monitor_date', { eventkey, now })
     }
   },
 
   mutations: {
 
-    monitor_date (state, {eventkey, now}) {
+    monitor_date(state, { eventkey, now }) {
       Vue.set(state.monitors, eventkey, now)
     },
 

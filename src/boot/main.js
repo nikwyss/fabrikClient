@@ -1,16 +1,10 @@
-// ADD POLYFILL FOR IE11 SUPPORT
-// import "@babel/polyfill"
-
-// everything else..
 import Vue from 'vue'
-
 
 
 // APP CONSTANTS
 /////////////////////////////////
 import Constants from 'src/utils/constants'
 Vue.prototype.Constants = Constants
-
 
 // SANITIZER
 /////////////////////////////////
@@ -20,13 +14,12 @@ Vue.use(VueDOMPurifyHTML)
 // GLOBAL METHODS
 /////////////////////////////////
 
-// Methods
-/* Returns length of a object/list, while handling null as 0. 
-TODO: put this to window.object? */
-Vue.prototype.$currentRouteObject = function ($router) {
-  return ({ name: $router.currentRoute.name, params: $router.currentRoute.params })
-}
+// Add Object filter: helper...
+Object.filter = (obj, predicate) => Object.keys(obj)
+  .filter(key => predicate(obj[key]))
+  .reduce((res, key) => (res[key] = obj[key], res), {});
 
+/* Returns length of a object/list, while handling null as 0. */
 Vue.prototype.$nLength = function (object1) {
   if (object1 === null) {
     return (0)
@@ -34,64 +27,25 @@ Vue.prototype.$nLength = function (object1) {
   return (object1.length)
 }
 
-Vue.prototype.$check4OutdatedData = function (dbdatestring, frequencyMinutes) {
-  console.assert(typeof frequencyMinutes === 'number' && frequencyMinutes)
+// Vue.prototype.$check4OutdatedData = function (dbdatestring, frequencyMinutes) {
+//   console.assert(typeof frequencyMinutes === 'number' && frequencyMinutes)
 
-  if (!dbdatestring) {
-    console.log('dbdatestring is emtpy...')
-    return (true)
-  }
-
-  var thresholdDate = new Date();
-  thresholdDate.setMinutes(thresholdDate.getMinutes() - frequencyMinutes)
-  const dbdate = new Date(dbdatestring)
-  console.log(`OUTDATED AS SOON AS:  ${thresholdDate} > ${dbdate}`)
-  if (thresholdDate > dbdate) {
-    console.log('OUTDATED')
-    return (true)
-  }
-
-  // Not Outdated
-  return (false)
-}
-
-
-// Date Filters:
-/////////////////////////////////
-import { date } from 'quasar'
-const { getDateDiff, formatDate } = date
-
-// Format Date
-Vue.filter('formatDate', function (value) {
-  if (value) {
-    return formatDate(value, 'DD-MM-YYYY')
-  }
-})
-
-// Calculate & Format Time Left
-Vue.filter('formatTimeLeft', function (value) {
-  let diff = getDateDiff(value, Date.now(), 'seconds')
-  // TODO: take appropriate unit
-  return diff
-})
-
-
-// Add Object filter: helper...
-/////////////////////////////////
-Object.filter = (obj, predicate) => Object.keys(obj)
-  .filter(key => predicate(obj[key]))
-  .reduce((res, key) => (res[key] = obj[key], res), {});
-
-// SANITIZE OPTIONS (IE11 BUGGY?)
-/////////////////////////////////
-// Vue.use(VueDOMPurifyHTML)
-// TODO: recheck!!!!!!!! => XSS
-// let defaultOptions = {
-//   allowedTags: ['a', 'b', 'q'],
-//   allowedAttributes: {
-//     'a': ['href'],
-//     'q': ['class']
+//   if (!dbdatestring) {
+//     console.log('dbdatestring is emtpy...')
+//     return (true)
 //   }
+
+//   var thresholdDate = new Date();
+//   thresholdDate.setMinutes(thresholdDate.getMinutes() - frequencyMinutes)
+//   const dbdate = new Date(dbdatestring)
+//   console.log(`OUTDATED AS SOON AS:  ${thresholdDate} > ${dbdate}`)
+//   if (thresholdDate > dbdate) {
+//     console.log('OUTDATED')
+//     return (true)
+//   }
+
+//   // Not Outdated
+//   return (false)
 // }
 
 
@@ -100,3 +54,21 @@ Object.filter = (obj, predicate) => Object.keys(obj)
 // enable oAuth2 Functionality
 import oAuth2 from 'src/utils/oauth2'
 Vue.use(oAuth2)
+
+
+// CUSTOMMIZATION QUASAR COMPONENTS
+//////////////////////////////////
+import { Notify } from 'quasar'
+Notify.registerType('nFabrikInfo', {
+  icon: 'mdi-announcement',
+  color: 'brown',
+  textColor: 'white',
+  classes: 'glossy'
+})
+
+Notify.registerType('nFabrikInfo', {
+  icon: 'mdi-error',
+  color: 'red',
+  textColor: 'white',
+  classes: 'glossy'
+})

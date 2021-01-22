@@ -1,4 +1,4 @@
-import {mapGetters, mapActions} from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
 
@@ -15,7 +15,7 @@ export default {
   },
 
   computed: {
-    
+
     IsUserDelegateOfOngoingAssembly() {
 
       // data not yet loaded
@@ -46,13 +46,15 @@ export default {
 
   methods: {
     clickAssemblyLink: function (assembly) {
-        console.assert(assembly)
-        var route = {name: 'assembly_home', params: {assemblyIdentifier: assembly.identifier}}
-        this.$router.push(route)
+      console.assert(assembly)
+      var route = { name: 'assembly_home', params: { assemblyIdentifier: assembly.identifier } }
+      this.$router.push(route)
     }
   },
 
-  mounted: function() {
-    this.$store.dispatch('publicindexstore/syncPublicIndex')    
+  mounted: function () {
+
+    console.log("...retrieve public index (if not yet done)")
+    this.$store.dispatch('publicindexstore/syncPublicIndex')
   }
 }
