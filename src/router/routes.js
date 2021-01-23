@@ -17,6 +17,7 @@ const routes = [
       { path: '/logout', name: 'logout', component: () => import(/* webpackPrefetch: true */ 'pages/Auth/Logout.vue') },
       { path: '/profile', name: 'profile', props: true, component: () => import(/* webpackPrefetch: true */ 'pages/Auth/Profile.vue') },
       { path: '/background', name: 'background', component: () => import(/* webpackPrefetch: true */ 'pages/Background.vue') },
+      { path: '/news', name: 'news', component: () => import(/* webpackPrefetch: true */ 'pages/News.vue') },
       // { path: '/showcase', name: 'showcase', component: () => import(/* webpackPrefetch: true */ 'pages/Assembly/AssemblyListShowcase.vue') },
       { path: '/ongoing', name: 'assemblies_ongoing_list', component: () => import('pages/Assembly/AssemblyListOngoing.vue') },
 

@@ -10,6 +10,7 @@
 <script>
 import { mapActions } from "vuex";
 import { LayoutEventBus } from "src/utils/eventbus";
+import api from "src/utils/api";
 
 export default {
   name: "App",
@@ -145,6 +146,11 @@ export default {
 
     LayoutEventBus.$on("AfterLogin", (destination_route) => {
       // is email already set: if not => redirect to userprofile...
+
+      this.$store.dispatch("publicprofilestore/syncProfile", {
+        oauthUserID: this.oauth.userid,
+      });
+
       if (this.oauth.payload.userEmail) {
         // ok, already set (not the first login)
         if (destination_route) {

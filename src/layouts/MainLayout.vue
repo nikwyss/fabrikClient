@@ -29,119 +29,84 @@
         <!-- <q-toolbar-title v-if="oauth.authorized"> -->
         <!-- Demokratiefabrik -->
         <!-- </q-toolbar-title> -->
-
         <q-space />
-
-        <div class="q-pr-lg">
-
-          <!-- <div stretch  :icon="oauth.authorized ? 'mdi-account-circle-outline' : 'mdi-incognito'" > -->
-          <span v-if="oauth.authorized">
-            {{ $t('auth.registered_as', {username: oauth.username}) }}
-            <q-tooltip max-width="300px">{{ oauth.payload.userExtra }} </q-tooltip>
-          </span>
-          <!-- <span v-if="!oauth.authorized">  -->
-          <!-- {{ $t('auth.not_registered') }} -->
-          <!-- <q-tooltip max-width="300px">{{ $t('auth.tooltip_non_authenticated') }} </q-tooltip> -->
-          <!-- </span> -->
-        </div>
-        <q-separator vertical />
-        <q-btn
-          stretch
-          flat
-          disable="true"
-          label="Anmelden"
-          v-if="!oauth.authorized"
-          @click="clickAuthLink"
-        />
-        <q-btn
-          stretch
-          flat
-          label="Eingang"
-          @click="$router.pushR({name: 'home'})"
+        <q-item
+          clickable
+          v-close-popup
+          tabindex="0"
         >
+          <q-item-section @click="$router.pushR({name: 'news'})">
+            <q-item-label>Aktuelles</q-item-label>
+            <!-- <q-item-label caption>Hintergrund, Zweck, und Kontaktpersonen</q-item-label> -->
+          </q-item-section>
+        </q-item>
 
-        </q-btn>
+        <q-separator vertical />
 
-        <q-separator
-          vertical
-          v-if="oauth.authorized"
-        />
+        <q-item
+          clickable
+          v-close-popup
+          tabindex="0"
+        >
+          <q-item-section @click="$router.pushR({name: 'background'})">
+            <q-item-label>Hintergrund</q-item-label>
+            <!-- <q-item-label caption>Hintergrund, Zweck, und Kontaktpersonen</q-item-label> -->
+          </q-item-section>
+        </q-item>
 
+        <q-separator vertical />
+
+        <!-- DROPDOWN -->
         <q-btn-dropdown
           stretch
           flat
-          label="Mitteilungen"
           v-if="oauth.authorized"
         >
+          <template v-slot:label>
+            <div class="row items-center no-wrap">
+              <q-avatar
+                icon="mdi-image-filter-hdr"
+                :style="{ 'background-color': public_profile.color }"
+                text-color="white"
+                class="q-ma-sm"
+              />
+              <div class="text-center">
+                <q-item-section>
+                  <q-item-label caption>{{ $t('auth.registered_as') }}</q-item-label>
+                  <q-item-label>{{public_profile.username}}</q-item-label>
+                </q-item-section>
+              </div>
+            </div>
+          </template>
           <q-list>
             <q-item
               clickable
               v-close-popup
               tabindex="0"
             >
-              <!-- <q- avatar>
-              <q-avatar icon="mdi-logout" color="red" text-color="white" />
-            </q-> -->
-              <q-item-section @click="oauth.logout()">
-                <q-item-label>Keine Mitteilungen</q-item-label>
-                <q-item-label caption></q-item-label>
+              <q-item-section>
+                <q-item-label
+                  caption
+                  style="max-width:250px"
+                >{{ name_derivation }}</q-item-label>
               </q-item-section>
             </q-item>
-          </q-list>
-        </q-btn-dropdown>
 
-        <q-separator
-          vertical
-          v-if="oauth.authorized"
-        />
-
-        <q-btn-dropdown
-          stretch
-          flat
-          label="Menü"
-          v-if="oauth.authorized"
-        >
-          <q-list>
-            <!-- <q-item-label header>Benutzer</q-item-label> -->
             <q-item
               clickable
               v-close-popup
               tabindex="0"
             >
-              <!-- <q- avatar>
-              <q-avatar icon="mdi-account" color="blue" text-color="white" />
-            </q-> -->
               <q-item-section
                 @click="gotoProfile()"
                 v-if="oauth.authorized"
               >
-                <q-item-label>Profil</q-item-label>
-                <q-item-label caption>Benutzereinstellungen</q-item-label>
+                <q-item-label>Sekretariat</q-item-label>
+                <q-item-label caption>Angaben zu Ihrem Benutzerkonto</q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item
-              clickable
-              v-close-popup
-              tabindex="0"
-            >
-              <!-- <q- avatar>
-              <q-avatar icon="mdi-logout" color="red" text-color="white" />
-            </q-> -->
-              <q-item-section @click="$router.pushR({name: 'background'})">
-                <q-item-label>Über uns</q-item-label>
-                <q-item-label caption>Hintergrund, Zweck, und Kontaktpersonen</q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-close-popup
-              tabindex="0"
-            >
-              <!-- <q- avatar>
-              <q-avatar icon="mdi-logout" color="red" text-color="white" />
-            </q-> -->
+            <q-item>
               <q-item-section
                 @click="oauth.logout()"
                 v-if="oauth.authorized"
@@ -150,15 +115,24 @@
                 <q-item-label caption>Demokratiefabrik verlassen</q-item-label>
               </q-item-section>
             </q-item>
+
           </q-list>
         </q-btn-dropdown>
+
+        <q-btn
+          stretch
+          flat
+          label="Anmelden"
+          v-if="!oauth.authorized"
+          @click="clickAuthLink"
+        />
 
       </q-toolbar>
 
       <!-- DISABLED: at the moment. only de_CH -->
       <!-- <LanguageSwitch /> -->
 
-      </q-toolbar>
+      <!-- </q-toolbar> -->
       <!-- </div> -->
 
       <div
@@ -295,7 +269,7 @@
           <q-chip
             v-if="NotificationBannerButtons.includes('profile')"
             size="md"
-            icon="mdi-account"
+            icon="mdi-image-filter-hdr"
             outline
             color="primary"
             text-color="primary"
@@ -392,6 +366,8 @@
 
 <script>
 import { LayoutEventBus } from "src/utils/eventbus";
+import { mapGetters } from "vuex";
+
 // import ComponentDrawer from './components/ComponentDrawer'
 // import LanguageSwitch from './components/LanguageSwitch'
 // import PopupProfile from './components/PopupProfile'
@@ -508,12 +484,27 @@ export default {
       return this.$route.name == "home";
     },
 
+    name_derivation: function () {
+      const altitude = this.public_profile.altitude;
+      const fullname = this.public_profile.fullname;
+      const canton = this.public_profile.canton;
+      return this.$i18n.t("auth.name_derivation", {
+        fullname: fullname,
+        canton: canton,
+        altitude: altitude,
+      });
+    },
+
     is_assembly_page: function () {
       return (
         this.$route.name === "assemblies" ||
         !!this.$route.params.assemblyIdentifier
       );
     },
+
+    ...mapGetters({
+      public_profile: "publicprofilestore/get_public_profile",
+    }),
   },
 
   //   mounted: function() {

@@ -26,7 +26,7 @@
     "vue-dompurify-html": "^2.3.0",
     "vue-i18n": "^8.0.0",
     "vue-reactive-provide": "^0.3.0",
-    "vuex-persistedstate": "^4.0.0",
+    "vuex-persistedstate": "^4.0.0-beta.3",
     "webcrypto-shim": "^0.1.6",
     "whatwg-fetch": "^3.5.0"
   },

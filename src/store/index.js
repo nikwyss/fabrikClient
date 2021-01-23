@@ -5,6 +5,7 @@ import { date } from 'quasar'
 import api from 'src/utils/api';
 import { contentstore } from './vuex-store-contenttree'
 import { assemblystore } from './vuex-store-assembly'
+import { publicprofilestore } from './vuex-store-profile'
 import { publicindexstore } from './vuex-store-publicindex'
 import { pluginstore } from './vuex-plugin_store'
 
@@ -13,6 +14,7 @@ Vue.use(Vuex)
 // Modules
 var stores = {
   // oauthstore,
+  publicprofilestore,
   assemblystore,
   publicindexstore,
   contentstore,

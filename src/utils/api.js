@@ -45,6 +45,20 @@ export default {
 
   // API
   // ******************************
+  /**
+   * Get or Public-Profile Data.. (API)
+   */
+  async publicProfile() {
+
+    // Renew token (if required)
+    await Vue.prototype.oauth.refresh_token_if_required()
+
+    /* Notify Resource Server about certain user activities in the client app. */
+    let url = `${process.env.ENV_APISERVER_URL}/profile`
+    console.log('get public profile (API-Server)')
+    return await ApiService.get(url)
+  },
+
   async monitorActivities({ event, data }) {
 
     // Renew token (if required)

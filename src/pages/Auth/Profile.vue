@@ -3,7 +3,7 @@
     class="doc_content "
     v-if="oauth.payload"
   >
-    <h1>Empfang</h1>
+    <h1>Sekretariat</h1>
     <div>
       <div>
         <div

@@ -8,6 +8,7 @@ RUN yarn --silent
 RUN yarn --silent global add @quasar/cli
 # copy everything but the node-modules directory (which is ignored in .dockerignore file)
 COPY . .
+COPY .env.production .env
 
 # build stage
 FROM develop-stage as build-stage

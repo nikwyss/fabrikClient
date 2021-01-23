@@ -27,7 +27,7 @@ export default {
     btn_skip: 'Überspringen',
     btn_cancel: 'Abbrechen',
     btn_home: 'Zur Startseite',
-    btn_goto_profile: 'Zum Empfang',
+    btn_goto_profile: 'Zum Sekretariat',
     ask_for_bookmark_title: 'Hinweis:',
     ask_for_bookmark: 'Möchten Sie diese Webseite während dem Event in Ihren Favoriten/Lesezeichen speichern? Dann drücken Sie die beiden Tasten {bookmarkKeys}'
   },
@@ -39,7 +39,7 @@ export default {
       Die Reihenfolge der Inhalte auf gleicher Hierarchiestufe ist zufällig und variiert von Benutzer zu Benutzer.`,
       extensionExtraLarge: `Die Diskussion ist schon recht umfassend. Damit die Diskussion übersichtlich bleibt, wurden nur 30 zufällig ausgewählte Beiträge vollständig aufgeklappt.
       Sie können die restlichen Beiträge selbst per Mausklick öffnen.`
-    }  
+    }
   },
 
   am: {
@@ -80,9 +80,10 @@ export default {
 
   auth: {
     salutation_for_guests: 'Lieber Gast!',
+    name_derivation: 'Ihr Namensgeber ist der {altitude} Meter hohe Berg "{fullname}" ({canton})',
     login_button_label: 'Anmeldung',
     login_button_text: 'Klicken Sie auf \'Anmeldung\', wenn Sie sich anmelden möchten. Eine Anmeldung ist notwendig, um sich aktiv in der Fabrik zu beteiligen.',
-    registered_as: 'Angemeldet als {username}',
+    registered_as: 'Ihr Pseudonym',
     not_registered: 'Nicht angmeldet',
     profile_last_name: 'Pseudonym',
     profile_email: 'Email',
@@ -148,7 +149,7 @@ export default {
       you_may_enter_this_assembly_for_the_first_time: 'Treten Sie ein: Es macht Spass und Sie leisten einen Beitrag für unsere Demokratie.'
     }
   },
-  
+
   stages: {
     home_title: 'Ihre Agenda für den {current_date}',
     status_completed: 'Bereits beendet',
@@ -286,6 +287,22 @@ export default {
         2: [
           // Tooltips for the second AM displayed on the page
           'Ziemlich innovativ das Ganze. Finden Sie nicht?'
+        ]
+      }
+    }
+  },
+
+
+
+  news: {
+    h1: 'Was aktuell in der Demokratiefabrik läuft!',
+    am: {
+      newsletter: 'Möchten Sie bezüglich der Demokratiefabrik auf dem Laufenden bleiben? Dann können sie unseren Newsletter abonnieren.',
+      cmd_newsletter_abo: 'Newsletter-Abo',
+      tooltip: {
+        2: [
+          // Tooltips for the second AM displayed on the page
+          'Schauen Sie sich doch auch noch auf der Seite "Hintergrund" um.'
         ]
       }
     }

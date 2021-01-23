@@ -39,8 +39,8 @@ export default {
       ongoing_assemblies: 'publicindexstore/ongoing_assemblies',
       IsThereAnAssemblyInPublicState: 'publicindexstore/IsThereAnAssemblyInPublicState',
       IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
-      IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn',
-      retrieveCredentials: 'oauthstore/retrieveCredentials',
+      IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn'
+      // retrieveCredentials: 'oauthstore/retrieveCredentials',
     })
   },
 
