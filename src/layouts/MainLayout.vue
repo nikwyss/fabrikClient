@@ -190,7 +190,7 @@ import PublicIndex from "src/mixins/publicIndex"
 export default {
   name: "MainLayout",
   mixins: [PublicIndex],
-  inject: ['currentAssemblyName'],
+  // inject: ['currentAssemblyName'], // not necessary=>defined in the mixin...
   components: {
     // ComponentDrawer,
     // LanguageSwitch,
@@ -218,7 +218,7 @@ export default {
   methods: {
     
     clickAuthLink: function () {
-      const destination_route = { name: "assemblies_ongoing_list" };
+      const destination_route = { name: "home" };
       this.oauth.login(destination_route);
     },
 

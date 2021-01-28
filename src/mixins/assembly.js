@@ -1,4 +1,4 @@
-import {mapGetters, mapActions} from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { scroll } from 'quasar'
@@ -10,8 +10,8 @@ const { getScrollTarget, setScrollPosition } = scroll
 const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
   name: 'ABLY',
   include: [
-      'assembly', 'isAgendaFinished', 'numberOfStages', 'numberOfScheduledStages',
-      'assembly_acls', 'routedStage'
+    'assembly', 'isAgendaFinished', 'numberOfStages', 'numberOfScheduledStages',
+    'assembly_acls', 'routedStage'
   ]
 })
 
@@ -20,17 +20,17 @@ export default {
 
   provide() {
     return {
-        assemblyIdentifier: this.assemblyIdentifier,
-        routedStageID: this.routedStageID,
-        gotoAssemblyHome: this.gotoAssemblyHome,
-        clickGotoIndexAndMoveOn: this.clickGotoIndexAndMoveOn,
-        clickGotoNextStageNr: this.clickGotoNextStageNr,
-        isLastStage: this.isLastStage,
-        isFirstStage: this.isFirstStage,
-        isNew: this.isNew,
-        isAlert: this.isAlert,
-        isSkippable: this.isSkippable,
-        isCompleted: this.isCompleted
+      assemblyIdentifier: this.assemblyIdentifier,
+      routedStageID: this.routedStageID,
+      gotoAssemblyHome: this.gotoAssemblyHome,
+      clickGotoIndexAndMoveOn: this.clickGotoIndexAndMoveOn,
+      clickGotoNextStageNr: this.clickGotoNextStageNr,
+      isLastStage: this.isLastStage,
+      isFirstStage: this.isFirstStage,
+      isNew: this.isNew,
+      isAlert: this.isAlert,
+      isSkippable: this.isSkippable,
+      isCompleted: this.isCompleted
     }
   },
 
@@ -53,7 +53,7 @@ export default {
       const assembly = this.get_assembly(this.assemblyIdentifier)
 
       // Monitor assembly visit
-      if (assembly){
+      if (assembly) {
         this.monitorApi()
       }
 
@@ -62,12 +62,12 @@ export default {
       return (assembly)
     },
 
-    assembly_stages: function() {
+    assembly_stages: function () {
       console.log('get assembly_stages')
       console.assert(this.assemblyIdentifier)
 
       // not yet ready?
-      if (!this.assembly){
+      if (!this.assembly) {
         console.log('assembly not yet loaded...1923')
         return (null)
       }
@@ -75,49 +75,49 @@ export default {
       return (this.get_assembly_stages(this.assemblyIdentifier))
     },
 
-    assembly_configuration: function() {
+    assembly_configuration: function () {
       console.assert(this.assemblyIdentifier)
       // not yet ready?
-      if (!this.assembly){ 
+      if (!this.assembly) {
         console.log('assembly not yet loaded...1922')
         return (null)
       }
       return (this.get_assembly_configuration(this.assemblyIdentifier))
     },
 
-    assembly_progression: function() {
+    assembly_progression: function () {
       console.assert(this.assemblyIdentifier)
       // not yet ready?
-      if (!this.assembly){ 
+      if (!this.assembly) {
         console.log('assembly not yet loaded...1921')
         return (null)
       }
       return (this.get_assembly_progression(this.assemblyIdentifier))
     },
 
-    assembly_acls: function() {
+    assembly_acls: function () {
       return (this.oauth.acls(this.assemblyIdentifier))
     },
 
     isAgendaFinished: function () {
-      return (this.highestAllowedStageNr == this.numberOfStages+1)
+      return (this.highestAllowedStageNr == this.numberOfStages + 1)
     },
 
     highestAllowedStageNr: function () {
-      if(!this.sorted_stages){
-          return (undefined)
+      if (!this.sorted_stages) {
+        return (undefined)
       }
 
       var lastAllowedStageNr = this.numberOfStages
       for (let stageNr in this.sorted_stages) {
         let stage = this.sorted_stages[stageNr]
         // TODO: buggy: use maybe... isScheduledStages
-        if (!this.isDisabled(stage) && !this.isCompleted(stage)){
-          if (!this.isSkippable(stage, stageNr) ){
-              // this stage must be handled right now.
-              return (stageNr)
-          }else {
-              lastAllowedStageNr = stageNr
+        if (!this.isDisabled(stage) && !this.isCompleted(stage)) {
+          if (!this.isSkippable(stage, stageNr)) {
+            // this stage must be handled right now.
+            return (stageNr)
+          } else {
+            lastAllowedStageNr = stageNr
           }
         }
       }
@@ -126,45 +126,45 @@ export default {
       return (lastAllowedStageNr + 1)
     },
 
-    numberOfStages: function() {
+    numberOfStages: function () {
 
-      if(!this.assembly_stages){
-          return (undefined)
+      if (!this.assembly_stages) {
+        return (undefined)
       }
 
-      return(Object.keys(this.assembly_stages).length)
+      return (Object.keys(this.assembly_stages).length)
     },
 
-    numberOfScheduledStages: function() {
-        if(!this.assembly_stages){
-            return (undefined)
-        }
-        const scheduled_stages = Object.filter(this.assembly_stages, x => this.isScheduledStage(x))
-        return(Object.values(scheduled_stages).length)
+    numberOfScheduledStages: function () {
+      if (!this.assembly_stages) {
+        return (undefined)
+      }
+      const scheduled_stages = Object.filter(this.assembly_stages, x => this.isScheduledStage(x))
+      return (Object.values(scheduled_stages).length)
     },
 
-    sorted_stages: function() {
-        if(!this.assembly_stages){
-            return (undefined)
-        }
-        let sorted = Object.values(this.assembly_stages).sort((a, b) => a.stage.order_position < b.stage.order_position ? -1 : a.stage.order_position > b.stage.order_position ? 1 : 0)
-        return(sorted)
+    sorted_stages: function () {
+      if (!this.assembly_stages) {
+        return (undefined)
+      }
+      let sorted = Object.values(this.assembly_stages).sort((a, b) => a.stage.order_position < b.stage.order_position ? -1 : a.stage.order_position > b.stage.order_position ? 1 : 0)
+      return (sorted)
     },
 
 
     //  -----------------------------------------------
     // Get Stage from StageID transmitted in the URL
     // (used in all sub-pages)
-    routedStageID: function() {
+    routedStageID: function () {
       let stageID = this.$route.params.stageID
       stageID = stageID ? parseInt(stageID) : null
-      return(stageID)
+      return (stageID)
     },
 
     // GEt Stage from StageID transmitted in the URL
-    routedStage: function() {
+    routedStage: function () {
 
-      if (this.assembly_stages === null){
+      if (this.assembly_stages === null) {
         return (null)
       }
 
@@ -175,44 +175,44 @@ export default {
       }
     },
 
-    
+
     //  -----------------------------------------------
     // Get Stage from StageID transmitted in the URL
     // (used on Index Page)
     cachedStageNr: {
-      get: function() {
-          if (this.assembly_stages===null) {
-              return (null)
-          }
+      get: function () {
+        if (this.assembly_stages === null) {
+          return (null)
+        }
 
-          let stageID = this.getCachedStageID(this.assemblyIdentifier)
-          let stageNr = null
-          if (stageID) {
-              let stage = this.assembly_stages[stageID]
-              stageNr = this.sorted_stages.indexOf(stage)
-          }
-          if (stageNr === null || stageNr === undefined) {
-              stageNr = 0
-          }
+        let stageID = this.getCachedStageID(this.assemblyIdentifier)
+        let stageNr = null
+        if (stageID) {
+          let stage = this.assembly_stages[stageID]
+          stageNr = this.sorted_stages.indexOf(stage)
+        }
+        if (stageNr === null || stageNr === undefined) {
+          stageNr = 0
+        }
 
-          return (stageNr)
+        return (stageNr)
       },
 
-      set: function(stageNr) {
+      set: function (stageNr) {
 
-          console.log('SET NEW STAGE' + stageNr)
+        console.log('SET NEW STAGE' + stageNr)
 
-          if (stageNr === null) {
-            this.setCachedStageID({assembly: this.assembly, stageID: null })
-            return (null)
-          }
+        if (stageNr === null) {
+          this.setCachedStageID({ assembly: this.assembly, stageID: null })
+          return (null)
+        }
 
-          console.assert(this.validateStageNr(stageNr))
+        console.assert(this.validateStageNr(stageNr))
 
-          this.setCachedStageID({
-            assembly: this.assembly,
-            stageID: this.getIDbyNr(stageNr)
-          })
+        this.setCachedStageID({
+          assembly: this.assembly,
+          stageID: this.getIDbyNr(stageNr)
+        })
       }
     },
 
@@ -230,10 +230,10 @@ export default {
 
     clickBackToAssemblyListButton: function () {
       this.set_current_assemblyIdentifier(null)
-      this.$router.push ({ name: 'assemblies' })
+      this.$router.push({ name: 'assemblies' })
     },
 
-    monitorApi: function() {
+    monitorApi: function () {
       /* By this method we allow the API to monitor user activities */
 
       // Monitor about stage visit
@@ -248,17 +248,17 @@ export default {
       })
     },
 
-    stageTransition: function(newVal, oldVal) {
+    stageTransition: function (newVal, oldVal) {
       this.scrollToStage()
     },
 
-    laggedScrollToStage: function() {
+    laggedScrollToStage: function () {
       setTimeout(() => {
         this.scrollToStage()
       }, 200)
     },
 
-    scrollToStage: function() {
+    scrollToStage: function () {
       // SCROLL POSITION
       console.log('Do the scrolling...')
       // let anchorid = `stage${this.cachedStageNr}`
@@ -270,13 +270,13 @@ export default {
         console.log(el.offsetTop)
         const duration = 300
         setScrollPosition(target, offset, duration)
-        
-      }else{
+
+      } else {
         console.log('scroll element not found..')
       }
     },
 
-    gotoAssemblyHome: function() {
+    gotoAssemblyHome: function () {
 
       var route = null
 
@@ -291,7 +291,7 @@ export default {
       // } else {
       route = {
         name: 'assembly_home',
-        params: {assemblyIdentifier: this.assemblyIdentifier}
+        params: { assemblyIdentifier: this.assemblyIdentifier }
       }
       // }
       console.log(route)
@@ -343,7 +343,7 @@ export default {
       return (true)
     },
 
-    clickGotoIndexAndMoveOn: function() {
+    clickGotoIndexAndMoveOn: function () {
       // const stageNr = this.sorted_stages.indexOf(this.cachedStageNr)
       console.log('update stage')
       this.gotoNextStageNr()
@@ -353,70 +353,70 @@ export default {
 
     },
 
-    clickGotoNextStageNr: function() {
+    clickGotoNextStageNr: function () {
       this.gotoNextStageNr()
     },
 
-    gotoNextStageNr: function() {
+    gotoNextStageNr: function () {
       console.log('clcik goto next stage nr. CURRENT: ')
       const nextStageNr = this.findNextValidateStageNr(this.cachedStageNr)
       console.log(' next stage found: ' + nextStageNr)
       this.cachedStageNr = nextStageNr
-      console.log('ok, new stage is set to ' + nextStageNr )
+      console.log('ok, new stage is set to ' + nextStageNr)
     },
 
-    getIDbyNr: function (stageNr) { 
+    getIDbyNr: function (stageNr) {
       return (this.sorted_stages[stageNr].stage.id)
     },
 
     // ------ STAGE STATUS -------------------
     isDone: function (stage, stageNr) {
-        // return(this.stageNr in [this.Constants.STATUS_COMPLETED])
-        return(this.highestAllowedStageNr >= stageNr && !this.isCompleted(stage))
+      // return(this.stageNr in [this.Constants.STATUS_COMPLETED])
+      return (this.highestAllowedStageNr >= stageNr && !this.isCompleted(stage))
     },
 
     isActive: function (stage, stageNr) {
-      return( this.highestAllowedStageNr >= stageNr && !this.isCompleted(stage))
+      return (this.highestAllowedStageNr >= stageNr && !this.isCompleted(stage))
     },
 
     /* Is there still an activity required on this stage? */
     isScheduledStage: function (stage, stageNr) {
-        return(!this.isDisabled(stage) && !this.isCompleted(stage) &&
-            (this.isNew(stage) || this.isAlert(stage))
-        )
+      return (!this.isDisabled(stage) && !this.isCompleted(stage) &&
+        (this.isNew(stage) || this.isAlert(stage))
+      )
     },
 
-    isSkippable: function(stage, stageNr) {
+    isSkippable: function (stage, stageNr) {
 
-        // new content is never skippable
-        if (this.isNew(stage)) {
-            return (false)
-        }
+      // new content is never skippable
+      if (this.isNew(stage)) {
+        return (false)
+      }
 
-        // alerted content is never skippable
-        if (this.isAlert(stage)) {
-            return (false)
-        }
+      // alerted content is never skippable
+      if (this.isAlert(stage)) {
+        return (false)
+      }
 
-        // all the rest is skippable. right?
-        return(true)
+      // all the rest is skippable. right?
+      return (true)
     },
 
     isSkipped: function (stage) {
-        return(stage.progression && stage.progression.status in [this.Constants.STATUS_SKIPPED])
+      return (stage.progression && stage.progression.status in [this.Constants.STATUS_SKIPPED])
     },
     isAlert: function (stage) {
-        return(stage.progression && stage.progression.status in [this.Constants.STATUS_ALERT])
+      return (stage.progression && stage.progression.status in [this.Constants.STATUS_ALERT])
     },
     isIdle: function (stage) {
-        return(stage.status in [this.Constants.STATUS_IDLE])
+      return (stage.status in [this.Constants.STATUS_IDLE])
     },
     isNew: function (stage) {
-        return(stage.progression === null || stage.progression === undefined)
+      return (stage.progression === null || stage.progression === undefined)
     },
     isDisabled: function (stage) {
-        // only admins see deleted attribute.
-        return(('disabled' in stage.stage && stage.stage.disabled) || ('deleted' in stage.stage && stage.stage.deleted))
+      // only admins see deleted attribute.
+      return (('disabled' in stage.stage && stage.stage.disabled) || ('deleted' in stage.stage && stage.stage.deleted))
     },
     isCompleted: function (stage) {
       console.assert(stage)
@@ -433,30 +433,31 @@ export default {
       if (!stage.progression.completed) {
         return (false)
       }
-      return(stage.progression.completed===true)
+      return (stage.progression.completed === true)
     },
 
     isFirstStage: function (stage, stageNr) {
-        return(stageNr == 0)
+      return (stageNr == 0)
     },
 
     isLastStage: function (stage, stageNr) {
-        return(stageNr == this.sorted_stages.length)
+      return (stageNr == this.sorted_stages.length)
     },
 
-    ...mapActions({setCachedStageID: 'assemblystore/setCachedStageID'})    
+    ...mapActions({ setCachedStageID: 'assemblystore/setCachedStageID' })
 
   },
 
 
-  created () {
+  created() {
 
     // Catch all authentication status changes
     LayoutEventBus.$on('AfterAuthenticationStatusChanged', data => {
       console.log('>> AfterAuthenticationStatusChanged listener in assembly')
       const assemblyIdentifier = this.assemblyIdentifier
+      // TODO: remove any personal data when loggin out
       this.$store.dispatch('assemblystore/syncAssembly', {
-        assemblyIdentifier, 
+        assemblyIdentifier,
         oauthUserID: this.oauth.userid
       })
     })
@@ -464,7 +465,7 @@ export default {
 
   watch: {
     // if route changes, hide TextLoading
-    $route (to, from) {
+    $route(to, from) {
       console.log('NEW ASSEMBLY ROUTE')
       // console.log(to)
       //   this.hideLoadingGif()
@@ -474,11 +475,12 @@ export default {
   },
 
 
-  mounted: function() {
+  mounted: function () {
     const assemblyIdentifier = this.assemblyIdentifier
     console.log('>> mounter')
     this.$store.dispatch('assemblystore/syncAssembly', {
-      assemblyIdentifier, 
-      oauthUserID: this.oauth.userid})
+      assemblyIdentifier,
+      oauthUserID: this.oauth.userid
+    })
   }
 }

@@ -43,7 +43,7 @@ const WithoutAuthHeader = (config = {}) => {
 
 const ApiService = {
 
-  init () {
+  init() {
     axios.defaults.timeout = 2000
     axios.defaults.baseURL = process.env.ENV_APISERVER_URL
   },
@@ -78,7 +78,7 @@ const ApiService = {
   /**
    * Returns currently set default authentication header (without prefix)
    */
-  getHeader () {
+  getHeader() {
     if (HTTP_HEADER in axios.defaults.headers.common) {
       let header = axios.defaults.headers.common[HTTP_HEADER]
       if (header) {
@@ -158,7 +158,7 @@ const ApiService = {
     var response = null
     response = await axios(data)
     console.log('just launched')
-    
+
     // TOKEN SHOULD BE ALRIGHT NOW:
     // DO the secont attempt
     // if (response.status == 449){
@@ -168,7 +168,7 @@ const ApiService = {
     // At this point, the jwt token is already refreshed (within the interceptor) 
     console.log('PERMISSION ERROR: Initiate a secont attempt')
     if (response.retoken) {
-      
+
       // Re-issue tokens (in ApiService)
       // console.log("refresh token status set")
       // await response.retoken()
@@ -189,7 +189,7 @@ const ApiService = {
       temp_oauth_jwt = null
     }
 
-    
+
     if (temp_oauth_jwt && WithoutAuthHeader(data)) {
       // re-set the header
       console.log('header re-set')
@@ -199,7 +199,7 @@ const ApiService = {
     return (response)
   },
 
-  
+
 
   /**
    * Refresh Token: if Api request returns 401
@@ -222,7 +222,7 @@ const ApiService = {
 
 // AXIOS  INTERCEPTOR
 /////////////////////////////////
-const axiosErrorHandling = async function(error) {
+const axiosErrorHandling = async function (error) {
   // axiosErrorHandling = async function (error) {
   // enfoce that ApiService Wrapper is used, (and not pure Axios)
   // console.log("XHR ERROR")
@@ -235,14 +235,14 @@ const axiosErrorHandling = async function(error) {
     LayoutEventBus.$emit('showNetworkError')
     return Promise.reject(error)
 
-  // Server Error
+    // Server Error
   } else if (error.response.status == 400) {
     // 400 errors (parse errors)
     console.log('400 Error')
     if (Allow400Status(error.config)) {
-        // dont raise 400 errors, if this is desired explicitly
-        console.log('AXIOS: Pass Error 400')
-        return (true)
+      // dont raise 400 errors, if this is desired explicitly
+      console.log('AXIOS: Pass Error 400')
+      return (true)
     }
     return Promise.reject(error)
 
@@ -253,7 +253,7 @@ const axiosErrorHandling = async function(error) {
     LayoutEventBus.$emit('showAuthorizationError')
     return Promise.reject(error)
 
-  // 429 Too Many Requests...
+    // 429 Too Many Requests...
   } else if (error.response.status == 429) {
     console.log('AXIOS: Pass Error 429')
     LayoutEventBus.$emit('showTooManyRequestsError')
@@ -270,12 +270,12 @@ const axiosErrorHandling = async function(error) {
 
         // Refresh Token
         await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
-        if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {          
+        if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
           const jwt = Vue.prototype.pkce.state.accessToken.value
           ApiService.setHeader(jwt)
           error.config.retoken = true
           return (error.config)
-        }        
+        }
       }
 
       // Token Refresh, seems not be possible / desired :-(
@@ -293,12 +293,18 @@ const axiosErrorHandling = async function(error) {
 }
 ApiService.mountAxiosInterceptor(axiosErrorHandling)
 
-LayoutEventBus.$on('AfterTokenChanged',  jwt => {
+LayoutEventBus.$on('AfterTokenChanged', jwt => {
+  // SHOULD BE THE ONLY ONE Listener for this event!
   if (jwt) {
     ApiService.setHeader(jwt)
-  }else{
+  } else {
     ApiService.removeHeader()
   }
+
+  // NOTIFY EVERYONE, THAT TOKEN HAS CHANGED NOW!
+  console.log("ApiService Header is updated => emit AfterAuthenticationStatusChanged")
+  LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
+
 })
 
 export { ApiService, ReloginOnStatus403, Allow400Status };

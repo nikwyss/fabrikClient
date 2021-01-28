@@ -47,7 +47,7 @@
             class="q-ma-sm"
             style="width: 70%;"
           >
-            <q-tooltip><b>Politools:</b> Projektpartner <br>und Betreiberin der <br>Online-Wahlhilfe Smartvote.</q-tooltip>
+            <q-tooltip><b>Politools:</b> Projektpartner <br>und Betreiberin der <br>Online-Wahlhilfe Smartvote. <br>Politools ist ebenfalls in Bern zu Hause.</q-tooltip>
           </q-img>
           </a>
         </div>
@@ -63,7 +63,7 @@
         </div> -->
 
         <div class="col-2">
-          <a href="http://www.snf.ch" target="_blank" alt="Schweizer Nationalfond">
+          <a href="http://www.snf.ch" target="_blank" alt="Schweizer Nationalfonds">
           <q-img
             src='layout/logosnf.png'
             :ratio="1"
@@ -71,7 +71,7 @@
             class="q-ma-sm"
             style="width: 80%;"
           >
-            <q-tooltip><b>Schweizer Nationalfond:</b> Gewährleistet die <br>Finanzierung des Projektes.</q-tooltip>
+            <q-tooltip><b>Schweizer Nationalfonds:</b> Gewährleistet die <br>Finanzierung des Projektes.</q-tooltip>
            </q-img>
           </a>
         </div>

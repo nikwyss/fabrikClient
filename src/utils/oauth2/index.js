@@ -91,6 +91,30 @@ export default {
     Vue.prototype.pkce = new OAuth2AuthCodePKCE(pkce_config)
     // Vue.prototype.enforce_reactivity = 1
 
+
+    // Methods
+    Vue.prototype.login = function (destination_route = null) {
+      // save destiantion route to localstorage
+      console.log("kkkkkkkkkkkkkk" + destination_route)
+      console.log(destination_route)
+      localStorage.setItem('oauth2authcodepkce-destination', JSON.stringify(destination_route));
+      // redirect to login
+      Vue.prototype.pkce.fetchAuthorizationCode()
+    }
+
+    Vue.prototype.logout = function () {
+
+      Vue.prototype.pkce.reset();
+
+      // 1. technical level notification: e.g. replace token in axios / delete user cache
+      console.log("oAUTH: token received => emit AfterTokenChanged")
+      LayoutEventBus.$emit('AfterTokenChanged', null)
+
+      // 2: user level notification  
+      console.log("oAUTH: token updated => emit AfterLogout")
+      LayoutEventBus.$emit('AfterLogout')
+    }
+
     // Component Mixin
     Vue.prototype.oauth = new Vue({
 
@@ -120,9 +144,10 @@ export default {
 
           // add xhr decorator
           const jwt = Vue.prototype.pkce.state.accessToken.value
-          LayoutEventBus.$emit('AfterTokenChanged', jwt)
+          // console.log('...OAUTH: emit AfterTokenChanged')
+          // LayoutEventBus.$emit('AfterTokenChanged', jwt)
           // this.authorized = true
-          // console.log('...OAUTH: jwt token is established')
+          // console.log("OAUTH: return payload..")
           const payload = JSON.parse(window.atob(jwt.split('.')[1]))
           // console.log(payload)
           return (payload);
@@ -192,11 +217,17 @@ export default {
             // A valid Redirect by the auth server
             Vue.prototype.pkce.getAccessToken().then(({ token, scopes }) => {
               this.enforce_reactivity += 1
-              // console.log('...OAUTH: token received and established, right!')
-              LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
+
+              // 1. One: technical stuff: replace token in axios
+              console.log("oAUTH: token received => emit AfterTokenChanged")
+              LayoutEventBus.$emit('AfterTokenChanged', token)
+
+              // 2. notify everybody about new user loging.
               const destination_route = JSON.parse(localStorage.getItem('oauth2authcodepkce-destination'));
               localStorage.removeItem('oauth2authcodepkce-destination');
+              console.log('...OAUTH: after Login... => emit AfterLogin, destination_route: ', destination_route)
               LayoutEventBus.$emit('AfterLogin', destination_route)
+
             })
               .catch(error => {
                 console.log("error in oauth plugin (1)..")
@@ -204,7 +235,7 @@ export default {
                 console.error(error)
                 LayoutEventBus.$emit('LoginError', error)
                 Vue.prototype.logout()
-              });
+              })
           }
         })
           .catch((error) => {
@@ -217,19 +248,5 @@ export default {
           })
       }
     })
-
-    // Methods
-    Vue.prototype.login = function (destination_route = null) {
-      // save destiantion route to localstorage
-      localStorage.setItem('oauth2authcodepkce-destination', JSON.stringify(destination_route));
-      // redirect to login
-      Vue.prototype.pkce.fetchAuthorizationCode()
-    },
-
-      Vue.prototype.logout = function () {
-        Vue.prototype.pkce.reset();
-        LayoutEventBus.$emit('AfterLogout')
-        // LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
-      }
   }
 }

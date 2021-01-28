@@ -59,6 +59,9 @@ export default {
 
   menu: {
     items: {
+      locked: {
+        tooltip: 'Dieser Bereich ist noch nicht zugänglich. Unsere ModeratorInenn haben zuerst noch eine andere Bitte an Sie!'
+      },
       home: {
         label: 'Ihre Agenda',
         tooltip: 'Was sie heute alles erwartet!'

@@ -146,7 +146,7 @@ export default {
 
     LayoutEventBus.$on("AfterLogin", (destination_route) => {
       // is email already set: if not => redirect to userprofile...
-
+      console.log("app.vue: AfterLogin => syncProfile.." + destination_route)
       this.$store.dispatch("publicprofilestore/syncProfile", {
         oauthUserID: this.oauth.userid,
       });

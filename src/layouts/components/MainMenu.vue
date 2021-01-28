@@ -111,9 +111,8 @@
           flat
           label="Anmelden"
           v-if="!oauth.authorized"
-          @click="oauth.login()"
+          @click="oauth.login({ name: 'home' })"
         />
-
 
         <!-- DISABLED: at the moment. only de_CH -->
         <!-- <LanguageSwitch /> -->

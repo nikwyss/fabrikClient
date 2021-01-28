@@ -68,11 +68,11 @@
 <script>
 import ArtificialModeratorAssemblyListOngoing from "src/artificialmoderation/AssemblyListOngoing";
 import ArtificialModeratorAssemblyListOngoingSelection from "src/artificialmoderation/AssemblyListOngoingSelection";
-import PublicIndex from "src/mixins/publicIndex";
+// import PublicIndex from "src/mixins/publicIndex";
 
 export default {
   name: "PageAssemblyList",
-  mixins: [PublicIndex],
+  // mixins: [PublicIndex],
   components: {
     ArtificialModeratorAssemblyListOngoingSelection,
     ArtificialModeratorAssemblyListOngoing,

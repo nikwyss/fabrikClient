@@ -4,59 +4,53 @@
 
 
   <q-tabs v-model="currenttab">
-      <!-- icon="mdi-door" -->
     <CustomQRouteTab
       name="home"
       icon="mdi-calendar-text"
       exact
       :to="{ 
         name: 'assembly_home', 
-        params: {
-          assemblyIdentifier: this.$route.params.assemblyIdentifier
-        }
+        params: {assemblyIdentifier: this.$route.params.assemblyIdentifier}
       }"
-    >
-
-    {{$t('menu.items.home.label')}}
-
-      <q-tooltip :offset="menuOffset">{{$t('menu.items.home.tooltip')}}</q-tooltip>
-    </CustomQRouteTab>
+      :label="$t('menu.items.home.label')"
+      :menuOffset="menuOffset"
+      :tooltip="$t('menu.items.home.tooltip')"
+      :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
+      :disable="false"
+    />
 
     <CustomQRouteTab
       name="showcase"
       icon="mdi-eye-outline"
       to="/showcase"
       label="Wahlthemen"
-    >
-      <q-tooltip
-        :offset="menuOffset"
-        max-width="300px"
-      >{{$t('menu.items.showcase.tooltip')}}</q-tooltip>
-    </CustomQRouteTab>
+      :menuOffset="menuOffset"
+      :tooltip="$t('menu.items.assembly.tooltip')"
+      :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
+      :disable="true"
+    />
 
     <CustomQRouteTab
       name="assemblies"
       :to="{name: 'assemblies_ongoing_list'}"
       icon="mdi-lead-pencil"
       label="Fragenkatalog"
-    >
-      <q-tooltip
-        :offset="menuOffset"
-        max-width="300px"
-      >{{$t('menu.items.assembly.tooltip')}}</q-tooltip>
-    </CustomQRouteTab>
+      :menuOffset="menuOffset"
+      :tooltip="$t('menu.items.assembly.tooltip')"
+      :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
+      :disable="true"
+    />
 
     <CustomQRouteTab
       name="discussions"
       :to="{name: 'assemblies_ongoing_list'}"
       icon="mdi-lead-pencil"
-      label="Zusammenfassung"
-    >
-      <q-tooltip
-        :offset="menuOffset"
-        max-width="300px"
-      >{{$t('menu.items.assembly.tooltip')}}</q-tooltip>
-    </CustomQRouteTab>
+      label="Analyse"
+      :menuOffset="menuOffset"
+      :tooltip="$t('menu.items.assembly.tooltip')"
+      :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
+      :disable="true"
+    />
 
 
   </q-tabs>

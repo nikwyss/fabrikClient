@@ -43,12 +43,12 @@
 
 import ArtificialModeratorAssemblyListShowcase from 'src/artificialmoderation/AssemblyListShowcase'
 import ArtificialModeratorAssemblyListShowcaseSelection from 'src/artificialmoderation/AssemblyListShowcaseSelection'
-import PublicIndex from "src/mixins/publicIndex"
+// import PublicIndex from "src/mixins/publicIndex"
 
 export default {
 
     name: 'PageAssemblyList',
-    mixins: [PublicIndex],
+    // mixins: [PublicIndex],
     components: {
         ArtificialModeratorAssemblyListShowcase,
         ArtificialModeratorAssemblyListShowcaseSelection
