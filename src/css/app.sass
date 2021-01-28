@@ -63,21 +63,24 @@ small
     width: 98px
     height: 138px
 
-  // &.artificialmoderator1 .q-message-text
-  //   background-color: $accent !important
-  //   color:  $accent2 !important
+  .q-message-text
+    old-background-color: $accent !important
+    color:  #EEE !important
+
+  .q-chip
+    der: 1px solid black
+    background-color: #EEE !important
+
+
   &.artificialmoderator1
     .q-message-text
-      color:  $accent2 !important
-      background-color: $accent2 !important
-    .q-chip
-      border: none
-      background-color: $accent2 !important
+      old-color:  $accent2 !important
+      old-background-color: $accent2 !important
 
-  &.artificialmoderator2
-    .q-chip
-      border: none
-      background-color: $accent !important
+//  &.artificialmoderator2
+//    .q-chip
+//      border: 1px solid black
+//      background-color: #EEE !important
 
 // // USED TO MARK UNAPPROVED CONTENT
 // .watermark{

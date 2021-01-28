@@ -43,17 +43,17 @@ export default {
       this.$root.reload();
     });
     LayoutEventBus.$on("hideLoading", (data) => {
-      this.$refs.maincontent.hideLoadingGif();
+      this.$refs?.maincontent?.hideLoadingGif();
     });
     LayoutEventBus.$on("showLoading", (data) => {
-      this.$refs.maincontent.showLoadingGif();
+      this.$refs?.maincontent?.showLoadingGif();
     });
     LayoutEventBus.$on("showServiceError", (data) => {
       let msg_title = this.$i18n.t("app.error.service_error_title");
       let msg_body = this.$i18n.t("app.error.service_error_body");
       let icon = "mdi-alarm-light-outline";
       let type = "error";
-      this.$refs.maincontent.showNotificationBanner(
+      this.$refs?.maincontent?.showNotificationBanner(
         type,
         msg_title,
         msg_body,
@@ -65,7 +65,7 @@ export default {
       let msg_body = this.$i18n.t("app.error.network_error_body");
       let icon = "mdi-alarm-light-outline";
       let type = "error";
-      this.$refs.maincontent.showNotificationBanner(
+      this.$refs?.maincontent?.showNotificationBanner(
         type,
         msg_title,
         msg_body,
@@ -77,7 +77,7 @@ export default {
       let msg_body = this.$i18n.t("app.error.authorization_error_body");
       let icon = "mdi-key-outline";
       let type = "error";
-      this.$refs.maincontent.showNotificationBanner(
+      this.$refs?.maincontent?.showNotificationBanner(
         type,
         msg_title,
         msg_body,
@@ -89,7 +89,7 @@ export default {
       let msg_body = this.$i18n.t("app.error.toomanyrequests_error_body");
       let icon = "mdi-car-multiple";
       let type = "error";
-      this.$refs.maincontent.showNotificationBanner(
+      this.$refs?.maincontent?.showNotificationBanner(
         type,
         msg_title,
         msg_body,
@@ -101,7 +101,7 @@ export default {
       let icon = "mdi-emoticon-cool-outline";
       let msg_title = this.$i18n.t("auth.authentication_warning_title");
       let msg_body = this.$i18n.t("auth.authentication_warning_body");
-      this.$refs.maincontent.showNotificationBanner(
+      this.$refs?.maincontent?.showNotificationBanner(
         type,
         msg_title,
         msg_body,
@@ -115,7 +115,7 @@ export default {
       let icon = "mdi-alarm-light-outline";
       let msg_title = this.$i18n.t("auth.authentication_error_title");
       let msg_body = this.$i18n.t("auth.authentication_error_body");
-      this.$refs.maincontent.showNotificationBanner(
+      this.$refs?.maincontent?.showNotificationBanner(
         type,
         msg_title,
         msg_body,
@@ -129,7 +129,7 @@ export default {
       const msg_title = "Benutzerprofil gespeichert"; // this.$i18n.t('auth.authentication_error_title')
       const msg_body = `Das Benutzerprofil wurde erfolgreich gespeichert. Überprüfen Sie bitte ein letztes Mal ob die folgende Kontaktangabe korrekt ist: ${data.userEmail}`;
       const buttons = ["redirect", "profile"];
-      this.$refs.maincontent.showNotificationBanner(
+      this.$refs?.maincontent?.showNotificationBanner(
         type,
         msg_title,
         msg_body,
@@ -158,12 +158,12 @@ export default {
         }
       } else {
         // console.log(this.oauth.payload)
-        this.$refs.maincontent.gotoProfile(destination_route);
+        this.$refs?.maincontent?.gotoProfile(destination_route);
       }
     });
 
     LayoutEventBus.$on("hideNotificationBanners", (data) => {
-      this.$refs.maincontent.hideNotificationBanner();
+      this.$refs?.maincontent?.hideNotificationBanner();
     });
   },
 };

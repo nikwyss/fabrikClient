@@ -32,6 +32,17 @@ const getters = {
     return (Object.values(filtered_assemblies))
   },
 
+
+  getAssembly: (state) => (assemblyIdentifier) => {
+    // return state.things.find(thing => thing.identifier === id)
+    console.assert(assemblyIdentifier)
+    if (!(assemblyIdentifier in state.publicIndex.assemblies)) {
+      return (null)
+    }
+
+    return (state.publicIndex.assemblies[assemblyIdentifier])
+  },
+
   /* SHORTCUTS: mainly for artificial moderators */
   IsThereAnAssemblyInPublicState: (state) => {
     if (state.published_assemblies == null) {
@@ -95,7 +106,7 @@ const actions = {
         }
       )
       .catch((error) => {
-        console.warn(error)
+        console.log(error)
         console.warn('Request Error')
 
       })

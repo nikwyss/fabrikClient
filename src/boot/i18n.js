@@ -22,13 +22,41 @@ Vue.filter('formatDate', function (value) {
 
 // Calculate & Format Time Left
 Vue.filter('formatTimeLeft', function (value) {
-  let diff = getDateDiff(value, Date.now(), 'seconds')
-  // TODO: take appropriate unit
-  return diff
+
+  let seconds = getDateDiff(value, Date.now(), 'seconds')
+  let minutes = getDateDiff(value, Date.now(), 'minutes')
+  let hours = getDateDiff(value, Date.now(), 'hours')
+  let days = getDateDiff(value, Date.now(), 'days')
+  let months = getDateDiff(value, Date.now(), 'months')
+  const result = new Array()
+  if (months > 1) {
+    result.push(`${months} Monate`)
+    days -= (30 * days)
+    console.log(days)
+    hours = 0
+    minutes = 0
+    seconds = 0
+  }
+  if (days > 1) {
+    result.push(`${days} Tage`)
+    hours -= (24 * hours)
+    minutes = 0
+    seconds = 0
+  }
+  if (hours > 1) {
+    result.push(`${hours} Stunden`)
+    minutes -= (60 * minutes)
+    seconds = 0
+  }
+  if (minutes > 1) {
+    result.push(`${minutes} Minuten`)
+    seconds -= (60 * seconds)
+  }
+  if (seconds > 0) {
+    result.push(`${seconds} Sekunden`)
+  }
+  return (result.join(','))
 })
-// console.log(Quasar.utils.date.formatDate(new Date(), 'MM.DD.YY'))
-
-
 
 const i18n = new VueI18n({
   locale: process.env.ENV_I18N_LOCALE,

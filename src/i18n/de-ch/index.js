@@ -60,8 +60,8 @@ export default {
   menu: {
     items: {
       home: {
-        label: 'Eingang',
-        tooltip: 'Wo alles beginnt!'
+        label: 'Ihre Agenda',
+        tooltip: 'Was sie heute alles erwartet!'
       },
       assembly: {
         label: 'Mitwirkung',
@@ -108,7 +108,7 @@ export default {
   },
 
   index: {
-    iam_ready: 'Ja, ich bin bereit',
+    iam_ready: 'Zur Online-Konferenz, bitte!',
     goto_userprofile: 'Zum Benutzerprofil',
     am: {
       general_greeting: '{salutation} Wir sind @:am.actor.1 und @:am.actor.2 und freuen uns sehr, dass Sie hier sind.',
@@ -197,7 +197,7 @@ export default {
   background: {
     h1: 'Alles über die Demokratiefabrik!',
     citizen_assemblies: {
-      label: 'Sinn und Zweck von (digitalen) BürgerInnenversammlungen',
+      label: 'Die Demokratiefabrik: Ein Ort für digitiale BürgerInnenversammlungen',
       text: `Bürger*innen mittels Beteiligungsformaten wie Bürger*innenversammlungen stärker in
               politische Entscheidungen einzubeziehen, entspricht der Forderung von immer mehr
               politischen und akademischen Akteuren....`
@@ -219,7 +219,7 @@ export default {
     },
 
     team: {
-      label: 'Wer sonst noch für die Demokratiefabrik verantwortlich ist',
+      label: 'Wer für die Demokratiefabrik verantwortlich ist',
       text: `Involved in the projects are Prof. Marc Bühlmann, Marlène Gerber, Dominik Wyss, and
             Giada Gianola (all University of Berne). The project benefits from expert knowledge by
             Prof. André Bächtiger (University of Stuttgart) and Marc Klein (MIT Center for Collective Intelligence).`

@@ -1,113 +1,156 @@
 <template>
-<div class="justify-center center" style="max-width:350px">
+  <div
+    class="justify-center center"
+    style="max-width:350px"
+  >
 
-    <!-- LEFT  SIDE -->
-    <ArtificialModerator 
-            v-if="oauth.authorized !== undefined" 
-            alignment="left" role="1" 
-            i18n_path_prefix="index">
-        <template>
-        {{$t('index.am.general_greeting', {salutation})}}
-        </template>
+    <!-- LEFT  SIDE: Welcoming!!! -->
+    <ArtificialModerator
+      alignment="left"
+      role="1"
+      i18n_path_prefix="index"
+    >
+      {{$t('index.am.general_greeting', {salutation})}}
     </ArtificialModerator>
 
-    <!-- RIGHT SIDE:  -->
-    <ArtificialModerator  alignment="right" role="2" i18n_path_prefix="index" 
-            :ongoing_request="published_assemblies === null">
-
-        <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
-        <template v-if="oauth.authorized === false && IsThereAnAssemblyOngoing === true">
-        {{$t('index.am.invitation_to_authenticate')}}
-        </template>
-
-        <!-- Already authenticated delegate -->
-        <!-- <template  v-else-if="oauth.authorized === true && !oauth.payload.userEmail">
-        {{$t('index.am.email_required')}} 
-        </template> -->
-
-        <!-- Already authenticated delegate -->
-        <template  v-else-if="oauth.authorized === true && IsUserDelegateOfOngoingAssembly === true">
-        {{$t('index.am.delegates_redirect')}} 
-        </template>
-
-
-        <!-- assembly is PUBLIC => Assuming that visitor likes to see the results -->
-        <template v-else-if="oauth.authorized !== undefined && IsThereAnAssemblyInPublicState === true">
-        {{$t('index.am.information_for_public_visitors')}}
-        </template>
-
-        <!-- no assembly is PUBLIC -->
-        <template v-else-if="oauth.authorized !== undefined && IsThereNothingGoingOn === true">
-        {{$t('index.am.factory_holiday')}}
-        </template>
-
-        <!-- authenticated user does not have permission to ongoing assembly-->
-        <template v-else-if="oauth.authorized !== undefined">
-        {{$t('index.am.authenticated_user_without_permission_for_ongoing_assembly')}}
-        </template>
-
-        <!-- ACTION CHIPS -->
-        <template  v-slot:actions>
-
-        <q-chip size="md" icon="mdi-key-outline" 
-                v-if="oauth.authorized === false && IsThereAnAssemblyOngoing === true" 
-                outline color="primary" text-color="primary" class="bg-white cursor-pointer" 
-                clickable @click="clickAuthLink">
-            {{ $t('auth.goto_authentication_form') }}
-        </q-chip>
-
-        <!-- <q-chip size="md" icon="mdi-launch" v-else-if="oauth.authorized === true && !oauth.payload.userEmail" 
-            outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickOpenProfile">
-            {{ $t('index.goto_userprofile') }}
-        </q-chip> -->
-
-        <q-chip size="md" icon="mdi-launch" v-else-if="oauth.authorized === true && IsUserDelegateOfOngoingAssembly === true" outline  color="primary" text-color="primary" class="bg-white cursor-pointer" clickable @click="clickInitLink">
-            {{ $t('index.iam_ready') }}
-        </q-chip>
-
-        </template>
+    <!-- RIGHT SIDE (NOT YET LOGGED IN):  -->
+    <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
+    <ArtificialModerator
+      v-if="oauth.authorized === false && IsThereAnAssemblyOngoing === true"
+      alignment="right"
+      role="2"
+      i18n_path_prefix="index"
+      :ongoing_request="published_assemblies === null"
+    >
+      {{$t('index.am.invitation_to_authenticate')}}
+      <template v-slot:actions>
+        <Button
+          :label="$t('auth.goto_authentication_form')"
+          icon="mdi-key-outline"
+          @click="clickAuthLink"
+        >
+        </Button>
+      </template>
     </ArtificialModerator>
-    </div>
+
+    <!-- RIGHT SIDE (AUTHENTICATED DELEGATES):  -->
+    <ArtificialModerator
+      v-else-if="oauth.authorized === true && IsUserDelegateOfOngoingAssembly === true"
+      alignment="right"
+      role="2"
+      i18n_path_prefix="index"
+      :ongoing_request="published_assemblies === null"
+    >
+      {{$t('index.am.delegates_redirect')}}
+      <template v-slot:actions>
+        <Button
+          :label="$t('index.iam_ready')"
+          icon="mdi-launch"
+          @click="clickInitLink()"
+        >
+        </Button>
+      </template>
+    </ArtificialModerator>
+
+    <!-- RIGHT SIDE (ONLY PUBLIC STATE ASSEMBLIES):  -->
+    <ArtificialModerator
+      v-else-if="oauth.authorized !== undefined && IsThereAnAssemblyInPublicState === true"
+      alignment="right"
+      role="2"
+      i18n_path_prefix="index"
+      :ongoing_request="published_assemblies === null"
+    >
+
+      {{$t('index.am.information_for_public_visitors')}}
+      <template v-slot:actions>
+        <Button
+          :label="$t('index.iam_ready')"
+          icon="mdi-launch"
+          @click="clickInitLink"
+        >
+        </Button>
+      </template>
+    </ArtificialModerator>
+
+    <!-- RIGHT SIDE (NOTHING GOIING ON):  -->
+    <ArtificialModerator
+      alignment="right"
+      role="2"
+      i18n_path_prefix="index"
+      v-else-if="oauth.authorized !== undefined && IsThereNothingGoingOn === true"
+      :ongoing_request="published_assemblies === null"
+    >
+      {{$t('index.am.factory_holiday')}}
+    </ArtificialModerator>
+
+    <!-- RIGHT SIDE (AUTHENTICATED NO PERMISSIONS):  -->
+    <ArtificialModerator
+      alignment="right"
+      role="2"
+      v-else-if="oauth.authorized !== undefined"
+      i18n_path_prefix="index"
+      :ongoing_request="published_assemblies === null"
+    >
+      {{$t('index.am.authenticated_user_without_permission_for_ongoing_assembly')}}
+    </ArtificialModerator>
+
+  </div>
 </template>
 
 <script>
-import ArtificialModerator from './components/ArtificialModerator'
-import {mapGetters} from 'vuex'
+import ArtificialModerator from "./components/ArtificialModerator";
+import Button from "./components/Button";
+export default {
+  name: "ArtificialModeratorIndexPage",
+  components: { ArtificialModerator, Button },
+  inject: [
+    "published_assemblies",
+    "UsersDelegateAssemblies",
+    "IsUserDelegateOfOngoingAssembly",
+    "IsThereAnAssemblyOngoing",
+    "IsThereNothingGoingOn",
+    "IsThereAnAssemblyInPublicState",
+  ],
 
-export default{
-    name: "ArtificialModeratorIndexPage",
-    components: {ArtificialModerator},
-    inject: ['published_assemblies', 'IsUserDelegateOfOngoingAssembly', 'IsThereAnAssemblyOngoing', 'IsThereNothingGoingOn', 'IsThereAnAssemblyInPublicState'],
+  computed: {
+    salutation: function () {
+      if (this.oauth.authorized) {
+        const salutation = this.$i18n.t(
+          "index.am.salutation_for_authenticated",
+          { username: this.oauth.username }
+        );
+        return salutation;
+      } else {
+        const salutation = this.$i18n.t("index.am.salutation_for_guests");
+        return salutation;
+      }
+    },
+  },
 
-    computed: {
-
-        salutation: function() {
-            if (this.oauth.authorized) {
-
-                const salutation = this.$i18n.t(
-                'index.am.salutation_for_authenticated',
-                {username: this.oauth.username}
-                )
-                return (salutation)
-
-            } else {
-
-                const salutation = this.$i18n.t('index.am.salutation_for_guests')
-                return (salutation)
-            }
-        }
+  methods: {
+    clickInitLink: function () {
+      console.log("kk");
+      if (this.UsersDelegateAssemblies.length > 1) {
+        // Multiple parallel assemblies
+        var route = { name: "assemblies_ongoing_list" };
+        this.$router.push(route);
+      } else if (this.UsersDelegateAssemblies.length == 1) {
+        // Single assembly: default
+        const assembly = this.UsersDelegateAssemblies[0];
+        var route = {
+          name: "assembly_home",
+          params: { assemblyIdentifier: assembly.identifier },
+        };
+        this.$router.push(route);
+      } else {
+        console.log("Error: no assembly found...");
+      }
     },
 
-    methods: {
-        clickInitLink: function () {
-            var route = { name: 'assemblies_ongoing_list' }
-            this.$router.push(route)
-        },
-        
-        clickAuthLink: function () {
-            const destination_route = {name: 'assemblies_ongoing_list'}
-            this.oauth.login(destination_route)
-        }
-    }
-}
+    clickAuthLink: function () {
+      const destination_route = { name: "assemblies_ongoing_list" };
+      this.oauth.login(destination_route);
+    },
+  },
+};
 </script>

@@ -4,64 +4,78 @@
 </style>
 
 <template>
-    <q-page class="doc_content ">
-        <!-- SHOW LIST OF ONGOING ASSEMBLIES -->
-        <div v-if="ongoing_assemblies != null" class="full-width">
-           <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
+  <q-page class="doc_content ">
+    <!-- SHOW LIST OF ONGOING ASSEMBLIES -->
+    <div
+      v-if="ongoing_assemblies != null"
+      class="full-width"
+    >
+      <!-- <div class="text-h5 q-mt-sm q-mb-xs">{{$t('Current Citizen Assemblies')}}</div> -->
 
-            <q-card class="assemblycard" flat 
-                v-for="assembly of ongoing_assemblies" :key="assembly.identifier">
+      <q-card
+        class="assemblycard"
+        flat
+        v-for="assembly of ongoing_assemblies"
+        :key="assembly.identifier"
+      >
 
-                <q-parallax
-                    :src="assembly.image"
-                    :height="150"
-                />
+        <q-parallax
+          :src="assembly.image"
+          :height="150"
+        />
 
-                <q-card-section class="col-12">
-                    <div class="text-subtitle2">{{$t('assemblies.home_caption', {assembly_title: assembly.title})}}</div>
-                    
-                    <h2>{{assembly.caption}}</h2>
-                    <span>{{assembly.info}}</span>
+        <q-card-section class="col-12">
+          <div class="text-subtitle2">{{$t('assemblies.home_caption', {assembly_title: assembly.title})}}</div>
 
-                    <!-- v-if="assembly.date_end" -->
-                    <div class="q-mt-md text-caption" v-if="assembly.date_end">
-                        {{ $t('assemblies.date_end', {relative_end_date: $options.filters.formatTimeLeft(assembly.date_end)}) }}
-                        <!-- TODO: Add timer for the last hour -->
-                    </div>
-                </q-card-section>
+          <h2>{{assembly.caption}}</h2>
+          <span>{{assembly.info}}</span>
 
+          <!-- v-if="assembly.date_end" -->
+          <div
+            class="q-mt-md text-caption"
+            v-if="assembly.date_end"
+          > {{ $t('assemblies.date_end', {relative_end_date: $options.filters.formatTimeLeft(assembly.date_end)}) }}
+            <!-- TODO: Add timer for the last hour -->
+          </div>
+        </q-card-section>
 
-                  <!-- <q-card-section> -->
-                <q-card-section class="col-12 " align="right">
-                    <ArtificialModeratorAssemblyListOngoingSelection 
-                        :ongoing="assembly===null || oauth.authorized===null"
-                        :assembly="assembly" />
-                </q-card-section>
+        <!-- <q-card-section> -->
+        <q-card-section
+          class="col-12 "
+          align="right"
+        >
+          <ArtificialModeratorAssemblyListOngoingSelection
+            :ongoing="assembly===null || oauth.authorized===null"
+            :assembly="assembly"
+          />
+        </q-card-section>
 
-                <br />
-                </q-card>
+        <br />
+      </q-card>
 
-        </div>
+    </div>
 
-        <!-- No ONGOINNG ASSEMBLIES -->
-        <div v-else>
-            <h1>{{$tc('assemblies.h1', nLength(ongoing_assemblies))}}</h1>
+    <!-- No ONGOINNG ASSEMBLIES -->
+    <div v-else>
+      <h1>{{$tc('assemblies.h1', nLength(ongoing_assemblies))}}</h1>
 
-            <ArtificialModeratorAssemblyListOngoing />
-        </div>
-    </q-page>
+      <ArtificialModeratorAssemblyListOngoing />
+    </div>
+  </q-page>
 
 </template>
 
 <script>
-import ArtificialModeratorAssemblyListOngoing from 'src/artificialmoderation/AssemblyListOngoing'
-import ArtificialModeratorAssemblyListOngoingSelection from 'src/artificialmoderation/AssemblyListOngoingSelection'
-import PublicIndex from "src/mixins/publicIndex"
+import ArtificialModeratorAssemblyListOngoing from "src/artificialmoderation/AssemblyListOngoing";
+import ArtificialModeratorAssemblyListOngoingSelection from "src/artificialmoderation/AssemblyListOngoingSelection";
+import PublicIndex from "src/mixins/publicIndex";
 
 export default {
-
-    name: 'PageAssemblyList',
-    mixins: [PublicIndex],
-    components: { ArtificialModeratorAssemblyListOngoingSelection, ArtificialModeratorAssemblyListOngoing }
-}
+  name: "PageAssemblyList",
+  mixins: [PublicIndex],
+  components: {
+    ArtificialModeratorAssemblyListOngoingSelection,
+    ArtificialModeratorAssemblyListOngoing,
+  },
+};
 </script>

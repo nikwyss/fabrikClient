@@ -1,4 +1,5 @@
 import { mapGetters, mapActions } from 'vuex'
+// import assembly from './assembly'
 
 export default {
 
@@ -7,16 +8,18 @@ export default {
     return {
       published_assemblies: this.published_assemblies,
       clickAssemblyLink: this.clickAssemblyLink,
+      currentAssemblyName: this.currentAssemblyName,
       IsThereNothingGoingOn: this.IsThereNothingGoingOn,
       IsThereAnAssemblyInPublicState: this.IsThereAnAssemblyInPublicState,
       IsThereAnAssemblyOngoing: this.IsThereAnAssemblyOngoing,
+      UsersDelegateAssemblies: this.UsersDelegateAssemblies,
       IsUserDelegateOfOngoingAssembly: this.IsUserDelegateOfOngoingAssembly // Vue.observable(this.IsUserDelegateOfOngoingAssembly)
     }
   },
 
   computed: {
 
-    IsUserDelegateOfOngoingAssembly() {
+    UsersDelegateAssemblies() {
 
       // data not yet loaded
       if (this.ongoing_assemblies === null) {
@@ -31,16 +34,35 @@ export default {
       // Check permissions:
       const compare_func = this.oauth.acls
       let accessibleAssemblies = Object.filter(this.ongoing_assemblies, x => compare_func(x.identifier))
-      return (Object.values(accessibleAssemblies).length > 0)
+      return (Object.values(accessibleAssemblies))
+    },
+
+
+    IsUserDelegateOfOngoingAssembly() {
+
+      const assemblies = this.UsersDelegateAssemblies
+      return (assemblies && Object.values(assemblies).length > 0)
+    },
+
+    currentAssemblyName() {
+
+      const assemblies = this.UsersDelegateAssemblies
+      const assemblyIdentifier = this.$route?.params?.assemblyIdentifier
+      if (assemblyIdentifier) {
+        const assembly = this.getAssembly(assemblyIdentifier)
+        if (assembly) {
+          return (assembly.title)
+        }
+      }
     },
 
     ...mapGetters({
       published_assemblies: 'publicindexstore/published_assemblies',
       ongoing_assemblies: 'publicindexstore/ongoing_assemblies',
+      getAssembly: 'publicindexstore/getAssembly',
       IsThereAnAssemblyInPublicState: 'publicindexstore/IsThereAnAssemblyInPublicState',
       IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
       IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn'
-      // retrieveCredentials: 'oauthstore/retrieveCredentials',
     })
   },
 
