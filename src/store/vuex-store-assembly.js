@@ -91,11 +91,10 @@ const getters = {
 
   getCachedStageID: (state) => (assemblyIdentifier) => {
 
-    // return state.things.find(thing => thing.identifier === id)
-    // if (!(assemblyIdentifier in state.current_stages)) {
-    //   return (null)
-    // }
-    return (state.current_stages.assemblyIdentifier)
+    if (!(state.current_stages)) {
+      return (null)
+    }
+    return (state.current_stages[assemblyIdentifier])
   }
 }
 
@@ -179,7 +178,7 @@ const mutations = {
   setCachedStageID(state, { assembly, stageID }) {
 
     // keep list of opened contents (if previously available)
-    console.log('update current  stage id for the given assembly')
+    console.log('update current  stage id for the given assembly' + stageID)
 
     // prepare folder
     if (!(assembly.identifier in state.current_stages)) {
@@ -187,7 +186,7 @@ const mutations = {
     }
     // Vue.set  makes the change reactive!!
     Vue.set(state.current_stages, assembly.identifier, stageID)
-    console.log('...store: new stage has been set...')
+    console.log('...store: new stage has been set...' + stageID)
   },
 
   storeAssembly(state, { assemblyIdentifier, data }) {

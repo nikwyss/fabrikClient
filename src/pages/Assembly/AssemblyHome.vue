@@ -11,11 +11,12 @@
 
 
       <!-- <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div> -->
-      <h2>{{ assembly.caption }}</h2>
+      <h2>Um was wir sie heute bitten</h2>
+      <!-- <h2>{{ assembly.caption }}</h2> -->
       <p>{{ assembly.info }}</p>
             <!-- <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div> -->
 
-      <h2>{{$t('stages.home_title', {current_date: $options.filters.formatDate(Date.now())})}}</h2>
+      <!-- <h2>{{$t('stages.home_title', {current_date: $options.filters.formatDate(Date.now())})}}</h2> -->
 
       <!-- <span>{{ $t('assemblies.home_description', {relative_end_date: $options.filters.formatTimeLeft(assembly.date_end)}) }}</span> -->
     </div>
@@ -30,6 +31,7 @@
     </div>
 
     <!-- STAGES -->
+      <!-- inactive-icon="mdi-disabled" -->
     <q-stepper
       v-if="sorted_stages &&  oauth.authorized !== null"
       v-model="cachedStageNr"
@@ -38,26 +40,21 @@
       @transition="stageTransition"
       flat
       ref="stepper"
-      inactive-icon="mdi-disabled"
     >
-
       <q-step
         v-for="(localStage, localStageNr) in sorted_stages"
         :key="Number(localStageNr)"
         :prefix="localStageNr+1"
-        :color="getColor(localStage, localStageNr)"
+        :done="true"
         :name="Number(localStageNr)"
         :caption="getStepCaption(localStage, localStageNr)"
         :header-nav="isActive(localStage, localStageNr) && localStageNr != cachedStageNr"
         :title="getStepTitle(localStage, localStageNr)"
-        :icon="localStage.icon ? localStage.stage.icon : 'mdi-email-outline'"
-        error-icon="mdi-email-alert-outline"
-        :done-icon="isActive(localStage, localStageNr) ? 'mdi-email-outline' : 'mdi-email-check-outline'"
-        :active-icon="'mdi-email-open-outline'"
-        :done="isDone(localStage, localStageNr)"
-        :active="!isDone(localStage, localStageNr)"
-        :disabled="isDisabled(localStage)"
-      >
+        :color="getColor(localStage, localStageNr)"
+        :done-icon="getIcon(localStage, localStageNr)"
+        :active-icon="getIcon(localStage, localStageNr)"
+        :error-icon="getIcon(localStage, localStageNr)"
+      > 
 
         <!-- MANAGERS: STAGE EDITOR -->
         <ComponentStageEditor
@@ -170,8 +167,7 @@ export default {
     },
 
     getStepTitle: function (stage, stageNr) {
-      var title = stage.stage.title;
-      return title;
+      return stage.stage.title;
     },
 
     clickPluginLink: function (stage) {
@@ -186,28 +182,49 @@ export default {
         params: params,
       });
     },
+        
+    getIcon(stage, stageNr) {
+
+      if (this.isDisabled(stage)) {
+        return "mdi-cancel";
+      }
+
+      // if (this.isCompleted(stage)) {
+      //   return "mdi-email-outline";
+      // }
+
+      if (this.highestAllowedStageNr == stageNr) {
+        return "mdi-bell";
+      }
+
+      if (this.highestAllowedStageNr < stageNr) {
+        return "mdi-clock-time-eleven-outline";
+      }
+
+      return "mdi-check-bold";
+    },
 
     getColor(stage, stageNr) {
-      var color = "accent";
+      var color = "green-4";
 
       if (this.isDisabled(stage)) {
         return "grey-4";
       }
 
-      if (this.isCompleted(stage)) {
-        return "grey-4";
-      }
+      // if (this.isCompleted(stage)) {
+      //   return "grey-4";
+      // }
 
       if (this.highestAllowedStageNr == stageNr) {
-        color = "brown-9";
+        color = "blue-9";
       }
 
       if (this.highestAllowedStageNr < stageNr) {
-        return "brown-5";
+        return "orange-5";
       }
 
       return color;
-    },
+    }
   },
 
   mounted: function () {

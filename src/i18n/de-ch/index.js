@@ -63,7 +63,7 @@ export default {
         tooltip: 'Dieser Bereich ist noch nicht zugänglich. Unsere ModeratorInenn haben zuerst noch eine andere Bitte an Sie!'
       },
       home: {
-        label: 'Ihre Agenda',
+        label: 'Tagesübersicht',
         tooltip: 'Was sie heute alles erwartet!'
       },
       assembly: {
@@ -155,7 +155,7 @@ export default {
 
   stages: {
     home_title: 'Ihre Agenda für den {current_date}',
-    status_completed: 'Bereits beendet',
+    status_completed: 'Nicht mehr zugänglich',
     status_not_yet_accessible: 'Noch nicht zugänglich',
     status_disabled: 'Deaktiviert',
     status_deleted: 'Gelöscht',
@@ -164,7 +164,7 @@ export default {
     goto_final_message: 'Zum Abschluss',
     am: {
       welcome_full_schedule: 'Dann legen wir los. Heute sind {numberOfStages} Punkte auf Ihrer Agenda.',
-      welcome_partial_schedule: 'Nun gibt es nur noch einen offenen Punkt. | Es gilt heute noch {numberOfScheduledStages} Punkte anzusehen.',
+      welcome_partial_schedule: 'Nun habe ich nur noch eine Bitte für Heute. | Nun sind es nur noch {numberOfScheduledStages} Punkte für heute. Halten Sie bitte durch!',
       welcome_empty_schedule: 'Heute sind {numberOfStages} Punkte auf Ihrer Agenda.',
       enter_first: 'Wir möchten gerne hier anfangen. Sind Sie bereit?',
       enter_continue: 'Wir möchten nun gerne hier weiterfahren. Sind Sie bereit?',

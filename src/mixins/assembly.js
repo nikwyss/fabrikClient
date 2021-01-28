@@ -186,6 +186,8 @@ export default {
         }
 
         let stageID = this.getCachedStageID(this.assemblyIdentifier)
+        console.log("IN CACHE IS ACTUALLY::::::")
+        console.log(stageID)
         let stageNr = null
         if (stageID) {
           let stage = this.assembly_stages[stageID]
@@ -206,13 +208,16 @@ export default {
           this.setCachedStageID({ assembly: this.assembly, stageID: null })
           return (null)
         }
-
+        console.log("validate new stage...")
         console.assert(this.validateStageNr(stageNr))
 
         this.setCachedStageID({
           assembly: this.assembly,
           stageID: this.getIDbyNr(stageNr)
         })
+
+        console.log("cached is stage..." + this.getIDbyNr(stageNr))
+
       }
     },
 
@@ -363,7 +368,6 @@ export default {
       const nextStageNr = this.findNextValidateStageNr(this.cachedStageNr)
       console.log(' next stage found: ' + nextStageNr)
       this.cachedStageNr = nextStageNr
-      console.log('ok, new stage is set to ' + nextStageNr)
     },
 
     getIDbyNr: function (stageNr) {

@@ -2,7 +2,6 @@
 <div align="center" >
 
 
-
   <q-tabs v-model="currenttab">
     <CustomQRouteTab
       name="home"
@@ -16,7 +15,6 @@
       :menuOffset="menuOffset"
       :tooltip="$t('menu.items.home.tooltip')"
       :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
-      :disable="false"
     />
 
     <CustomQRouteTab
@@ -27,7 +25,7 @@
       :menuOffset="menuOffset"
       :tooltip="$t('menu.items.assembly.tooltip')"
       :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
-      :disable="true"
+      :disable="isSectionDisabled('VAA_TOPICS')"
     />
 
     <CustomQRouteTab
@@ -38,18 +36,18 @@
       :menuOffset="menuOffset"
       :tooltip="$t('menu.items.assembly.tooltip')"
       :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
-      :disable="true"
+      :disable="isSectionDisabled('VAA_QUESTIONS')"
     />
 
     <CustomQRouteTab
-      name="discussions"
+      name="analyses"
       :to="{name: 'assemblies_ongoing_list'}"
       icon="mdi-lead-pencil"
       label="Analyse"
       :menuOffset="menuOffset"
       :tooltip="$t('menu.items.assembly.tooltip')"
       :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
-      :disable="true"
+      :disable="isSectionDisabled('ANALYSES')"
     />
 
 
@@ -60,10 +58,13 @@
 
 <script>
 import CustomQRouteTab from "src/layouts/components/CustomQRouteTab";
+import VAAMixin from '../mixins/VAA'
 
 export default {
+
   name: "AssemblyMenu",
   // inject: ['currentAssemblyName'],
+  mixins: [VAAMixin],
   props: ['menuOffset'],
   components: { CustomQRouteTab },
   data: function () {
