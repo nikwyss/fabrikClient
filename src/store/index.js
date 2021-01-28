@@ -48,7 +48,7 @@ export default new Vuex.Store({
         // Check if monitor intervall is passed
         const eventkey = `${event}${key}`
         console.log(`initiate Monitor ${eventkey}`)
-        const MonitorFrequency = 5 // TODO: put this in environment variable.
+        const MonitorFrequency = 7 // TODO: put this in environment variable.
         const now = Date.now()
         const timeThreshold = date.subtractFromDate(Date.now(), { minutes: MonitorFrequency })
         console.log(`MONITOR STAGE VISIT: ${eventkey}`)

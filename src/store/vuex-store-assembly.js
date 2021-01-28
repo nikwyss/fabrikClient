@@ -17,13 +17,10 @@ const getters = {
 
   get_assembly: (state) => (assemblyIdentifier) => {
     // return state.things.find(thing => thing.identifier === id)
-    console.assert(assemblyIdentifier)
-    if (!(assemblyIdentifier in state.assemblydata)) {
-      return (null)
+    if (state.assemblydata[assemblyIdentifier]) {
+      console.assert('assembly' in state.assemblydata[assemblyIdentifier])
+      return (state.assemblydata[assemblyIdentifier]?.assembly)
     }
-    console.assert('stages' in state.assemblydata[assemblyIdentifier])
-
-    return (state.assemblydata[assemblyIdentifier].assembly)
   },
 
   randomLocalStorageSeed: (state) => {
@@ -34,13 +31,15 @@ const getters = {
     // return state.things.find(thing => thing.identifier === id)
 
     // return state.things.find(thing => thing.identifier === id)
-    if (!(assemblyIdentifier in state.assemblydata)) {
-      return (null)
-    }
+    return (state.assemblydata[assemblyIdentifier]?.configuration)
 
-    if ('configuration' in state.assemblydata[assemblyIdentifier]) {
-      return (state.assemblydata[assemblyIdentifier].configuration)
-    }
+    // if (!(assemblyIdentifier in state.assemblydata)) {
+    //   return (null)
+    // }
+
+    // if ('configuration' in state.assemblydata[assemblyIdentifier]) {
+    //   return (state.assemblydata[assemblyIdentifier].configuration)
+    // }
 
   },
 
@@ -48,32 +47,32 @@ const getters = {
     // return state.things.find(thing => thing.identifier === id)
 
     // return state.things.find(thing => thing.identifier === id)
-    if (!(assemblyIdentifier in state.assemblydata)) {
-      return (null)
-    }
-    if (!('progression' in state.assemblydata[assemblyIdentifier])) {
-      return (null)
-    }
+    // if (!(assemblyIdentifier in state.assemblydata)) {
+    //   return (null)
+    // }
+    // if (!('progression' in state.assemblydata[assemblyIdentifier])) {
+    //   return (null)
+    // }
 
-    return (state.assemblydata[assemblyIdentifier].progression)
+    return (state.assemblydata[assemblyIdentifier]?.progression)
   },
 
   get_assembly_stages: (state) => (assemblyIdentifier) => {
     // return state.things.find(thing => thing.identifier === id)
 
-    console.assert(assemblyIdentifier)
-    if (!(assemblyIdentifier in state.assemblydata)) {
-      return (null)
-    }
+    // console.assert(assemblyIdentifier)
+    // if (!(assemblyIdentifier in state.assemblydata)) {
+    //   return (null)
+    // }
 
-    if (!state.assemblydata[assemblyIdentifier]) {
-      return (false)
-    }
+    // if (!state.assemblydata[assemblyIdentifier]) {
+    //   return (false)
+    // }
 
-    console.assert('stages' in state.assemblydata[assemblyIdentifier])
-    console.assert(state.assemblydata[assemblyIdentifier].stages !== null)
+    // console.assert('stages' in state.assemblydata[assemblyIdentifier])
+    // console.assert(state.assemblydata[assemblyIdentifier].stages !== null)
 
-    return (state.assemblydata[assemblyIdentifier].stages)
+    return (state.assemblydata[assemblyIdentifier]?.stages)
   },
 
 
@@ -85,7 +84,7 @@ const getters = {
     }
 
     // console.log(stages)
-    console.assert(stageID in stages)
+    console.assert(stages[stageID])
 
     return (stages[stageID])
   },
@@ -93,10 +92,10 @@ const getters = {
   getCachedStageID: (state) => (assemblyIdentifier) => {
 
     // return state.things.find(thing => thing.identifier === id)
-    if (!(assemblyIdentifier in state.current_stages)) {
-      return (null)
-    }
-    return (state.current_stages[assemblyIdentifier])
+    // if (!(assemblyIdentifier in state.current_stages)) {
+    //   return (null)
+    // }
+    return (state.current_stages.assemblyIdentifier)
   }
 }
 
@@ -115,7 +114,7 @@ const actions = {
 
     console.assert(assemblyIdentifier)
 
-    if (!state.assemblydata || !(assemblyIdentifier in state.assemblydata)) {
+    if (!state.assemblydata[assemblyIdentifier]) {
       // no cached version exists: load the data from resource server...
       dispatch('retrieveAssembly', { assemblyIdentifier: assemblyIdentifier })
       console.log(' not yet fetched...')
@@ -124,7 +123,7 @@ const actions = {
 
     // wrong user? and renew cache all x- minutes!
     const wrongUser = oauthUserID != state.assemblydata[assemblyIdentifier].access_sub
-    const expired = !(assemblyIdentifier in state.assemblydata) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
+    const expired = !(state.assemblydata[assemblyIdentifier]) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
     if (expired || wrongUser) {
       console.log(' not in sync  or wrong user...')
       dispatch('retrieveAssembly', { assemblyIdentifier: assemblyIdentifier })

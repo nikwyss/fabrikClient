@@ -241,6 +241,7 @@ export default {
         assembly_identifier: this.assemblyIdentifier
       }
 
+      console.log("monitor assembly data")
       this.$store.dispatch('monitorApi', {
         event: this.Constants.MONITOR_ASSEMBLY_ENTERING,
         data: data,
@@ -267,7 +268,7 @@ export default {
         const el = element[0]
         const target = getScrollTarget(el)
         const offset = el.offsetTop
-        console.log(el.offsetTop)
+        // console.log(el.offsetTop)
         const duration = 300
         setScrollPosition(target, offset, duration)
 

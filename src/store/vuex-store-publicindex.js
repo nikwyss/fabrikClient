@@ -36,11 +36,9 @@ const getters = {
   getAssembly: (state) => (assemblyIdentifier) => {
     // return state.things.find(thing => thing.identifier === id)
     console.assert(assemblyIdentifier)
-    if (!(assemblyIdentifier in state.publicIndex.assemblies)) {
-      return (null)
-    }
-
-    return (state.publicIndex.assemblies[assemblyIdentifier])
+    return (state.publicIndex?.assemblies[assemblyIdentifier])
+    // if (state.publicIndex?.assemblies[assemblyIdentifier]) {
+    // }
   },
 
   /* SHORTCUTS: mainly for artificial moderators */

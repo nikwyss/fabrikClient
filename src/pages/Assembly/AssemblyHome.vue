@@ -4,13 +4,20 @@
     height: 50px !important
 </style>
 <template>
-  <q-page class="doc_content">
+  <q-page class="doc_content" v-if="assembly">
 
     <!-- ASSEMBLY DESCRIPTION -->
-    <div v-if="assembly">
-      <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div>
+    <div >
+
+
+      <!-- <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div> -->
+      <h2>{{ assembly.caption }}</h2>
+      <p>{{ assembly.info }}</p>
+            <!-- <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div> -->
+
       <h2>{{$t('stages.home_title', {current_date: $options.filters.formatDate(Date.now())})}}</h2>
-      <span>{{ $t('assemblies.home_description', {relative_end_date: $options.filters.formatTimeLeft(assembly.date_end)}) }}</span>
+
+      <!-- <span>{{ $t('assemblies.home_description', {relative_end_date: $options.filters.formatTimeLeft(assembly.date_end)}) }}</span> -->
     </div>
 
     <!-- AM-OVERVIEW -->

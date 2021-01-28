@@ -163,7 +163,7 @@ export default {
     goto_next_stage: 'Weiter zum nächsten Punkt',
     goto_final_message: 'Zum Abschluss',
     am: {
-      welcome_full_schedule: 'Willkommen! Heute sind {numberOfStages} Punkte auf Ihrer Agenda.',
+      welcome_full_schedule: 'Dann legen wir los. Heute sind {numberOfStages} Punkte auf Ihrer Agenda.',
       welcome_partial_schedule: 'Nun gibt es nur noch einen offenen Punkt. | Es gilt heute noch {numberOfScheduledStages} Punkte anzusehen.',
       welcome_empty_schedule: 'Heute sind {numberOfStages} Punkte auf Ihrer Agenda.',
       enter_first: 'Wir möchten gerne hier anfangen. Sind Sie bereit?',

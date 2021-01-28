@@ -33,13 +33,13 @@ export default {
 
     monitorApi: function () {
       /* By this method we allow the API to monitor user activities */
-
+      console.log("monitor stage api")
       // Monitor about stage visit
       let data = {
         assembly_identifier: this.assemblyIdentifier,
         stage_id: this.stageID
       }
-      console.log('HHHH')
+      // console.log('HHHH')
       this.$store.dispatch('monitorApi', {
         event: this.Constants.MONITOR_STAGE_ENTERING,
         data: data,

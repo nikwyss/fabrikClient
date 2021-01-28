@@ -99,7 +99,7 @@ const actions = {
   syncContenttree: ({ state, dispatch, localgetters, rootState, rootGetters }, { assemblyIdentifier, contenttreeID, oauthUserID }) => {
     console.log(` sync contenttree ${contenttreeID}`)
     console.assert(contenttreeID)
-    if (!state.contenttree || !(contenttreeID in state.contenttree)) {
+    if (!state.contenttree || !(state.contenttree[contenttreeID])) {
       // no cached version exists: load the data from resource server...
       console.log('First time load of contenttree')
       dispatch('retrieveContenttree', { assemblyIdentifier: assemblyIdentifier, contenttreeID: contenttreeID })
@@ -108,7 +108,7 @@ const actions = {
 
     // wrong user? and renew cache all x- minutes!
     const wrongUser = oauthUserID != state.contenttree[contenttreeID].access_sub
-    const expired = !(assemblyIdentifier in state.assemblydata) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
+    const expired = !state.assemblydata || !(state.assemblydata[assemblyIdentifier]) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
     if (expired || wrongUser) {
       // too old cache: load the data from resource server...
       console.log('Cache expired: reload contenttree')

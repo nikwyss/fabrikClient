@@ -160,7 +160,10 @@ export default {
     },
   },
 
-  mounted: function () {
+  /**
+   * Must be run before monitor are mounted...
+   */
+  created: function () {
     console.log("mounted3");
     // Completed Response?
     if (!this.isCompleted(this.routedStage)) {

@@ -95,8 +95,6 @@ export default {
     // Methods
     Vue.prototype.login = function (destination_route = null) {
       // save destiantion route to localstorage
-      console.log("kkkkkkkkkkkkkk" + destination_route)
-      console.log(destination_route)
       localStorage.setItem('oauth2authcodepkce-destination', JSON.stringify(destination_route));
       // redirect to login
       Vue.prototype.pkce.fetchAuthorizationCode()
@@ -137,13 +135,14 @@ export default {
         payload: function () {
           console.log('...OAUTH: loaeding payload..')
           if (!this.authorized || !('accessToken' in Vue.prototype.pkce.state)) {
-            LayoutEventBus.$emit('AfterTokenChanged', null)
+            // LayoutEventBus.$emit('AfterTokenChanged', null)
             // console.log('...OAUTH: not authorized')
             return (null)
           }
 
           // add xhr decorator
-          const jwt = Vue.prototype.pkce.state.accessToken.value
+          const jwt = Vue.prototype.pkce?.state?.accessToken?.value
+
           // console.log('...OAUTH: emit AfterTokenChanged')
           // LayoutEventBus.$emit('AfterTokenChanged', jwt)
           // this.authorized = true
@@ -214,10 +213,11 @@ export default {
         // INITIAL Data Loading
         Vue.prototype.pkce.isReturningFromAuthServer().then(hasAuthCode => {
           if (hasAuthCode) {
+            console.log("no auth codeè!!!!!!!!!!!!!!!")
             // A valid Redirect by the auth server
             Vue.prototype.pkce.getAccessToken().then(({ token, scopes }) => {
               this.enforce_reactivity += 1
-
+              console.log("K")
               // 1. One: technical stuff: replace token in axios
               console.log("oAUTH: token received => emit AfterTokenChanged")
               LayoutEventBus.$emit('AfterTokenChanged', token)
@@ -236,15 +236,28 @@ export default {
                 LayoutEventBus.$emit('LoginError', error)
                 Vue.prototype.logout()
               })
+          } else {
+            // ongoing session?
+            // console.log("KKK error in oauth??")
+            // console.log(Vue.prototype.pkce)
+            // this.enforce_reactivity += 1
+            // // console.log(Vue.prototype.oauth)
+            // LayoutEventBus.$emit('AfterTokenChanged', token)
+
+            const jwt = Vue.prototype.pkce?.state?.accessToken?.value
+            if (jwt) {
+              console.log("Oauth plugin initialize exiting session ...")
+              LayoutEventBus.$emit('AfterTokenChanged', jwt)
+            }
           }
         })
           .catch((error) => {
-            console.log("error in oauth plugin (2)..")
-            if (error) {
-              LayoutEventBus.$emit('LoginError', error)
-              console.error(error)
-              Vue.prototype.logout()
-            }
+            LayoutEventBus.$emit('AfterTokenChanged', token)
+            // if (error) {
+            //   LayoutEventBus.$emit('LoginError', error)
+            //   console.error(error)
+            //   Vue.prototype.logout()
+            // }
           })
       }
     })
