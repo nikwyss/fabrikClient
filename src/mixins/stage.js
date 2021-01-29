@@ -14,19 +14,12 @@ export default {
     stage: function () {
 
       console.log(this.assemblyIdentifier)
-
-      const stage = this.get_assembly_stage({
-        assemblyIdentifier: this.assemblyIdentifier,
+      const stage = this.routed_stage({
         stageID: this.stageID
-      }
-      )
+      })
 
       return (stage)
-    },
-
-    ...mapGetters({
-      get_assembly_stage: 'assemblystore/get_assembly_stage'
-    })
+    }
   },
 
   methods: {

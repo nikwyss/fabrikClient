@@ -1,14 +1,15 @@
 import { mapGetters, mapActions } from 'vuex'
 // import assembly from './assembly'
+// import { LayoutEventBus } from "src/utils/eventbus";
 
 export default {
 
   provide() {
-    // can be incected on all child components.
     return {
       published_assemblies: this.published_assemblies,
       clickAssemblyLink: this.clickAssemblyLink,
-      currentAssemblyName: this.currentAssemblyName,
+      assemblyName: this.assemblyName,
+      // assemblyIdentifier: this.assemblyIdentifier,
       IsThereNothingGoingOn: this.IsThereNothingGoingOn,
       IsThereAnAssemblyInPublicState: this.IsThereAnAssemblyInPublicState,
       IsThereAnAssemblyOngoing: this.IsThereAnAssemblyOngoing,
@@ -44,15 +45,26 @@ export default {
       return (assemblies && Object.values(assemblies).length > 0)
     },
 
-    currentAssemblyName() {
+    assemblyIdentifier() {
 
       const assemblies = this.UsersDelegateAssemblies
-      const assemblyIdentifier = this.$route?.params?.assemblyIdentifier
+      return (this.$route?.params?.assemblyIdentifier)
+    },
+
+    currentPublicAssembly() {
+
+      // const assemblies = this.UsersDelegateAssemblies
+      const assemblyIdentifier = this.currentAssemblyIdentifier
       if (assemblyIdentifier) {
-        const assembly = this.getAssembly(assemblyIdentifier)
-        if (assembly) {
-          return (assembly.title)
-        }
+        return this.getAssembly(assemblyIdentifier)
+      }
+    },
+
+    assemblyName() {
+
+      const assembly = this.currentPublicAssembly
+      if (assembly) {
+        return (assembly.title)
       }
     },
 

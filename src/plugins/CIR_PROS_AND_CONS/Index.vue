@@ -8,10 +8,10 @@
             icon="mdi-arrow-left"
             @click="gotoAssemblyHome()" />
 
-        <div v-if="assembly && routedStage">
+        <div v-if="assembly && routed_stage">
 
             <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="routedStage.stage.disabled" style="padding:2em; margin-bottom:1em;">
+            <q-banner dense inline-actions class="text-white bg-red" v-if="routed_stage.stage.disabled" style="padding:2em; margin-bottom:1em;">
             This ContentTree Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
@@ -20,14 +20,14 @@
             <!-- EDIT CONTENT -->
             <ComponentStageEditor v-if="assembly_acls.includes('manage')" />
 
-            <div class="text-h4">{{routedStage.stage.title}}</div>
+            <div class="text-h4">{{routed_stage.stage.title}}</div>
 
-            <p>{{routedStage.stage.info}}</p>
+            <p>{{routed_stage.stage.info}}</p>
         </div>
 
         <q-spinner-dots color="secondary" size="7em" v-if="!contenttree"/>
 
-        <div class="" v-if="routedStage.stage && contenttree">
+        <div class="" v-if="routed_stage.stage && contenttree">
             <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
             <div class="row justify-between gt-xs ">
 
@@ -102,8 +102,8 @@ export default {
         },
         random_column_order: function() {
             // Return 0 or 1
-            console.assert(this.routedStage.stage)
-            return(this.routedStage.stage.RANDOM_LEFTRIGHT_ASSIGNMENT)
+            console.assert(this.routed_stage.stage)
+            return(this.routed_stage.stage.RANDOM_LEFTRIGHT_ASSIGNMENT)
         },
         column_args: function() {
             console.assert(this.random_column_order!==undefined)

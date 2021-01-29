@@ -57,16 +57,12 @@ export default {
 
     openIndex: function () {
 
-      console.log('redirect to pros_and_cons_index')
-      console.log(this.routedStage.stage)
-      console.log('WHICH IS THE TYPE??')
-      console.log(this.routedStage.stage.type)
       // REDIRECT TO ARGUMENT PAGE
       var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({
-        name: this.routedStage.stage.type, params: {
+        name: this.routed_stage.stage.type, params: {
           assemblyIdentifier: identifier,
-          stageID: this.routedStageID,
+          stageID: this.routed_stage_id,
           contenttreeID: this.contenttreeID
         }
       })
@@ -82,10 +78,10 @@ export default {
       // console.log(this.item)
       var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({
-        name: this.routedStage.stage.type,
+        name: this.routed_stage.stage.type,
         params: {
           assemblyIdentifier: this.assemblyIdentifier,
-          stageID: this.routedStageID,
+          stageID: this.routed_stage_id,
           contentID: contentID
         }
       })

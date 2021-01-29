@@ -3,6 +3,7 @@
     <QRouteTab
       :name="name"
       :to="to"
+      :alert='highlighted ? "blue" : false'
       :icon="icon"
       :disable="disable"
       :menuOffset="menuOffset"
@@ -13,9 +14,13 @@
         max-width="300px"
       >
       {{!disable || !tooltipIfDisabled ? tooltip : tooltipIfDisabled}}</q-tooltip>
-        <q-badge v-if="disable" color="orange" style="position:absolute; top:2em; right: 2em;">
-            <q-icon name="mdi-clock-time-eleven-outline" size="1.2em" />
-        </q-badge>
+
+      <q-badge v-if="disable" color="orange" style="position:absolute; top:2em; right: 2em;">
+          <q-icon name="mdi-clock-time-eleven-outline" size="1.2em" />
+      </q-badge>
+      <!-- <q-badge v-if="highlighted" color="blue" style="position:absolute; top:2em; right: 2em;">
+          <q-icon name="mdi-map-marker-outline" size="1.2em" />
+      </q-badge> -->
     </QRouteTab>
 
 
@@ -32,16 +37,9 @@ import { QRouteTab  } from 'quasar'
 
 export default {
   name: 'CustomQRouteTab',
-  props: ['name', 'disable', 'menuOffset', 'to', 'icon', 'label', 'tooltip', 'tooltipIfDisabled'],
+  props: ['name', 'disable', 'menuOffset', 'to', 'icon', 'label', 'tooltip', 'tooltipIfDisabled','highlighted'],
 
   extends: QRouteTab,
-
-  watch: {
-
-    // $route () {
-    //   this.check_for_assembly_routes()
-    // }
-  },
 
   // methods: {
 

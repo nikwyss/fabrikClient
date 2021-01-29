@@ -129,7 +129,6 @@ export default {
 
   methods: {
     clickInitLink: function () {
-      console.log("kk");
       if (this.UsersDelegateAssemblies.length > 1) {
         // Multiple parallel assemblies
         var route = { name: "assemblies_ongoing_list" };

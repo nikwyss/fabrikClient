@@ -10,11 +10,6 @@
       :ongoing="ongoing"
     >
 
-      <!-- First Time Entering -->
-      <!-- <template  v-if="assembly_acls.length > 0">
-        {{$t('assemblies.am.you_may_enter_this_assembly_for_the_first_time')}}
-        </template> -->
-
       <template v-if="assembly_acls.includes('delegate') && !oauth.payload.userEmail">
         Bevor es los geht, müsssen Sie noch kurz beim Sekretariat vorbei. Dort wird noch eine Kontaktangabe von Ihnen benötigt.
       </template>

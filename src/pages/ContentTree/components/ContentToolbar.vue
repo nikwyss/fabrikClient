@@ -60,13 +60,13 @@
       <!-- <q-separator vertical inset /> -->
 
       <ContentBackground
-        v-if="ABLY.assembly_acls.includes('observe')"
+        v-if="assembly_acls.includes('observe')"
         name="`elBackground${obj.content.id}`"
         :obj="obj"
       />
 
       <!-- <ContentRating
-        v-if="ABLY.assembly_acls.includes('contribute')"
+        v-if="assembly_acls.includes('contribute')"
         name="`elRating${obj.content.id}`"
         :content="obj"
       /> -->
@@ -81,13 +81,13 @@
 import ContentBackground from "./ContentBackground";
 // import ContentEditor from "./ContentEditor"
 import ApiService from "src/utils/xhr";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "ContentToolbarComponent",
   props: ["obj"],
   components: { ContentBackground },
-  inject: ["ABLY", "QUASAR_TREE", "contenttreeID", "popup_content_form"], // is injecting ctree needed: only for contenttree_id, right?
+  inject: ["QUASAR_TREE", "contenttreeID", "popup_content_form"], // is injecting ctree needed: only for contenttree_id, right?
   data() {
     return {
       confirm_deletion: false,
@@ -102,6 +102,10 @@ export default {
   },
 
   computed: {
+    assembly_acls: function () {
+      return this.oauth.acls(this.assemblyIdentifier);
+    },
+
     track_changes_icon: function () {
       return this.track_changes
         ? "mdi-bookmark-remove"
@@ -110,6 +114,9 @@ export default {
     track_changes_color: function () {
       return this.track_changes ? "brown-9" : "grey-6";
     },
+
+    ...mapGetters( 'assemblystore', ['assemblyIdentifier'])
+
   },
 
   methods: {
@@ -227,6 +234,6 @@ export default {
     ...mapActions({
       add_or_update_contenttree: "contentstore/add_or_update_contenttree",
     }),
-  },
+  }
 };
 </script>

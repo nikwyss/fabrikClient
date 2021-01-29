@@ -7,10 +7,10 @@
             icon="mdi-arrow-left"
             @click="gotoAssemblyHome()" />
 
-        <div v-if="assembly && routedStage">
+        <div v-if="assembly && routed_stage">
 
             <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="routedStage.stage.disabled" style="padding:2em; margin-bottom:1em;">
+            <q-banner dense inline-actions class="text-white bg-red" v-if="routed_stage.stage.disabled" style="padding:2em; margin-bottom:1em;">
             This Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
@@ -18,21 +18,21 @@
             <ComponentStageEditor 
                 v-if="assembly_acls.includes('manage')"
                 :assembly_id="assembly.id"
-                :model="routedStage" />
+                :model="routed_stage" />
 
-            <div class="text-h4">{{routedStage.stage.title}}</div>
+            <div class="text-h4">{{routed_stage.stage.title}}</div>
 
-            <p>{{routedStage.stage.info}}</p>
+            <p>{{routed_stage.stage.info}}</p>
         </div>
 
         <q-spinner-dots color="secondary" size="7em" v-if="!contenttree"/>
 
-        <div class="" v-if="routedStage && contenttree">
+        <div class="" v-if="routed_stage && contenttree">
             <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
             <div class="row justify-between gt-xs ">
 
                 <div class="col-12 col-sm-6">
-                    <h2 class=" q-mb-none q-ml-md">{{routedStage.stage.title}}</h2>
+                    <h2 class=" q-mb-none q-ml-md">{{routed_stage.stage.title}}</h2>
                 </div>
 
             </div>

@@ -7,7 +7,6 @@
         :ongoing="assembly===null || oauth.authorized===null">
 
         <!-- First Time Entering -->
-        <!-- <template v-else-if="assembly_acls.includes('observe')"> -->
         <template v-if="assembly !== null && assembly.is_public === true">
         {{$t('showcase.am.there_are_assemblies_in_public_state')}}
         </template>

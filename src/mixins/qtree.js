@@ -15,7 +15,7 @@ export default {
 
     // non-reactive variables => access it by this.$options.varname..
     temp_content_object: null,
-    data: function() {
+    data: function () {
         return {
             expanded: null,
             filter: '',
@@ -40,39 +40,43 @@ export default {
             limitNodeTypes: this.limitNodeTypes
         }
     },
-    inject: ['CTREE', 'ABLY'],
+    inject: ['CTREE'],
     computed: {
 
-        startingContentID: function() {
+        assembly_acls: function () {
+            return this.oauth.acls(this.assemblyIdentifier);
+        },
+
+        startingContentID: function () {
 
             if (this.customStartingParentID) {
                 return (this.customStartingParentID)
             }
 
             // Show full contenttree (then take the ID from the URL)
-            return(Number(this.$route.params.contentID))
+            return (Number(this.$route.params.contentID))
         },
 
-        startingContentNode: function() {
+        startingContentNode: function () {
             console.log('get startingContentNode')
-            if(this.customStartingContentNode) {
-                return(this.customStartingContentNode)
-            }else{
+            if (this.customStartingContentNode) {
+                return (this.customStartingContentNode)
+            } else {
                 // console.assert(this.startingContentID)
                 return (this.CTREE.contenttree.structure)
                 // return(this.get_node_by_id(this.startingContentID))
             }
         },
 
-        startingContentNodeLevel: function() {
+        startingContentNodeLevel: function () {
             console.log('get startingContentNode')
-            if(this.customStartingContentNode) {
-                return(this.customStartingContentNode.level)
+            if (this.customStartingContentNode) {
+                return (this.customStartingContentNode.level)
             }
             return (null)
         },
 
-        customStartingContentNode: function() {
+        customStartingContentNode: function () {
             if (!this.customStartingParentID) {
                 return (null)
             }
@@ -90,13 +94,13 @@ export default {
                 nof_children: this.customStartingNodes.length,
                 id: this.customStartingParentID
             }
-            return(node)
+            return (node)
         },
 
         /* Which node types are allowed within this contenttree/branch? */
         limitNodeTypes: function () {
             // get customLimitNodeTypes
-            var allowed_node_types = this.get_allowed_node_types({contenttreeID: this.CTREE.contenttreeID})
+            var allowed_node_types = this.get_allowed_node_types({ contenttreeID: this.CTREE.contenttreeID })
             console.log(allowed_node_types)
             if (this.customLimitNodeTypes) {
                 allowed_node_types = allowed_node_types.filter(v => this.customLimitNodeTypes.includes(v))
@@ -105,54 +109,55 @@ export default {
             return (allowed_node_types)
         },
 
-        rootNodeIDs: function() {
-            return(this.startingContentNode.children.map(x=> x.id))
+        rootNodeIDs: function () {
+            return (this.startingContentNode.children.map(x => x.id))
             // if(this.startingContentID) {
             // }
             // return(this.contenttree.structure.children.map(x=> x.id))
         },
 
 
-        total_nof_contents: function() {
+        total_nof_contents: function () {
             if (!this.startingContentNode) {
                 return (null)
             }
 
-            return(this.startingContentNode['nof_descendants'] + 1)
+            return (this.startingContentNode['nof_descendants'] + 1)
         },
 
         ...mapGetters({
+            assemblyIdentifier: 'assemblystore/assemblyIdentifier',
             get_allowed_node_types: 'contentstore/get_allowed_node_types',
             get_default_expanded_branches_from_store: 'contentstore/get_default_expanded_branches_from_store',
         }),
     },
 
     methods: {
-        is_currently_expanded: function(node_id) {
-            return(this.expanded.includes(node_id))
+        is_currently_expanded: function (node_id) {
+            return (this.expanded.includes(node_id))
         },
 
-        collapse_all_children: function(parent_id) {
+        collapse_all_children: function (parent_id) {
 
-            if (parent_id==null) {
-                return(this.expand_none())
+            if (parent_id == null) {
+                return (this.expand_none())
             }
 
             let parent_node = this.get_node_by_id(parent_id)
             var siblings = parent_node.children
 
             // remove siblings from expanded list
-            if(siblings.length>0) {
+            if (siblings.length > 0) {
                 let siblings_ids = siblings.map(x => x.id);
                 this.expanded = this.expanded.filter(
                     x => !siblings_ids.includes(x)
                 )
             }
 
-            return(true)
+            return (true)
         },
 
-        toggle_node: function(node_id) {
+        toggle_node: function (node_id) {
             if (this.expanded.includes(node_id)) {
                 this.collapse_node(node_id)
             } else {
@@ -160,16 +165,16 @@ export default {
             }
         },
 
-        collapse_node: function(node_id) {
+        collapse_node: function (node_id) {
             const index = this.expanded.indexOf(node_id)
             this.expanded = this.expanded.filter(x => x != node_id)
         },
 
-        expand_node: function(node_id) {
+        expand_node: function (node_id) {
             this.expanded.push(node_id)
         },
 
-        expand_more: function() {
+        expand_more: function () {
             console.log('EXPAND MORE')
 
             /// expand all children of currently expanded nodes.
@@ -200,20 +205,20 @@ export default {
             this.updateExpanded()
 
             // Notify
-            var nof_shown =  this.expanded.length
-            var nof_total =  this.total_nof_contents
+            var nof_shown = this.expanded.length
+            var nof_total = this.total_nof_contents
             // TODO: consider alos search/filtering.
             this.$q.notify({
                 type: 'nFabrikInfo',
                 message: this.$i18n.t('contenttree.notification_number_of_expanded',
                     {
-                        nof_shown: nof_shown, 
+                        nof_shown: nof_shown,
                         nof_total: nof_total
                     })
-              })
+            })
         },
 
-        expand_none: function() {
+        expand_none: function () {
             console.log('expand_none')
             this.expanded = []
             this.updateExpanded()
@@ -228,40 +233,41 @@ export default {
         },
 
         calculate_default_expanded_branches: function () {
-            
+
             // get default values
             let node = this.startingContentNode
-           // TODO: do a while and loop the x level until 25 are reached...
+            // TODO: do a while and loop the x level until 25 are reached...
             //    let branches = Object.keys(node.children)
-           let branches = node.children.map(function (x) { return x.id});
-           branches.push(node.id)
+            let branches = node.children.map(function (x) { return x.id });
+            branches.push(node.id)
 
-           return(branches)
+            return (branches)
         },
 
         /* Method store list of expanded array in localstorage */
-        updateExpanded: function() {
+        updateExpanded: function () {
             this.update_expanded_branches({
                 contenttreeID: this.CTREE.contenttreeID,
                 startingContentID: this.CTREE.startingContentID,
-                expanded: this.expanded})
+                expanded: this.expanded
+            })
         },
 
         // FILTER TREE
-        treeFilterMethod (node, filter) {
+        treeFilterMethod(node, filter) {
             const filt = filter.toLowerCase()
             // return node.label && node.label.toLowerCase().indexOf(filt) > -1 && node.label.toLowerCase().indexOf('(*)') > -1
             let obj = this.CTREE.contenttree.entries[node.id]
             let searchable = `${obj.content.title} ${obj.content.text}`
             return searchable.toLowerCase().indexOf(filt) > -1
         },
-        resetFilter () {
+        resetFilter() {
             console.log('reset filter')
             this.filter = ''
             this.$refs.filter.focus()
         },
-        
-        zoomToContent: function(content) {
+
+        zoomToContent: function (content) {
             console.log('ZOOOM TO CONTENT')
 
             // collapsse all siblings to improve overview
@@ -278,7 +284,7 @@ export default {
             // scroll to newly entered content
             let anchorid = `arg${content.id}`
             var element = document.getElementById(anchorid);
-            if(element) {
+            if (element) {
                 // See for better scrolling: https://quasar.dev/quasar-utils/scrolling-utils#Scrolling-to-an-element
                 // DEFAULT SCROLL: goes too far down. TODO: correct this
                 element.scrollIntoView();
@@ -286,16 +292,16 @@ export default {
         },
 
 
-        cachedNode: function(contentID) {
+        cachedNode: function (contentID) {
             // With this getter the content data has to be loaded only once; 
             // and can be used in the tree.header as well as the tree.body templates. 
-            if (this.$options.temp_content_object===null || this.$options.temp_content_object.content.id != contentID) {
+            if (this.$options.temp_content_object === null || this.$options.temp_content_object.content.id != contentID) {
                 this.$options.temp_content_object = this.CTREE.contenttree.entries[contentID]
             }
-            return(this.$options.temp_content_object)
+            return (this.$options.temp_content_object)
         },
 
-        get_node_by_branch: function(branch) {
+        get_node_by_branch: function (branch) {
             console.log('get node by branch: ' + branch)
 
             var parent_node = null
@@ -311,56 +317,56 @@ export default {
                 children = parent_node.children;
             }
             console.assert(parent_node)
-            return(parent_node)
+            return (parent_node)
         },
 
-        get_branch_by_id: function(node_id) {
+        get_branch_by_id: function (node_id) {
             // console.log(this.$refs)
             // let node = this.$refs.qtree.getNodeByKey(node_id)
             // return(node.branch)
 
             // this.$refs.tree.getNodeByKey(node_id);
-            if(node_id===null) {
-                return(null)
+            if (node_id === null) {
+                return (null)
             }
             var obj = this.CTREE.contenttree.entries[node_id]
             console.assert(obj)
             var parent_id = obj.content.parent_id
             var branch = `:${node_id}`
             console.assert(obj)
-            while(parent_id!==null) {
+            while (parent_id !== null) {
                 branch = `:${parent_id}${branch}`
                 obj = this.CTREE.contenttree.entries[parent_id]
                 parent_id = obj.content.parent_id
             }
             console.assert(branch)
-            return(branch)
+            return (branch)
         },
 
-        get_node_by_id_via_branch: function(node_id) {
+        get_node_by_id_via_branch: function (node_id) {
             console.log('get node by id via branch: ' + node_id)
             // console.log(this.$refs)
             // let node = this.$refs.qtree.getNodeByKey(node_id)
             // return(node)
 
-            if(node_id===null) {
-                return(this.CTREE.contenttree.structure)
+            if (node_id === null) {
+                return (this.CTREE.contenttree.structure)
             }
 
             let branch = this.get_branch_by_id(node_id)
             let node = this.get_node_by_branch(branch)
-            return(node)
+            return (node)
         },
 
-        get_node_by_id: function(node_id) {
+        get_node_by_id: function (node_id) {
             console.log('get node by id: ' + node_id)
-            if('qtree' in this.$refs) {
+            if ('qtree' in this.$refs) {
                 let node = this.$refs.qtree.getNodeByKey(node_id)
-                if(node) {
-                    return(node)
+                if (node) {
+                    return (node)
                 }
             }
-            return(this.get_node_by_id_via_branch(node_id))
+            return (this.get_node_by_id_via_branch(node_id))
         },
 
         ...mapActions({
@@ -368,31 +374,33 @@ export default {
         }),
     },
 
-    created: function() {
+    created: function () {
 
         // set expanded branches
-        if(this.expanded === null) {
+        if (this.expanded === null) {
             console.assert(this.CTREE.contenttree)
-          
+
             // first: check in 
             this.expanded = this.get_default_expanded_branches_from_store({
-                contenttreeID: this.CTREE.contenttreeID, 
-                startingContentID: this.CTREE.startingContentID})
+                contenttreeID: this.CTREE.contenttreeID,
+                startingContentID: this.CTREE.startingContentID
+            })
         }
 
-        if(this.expanded===null) {
+        if (this.expanded === null) {
             this.expanded = this.calculate_default_expanded_branches()
             // console.log(this.expanded)
             this.update_expanded_branches({
-                contenttreeID: this.CTREE.contenttreeID, 
-                startingContentID: this.CTREE.startingContentID, 
-                expanded: this.expanded})
+                contenttreeID: this.CTREE.contenttreeID,
+                startingContentID: this.CTREE.startingContentID,
+                expanded: this.expanded
+            })
         }
         // console.log(this.expanded)
 
     },
 
-    mounted: function() {
+    mounted: function () {
         this.$emit('tree_is_mounted');
     }
 }

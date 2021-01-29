@@ -109,7 +109,7 @@
                     :style="!prop.node.nof_descendants && rootNodeIDs.includes(prop.node.id) ? 'margin-left:1.5em' : ''">
                       <div class="float-right q-pa-null">
                     <ContentRating
-                        v-if="ABLY.assembly_acls.includes('contribute')"
+                        v-if="assembly_acls.includes('contribute')"
                         name="`elRating${obj.content.id}`"
                         :content="cachedNode(prop.node.id)"
                     />
@@ -127,7 +127,7 @@
         <!-- EDIT/CREATE FORM -->
         <ContentEditor
             ref="content_editor"
-            v-if="ABLY.assembly_acls.includes('contribute')"
+            v-if="assembly_acls.includes('contribute')"
             :parent_id="startingContentID" />
 
         <q-separator inset />
@@ -135,7 +135,7 @@
         <div class="full-width" align="right">
                 <!-- class="bg-accent" -->
             <q-chip
-                v-if="ABLY.assembly_acls.includes('contribute')"
+                v-if="assembly_acls.includes('contribute')"
                 icon="mdi-tooltip-plus-outline" clickable @click="popup_create">
                 {{ $t('contenttree.add_comment_or_question') }}
             </q-chip>

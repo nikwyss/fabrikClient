@@ -16,9 +16,9 @@
       <q-toolbar>
 
         <q-space />
-          <!-- <h1 v-if="currentAssemblyName"></h1> -->
+          <!-- <h1 v-if="assemblyName"></h1> -->
 
-                <q-toolbar-title style="min-width:200px; font-weight:400" v-if="currentAssemblyName">{{currentAssemblyName}}</q-toolbar-title>
+                <q-toolbar-title style="min-width:200px; font-weight:400" v-if="assemblyName">{{assemblyName}}</q-toolbar-title>
 
           <!-- Basic Menu:  -->
           <!-- <div v-if="!is_assembly_page"> -->
@@ -128,7 +128,7 @@ import { mapGetters } from "vuex"
 
 export default {
   name: "MainMenu",
-  props: ['currentAssemblyName'],
+  props: ['assemblyName'],
   components: {
       UserAvatar
   },

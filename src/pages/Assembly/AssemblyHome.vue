@@ -23,18 +23,15 @@
 
     <!-- AM-OVERVIEW -->
     <div class="q-mb-xl">
-      <ArtificialModeratorAssemblyHome
-        v-if="!isAgendaFinished"
-        :ongoing="!sorted_stages || oauth.authorized === null"
-        align="left"
-      />
+
+      <ArtificialModeratorAssemblyHome align="left" />
     </div>
 
     <!-- STAGES -->
       <!-- inactive-icon="mdi-disabled" -->
     <q-stepper
-      v-if="sorted_stages &&  oauth.authorized !== null"
-      v-model="cachedStageNr"
+      v-if="assembly_sorted_stages &&  oauth.authorized !== null"
+      v-model="stage_nr_last_visited"
       vertical
       header-nav
       @transition="stageTransition"
@@ -42,24 +39,24 @@
       ref="stepper"
     >
       <q-step
-        v-for="(localStage, localStageNr) in sorted_stages"
+        v-for="(localStage, localStageNr) in assembly_sorted_stages"
         :key="Number(localStageNr)"
         :prefix="localStageNr+1"
         :done="true"
         :name="Number(localStageNr)"
-        :caption="getStepCaption(localStage, localStageNr)"
-        :header-nav="isActive(localStage, localStageNr) && localStageNr != cachedStageNr"
-        :title="getStepTitle(localStage, localStageNr)"
-        :color="getColor(localStage, localStageNr)"
-        :done-icon="getIcon(localStage, localStageNr)"
-        :active-icon="getIcon(localStage, localStageNr)"
-        :error-icon="getIcon(localStage, localStageNr)"
+        :caption="getStepCaption(localStage)"
+        :title="getStepTitle(localStage)"
+        :color="getColor(localStage)"
+        :done-icon="getIcon(localStage)"
       > 
+        <!-- :header-nav="is_stage_accessible(localStage) && stage_last_visited != localStage" -->
+        <!-- :active-icon="getIcon(localStage, localStageNr)"
+        :error-icon="getIcon(localStage, localStageNr)" -->
 
         <!-- MANAGERS: STAGE EDITOR -->
         <ComponentStageEditor
           :key=" `AE${localStageNr}` "
-          v-if="assembly_acls.includes('manage') && cachedStageNr==localStageNr"
+          v-if="assembly_acls.includes('manage') && stage_nr_last_visited==localStageNr"
           :model="localStage"
         />
 
@@ -77,7 +74,7 @@
         <!-- STAGE CONTENT-->
         <q-card flat>
           <q-card-section
-            v-if="localStageNr==cachedStageNr"
+            v-if="localStageNr==stage_nr_last_visited"
             class="q-pa-xs"
             style="min-height:3em;"
           >
@@ -93,9 +90,7 @@
             align="right"
           >
             <ArtificialModeratorAssemblyStage
-              v-if="localStageNr==cachedStageNr"
-              :ongoing="!assembly || !localStage"
-              :stageNr="localStageNr"
+              v-if="localStageNr==stage_nr_last_visited"
               :stage="localStage"
             />
           </q-card-section>
@@ -107,8 +102,8 @@
     <!-- AM-OVERVIEW -->
     <div class="q-mb-xl">
       <ArtificialModeratorAssemblyHome
-        v-if="isAgendaFinished"
-        :ongoing="!sorted_stages || sorted_stages === undefined"
+        v-if="!assembly_scheduled_stages"
+        :ongoing="!assembly_sorted_stages || assembly_sorted_stages === undefined"
         :numberOfStages="numberOfStages"
         align="left"
       />
@@ -149,16 +144,15 @@ export default {
   methods: {
     getStepCaption: function (stage, stageNr) {
       var caption = "";
-
       // PREFIX
-      if (this.isCompleted(stage)) {
-        caption = `${this.$i18n.t("stages.status_completed")}`;
-      } else if (!this.isDone(stage, stageNr)) {
+      if (this.is_stage_completed(stage)) {
+        caption = this.$i18n.t("stages.status_completed");
+      } else if (!this.is_stage_done(stage)) {
         caption = this.$i18n.t("stages.status_not_yet_accessible");
       } else if (stage.stage.disabled) {
-        caption = `${this.$i18n.t("stages.status_disabled")}`;
+        caption = this.$i18n.t("stages.status_disabled");
       } else if ("deleted" in stage.stage && stage.stage.deleted) {
-        caption = ` ${this.$i18n.t("stages.status_deleted")}`;
+        caption = this.$i18n.t("stages.status_deleted");
       }
 
       if (caption) {
@@ -166,7 +160,7 @@ export default {
       }
     },
 
-    getStepTitle: function (stage, stageNr) {
+    getStepTitle: function (stage) {
       return stage.stage.title;
     },
 
@@ -183,43 +177,39 @@ export default {
       });
     },
         
-    getIcon(stage, stageNr) {
-
-      if (this.isDisabled(stage)) {
+    getIcon(stage) {
+      console.assert(stage)
+      if (this.is_stage_disabled(stage)) {
         return "mdi-cancel";
       }
 
-      // if (this.isCompleted(stage)) {
-      //   return "mdi-email-outline";
-      // }
-
-      if (this.highestAllowedStageNr == stageNr) {
+      if (this.last_accessible_stage == stage) {
         return "mdi-bell";
       }
 
-      if (this.highestAllowedStageNr < stageNr) {
+      if (this.last_accessible_stage?.stage.order_position < stage.stage.order_position) {
         return "mdi-clock-time-eleven-outline";
       }
 
       return "mdi-check-bold";
     },
 
-    getColor(stage, stageNr) {
-      var color = "green-4";
+    getColor(stage) {
+      var color = "green-6";
 
-      if (this.isDisabled(stage)) {
+      if (this.is_stage_disabled(stage)) {
         return "grey-4";
       }
 
-      // if (this.isCompleted(stage)) {
-      //   return "grey-4";
-      // }
-
-      if (this.highestAllowedStageNr == stageNr) {
-        color = "blue-9";
+      if (this.is_stage_completed(stage)) {
+        return "green-3";
       }
 
-      if (this.highestAllowedStageNr < stageNr) {
+      if (this.last_accessible_stage == stage) {
+        return "blue-9";
+      }
+
+      if (this.last_accessible_stage?.stage.order_position < stage.stage.order_position) {
         return "orange-5";
       }
 

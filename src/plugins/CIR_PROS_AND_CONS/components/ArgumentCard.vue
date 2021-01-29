@@ -31,7 +31,7 @@
 
         <!-- <ContentRating
           name="`elRating${content.content.id}`"
-          v-if="standalone && ABLY.assembly_acls.includes('contribute')"
+          v-if="standalone && assembly_acls.includes('contribute')"
           :content="content"
         /> -->
 
@@ -56,7 +56,7 @@
         <q-space />
 
         <ContentEditor
-            v-if="ABLY.assembly_acls.includes('contribute')"
+            v-if="assembly_acls.includes('contribute')"
             :content_type="default_content_type"
             @zoom-to-content="openArgument(content.content)"
             btnlabel="Add Argument"
@@ -73,11 +73,19 @@
 import ContentRating from "src/pages/ContentTree/components/ContentRating"
 import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
+import { mapGetters } from "vuex";
 
 export default {
   name: 'ArgumentCard',
+  computed: {
+    assembly_acls: function () {
+      return this.oauth.acls(this.assemblyIdentifier);
+    }
+  },
   props: ['content', 'standalone', 'default_content_type'],
   components: { ContentRating, ContentEditor, ContentToolbar},
-  inject: ['ABLY', 'openIndex', 'openArgument']
+  inject: ['openIndex', 'openArgument'],
+  ...mapGetters( 'assemblystore', ['assemblyIdentifier'])
+
 }
 </script>

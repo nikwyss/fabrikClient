@@ -15,6 +15,7 @@ Vue.use(VueDOMPurifyHTML)
 /////////////////////////////////
 
 // Add Object filter: helper...
+// TODO: remove this. not necessary, since [].filter() does work perfectly...
 Object.filter = (obj, predicate) => Object.keys(obj)
   .filter(key => predicate(obj[key]))
   .reduce((res, key) => (res[key] = obj[key], res), {});
@@ -47,6 +48,7 @@ Vue.prototype.$nLength = function (object1) {
 //   // Not Outdated
 //   return (false)
 // }
+
 
 
 // AUTH

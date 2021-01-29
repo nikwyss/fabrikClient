@@ -1,17 +1,17 @@
 <template>
   <q-page class="doc_content">
 
-    <div v-if="routedStage">
+    <div v-if="routed_stage">
 
       <!-- EDIT CONTENT -->
       <!-- <ComponentStageEditor 
                 v-if="assembly_acls.includes('manage')"
                 :assembly_id="assembly.id"
-                :model="routedStage" /> -->
+                :model="routed_stage" /> -->
 
       <!-- MISCONFIGURATION -->
-      <div v-if="routedStage && !isCompleted(routedStage) && !check_data">
-        <h2>{{routedStage.stage.title}}</h2>
+      <div v-if="routed_stage && !is_stage_completed(routed_stage) && !check_data">
+        <h2>{{routed_stage.stage.title}}</h2>
 
         <q-banner class="bg-grey-3 q-mb-lg">
           <template v-slot:avatar>
@@ -35,14 +35,14 @@
       <div class="q-mb-xl">
         <ArtificialModeratorSURVEYIndexTop
           v-if="check_data"
-          :ongoing="!ABLY.routedStage || oauth.authorized === null"
+          :ongoing="!routed_stage || oauth.authorized === null"
           align="left"
         />
       </div>
 
       <!-- Redirect Spinner  -->
       <div
-        v-if="ABLY.routedStage && check_data && !isCompleted(routedStage)"
+        v-if="routed_stage && check_data && !is_stage_completed(routed_stage)"
         align="center"
       >
         <q-spinner-gears
@@ -67,7 +67,6 @@ import ArtificialModeratorSURVEYIndexTop from "./artificialmoderation/IndexTop";
 export default {
   name: "Survey",
   components: { ArtificialModeratorSURVEYIndexTop },
-
   mixins: [StageMixin, i18nPluginMixin],
 
   data() {
@@ -81,18 +80,18 @@ export default {
     check_data: function () {
       console.log("check survey data..");
 
-      if (this.routedStage === undefined) {
+      if (this.routed_stage === undefined) {
         // not yet loaded...
         return null;
       }
 
       if (
-        !this.routedStage.stage.custom_data ||
-        !this.routedStage.stage.custom_data.provider ||
-        !this.routedStage.stage.custom_data.SID
+        !this.routed_stage.stage.custom_data ||
+        !this.routed_stage.stage.custom_data.provider ||
+        !this.routed_stage.stage.custom_data.SID
       ) {
         console.log("no survey data provided at this stage..");
-        console.log(this.routedStage.stage.custom_data);
+        console.log(this.routed_stage.stage.custom_data);
         return false;
       }
       return true;
@@ -108,7 +107,7 @@ export default {
   methods: {
     redirect: function () {
       // all data available
-      const SID = this.routedStage.stage.custom_data.SID;
+      const SID = this.routed_stage.stage.custom_data.SID;
       // this.$router.currentRoute.path
       let url = process.env.ENV_SURVEY_URL;
       var re = /:SID:/g;
@@ -116,7 +115,7 @@ export default {
       re = /:USERID:/g;
       newurl = newurl.replace(re, this.oauth.userid);
       re = /:STAGEID:/g;
-      newurl = newurl.replace(re, this.routedStageID);
+      newurl = newurl.replace(re, this.routed_stage_id);
       re = /:ASSEMBLYIDENTIFIER:/g;
       newurl = newurl.replace(re, this.assemblyIdentifier);
       // console.log(USERID)
@@ -134,7 +133,7 @@ export default {
       // }
 
       /* By this method we allow the API to monitor userz activities */
-      const STAGEID = this.routedStageID;
+      const STAGEID = this.routed_stage_id;
       const USERID = this.oauth.userid;
       console.log(this.oauth.userid + "oauth_userid");
 
@@ -164,9 +163,9 @@ export default {
    * Must be run before monitor are mounted...
    */
   created: function () {
-    console.log("mounted3");
+    console.log("created survey index page");
     // Completed Response?
-    if (!this.isCompleted(this.routedStage)) {
+    if (!this.is_stage_completed(this.routed_stage)) {
       if (this.is_a_survey_response) {
         console.log("Completed response!");
         const event = this.MonitorSurveyCompleting;

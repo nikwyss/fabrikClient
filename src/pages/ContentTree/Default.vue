@@ -3,7 +3,7 @@
         <div v-if="contenttree">
 
             <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="routedStage.stage.disabled" style="padding:2em; margin-bottom:1em;">
+            <q-banner dense inline-actions class="text-white bg-red" v-if="routed_stage.stage.disabled" style="padding:2em; margin-bottom:1em;">
             This ContentTree Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
@@ -11,11 +11,11 @@
             <ComponentStageEditor 
                 v-if="assembly_acls.includes('manage')" 
                 @syncstorestage="syncstorestage"
-                :model="routedStage" />
+                :model="routed_stage" />
 
-            <div class="text-h4">{{routedStage.stage.title}}</div>
+            <div class="text-h4">{{routed_stage.stage.title}}</div>
 
-            <p>{{routedStage.stage.info}}</p>
+            <p>{{routed_stage.stage.info}}</p>
         </div>
 
         <ComponentContentTree label="Offene Diskussion" />

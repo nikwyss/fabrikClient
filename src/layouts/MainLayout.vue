@@ -37,7 +37,7 @@
           </q-chip>
 
     <!-- MAIN MENU -->
-    <MainMenu :currentAssemblyName="currentAssemblyName" />
+    <MainMenu :assemblyName="assemblyName" />
 
 
 <!-- {{$router.route.name}} -->
@@ -190,7 +190,7 @@ import PublicIndex from "src/mixins/publicIndex"
 export default {
   name: "MainLayout",
   mixins: [PublicIndex],
-  // inject: ['currentAssemblyName'], // not necessary=>defined in the mixin...
+  // inject: ['assemblyName'], // not necessary=>defined in the mixin...
   components: {
     // ComponentDrawer,
     // LanguageSwitch,

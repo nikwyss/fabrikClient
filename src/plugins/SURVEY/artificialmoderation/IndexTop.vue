@@ -3,20 +3,19 @@
 
     <!-- RIGHT SIDE:  -->
     <!-- <div align="right"> -->
-    <ArtificialModerator alignment="right" role="1" amGroup='surveyPage' :ongoing="ongoing">
-
+    <ArtificialModerator alignment="right" role="1" amGroup='surveyPage' :ongoing="!routed_stage">
 
         <!-- ALREADY COMPLETED? -->
-        <template v-if="isCompleted(ABLY.routedStage)">
+        <template v-if="is_stage_completed(routed_stage)">
         {{ $t('survey.already_completed_error') }}
         </template>
-        <template v-if="!isCompleted(ABLY.routedStage)">
+        <template v-if="!is_stage_completed(routed_stage)">
             {{ $t("survey.redirect_to_survey")}}
         </template>
 
         <template  v-slot:actions>
-        <q-chip v-if="isCompleted(ABLY.routedStage)" icon="mdi-arrow-left" clickable 
-                @click="clickGotoIndexAndMoveOn">
+        <q-chip v-if="is_stage_completed(routed_stage)" icon="mdi-arrow-left" clickable 
+                @click="gotoIndexAndMoveOn">
             {{ $t('assemblies.go_back_to_assembly_home') }}
         </q-chip>
         </template>
@@ -27,12 +26,15 @@
 
 <script>
 import ArtificialModerator from 'src/artificialmoderation/components/ArtificialModerator'
+import { mapGetters} from 'vuex'
 
 export default{
     name: "ArtificialModeratorTEXTSHEETMain",
-    inject: ['ABLY', 'clickGotoIndexAndMoveOn','isCompleted'
-    ], // see provide attribute in the antecedents
-    components: {ArtificialModerator},
-    props: ['ongoing'],
+    ...mapGetters(
+      'assemblystore',
+      ['routed_stage', 'is_stage_completed']
+    ),    
+    inject: ['gotoIndexAndMoveOn'],
+    components: {ArtificialModerator}
 }
 </script>
