@@ -5,22 +5,22 @@ export default {
 
   mixins: [AssemblyMixin],
 
-  computed: {
+  // computed: {
 
-    stageID: function () {
-      return (this.$route.params.stageID)
-    },
+  //   stageID: function () {
+  //     return (this.$route.params.stageID)
+  //   },
 
-    stage: function () {
+  //   stage: function () {
 
-      console.log(this.assemblyIdentifier)
-      const stage = this.routed_stage({
-        stageID: this.stageID
-      })
+  //     console.log(this.assemblyIdentifier)
+  //     const stage = this.routed_stage({
+  //       stageID: this.stageID
+  //     })
 
-      return (stage)
-    }
-  },
+  //     return (stage)
+  //   }
+  // },
 
   methods: {
 

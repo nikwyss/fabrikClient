@@ -49,7 +49,8 @@ import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
 
 export default {
   name: 'TextsheetCard',
-  props: ['item', 'standalone', 'heading_number', 'comments'],
+  props: ['item', 'standalone', 'heading_number', 'comments','questions'],
+  // questions added for debigging : is it still usefukk?
   components: { ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
   data: function() {
     return({

@@ -31,8 +31,11 @@ export default {
     contenttreeID: function () {
       // contenttreeID is defined in the URL
       // Mixin is only usable for pages with assemblyIdentifier in the URL
-      const contenttreeID = this.$route.params.contenttreeID
-      return (contenttreeID)
+      // console.log(this.stage)
+      if (!this.routed_stage) {
+        return (null)
+      }
+      return (this.routed_stage?.stage?.contenttree_id)
     },
 
     contenttree: function () {
@@ -114,16 +117,6 @@ export default {
         contenttreeID: this.contenttreeID,
         oauthUserID: this.oauth.userid
       })
-    })
-  },
-
-  mounted: function () {
-    console.assert(this.assemblyIdentifier)
-    console.assert(this.contenttreeID)
-    this.$store.dispatch('contentstore/syncContenttree', {
-      assemblyIdentifier: this.assemblyIdentifier,
-      contenttreeID: this.contenttreeID,
-      oauthUserID: this.oauth.userid
     })
   }
 }

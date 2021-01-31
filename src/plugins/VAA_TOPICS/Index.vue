@@ -1,11 +1,11 @@
 <template>
     <q-page class="doc_content">
 
-        <q-btn align="around" 
+        <!-- <q-btn align="around" 
             class="btn-fixed-width" color="brown-5" 
             label="Back to the assembly home"
             icon="mdi-arrow-left"
-            @click="gotoAssemblyHome()" />
+            @click="gotoAssemblyHome()" /> -->
 
         <div v-if="assembly && routed_stage">
 
@@ -20,7 +20,7 @@
                 :assembly_id="assembly.id"
                 :model="routed_stage" />
 
-            <div class="text-h4">{{routed_stage.stage.title}}</div>
+            <div class="text-h3">{{routed_stage.stage.title}}</div>
 
             <p>{{routed_stage.stage.info}}</p>
         </div>
@@ -44,6 +44,8 @@
                     :questions="filter_entries(nodeL1.children, ['QUESTION'])"
                     :heading_number="(keyL1+1)"
                     :item="contenttree.entries[nodeL1.id]"/>
+
+                <RatingSlider />
             </div>
 
         </div>
@@ -55,12 +57,15 @@
 import ContentTreeMixin from 'src/mixins/contenttree'
 import ComponentStageEditor from 'src/pages/ContentTree/components/StageEditor';
 import TextsheetCard from './components/TextsheetCard';
+import RatingSlider from 'src/layouts/components/RatingSlider';
+
 
 export default {
     name: 'VAATopics',
     components: {
         ComponentStageEditor,
         TextsheetCard,
+        RatingSlider
     },
 
     mixins: [ContentTreeMixin]

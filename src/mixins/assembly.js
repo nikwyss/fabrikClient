@@ -34,10 +34,10 @@ export default {
 
     ...mapGetters(
       'assemblystore',
-      ['assemblyIdentifier', 'assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'routed_stage', 'last_accessible_stage',
+      ['assemblyIdentifier', 'assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'routed_stage', 'routed_stage_id', 'last_accessible_stage',
         'is_stage_done', 'is_stage_disabled', 'is_stage_completed', 'last_accessible_stage', 'is_stage_new', 'is_stage_last',
         'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages', 'get_stage_number_by_stage',
-        'find_next_accessible_stage', 'assembly_stages', 'assembly', 'assembly_configuration'
+        'find_next_accessible_stage', 'assembly_stages', 'assembly', 'assembly_configuration', 'IsDelegate', 'IsManager'
       ]
     )
   },
