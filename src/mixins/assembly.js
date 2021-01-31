@@ -32,15 +32,6 @@ export default {
 
   computed: {
 
-    // assemblyAcls: function () {
-    //   console.log("EMPTY identifier in acs?", this.assemblyIdentifier)
-    //   console.assert(this.assemblyIdentifier)
-    // },
-
-    // assemblyAcls: function () {
-    //   return this.oauth.acls(this.assemblyIdentifier);
-    // },
-
     ...mapGetters(
       'assemblystore',
       ['assemblyIdentifier', 'assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'routed_stage', 'last_accessible_stage',
@@ -145,8 +136,8 @@ export default {
     // Catch all authentication status changes
     // SYNC respectively CLEAN DATA (after logout)
     // TODO
-    LayoutEventBus.$on('AfterAuthenticationStatusChanged', data => {
-      console.log('>> AfterAuthenticationStatusChanged listener in assembly')
+    LayoutEventBus.$on('AuthenticationLoaded', data => {
+      console.log('>> AuthenticationLoaded listener in assembly')
       // TODO: remove any personal data when loggin out
       this.$store.dispatch('assemblystore/syncAssembly', {
         oauthUserID: this.oauth.userid

@@ -106,7 +106,7 @@ export default {
   created() {
 
     // Catch all authentication status changes
-    LayoutEventBus.$on('AfterAuthenticationStatusChanged', data => {
+    LayoutEventBus.$on('AuthenticationLoaded', data => {
       console.assert(this.contenttreeID)
       // TODO: remove any personal data when loggin out
       this.$store.dispatch('contentstore/syncContenttree', {

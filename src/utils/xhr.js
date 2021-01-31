@@ -305,8 +305,8 @@ LayoutEventBus.$on('AfterTokenChanged', jwt => {
   }
 
   // NOTIFY EVERYONE, THAT TOKEN HAS CHANGED NOW!
-  console.log("ApiService Header is updated => emit AfterAuthenticationStatusChanged", !!jwt)
-  LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
+  // console.log("ApiService Header is updated => emit AfterAuthenticationStatusChanged", !!jwt)
+  // LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
 
 })
 
