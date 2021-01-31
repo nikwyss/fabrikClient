@@ -124,6 +124,7 @@ export default {
           }
         },
 
+
         userid: function () {
           // console.log('...OAUTH: loading userid..')
           if (this.payload) {

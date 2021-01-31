@@ -295,6 +295,7 @@ export default {
       )
     },
 
+
      ...mapGetters( 'assemblystore', ['assemblyName'])  
   }
 }

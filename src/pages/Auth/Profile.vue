@@ -26,7 +26,7 @@
                 <q-icon name="mdi-account" />
               </template>
             </q-input>
-            <small>{{$root.public_profile_name_derivation() }}</small>
+            <small>{{username_derivation }}</small>
           </p>
 
           <p v-if="!loading">
@@ -120,7 +120,18 @@ export default {
 
   computed: {
 
-    
+    username_derivation: function () {
+      if (!this.public_profile) {return ""}
+      const altitude = this.public_profile.ALT;
+      const fullname = this.public_profile.FN;
+      const canton = this.public_profile.CA;
+      return this.$i18n.t("auth.name_derivation", {
+        fullname: fullname,
+        canton: canton,
+        altitude: altitude,
+      })
+    },
+
     ...mapGetters({
       public_profile: "publicprofilestore/get_public_profile",
     }),

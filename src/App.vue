@@ -17,13 +17,8 @@ export default {
   data() {
     return {
       componentKey: 0,
+      username_derivate: '',
     };
-  },
-
-  computed: {
-    ...mapGetters({
-      public_profile: "publicprofilestore/get_public_profile",
-    })
   },
 
   methods: {
@@ -42,19 +37,8 @@ export default {
       console.log(that.componentKey);
     }
 
-    this.$root.public_profile_name_derivation = function () {
-      if (!this.public_profile) {return ""}
-      const altitude = this.public_profile.ALT;
-      const fullname = this.public_profile.FN;
-      const canton = this.public_profile.CA;
-      return this.$i18n.t("auth.name_derivation", {
-        fullname: fullname,
-        canton: canton,
-        altitude: altitude,
-      })
-    }
 
-    this.touchRandomSeed();
+    this.touchRandomSeed()
     // console.log(this.$nLength([1,2]))
     console.log("APP mounted...");
   },
@@ -190,6 +174,16 @@ export default {
         oauthUserID: this.oauth.userid,
         oauthUserEmail: this.oauth.payload.userEmail
       });
+    });
+
+
+    LayoutEventBus.$on("PublicProfileLoaded", () => {
+
+      // SYNC USER PROFILE
+      // is email already set: if not => redirect to userprofile...
+      console.log("app.vue: AuthenticationLoaded => syncProfile..")
+      this.$store.dispatch("publicprofilestore/setUsernameDerivate", {
+        usernameDerivate: this.usernameDerivate()});
     });
 
     LayoutEventBus.$on("hideNotificationBanners", (data) => {

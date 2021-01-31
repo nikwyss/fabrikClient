@@ -77,7 +77,7 @@
                 <q-item-label
                   caption
                   style="max-width:250px"
-                >{{ $root.public_profile_name_derivation() }}</q-item-label>
+                >{{ username_derivation }}</q-item-label>
               </q-item-section>
             </q-item>
 
@@ -165,6 +165,19 @@ export default {
         !!this.$route.params.assemblyIdentifier
       );
     },
+    
+    username_derivation: function () {
+      if (!this.public_profile) {return ""}
+      const altitude = this.public_profile.ALT;
+      const fullname = this.public_profile.FN;
+      const canton = this.public_profile.CA;
+      return this.$i18n.t("auth.name_derivation", {
+        fullname: fullname,
+        canton: canton,
+        altitude: altitude,
+      })
+    },
+
     ...mapGetters({
       public_profile: "publicprofilestore/get_public_profile",
       assemblyName: "assemblystore/assemblyName",

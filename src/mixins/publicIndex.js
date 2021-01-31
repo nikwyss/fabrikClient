@@ -1,6 +1,6 @@
 import { mapGetters, mapActions } from 'vuex'
 // import assembly from './assembly'
-// import { LayoutEventBus } from "src/utils/eventbus";
+import { LayoutEventBus } from "src/utils/eventbus";
 
 export default {
 
