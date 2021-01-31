@@ -16,7 +16,7 @@
     <!-- RIGHT SIDE (NOT YET LOGGED IN):  -->
     <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
     <ArtificialModerator
-      v-if="oauth.authorized === false && IsThereAnAssemblyOngoing === true"
+      v-if="oauth.authorized === false && IsThereAnAssemblyOngoing"
       alignment="right"
       role="2"
       i18n_path_prefix="index"
@@ -32,7 +32,6 @@
         </Button>
       </template>
     </ArtificialModerator>
-
     <!-- RIGHT SIDE (AUTHENTICATED DELEGATES):  -->
     <ArtificialModerator
       v-else-if="oauth.authorized === true && IsUserDelegateOfOngoingAssembly === true"
@@ -54,7 +53,7 @@
 
     <!-- RIGHT SIDE (ONLY PUBLIC STATE ASSEMBLIES):  -->
     <ArtificialModerator
-      v-else-if="oauth.authorized !== undefined && IsThereAnAssemblyInPublicState === true"
+      v-else-if="!oauth.ongoing && IsThereAnAssemblyInPublicState === true"
       alignment="right"
       role="2"
       i18n_path_prefix="index"
@@ -77,7 +76,7 @@
       alignment="right"
       role="2"
       i18n_path_prefix="index"
-      v-else-if="oauth.authorized !== undefined && IsThereNothingGoingOn === true"
+      v-else-if="!oauth.ongoing && IsThereNothingGoingOn === true"
       :ongoing_request="published_assemblies === null"
     >
       {{$t('index.am.factory_holiday')}}
@@ -87,32 +86,40 @@
     <ArtificialModerator
       alignment="right"
       role="2"
-      v-else-if="oauth.authorized !== undefined"
+      v-else-if="!oauth.ongoing"
       i18n_path_prefix="index"
       :ongoing_request="published_assemblies === null"
     >
       {{$t('index.am.authenticated_user_without_permission_for_ongoing_assembly')}}
     </ArtificialModerator>
-
   </div>
 </template>
 
 <script>
 import ArtificialModerator from "./components/ArtificialModerator";
 import Button from "./components/Button";
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   name: "ArtificialModeratorIndexPage",
   components: { ArtificialModerator, Button },
-  inject: [
-    "published_assemblies",
-    "UsersDelegateAssemblies",
-    "IsUserDelegateOfOngoingAssembly",
-    "IsThereAnAssemblyOngoing",
-    "IsThereNothingGoingOn",
-    "IsThereAnAssemblyInPublicState",
-  ],
-
   computed: {
+
+    // ...mapGetters({
+    //   published_assemblies: 'publicindexstore/published_assemblies',
+    //   ongoing_assemblies: 'publicindexstore/ongoing_assemblies',
+    //   // getAssembly: 'publicindexstore/getAssembly',
+    //   // UsersDelegateAssemblies: 'UsersDelegateAssemblies',
+    //   // IsThereAnAssemblyInPublicState: 'publicindexstore/IsThereAnAssemblyInPublicState',
+    //   // IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
+    //   // IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn'
+    // }),
+
+    ...mapGetters(
+     'publicindexstore',
+      ['published_assemblies', 'ongoing_assemblies', 'IsUserDelegateOfOngoingAssembly', 'IsThereAnAssemblyOngoing', 'IsThereNothingGoingOn', 'UsersDelegateAssemblies']
+      ), 
+
     salutation: function () {
       if (this.oauth.authorized) {
         const salutation = this.$i18n.t(

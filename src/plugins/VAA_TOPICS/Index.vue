@@ -16,7 +16,7 @@
 
             <!-- EDIT CONTENT -->
             <ComponentStageEditor 
-                v-if="assembly_acls.includes('manage')"
+                v-if="IsManager"
                 :assembly_id="assembly.id"
                 :model="routed_stage" />
 

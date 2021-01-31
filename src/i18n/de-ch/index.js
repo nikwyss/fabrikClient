@@ -345,6 +345,7 @@ export default {
       2: 'Mittelmässiger Beitrag',
       3: 'Guter Beitrag'
     },
+    rating_response: 'Danke! Ihre Bewertug wurde vermerkt.',
     editor: {
       head_create: 'Neuer Beitrag',
       head_reply: 'Beitrag Beantworten',

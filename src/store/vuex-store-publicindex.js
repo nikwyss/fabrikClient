@@ -6,14 +6,23 @@ import Vue from 'vue'
 import api from 'src/utils/api'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 
-
 var state = {
   publicIndex: null
 }
 
 const getters = {
 
-  published_assemblies: function (state) {
+  ongoing_assemblies: (state) => {
+    const publicIndex = state.publicIndex
+    if (publicIndex === null) {
+      return (null)
+    }
+
+    const filtered_assemblies = Object.filter(state.publicIndex.assemblies, x => x.is_active)
+    return (Object.values(filtered_assemblies))
+  },
+
+  published_assemblies: (state) => {
     if (state.publicIndex === null || state.publicIndex === undefined) {
       return (null)
     }
@@ -22,47 +31,91 @@ const getters = {
     return (Object.values(filtered_assemblies))
   },
 
-  ongoing_assemblies: function (state) {
-    const publicIndex = state.publicIndex
-    if (publicIndex === null) {
+
+  UsersDelegateAssemblies: (state, getters, rootState, rootGetters) => {
+
+    // data not yet loaded
+    if (getters.ongoing_assemblies === null) {
       return (null)
     }
 
-    const filtered_assemblies = Object.filter(publicIndex.assemblies, x => x.is_active)
-    return (Object.values(filtered_assemblies))
+    // Check if there is at least one ongoing assembly.
+    if (getters.ongoing_assemblies.length === 0) {
+      return (false)
+    }
+
+    // Check permissions:
+    const compare_func = rootGetters['publicprofilestore/translateOauthAcls']
+    let accessibleAssemblies = Object.filter(getters.ongoing_assemblies, x => compare_func(x.identifier))
+    return (Object.values(accessibleAssemblies))
   },
 
-
-  getAssembly: (state) => (assemblyIdentifier) => {
-    // return state.things.find(thing => thing.identifier === id)
-    console.assert(assemblyIdentifier)
-    return (state.publicIndex?.assemblies[assemblyIdentifier])
-    // if (state.publicIndex?.assemblies[assemblyIdentifier]) {
-    // }
+  IsUserDelegateOfOngoingAssembly: (state, getters) => {
+    console.log("IsUserDelegateOfOngoingAssembly")
+    const assemblies = getters.UsersDelegateAssemblies
+    return (assemblies && Object.values(assemblies).length > 0)
   },
+
 
   /* SHORTCUTS: mainly for artificial moderators */
-  IsThereAnAssemblyInPublicState: (state) => {
+  IsThereAnAssemblyInPublicState: (state, getters) => {
     if (state.published_assemblies == null) {
       return (null)
     }
     return (state.published_assemblies.length > 0)
   },
 
-  IsThereAnAssemblyOngoing: (state) => {
-    if (getters.ongoing_assemblies(state) === null) {
+  IsThereAnAssemblyOngoing: (state, getters) => {
+    if (getters.ongoing_assemblies === null) {
       return (null)
     }
-    return (getters.ongoing_assemblies(state).length > 0)
+    return (getters.ongoing_assemblies.length > 0)
   },
 
-  IsThereNothingGoingOn: (state) => {
-    if (getters.IsThereAnAssemblyInPublicState(state) === null || getters.IsThereAnAssemblyInPublicState(state) === null) {
+  IsThereNothingGoingOn: (state, getters) => {
+    if (getters.IsThereAnAssemblyInPublicState === null || getters.IsThereAnAssemblyInPublicState === null) {
       return (null)
     }
 
-    return (!getters.IsThereAnAssemblyOngoing(state) && !getters.IsThereAnAssemblyInPublicState(state))
+    return (!getters.IsThereAnAssemblyOngoing && !getters.IsThereAnAssemblyInPublicState)
   }
+
+
+
+  // currentPublicAssembly() {
+
+  //   // const assemblies = this.UsersDelegateAssemblies
+  //   const assemblyIdentifier = this.currentAssemblyIdentifier
+  //   if (assemblyIdentifier) {
+  //     return this.getAssembly(assemblyIdentifier)
+  //   }
+  // },
+
+
+  // assemblyIdentifier() {
+
+  //   const assemblies = this.UsersDelegateAssemblies
+  //   return (this.$route?.params?.assemblyIdentifier)
+  // },
+
+
+  // assemblyName() {
+
+  //   const assembly = this.currentPublicAssembly
+  //   if (assembly) {
+  //     return (assembly.title)
+  //   }
+  // },
+
+
+
+  // getAssembly: (state) => (assemblyIdentifier) => {
+  //   // return state.things.find(thing => thing.identifier === id)
+  //   console.assert(assemblyIdentifier)
+  //   return (state.publicIndex?.assemblies[assemblyIdentifier])
+  //   // if (state.publicIndex?.assemblies[assemblyIdentifier]) {
+  //   // }
+  // },
 }
 
 const actions = {
@@ -86,6 +139,7 @@ const actions = {
 
     return (null)
   },
+
 
   retrievePublicIndex({ commit }) {
     console.log('Retrieve publicIndex from resource server')
@@ -112,6 +166,7 @@ const actions = {
 }
 
 const mutations = {
+
   storePublicIndex(state, publicIndex) {
     // Vue.set  makes the change reactive!!
     Vue.set(state, 'publicIndex', publicIndex)

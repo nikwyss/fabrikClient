@@ -53,16 +53,19 @@ const ApiService = {
    */
   setHeader(token) {
 
-    console.log('Set axios header: ' + token.length > 0)
-    console.log('Set XHR Request header. Including token:' + !!token)
-    if (typeof (token) !== 'string' && token !== null) {
-      return (null)
-    }
+    // console.log('Set axios header: ' + token.length > 0)
+    // console.log('Set XHR Request header. Including token:' + !!token)
+    // if (typeof (token) !== 'string' && token !== null) {
+    //   console.log("AAAAAAAAAAAAAAAAAAAAAA")
+    //   return (null)
+    // }
 
     // console.error(typeof (token))
     if (token) {
+      console.log("............NEW NEW new header jwt set: ", !!token)
       axios.defaults.headers.common[HTTP_HEADER] = 'JWT ' + token
     } else {
+      console.log("............Remove header jwt set: ", !!token)
       delete axios.defaults.headers.common[HTTP_HEADER]
     }
   },
@@ -302,7 +305,7 @@ LayoutEventBus.$on('AfterTokenChanged', jwt => {
   }
 
   // NOTIFY EVERYONE, THAT TOKEN HAS CHANGED NOW!
-  console.log("ApiService Header is updated => emit AfterAuthenticationStatusChanged")
+  console.log("ApiService Header is updated => emit AfterAuthenticationStatusChanged", !!jwt)
   LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
 
 })

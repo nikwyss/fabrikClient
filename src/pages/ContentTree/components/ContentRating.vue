@@ -68,8 +68,8 @@ export default {
   },
   methods: {
     setRating: function (rating) {
+ 
       console.log("set rating...");
-      // Load contenttree from scratch
       console.assert(rating !== null && rating !== undefined);
       console.assert(this.content.content.id);
       var identifier = this.$route.params.assemblyIdentifier;
@@ -79,6 +79,7 @@ export default {
       let url = `${process.env.ENV_APISERVER_URL}/assembly/${identifier}/content/${this.content.content.id}/rating/${rating}`;
       console.log(url);
       console.log("xhr request");
+      const message = this.$i18n.t('contenttree.rating_response')          
       ApiService.get(url).then((response) => {
         // store changed contents to vuex
         if (response.data.OK) {
@@ -91,9 +92,10 @@ export default {
           }
         }
 
+        console.log("rating response? ", response.data.OK)
         this.$q.notify({
           type: response.data.OK ? "nFabrikInfo" : "nFabrikError",
-          message: `${response.data.MESSAGE}`,
+          message: message,
         });
       });
     },

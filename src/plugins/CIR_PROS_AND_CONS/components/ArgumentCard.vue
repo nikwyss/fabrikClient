@@ -31,7 +31,7 @@
 
         <!-- <ContentRating
           name="`elRating${content.content.id}`"
-          v-if="standalone && assembly_acls.includes('contribute')"
+          v-if="standalone && IsContributor"
           :content="content"
         /> -->
 
@@ -56,7 +56,7 @@
         <q-space />
 
         <ContentEditor
-            v-if="assembly_acls.includes('contribute')"
+            v-if="IsContributor"
             :content_type="default_content_type"
             @zoom-to-content="openArgument(content.content)"
             btnlabel="Add Argument"
@@ -78,9 +78,9 @@ import { mapGetters } from "vuex";
 export default {
   name: 'ArgumentCard',
   computed: {
-    assembly_acls: function () {
-      return this.oauth.acls(this.assemblyIdentifier);
-    }
+    // assemblyAcls: function () {
+    //   return this.oauth.acls(this.assemblyIdentifier);
+    // }
   },
   props: ['content', 'standalone', 'default_content_type'],
   components: { ContentRating, ContentEditor, ContentToolbar},

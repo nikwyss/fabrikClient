@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters} from "vuex";
 import { LayoutEventBus } from "src/utils/eventbus";
-import api from "src/utils/api";
+// import api from "src/utils/api";
 
 export default {
   name: "App",
@@ -19,18 +19,40 @@ export default {
       componentKey: 0,
     };
   },
+
+  computed: {
+    ...mapGetters({
+      public_profile: "publicprofilestore/get_public_profile",
+    })
+  },
+
   methods: {
+
     ...mapActions({
       touchRandomSeed: "assemblystore/touchRandomSeed",
+      storeOauthAcls: "publicprofilestore/storeOauthAcls",
     }),
   },
+
   mounted: function () {
     const that = this;
     this.$root.reload = function () {
       console.log("reload initiated...");
       that.componentKey += 1;
       console.log(that.componentKey);
-    };
+    }
+
+    this.$root.public_profile_name_derivation = function () {
+      if (!this.public_profile) {return ""}
+      const altitude = this.public_profile.ALT;
+      const fullname = this.public_profile.FN;
+      const canton = this.public_profile.CA;
+      return this.$i18n.t("auth.name_derivation", {
+        fullname: fullname,
+        canton: canton,
+        altitude: altitude,
+      })
+    }
 
     this.touchRandomSeed();
     // console.log(this.$nLength([1,2]))
@@ -120,8 +142,14 @@ export default {
         msg_title,
         msg_body,
         icon
-      );
-    });
+      )
+    })
+
+    LayoutEventBus.$on('AfterTokenChanged', () => {
+      // NOTIFY EVERYONE, THAT TOKEN HAS CHANGED NOW!
+      console.log("...-- Store oauth.acls in store", this.oauth.payload.roles)
+      this.storeOauthAcls({ oauthAcls: this.oauth.payload.roles })
+    })
 
     LayoutEventBus.$on("AfterProfileUpdate", (data) => {
       const type = "info";
@@ -144,22 +172,24 @@ export default {
       this.$router.push({ name: "logout" });
     });
 
-    LayoutEventBus.$on("AfterLogin", (destination_route) => {
+    LayoutEventBus.$on('AfterLogin', data => {
+      // CHECK FOR REDIRECTION URL in local storage (During Login)
+      const destination_route = JSON.parse(localStorage.getItem('oauth2authcodepkce-destination'));
+      if (destination_route) {
+        localStorage.removeItem('oauth2authcodepkce-destination');
+        this.$router.push(destination_route);
+      }
+    })
+
+    LayoutEventBus.$on("AuthenticationLoaded", () => {
+
+      // SYNC USER PROFILE
       // is email already set: if not => redirect to userprofile...
-      console.log("app.vue: AfterLogin => syncProfile.." + destination_route)
+      console.log("app.vue: AuthenticationLoaded => syncProfile..")
       this.$store.dispatch("publicprofilestore/syncProfile", {
         oauthUserID: this.oauth.userid,
+        oauthUserEmail: this.oauth.payload.userEmail
       });
-
-      if (this.oauth.payload.userEmail) {
-        // ok, already set (not the first login)
-        if (destination_route) {
-          this.$router.push(destination_route);
-        }
-      } else {
-        // console.log(this.oauth.payload)
-        this.$refs?.maincontent?.gotoProfile(destination_route);
-      }
     });
 
     LayoutEventBus.$on("hideNotificationBanners", (data) => {

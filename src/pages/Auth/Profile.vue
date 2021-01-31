@@ -26,7 +26,7 @@
                 <q-icon name="mdi-account" />
               </template>
             </q-input>
-            <small>{{oauth.payload.userExtra}}</small>
+            <small>{{$root.public_profile_name_derivation() }}</small>
           </p>
 
           <p v-if="!loading">
@@ -88,7 +88,8 @@
 <script>
 // import Configuration from 'src/utils/configuration'
 import ApiService from "src/utils/xhr";
-import api from "src/utils/api";
+import api from "src/utils/api"
+import {mapGetters} from "vuex";
 import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer";
 import { LayoutEventBus } from "src/utils/eventbus.js";
 
@@ -118,6 +119,12 @@ export default {
   },
 
   computed: {
+
+    
+    ...mapGetters({
+      public_profile: "publicprofilestore/get_public_profile",
+    }),
+
     isEnabledSubmitButton: function () {
       const changed = this.profile.original_email != this.profile.email;
       return changed && this.isValidContact && !this.loading;
@@ -185,19 +192,16 @@ export default {
       // not logged in
       this.$router.push({ name: "home" });
     }
-
     // Get Username from the JWT token
-    this.profile.pseudonym = this.oauth.payload.userName;
-
+    this.profile.pseudonym = this.public_profile.U;
     // Get Email from oauth server
-    console.log("Initialize popup action ");
     api
       .authProfile({})
       .then((response) => {
-        if (response.data.last_name) {
+        if (response.data) {
           // Okay
           this.profile.email = response.data.email;
-          this.profile.last_name = response.data.last_name;
+          // this.profile.last_name = response.data.last_name;
           this.profile.original_email = response.data.email;
         } else {
           // Error

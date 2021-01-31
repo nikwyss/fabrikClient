@@ -11,7 +11,7 @@
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
         <q-chip
-            v-if="startingContentNode.children.length < 2 && assembly_acls.includes('contribute')"
+            v-if="startingContentNode.children.length < 2 && IsContributor"
             icon="mdi-tooltip-plus-outline" clickable @click="popup_create">
             {{ $t('contenttree.add_comment_or_question') }}
         </q-chip>
@@ -31,9 +31,9 @@ export default{
     props: ['ongoing', 'startingContentNode'],
     inject: ['popup_content_form'],
     computed: {
-        assembly_acls: function () {
-            return this.oauth.acls(assemblyIdentifier);
-        },
+        // assemblyAcls: function () {
+        //     return this.oauth.acls(assemblyIdentifier);
+        // },
         ...mapGetters( 'assemblystore', ['assemblyIdentifier'])
     },
     methods: {

@@ -60,13 +60,13 @@
       <!-- <q-separator vertical inset /> -->
 
       <ContentBackground
-        v-if="assembly_acls.includes('observe')"
+        v-if="IsObserver"
         name="`elBackground${obj.content.id}`"
         :obj="obj"
       />
 
       <!-- <ContentRating
-        v-if="assembly_acls.includes('contribute')"
+        v-if="IsContributor"
         name="`elRating${obj.content.id}`"
         :content="obj"
       /> -->
@@ -102,9 +102,9 @@ export default {
   },
 
   computed: {
-    assembly_acls: function () {
-      return this.oauth.acls(this.assemblyIdentifier);
-    },
+    // assemblyAcls: function () {
+    //   return this.oauth.acls(this.assemblyIdentifier);
+    // },
 
     track_changes_icon: function () {
       return this.track_changes

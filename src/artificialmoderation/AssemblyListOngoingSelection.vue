@@ -10,15 +10,15 @@
       :ongoing="ongoing"
     >
 
-      <template v-if="assembly_acls.includes('delegate') && !oauth.payload.userEmail">
+      <template v-if="IsDelegate && !oauth.payload.userEmail">
         Bevor es los geht, müsssen Sie noch kurz beim Sekretariat vorbei. Dort wird noch eine Kontaktangabe von Ihnen benötigt.
       </template>
 
-      <template v-else-if="assembly_acls.includes('delegate')">
+      <template v-else-if="IsDelegate">
         In dem Sie hier teilnehmen, helfen Sie den BewohnerInnen Ihrer Gemeinde eine gute Wahlentscheidung zu treffen!
       </template>
 
-      <template v-else-if="assembly_acls.includes('expert') || assembly_acls.includes('manage')">
+      <template v-else-if="IsExpert || IsExpert">
         Sie können nun gerne eintreten. Viel Vergnügen!
         <q-btn
           class="q-pa-sm"
@@ -31,7 +31,7 @@
         />
       </template>
 
-      <template v-else-if="assembly_acls.includes('observe')">
+      <template v-else-if="IsObserver">
         Schauen Sie sich an, wie 1000 zufällig ausgewählte und unabhängige BürgerInnen über das Thema denken. Sie werden hier auf jeden Fall etwas lernen können.
         <!-- <q-btn
                 size="6"
@@ -43,20 +43,20 @@
             /> -->
       </template>
 
-      <template v-if="oauth.authorized && !assembly_acls.length">
+      <template v-if="oauth.authorized && !assemblyAcls.length">
         Wir können Sie im Moment nicht zu der Veranstaltung zulassen.
       </template>
 
-      <template v-if="!oauth.authorized && !assembly_acls.length">
+      <template v-if="!oauth.authorized && !assemblyAcls.length">
         {{$t('assemblies.am.invitation_to_authenticate')}}
       </template>
 
       <!-- ACTION CHIPS -->
       <template v-slot:actions>
-        <q-chip
+        <!-- <q-chip
           size="md"
           icon="mdi-forward"
-          v-if="assembly_acls.includes('delegate') && !oauth.payload.userEmail"
+          v-if="IsDelegate && !oauth.payload.userEmail"
           outline
           color="primary"
           text-color="primary"
@@ -65,12 +65,12 @@
           @click="gotoProfile(assembly.identifier)"
         >
           {{ $t('app.btn_goto_profile') }}
-        </q-chip>
+        </q-chip> -->
 
         <q-chip
           size="md"
           icon="mdi-forward"
-          v-else-if="assembly_acls.length > 0"
+          v-if="assemblyAcls.length > 0"
           outline
           color="primary"
           text-color="primary"
@@ -110,11 +110,11 @@ export default {
   components: { ArtificialModerator },
   props: ["assembly", "ongoing"],
   inject: ["clickAssemblyLink"],
-  computed: {
-    assembly_acls: function () {
-      return this.oauth.acls(this.assembly.identifier);
-    },
-  },
+  // computed: {
+  //   assemblyAcls: function () {
+  //     return this.oauth.acls(this.assembly.identifier);
+  //   },
+  // },
 
   methods: {
     clickInitLink() {
@@ -128,18 +128,18 @@ export default {
         params: { assemblyIdentifier },
       };
       this.oauth.login(destination_route);
-    },
+    }
 
-    gotoProfile(assemblyIdentifier) {
-      const destination_route = {
-        name: "assembly_home",
-        params: { assemblyIdentifier },
-      };
-      this.$router.push({
-        name: "profile",
-        params: { destination_route: destination_route },
-      });
-    },
+    // gotoProfile(assemblyIdentifier) {
+    //   const destination_route = {
+    //     name: "assembly_home",
+    //     params: { assemblyIdentifier },
+    //   };
+    //   this.$router.push({
+    //     name: "profile",
+    //     params: { destination_route: destination_route },
+    //   });
+    // },
   },
 };
 </script>

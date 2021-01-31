@@ -5,7 +5,7 @@
 
       <!-- EDIT CONTENT -->
       <!-- <ComponentStageEditor 
-                v-if="assembly_acls.includes('manage')"
+                v-if="IsExpert"
                 :assembly_id="assembly.id"
                 :model="routed_stage" /> -->
 

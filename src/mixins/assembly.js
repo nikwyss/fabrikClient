@@ -9,7 +9,7 @@ const { getScrollTarget, setScrollPosition } = scroll
 /* Make available all the properties and methods in any descendant object.*/
 // const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
 //   name: 'ABLY',
-//   include: ['assembly_acls']
+//   include: ['assemblyAcls']
 // })
 
 export default {
@@ -32,14 +32,14 @@ export default {
 
   computed: {
 
-    // assembly_acls: function () {
+    // assemblyAcls: function () {
     //   console.log("EMPTY identifier in acs?", this.assemblyIdentifier)
     //   console.assert(this.assemblyIdentifier)
     // },
 
-    assembly_acls: function () {
-      return this.oauth.acls(this.assemblyIdentifier);
-    },
+    // assemblyAcls: function () {
+    //   return this.oauth.acls(this.assemblyIdentifier);
+    // },
 
     ...mapGetters(
       'assemblystore',

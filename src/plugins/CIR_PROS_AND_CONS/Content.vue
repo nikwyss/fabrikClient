@@ -17,7 +17,7 @@
                     icon="mdi-arrow-left"
                     @click="clickBackButton"/>
 
-                <ArgumentCard :acl="assembly_acls" 
+                <ArgumentCard :acl="assemblyAcls" 
                     :contenttree="contenttree" 
                     :content="startingContent"
                     :standalone="true" />
@@ -33,7 +33,7 @@
         <br /><br />
         
         <ComponentContentTree
-            :acl="assembly_acls"
+            :acl="assemblyAcls"
             label="Offene Diskussion"
             :contenttree="contenttree" 
             :startingContentID="startingContentID" 

@@ -63,10 +63,12 @@
           v-if="oauth.authorized"
         >
           <template v-slot:label>
+            <!-- <div class="row items-center"> -->
             <UserAvatar
               :profile="public_profile"
               menu="true"
             ></UserAvatar>
+            <!-- </div> -->
           </template>
 
           <q-list>
@@ -75,7 +77,7 @@
                 <q-item-label
                   caption
                   style="max-width:250px"
-                >{{ name_derivation }}</q-item-label>
+                >{{ $root.public_profile_name_derivation() }}</q-item-label>
               </q-item-section>
             </q-item>
 
@@ -123,12 +125,12 @@
 
 <script>
 import UserAvatar from "./UserAvatar"
-import { LayoutEventBus } from "src/utils/eventbus"
-import { mapGetters } from "vuex"
+// import { LayoutEventBus } from "src/utils/eventbus"
+import { mapGetters, mapActions } from "vuex"
 
 export default {
   name: "MainMenu",
-  props: ['assemblyName'],
+  // props: ['assemblyName'],
   components: {
       UserAvatar
   },
@@ -165,35 +167,28 @@ export default {
     },
     ...mapGetters({
       public_profile: "publicprofilestore/get_public_profile",
-    }),
+      assemblyName: "assemblystore/assemblyName",
+    })
 
-    name_derivation: function () {
-      if (!this.public_profile) {return ""}
-      const altitude = this.public_profile.altitude;
-      const fullname = this.public_profile.fullname;
-      const canton = this.public_profile.canton;
-      return this.$i18n.t("auth.name_derivation", {
-        fullname: fullname,
-        canton: canton,
-        altitude: altitude,
-      })
-    }
+    //  ...mapGetters( 'assemblystore', ['assemblyName'])  
+
+    // name_derivation: function (public_profile) {
+    //   if (!this.public_profile) {return ""}
+    //   const altitude = this.public_profile.ALT;
+    //   const fullname = this.public_profile.FN;
+    //   const canton = this.public_profile.CA;
+    //   return this.$i18n.t("auth.name_derivation", {
+    //     fullname: fullname,
+    //     canton: canton,
+    //     altitude: altitude,
+    //   })
+    // }
   },
   methods: {
-    gotoProfile(destination_route) {
-      if (!destination_route) {
-        destination_route = this.$router.currentRouteObject();
-      }
 
-      if (destination_route.name == "profile") {
-        LayoutEventBus.$emit("reload");
-      } else {
-        this.$router.push({
-          name: "profile",
-          params: { destination_route: destination_route },
-        });
-      }
-    }
+    ...mapActions({
+      gotoProfile: "publicprofilestore/gotoProfile",
+    })
   }
 }
 </script>

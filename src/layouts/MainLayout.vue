@@ -186,6 +186,8 @@ import Footer from "./components/Footer"
 // TODO: load it dynamically based on assembly configuration parameter... (allow for mulitple plugins)
 import AssemblyMenu from "../plugins/VAA_TOPICS/components/AssemblyMenu"
 import PublicIndex from "src/mixins/publicIndex"
+import { mapGetters} from 'vuex'
+
 
 export default {
   name: "MainLayout",
@@ -291,7 +293,9 @@ export default {
         this.$route.name === "assemblies" ||
         !!this.$route.params.assemblyIdentifier
       )
-    }
+    },
+
+     ...mapGetters( 'assemblystore', ['assemblyName'])  
   }
 }
 </script>

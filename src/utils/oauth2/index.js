@@ -19,6 +19,7 @@
 
 const { OAuth2AuthCodePKCE } = require('@bity/oauth2-auth-code-pkce')
 import { LayoutEventBus } from 'src/utils/eventbus'
+import { mapActions } from "vuex";
 
 /**
  * OAuth2AuthCodePKCE Configuration
@@ -50,44 +51,6 @@ export default {
 
   install(Vue, options) {
 
-    /**
-     * oAuth Server delivers user roles in the format "<role>@<assemblyIdentifier>".
-     * THis method translates thes roles in a list of acls for the given Assembly.
-     * => such as  ['delegate', 'contribute', 'observe']
-     */
-    const translate_auth_roles_to_acls = function (roles, assemblyIdentifier) {
-
-      var assembly_roles = roles.filter(function (el) {
-        return el.endsWith(`@${assemblyIdentifier}`);
-      });
-      var assembly_roles = assembly_roles.map(function (el) {
-        return el.split('@')[0]
-      });
-
-      const assembly_acls = []
-      if (assembly_roles.includes('administrator')) {
-        assembly_acls.push('administrate', 'manage', 'observe')
-      }
-      if (assembly_roles.includes('manager')) {
-        assembly_acls.push('manage', 'observe')
-      }
-      if (assembly_roles.includes('delegate')) {
-        assembly_acls.push('delegate', 'contribute', 'observe')
-      }
-      if (assembly_roles.includes('contributor')) {
-        assembly_acls.push('contribute', 'observe')
-      }
-      if (assembly_roles.includes('expert')) {
-        assembly_acls.push('expert', 'observe')
-      }
-
-      // TODO: Are visitors welcome within this assembly???
-      if (Vue.prototype.pkce.isAuthorized()) {
-        assembly_acls.push('observe')
-      }
-      return (assembly_acls)
-    }
-
     Vue.prototype.pkce = new OAuth2AuthCodePKCE(pkce_config)
     // Vue.prototype.enforce_reactivity = 1
 
@@ -96,7 +59,6 @@ export default {
     Vue.prototype.login = function (destination_route = null) {
       // save destiantion route to localstorage
       localStorage.setItem('oauth2authcodepkce-destination', JSON.stringify(destination_route));
-      // redirect to login
       Vue.prototype.pkce.fetchAuthorizationCode()
     }
 
@@ -105,7 +67,7 @@ export default {
       Vue.prototype.pkce.reset();
 
       // 1. technical level notification: e.g. replace token in axios / delete user cache
-      console.log("oAUTH: token received => emit AfterTokenChanged")
+      console.log("oAUTH: token reset => emit AfterTokenChanged")
       LayoutEventBus.$emit('AfterTokenChanged', null)
 
       // 2: user level notification  
@@ -132,6 +94,11 @@ export default {
           return (authorized)
         },
 
+        ongoing: function () {
+          // Its not yet clear, if user is logged in (i.e. login process is ongoing)
+          return (this.authorized === null || this.authorized === undefined)
+        },
+
         payload: function () {
           console.log('...OAUTH: loaeding payload..')
           if (!this.authorized || !('accessToken' in Vue.prototype.pkce.state)) {
@@ -142,11 +109,6 @@ export default {
 
           // add xhr decorator
           const jwt = Vue.prototype.pkce?.state?.accessToken?.value
-
-          // console.log('...OAUTH: emit AfterTokenChanged')
-          // LayoutEventBus.$emit('AfterTokenChanged', jwt)
-          // this.authorized = true
-          // console.log("OAUTH: return payload..")
           const payload = JSON.parse(window.atob(jwt.split('.')[1]))
           // console.log(payload)
           return (payload);
@@ -175,12 +137,17 @@ export default {
          * Returns a list of all roles obtained by the authenticated user for the given assembly
          * @param {*} assemblyIdentifier 
          */
-        acls: function (assemblyIdentifier) {
-          if (!this.payload || !this.payload.roles) {
-            return ([])
-          }
-          return (translate_auth_roles_to_acls(this.payload.roles, assemblyIdentifier))
-        },
+        // acls: function (assemblyIdentifier) {
+        //   if (!this.payload || !this.payload.roles) {
+        //     return ([])
+        //   }
+        //   return (translate_auth_roles_to_acls(this.payload.roles, assemblyIdentifier))
+        // },
+
+        ...mapActions({
+          touchRandomSeed: "assemblystore/touchRandomSeed",
+          storeOauthAcls: "publicprofilestore/storeOauthAcls"
+        }),
 
 
         /* Refresh token already before a invalid request has been issued */
@@ -189,8 +156,6 @@ export default {
           if (Vue.prototype.pkce.isAuthorized()) {
 
             const expired = Vue.prototype.pkce.isAccessTokenExpired()
-            // const tokendate = date.extractDate(`${this.payload.exp}`, 'X')
-            // const expired = date.getDateDiff(new Date(), tokendate, 'seconds') > 0
             if (expired) {
               await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
               LayoutEventBus.$emit('ReloadPayload')
@@ -200,6 +165,9 @@ export default {
       },
 
       created: function () {
+
+        // temp
+        console.log("oAuth2 Plugin created")
 
         LayoutEventBus.$on('AfterLogout', data => {
           this.enforce_reactivity += 1
@@ -213,20 +181,24 @@ export default {
         // INITIAL Data Loading
         Vue.prototype.pkce.isReturningFromAuthServer().then(hasAuthCode => {
           if (hasAuthCode) {
-            console.log("no auth codeè!!!!!!!!!!!!!!!")
             // A valid Redirect by the auth server
             Vue.prototype.pkce.getAccessToken().then(({ token, scopes }) => {
               this.enforce_reactivity += 1
-              console.log("K")
-              // 1. One: technical stuff: replace token in axios
-              console.log("oAUTH: token received => emit AfterTokenChanged")
-              LayoutEventBus.$emit('AfterTokenChanged', token)
 
-              // 2. notify everybody about new user loging.
-              const destination_route = JSON.parse(localStorage.getItem('oauth2authcodepkce-destination'));
-              localStorage.removeItem('oauth2authcodepkce-destination');
-              console.log('...OAUTH: after Login... => emit AfterLogin, destination_route: ', destination_route)
-              LayoutEventBus.$emit('AfterLogin', destination_route)
+              // 1. One: technical stuff: replace token in axios
+              // note: alteady authorized: but vue has not yet been notified. (no reactivity in properties of pkce module)
+              // console.log("oAUTH: token received => emit AfterTokenChanged", token.value)
+              LayoutEventBus.$emit('AfterTokenChanged', token.value)
+
+              // Authentication process is finished: it is clarified, if a user is logged in or not
+              // you may start the user-specific api calls..
+              console.log("AFTER LOGIN")
+              LayoutEventBus.$emit('AfterLogin')
+
+              // Authentication process is finished: it is clarified, if a user is logged in or not
+              // you may start the user-specific api calls..
+              console.log("AUTHENTICATION LOADED")
+              LayoutEventBus.$emit('AuthenticationLoaded')
 
             })
               .catch(error => {
@@ -235,30 +207,49 @@ export default {
                 console.error(error)
                 LayoutEventBus.$emit('LoginError', error)
                 Vue.prototype.logout()
+
+                // Authentication process is finished: it is clarified, if a user is logged in or not
+                // you may start the user-specific api calls..
+                console.log("emit AuthenticationLoaded")
+                LayoutEventBus.$emit('AuthenticationLoaded')
+
               })
           } else {
-            // ongoing session?
-            // console.log("KKK error in oauth??")
-            // console.log(Vue.prototype.pkce)
-            // this.enforce_reactivity += 1
-            // // console.log(Vue.prototype.oauth)
-            // LayoutEventBus.$emit('AfterTokenChanged', token)
 
+            // DEFAULT Browser Reload
+            console.log("Relaunch App: Read Authorization Token from Localstorage")
             const jwt = Vue.prototype.pkce?.state?.accessToken?.value
             if (jwt) {
-              console.log("Oauth plugin initialize exiting session ...")
+              console.log("emit AfterTokenChanged")
               LayoutEventBus.$emit('AfterTokenChanged', jwt)
             }
+
+            // Authentication process is finished: it is clarified, if a user is logged in or not
+            // you may start the user-specific api calls..
+            console.log("emit AuthenticationLoaded")
+            LayoutEventBus.$emit('AuthenticationLoaded')
+
           }
         })
           .catch((error) => {
-            LayoutEventBus.$emit('AfterTokenChanged', token)
+            LayoutEventBus.$emit('AfterTokenChanged', null)
             // if (error) {
             //   LayoutEventBus.$emit('LoginError', error)
             //   console.error(error)
             //   Vue.prototype.logout()
             // }
+            // Authentication process is finished: it is clarified, if a user is logged in or not
+            // you may start the user-specific api calls..
+            console.log("AUTHENTICATION LOADED")
+            LayoutEventBus.$emit('AuthenticationLoaded')
           })
+
+        if (!this.ongoing) {
+          // Authentication process is finished: it is clarified, if a user is logged in or not
+          // you may start the user-specific api calls..
+          console.log("AUTHENTICATION LOADED")
+          LayoutEventBus.$emit('AuthenticationLoaded')
+        }
       }
     })
   }

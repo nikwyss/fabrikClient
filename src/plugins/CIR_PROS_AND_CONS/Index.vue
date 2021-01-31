@@ -18,7 +18,7 @@
             <StagePeerReview />
 
             <!-- EDIT CONTENT -->
-            <ComponentStageEditor v-if="assembly_acls.includes('manage')" />
+            <ComponentStageEditor v-if="IsExpert" />
 
             <div class="text-h4">{{routed_stage.stage.title}}</div>
 

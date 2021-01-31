@@ -43,9 +43,9 @@ export default {
     inject: ['CTREE'],
     computed: {
 
-        assembly_acls: function () {
-            return this.oauth.acls(this.assemblyIdentifier);
-        },
+        // assemblyAcls: function () {
+        //     return this.oauth.acls(this.assemblyIdentifier);
+        // },
 
         startingContentID: function () {
 

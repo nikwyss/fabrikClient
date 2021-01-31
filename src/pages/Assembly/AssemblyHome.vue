@@ -56,7 +56,7 @@
         <!-- MANAGERS: STAGE EDITOR -->
         <ComponentStageEditor
           :key=" `AE${localStageNr}` "
-          v-if="assembly_acls.includes('manage') && stage_nr_last_visited==localStageNr"
+          v-if="IsManager && stage_nr_last_visited==localStageNr"
           :model="localStage"
         />
 
@@ -112,10 +112,7 @@
     </div>
 
     <!-- MANAGER: NEW STAGE -->
-    <ComponentStageEditor
-      v-if="assembly && assembly_acls.includes('manage')"
-      :assembly="assembly"
-    />
+    <ComponentStageEditor v-if="assembly && IsManager" />
   </q-page>
 </template>
 
@@ -125,6 +122,7 @@ import AssemblyMixin from "src/mixins/assembly";
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import ArtificialModeratorAssemblyHome from "src/artificialmoderation/AssemblyHome";
 import ArtificialModeratorAssemblyStage from "src/artificialmoderation/AssemblyStage";
+import { mapGetters} from "vuex";
 
 export default {
   name: "PageAssemblyHome",
@@ -215,6 +213,12 @@ export default {
 
       return color;
     }
+  },
+
+  computed: {
+    ...mapGetters(
+      'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+    )
   },
 
   mounted: function () {

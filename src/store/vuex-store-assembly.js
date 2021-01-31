@@ -43,6 +43,48 @@ const getters = {
     return (state.assemblydata[getters.assemblyIdentifier]?.assembly)
   },
 
+  assemblyName: (state, getters) => {
+
+    if (getters.assembly) {
+      return (getters.assembly.title)
+    }
+  },
+
+  /**
+   * oAuth Server delivers user roles in the format "<role>@<assemblyIdentifier>".
+   * THis method translates thes roles in a list of acls for the given Assembly.
+   * => such as  ['delegate', 'contribute', 'observe']
+   */
+  assemblyAcls: (state, getters, rootState, rootGetters) => {
+
+    if (!getters.assemblyIdentifier) {
+      return null
+    }
+    const translateAclMethod = rootGetters["publicprofilestore/translateOauthAcls"]
+    return translateAclMethod(getters.assemblyIdentifier)
+  },
+
+  IsManager: (state, getters) => {
+    if (!getters.assemblyAcls) { return null }
+    return getters.assemblyAcls.includes('manage')
+  },
+  IsObserver: (state, getters) => {
+    if (!getters.assemblyAcls) { return null }
+    return getters.assemblyAcls.includes('observe')
+  },
+  IsContributor: (state, getters) => {
+    if (!getters.assemblyAcls) { return null }
+    return getters.assemblyAcls.includes('contribute')
+  },
+  IsExpert: (state, getters) => {
+    if (!getters.assemblyAcls) { return null }
+    return getters.assemblyAcls.includes('expert')
+  },
+  IsDelegate: (state, getters) => {
+    if (!getters.assemblyAcls) { return null }
+    return getters.assemblyAcls.includes('delegate')
+  },
+
   randomLocalStorageSeed: (state) => {
     return (state.randomSeed)
   },
@@ -192,7 +234,6 @@ const getters = {
   is_stage_first: (state, getters) => (stage) => {
     console.assert(stage)
     const sorted_stages = getters.assembly_sorted_stages
-    console.log(sorted_stages[0])
     return (sorted_stages[0] == stage)
   },
 
@@ -293,8 +334,9 @@ const actions = {
     // wrong user? and renew cache all x- minutes!
     const wrongUser = oauthUserID != state.assemblydata[assemblyIdentifier].access_sub
     const expired = !(state.assemblydata[assemblyIdentifier]) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
+    // console.log()
     if (expired || wrongUser) {
-      console.log(' not in sync  or wrong user...')
+      console.log(' Assembly not in sync  or wrong user...', wrongUser, expired, state.assemblydata[assemblyIdentifier].access_date)
       dispatch('retrieveAssembly', { assemblyIdentifier: assemblyIdentifier })
     }
 

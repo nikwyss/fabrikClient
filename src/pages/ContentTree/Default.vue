@@ -9,7 +9,7 @@
 
             <!-- EDIT CONTENT -->
             <ComponentStageEditor 
-                v-if="assembly_acls.includes('manage')" 
+                v-if="IsExpert" 
                 @syncstorestage="syncstorestage"
                 :model="routed_stage" />
 

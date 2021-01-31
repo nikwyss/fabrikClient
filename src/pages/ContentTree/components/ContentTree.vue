@@ -93,11 +93,16 @@
                     <ContentToolbar :obj="cachedNode(prop.node.id)" />
                     </span>
 
-                    <span @click="toggle_node(prop.node.id)" :class="[prop.node.nof_descendants ? 'cursor-pointer' : '']">
-                        <q-icon name="mdi-comment-outline" size="xs" />
-                        <span class="text-date"> {{cachedNode(prop.node.id).content.date_created | formatDate}}</span>
-                        <span v-if="cachedNode(prop.node.id).creator" class="text-user"> {{ $t('contenttree.created_by', {username: cachedNode(prop.node.id).creator}) }} </span><br>
-                    </span>
+                    <div @click="toggle_node(prop.node.id)" :class="[prop.node.nof_descendants ? 'cursor-pointer' : '']">
+                        <!-- <q-icon name="mdi-comment-outline" size="xs" /> -->
+                        <UserAvatar v-if="cachedNode(prop.node.id).creator" :profile="cachedNode(prop.node.id).creator">
+                            <template v-slot:extrainfos >
+                                {{cachedNode(prop.node.id).content.date_created | formatDate}}
+                            </template>
+                        </UserAvatar>
+                        <!-- <span class="text-date"> {{cachedNode(prop.node.id).content.date_created | formatDate}}</span> -->
+                        <!-- <span v-if="cachedNode(prop.node.id).creator" class="text-user"> {{ $t('contenttree.created_by', {username: cachedNode(prop.node.id).creator}) }} </span><br> -->
+                    </div>
                     <q-badge color="blue" v-if="!real_expanded" align="top">click to see {{prop.node.nof_descendants}} more</q-badge>
                 </div>
             </template>
@@ -109,7 +114,7 @@
                     :style="!prop.node.nof_descendants && rootNodeIDs.includes(prop.node.id) ? 'margin-left:1.5em' : ''">
                       <div class="float-right q-pa-null">
                     <ContentRating
-                        v-if="assembly_acls.includes('contribute')"
+                        v-if="IsContributor"
                         name="`elRating${obj.content.id}`"
                         :content="cachedNode(prop.node.id)"
                     />
@@ -127,7 +132,7 @@
         <!-- EDIT/CREATE FORM -->
         <ContentEditor
             ref="content_editor"
-            v-if="assembly_acls.includes('contribute')"
+            v-if="IsContributor"
             :parent_id="startingContentID" />
 
         <q-separator inset />
@@ -135,7 +140,7 @@
         <div class="full-width" align="right">
                 <!-- class="bg-accent" -->
             <q-chip
-                v-if="assembly_acls.includes('contribute')"
+                v-if="IsContributor"
                 icon="mdi-tooltip-plus-outline" clickable @click="popup_create">
                 {{ $t('contenttree.add_comment_or_question') }}
             </q-chip>
@@ -165,12 +170,13 @@ import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 import ContentEditor from "./ContentEditor"
 import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer"
 import ContentRating from "./ContentRating";
+import UserAvatar from "src/layouts/components/UserAvatar"
 
 export default {
     name: "ContentTree",
     props: ["artificialmoderationComponents", 'hideNoEntryText', 'hideNofEntriesText'],
     mixins: [QTreeMixin],
-    components: {AlgorithmDisclaimer, ContentEditor, ContentToolbar, ContentRating},
+    components: {AlgorithmDisclaimer, ContentEditor, ContentToolbar, ContentRating, UserAvatar},
     provide() {
         return {
             popup_content_form: this.popup_content_form

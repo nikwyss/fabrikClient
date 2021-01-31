@@ -68,7 +68,7 @@ Notify.registerType('nFabrikInfo', {
   classes: 'glossy'
 })
 
-Notify.registerType('nFabrikInfo', {
+Notify.registerType('nFabrikError', {
   icon: 'mdi-error',
   color: 'red',
   textColor: 'white',

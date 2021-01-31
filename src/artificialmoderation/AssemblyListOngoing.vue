@@ -40,10 +40,9 @@ export default{
 
     computed: {
 
-        ...mapGetters({
-            IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
-            IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn'
-        })
+     ...mapGetters( 
+         'publicindexstore', 
+        ['IsUserDelegateOfOngoingAssembly', 'IsThereAnAssemblyOngoing', 'IsThereNothingGoingOn'])  
     }
 }
 </script>
