@@ -1,9 +1,6 @@
 // import UserContentDefault from 'src/pages/ContentTree/Default'
 import plugin_routes from './plugin_routes.js'
-
-// Application Routes
 const meta4AssemblyPages = { topmenu: 'assemblies_ongoing_list' }
-// , acls: ['observe']  // NOT IMPLEMENTED/ NOT NECESSARY=> VUEX 
 
 const routes = [
   {
@@ -20,10 +17,6 @@ const routes = [
       { path: '/news', name: 'news', component: () => import(/* webpackPrefetch: true */ 'pages/News.vue') },
       // { path: '/showcase', name: 'showcase', component: () => import(/* webpackPrefetch: true */ 'pages/Assembly/AssemblyListShowcase.vue') },
       { path: '/ongoing', name: 'assemblies_ongoing_list', component: () => import('pages/Assembly/AssemblyListOngoing.vue') },
-
-      // ASSEMBLY Pages
-      // acls = a list of minimum roles required to visit this route...
-      // (Note that all delegates have also contribution rights, etc..)
       {
         path: '/:assemblyIdentifier/home', name: 'assembly_home',
         component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages

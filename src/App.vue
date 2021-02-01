@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters} from "vuex";
-import { LayoutEventBus } from "src/utils/eventbus";
+import { mapActions, mapGetters} from "vuex"
+import { LayoutEventBus } from "src/utils/eventbus"
 // import api from "src/utils/api";
 
 export default {
@@ -29,21 +29,10 @@ export default {
     }),
   },
 
-  mounted: function () {
-    const that = this;
-    this.$root.reload = function () {
-      console.log("reload initiated...");
-      that.componentKey += 1;
-      console.log(that.componentKey);
-    }
 
-
-    this.touchRandomSeed()
-    // console.log(this.$nLength([1,2]))
-    console.log("APP mounted...");
-  },
 
   created() {
+
     // Catch globally all show and hide TextLoading events
     LayoutEventBus.$on("reload", () => {
       this.$root.reload();
@@ -162,6 +151,8 @@ export default {
       if (destination_route) {
         localStorage.removeItem('oauth2authcodepkce-destination');
         this.$router.push(destination_route);
+      }else{
+        this.$router.push({name: 'home'});
       }
     })
 
@@ -174,7 +165,9 @@ export default {
         oauthUserID: this.oauth.userid,
         oauthUserEmail: this.oauth.payload.userEmail
       });
-    });
+
+      this.$emit('AppLoaded')
+    })
 
 
     LayoutEventBus.$on("PublicProfileLoaded", () => {
@@ -188,7 +181,20 @@ export default {
 
     LayoutEventBus.$on("hideNotificationBanners", (data) => {
       this.$refs?.maincontent?.hideNotificationBanner();
-    });
+    })
   },
-};
+  
+  
+  mounted: function () {
+    const that = this;
+    this.$root.reload = function () {
+      console.log("reload initiated...");
+      that.componentKey += 1;
+      console.log(that.componentKey);
+    }
+
+    this.touchRandomSeed()
+    // console.log("APP MOUNTED...");
+  },
+}
 </script>

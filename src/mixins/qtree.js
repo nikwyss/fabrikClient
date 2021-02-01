@@ -36,11 +36,11 @@ export default {
     provide() {
         return {
             // popup_content_form: this.popup_content_form,
-            contenttreeID: this.CTREE.contenttreeID,
+            contenttreeID: this.CONTENTTREE.contenttreeID,
             limitNodeTypes: this.limitNodeTypes
         }
     },
-    inject: ['CTREE'],
+    inject: ['CONTENTTREE'],
     computed: {
 
         // assemblyAcls: function () {
@@ -63,7 +63,7 @@ export default {
                 return (this.customStartingContentNode)
             } else {
                 // console.assert(this.startingContentID)
-                return (this.CTREE.contenttree.structure)
+                return (this.CONTENTTREE.contenttree.structure)
                 // return(this.get_node_by_id(this.startingContentID))
             }
         },
@@ -100,7 +100,7 @@ export default {
         /* Which node types are allowed within this contenttree/branch? */
         limitNodeTypes: function () {
             // get customLimitNodeTypes
-            var allowed_node_types = this.get_allowed_node_types({ contenttreeID: this.CTREE.contenttreeID })
+            var allowed_node_types = this.get_allowed_node_types({ contenttreeID: this.CONTENTTREE.contenttreeID })
             console.log(allowed_node_types)
             if (this.customLimitNodeTypes) {
                 allowed_node_types = allowed_node_types.filter(v => this.customLimitNodeTypes.includes(v))
@@ -247,8 +247,8 @@ export default {
         /* Method store list of expanded array in localstorage */
         updateExpanded: function () {
             this.update_expanded_branches({
-                contenttreeID: this.CTREE.contenttreeID,
-                startingContentID: this.CTREE.startingContentID,
+                contenttreeID: this.CONTENTTREE.contenttreeID,
+                startingContentID: this.CONTENTTREE.startingContentID,
                 expanded: this.expanded
             })
         },
@@ -257,7 +257,7 @@ export default {
         treeFilterMethod(node, filter) {
             const filt = filter.toLowerCase()
             // return node.label && node.label.toLowerCase().indexOf(filt) > -1 && node.label.toLowerCase().indexOf('(*)') > -1
-            let obj = this.CTREE.contenttree.entries[node.id]
+            let obj = this.CONTENTTREE.contenttree.entries[node.id]
             let searchable = `${obj.content.title} ${obj.content.text}`
             return searchable.toLowerCase().indexOf(filt) > -1
         },
@@ -296,7 +296,7 @@ export default {
             // With this getter the content data has to be loaded only once; 
             // and can be used in the tree.header as well as the tree.body templates. 
             if (this.$options.temp_content_object === null || this.$options.temp_content_object.content.id != contentID) {
-                this.$options.temp_content_object = this.CTREE.contenttree.entries[contentID]
+                this.$options.temp_content_object = this.CONTENTTREE.contenttree.entries[contentID]
             }
             return (this.$options.temp_content_object)
         },
@@ -306,7 +306,7 @@ export default {
 
             var parent_node = null
             let path = branch.split(':')
-            var children = this.CTREE.contenttree.structure.children
+            var children = this.CONTENTTREE.contenttree.structure.children
             for (let key in path) {
                 let junction = Number(path[key])
                 if (!junction) {
@@ -329,14 +329,14 @@ export default {
             if (node_id === null) {
                 return (null)
             }
-            var obj = this.CTREE.contenttree.entries[node_id]
+            var obj = this.CONTENTTREE.contenttree.entries[node_id]
             console.assert(obj)
             var parent_id = obj.content.parent_id
             var branch = `:${node_id}`
             console.assert(obj)
             while (parent_id !== null) {
                 branch = `:${parent_id}${branch}`
-                obj = this.CTREE.contenttree.entries[parent_id]
+                obj = this.CONTENTTREE.contenttree.entries[parent_id]
                 parent_id = obj.content.parent_id
             }
             console.assert(branch)
@@ -350,7 +350,7 @@ export default {
             // return(node)
 
             if (node_id === null) {
-                return (this.CTREE.contenttree.structure)
+                return (this.CONTENTTREE.contenttree.structure)
             }
 
             let branch = this.get_branch_by_id(node_id)
@@ -378,12 +378,12 @@ export default {
 
         // set expanded branches
         if (this.expanded === null) {
-            console.assert(this.CTREE.contenttree)
+            console.assert(this.CONTENTTREE.contenttree)
 
             // first: check in 
             this.expanded = this.get_default_expanded_branches_from_store({
-                contenttreeID: this.CTREE.contenttreeID,
-                startingContentID: this.CTREE.startingContentID
+                contenttreeID: this.CONTENTTREE.contenttreeID,
+                startingContentID: this.CONTENTTREE.startingContentID
             })
         }
 
@@ -391,8 +391,8 @@ export default {
             this.expanded = this.calculate_default_expanded_branches()
             // console.log(this.expanded)
             this.update_expanded_branches({
-                contenttreeID: this.CTREE.contenttreeID,
-                startingContentID: this.CTREE.startingContentID,
+                contenttreeID: this.CONTENTTREE.contenttreeID,
+                startingContentID: this.CONTENTTREE.startingContentID,
                 expanded: this.expanded
             })
         }

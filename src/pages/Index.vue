@@ -25,10 +25,12 @@
 <script>
 import Vue from 'vue'
 import ArtificialModeratorIndexPage from "src/artificialmoderation/IndexPage"
+import PublicMixin from "src/mixins/publicIndex"
 // import {mapGetters} from 'vuex'
 
 export default Vue.extend({
   name: 'PageIndex',
+  mixins: [PublicMixin],
   components: { ArtificialModeratorIndexPage }
 })
 </script>

@@ -30,10 +30,7 @@ export default{
     components: {ArtificialModerator},
     props: ['ongoing', 'startingContentNode'],
     inject: ['popup_content_form'],
-    computed: {
-        // assemblyAcls: function () {
-        //     return this.oauth.acls(assemblyIdentifier);
-        // },
+    computed: { 
       ...mapGetters(
         'assemblystore', ['assemblyIdentifier', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
       )

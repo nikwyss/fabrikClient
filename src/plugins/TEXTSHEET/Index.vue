@@ -5,21 +5,11 @@
     <div align="center">
 
 
-        <!-- <div v-if="routed_stage"> -->
-            <!-- EDIT CONTENT -->
-            <!-- <ComponentStageEditor 
-                v-if="IsExpert"
-                :assembly_id="assembly.id"
-                :model="routed_stage.stage" /> -->
-            <!-- <div class="text-h4">{{routed_stage.stage.title}}</div> -->
-        <!-- </div> -->
-
         <!-- AM-OVERVIEW -->
         <div class="q-mb-xl">
             <ArtificialModeratorTEXTSHEETIndexTop 
             :ongoing="!routed_stage || oauth.authorized === null" align="left" />
         </div>
-
         <div v-if="routed_stage && contenttree" class="text-vessel">
 
             <h2>{{routed_stage.stage.title}}</h2>

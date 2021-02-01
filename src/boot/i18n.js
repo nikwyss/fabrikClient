@@ -13,9 +13,7 @@ const { getDateDiff, formatDate } = date
 
 // Format Date
 Vue.filter('formatDate', function (value) {
-  console.log("FILTER")
   if (value) {
-    console.log(process.env.ENV_I18N_DATEFORMAT)
     return formatDate(value, process.env.ENV_I18N_DATEFORMAT)
   }
 })

@@ -166,7 +166,6 @@ const actions = {
   },
 
   storeOauthAcls: ({ commit }, { oauthAcls }) => {
-    console.log("STORE III", oauthAcls)
     commit('storeOauthAcls', oauthAcls)
   },
 
@@ -180,7 +179,6 @@ const mutations = {
   },
 
   storeOauthAcls(state, oauthAcls) {
-    console.log(oauthAcls)
     Vue.set(state, 'oauthAcls', oauthAcls)
   },
 

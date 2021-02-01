@@ -1,16 +1,19 @@
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import StageMixin from 'src/mixins/stage'
-import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
+import { ReactiveProvideMixin } from 'vue-reactive-provide'
 
-/* Make available all the properties and methods in any descendant object.*/
-const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
-  name: 'CTREE',
-  include: ['contenttreeID', 'contenttree', 'isRead'],
-})
 
 export default {
-  mixins: [StageMixin, ReactiveProvidePropertiesMixin],
+  // mixins: [StageMixin],
+
+  mixins: [
+    StageMixin,
+    ReactiveProvideMixin({
+      name: 'CONTENTTREE',
+      include: ['contenttreeID', 'contenttree', 'isRead'],
+    })
+  ],
 
   provide() {
     return {
@@ -29,25 +32,30 @@ export default {
   computed: {
 
     contenttreeID: function () {
-      // contenttreeID is defined in the URL
       // Mixin is only usable for pages with assemblyIdentifier in the URL
-      // console.log(this.stage)
+
+      console.log("RETRIEVE contenttreeID..", this.routed_stage)
       if (!this.routed_stage) {
+        console.log(" routed_stage not loaded")
         return (null)
       }
+
       return (this.routed_stage?.stage?.contenttree_id)
     },
 
     contenttree: function () {
+      if (!this.contenttreeID) {
+        return null
+      }
 
-      console.log('start fetching the contenttree')
-      console.assert(this.contenttreeID)
+      console.log('start fetching the contenttree', this.contenttreeID)
       console.assert(this.assemblyIdentifier)
 
       // retrieve from localStorage
       const contenttree = this.get_contenttree({
         contenttreeID: this.contenttreeID
       })
+
       return (contenttree)
     },
 
@@ -108,15 +116,17 @@ export default {
 
   created() {
 
-    // Catch all authentication status changes
-    LayoutEventBus.$on('AuthenticationLoaded', data => {
-      console.assert(this.contenttreeID)
-      // TODO: remove any personal data when loggin out
-      this.$store.dispatch('contentstore/syncContenttree', {
-        assemblyIdentifier: this.assemblyIdentifier,
-        contenttreeID: this.contenttreeID,
-        oauthUserID: this.oauth.userid
-      })
+    LayoutEventBus.$on(['AssemblyLoaded', 'AfterLogout'], data => {
+      // TOKEN Changed: reload/reset of contenttree data needed?
+      if (this.contenttreeID) {
+        console.log("SYNC contentTree (contenttree mixin) --------------------")
+        // TODO: remove any personal data when loggin out
+        this.$store.dispatch('contentstore/syncContenttree', {
+          assemblyIdentifier: this.assemblyIdentifier,
+          contenttreeID: this.contenttreeID,
+          oauthUserID: this.oauth.userid
+        })
+      }
     })
   }
 }

@@ -221,7 +221,7 @@ export default {
             console.log("Relaunch App: Read Authorization Token from Localstorage")
             const jwt = Vue.prototype.pkce?.state?.accessToken?.value
             if (jwt) {
-              console.log("emit AfterTokenChanged")
+              console.log("...emit AfterTokenChanged")
               LayoutEventBus.$emit('AfterTokenChanged', jwt)
             }
 
@@ -241,8 +241,8 @@ export default {
             // }
             // Authentication process is finished: it is clarified, if a user is logged in or not
             // you may start the user-specific api calls..
-            console.log("AUTHENTICATION LOADED")
-            LayoutEventBus.$emit('AuthenticationLoaded')
+            console.log("AUTHENTICATION LOADED", error)
+            // LayoutEventBus.$emit('AuthenticationLoaded')
           })
 
         if (!this.ongoing) {

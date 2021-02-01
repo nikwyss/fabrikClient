@@ -1,7 +1,6 @@
 <template>
   <div class="justify-center center">
     <!-- style="max-width:350px" -->
-
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator
       alignment="left"
@@ -110,11 +109,14 @@ export default {
   components: { ArtificialModerator },
   props: ["assembly", "ongoing"],
   inject: ["clickAssemblyLink"],
-  // computed: {
+  computed: {
+      ...mapGetters(
+        'assemblystore', ['assemblyAcls', 'assemblyIdentifier', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+      )
   //   assemblyAcls: function () {
   //     return this.oauth.acls(this.assembly.identifier);
   //   },
-  // },
+  },
 
   methods: {
     clickInitLink() {
@@ -129,17 +131,6 @@ export default {
       };
       this.oauth.login(destination_route);
     }
-
-    // gotoProfile(assemblyIdentifier) {
-    //   const destination_route = {
-    //     name: "assembly_home",
-    //     params: { assemblyIdentifier },
-    //   };
-    //   this.$router.push({
-    //     name: "profile",
-    //     params: { destination_route: destination_route },
-    //   });
-    // },
-  },
+  }
 };
 </script>

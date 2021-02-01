@@ -1,11 +1,11 @@
 <template>
-<div class="justify-center center">
+<div class="justify-center center" v-if="STAGE.routed_stage">
 
     <!-- RIGHT SIDE:  -->
     <!-- <div align="right"> -->
-    <ArtificialModerator alignment="right" role="1" amGroup='textsheetPage' :ongoing="!routed_stage">
+    <ArtificialModerator alignment="right" role="1" amGroup='textsheetPage' :ongoing="!STAGE.routed_stage">
 
-        <template v-if="is_stage_last(routed_stage)">
+        <template v-if="is_stage_last(STAGE.routed_stage)">
             {{$t('index.am.button_end_of_page_on_last_stage') }}
         </template>
         <template v-else>
@@ -14,7 +14,7 @@
 
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip v-if="is_stage_last(routed_stage)" icon="mdi-arrow-left" clickable 
+        <q-chip v-if="is_stage_last(STAGE.routed_stage)" icon="mdi-arrow-left" clickable 
                 @click="gotoIndexAndMoveOn">
             {{ $t('index.button_end_of_page_on_last_stage') }}
         </q-chip>
@@ -37,10 +37,10 @@ export default{
     computed: {
         ...mapGetters(
         'assemblystore',
-        ['routed_stage', 'is_stage_last']
+        ['is_stage_last']
         )
     },
-    inject: ['gotoIndexAndMoveOn'], // see provide attribute in the antecedents
+    inject: ['gotoIndexAndMoveOn', 'STAGE'], // see provide attribute in the antecedents
     components: {ArtificialModerator},
 }
 </script>

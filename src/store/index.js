@@ -1,13 +1,14 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
-import createPersistedState from 'vuex-persistedstate';
+import createPersistedState from 'vuex-persistedstate'
 import { date } from 'quasar'
-import api from 'src/utils/api';
+import api from 'src/utils/api'
 import { contentstore } from './vuex-store-contenttree'
 import { assemblystore } from './vuex-store-assembly'
 import { publicprofilestore } from './vuex-store-profile'
 import { publicindexstore } from './vuex-store-publicindex'
 import { pluginstore } from './vuex-plugin_store'
+
 
 Vue.use(Vuex)
 
@@ -80,11 +81,7 @@ export default new Vuex.Store({
     manually_update_monitor_date({ state, commit }, { eventkey }) {
       const now = Date.now()
       commit('monitor_date', { eventkey, now })
-    },
-
-    monitor_route_changes({ state, commit }, { to, from }) {
-      commit('monitor_route_changes', { to, from })
-    },
+    }
   },
 
   mutations: {
@@ -92,23 +89,8 @@ export default new Vuex.Store({
 
     monitor_date(state, { eventkey, now }) {
       Vue.set(state.monitors, eventkey, now)
-    },
-
-    monitor_route_changes(state, { to, from }) {
-      const now = Date.now()
-      // console.log(">> FROM", from, "TO", to)
-
-      // Track stageIDs
-      if (from.params?.stageID !== to.params?.stageID) {
-        console.log(">> ROUTE: new stageID")
-        Vue.set(state.monitors, 'routed_stage_id', now)
-      }
-      // Track assemblyIdentifier
-      if (from.params?.assemblyIdentifier !== to.params?.assemblyIdentifier) {
-        console.log(">> ROUTE: new assemblyIdentifier")
-        Vue.set(state.monitors, 'routed_assembly_identifier', now)
-      }
     }
+
     // oauth_update_date (state, {newdate}) {
     //   Vue.set(state, 'oauth_update_date', newdate)
     // }

@@ -51,7 +51,7 @@ const getters = {
   },
 
   IsUserDelegateOfOngoingAssembly: (state, getters) => {
-    console.log("IsUserDelegateOfOngoingAssembly")
+    console.log("IsUserDelegateOfOngoingAssembly", getters.UsersDelegateAssemblies)
     const assemblies = getters.UsersDelegateAssemblies
     return (assemblies && Object.values(assemblies).length > 0)
   },

@@ -28,7 +28,7 @@ export default route(function ({ Vue }) {
 
   Router.afterEach((to, from) => {
     // store.Router
-    store.dispatch('monitor_route_changes', { to, from })
+    store.dispatch('assemblystore/monitor_route_changes', { to, from })
   })
 
   /* Get Object of current route/page (including name and params) */

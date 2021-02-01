@@ -7,7 +7,7 @@
 <template>
     <q-page class="doc_content ">
 
-        <h1>{{$tc('showcase.h1', nLength(published_assemblies))}}</h1>
+        <h1>{{$tc('showcase.h1', $nLength(published_assemblies))}}</h1>
 
         <ArtificialModeratorAssemblyListShowcase
             :ongoing="published_assemblies === null || oauth.authorized===null"

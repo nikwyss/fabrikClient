@@ -49,7 +49,9 @@ Vue.prototype.$nLength = function (object1) {
 //   return (false)
 // }
 
-
+// Reactive Provide/Injects
+// import ReactiveProvide from 'vue-reactive-provide'
+// Vue.use(ReactiveProvide)
 
 // AUTH
 /////////////////////////////////

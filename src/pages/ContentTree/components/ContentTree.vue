@@ -171,7 +171,8 @@ import ContentEditor from "./ContentEditor"
 import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer"
 import ContentRating from "./ContentRating";
 import UserAvatar from "src/layouts/components/UserAvatar"
-
+import { mapGetters} from "vuex";
+    
 export default {
     name: "ContentTree",
     props: ["artificialmoderationComponents", 'hideNoEntryText', 'hideNofEntriesText'],
@@ -196,8 +197,13 @@ export default {
             }
 
             return (text)
-        }
+        },
+
+        ...mapGetters(
+            'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+        )
     },
+
 
     methods: {
 

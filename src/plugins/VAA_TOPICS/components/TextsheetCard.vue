@@ -17,25 +17,28 @@
         </div>
         </div>
 
-        <q-card-actions class=" col-2">
+        <!-- <q-card-actions class=" col-2">
           <q-btn  @click="show_discussion=!show_discussion" dense text-color="purple" round icon="mdi-comment-outline" size="sm" class="">
             <q-badge color="red" v-if="comments.length" floating>{{comments.length}}</q-badge>
           </q-btn>
           <q-btn @click="show_discussion=!show_discussion" dense text-color="green" round icon="mdi-help-circle-outline" class=""  size="sm">
             <q-badge color="red" v-if="questions.length" floating>{{questions.length}}</q-badge>
           </q-btn>
-        </q-card-actions>
+        </q-card-actions> -->
         </q-card-section>
 
     </q-card><br>
 
-    <ComponentContentTree
+    <DefaultDiscussionBlock :item="item"  :comments="comments" :artificialmoderationComponents="artificialmoderationComponents" 
+          :startingNode="startingContentNode"/>
+
+
+    <!-- <ComponentContentTree
       v-if="show_discussion"
       class="bg-grey-3 q-pa-md col-10 q-ml-xl "
       :dense="true"
       label="Offene Diskussion"
-      :startingNode="startingContentNode"
-    /> 
+    />  -->
   </span>
 </template>
 
@@ -45,38 +48,44 @@
 import ContentRating from "src/pages/ContentTree/components/ContentRating"
 import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
-import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
+// import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
+import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDiscussionBlock"
 
 export default {
   name: 'TextsheetCard',
   props: ['item', 'standalone', 'heading_number', 'comments','questions'],
   // questions added for debigging : is it still usefukk?
-  components: { ContentRating, ContentEditor, ContentToolbar, ComponentContentTree},
+  components: { ContentRating, ContentEditor, ContentToolbar, DefaultDiscussionBlock},
   data: function() {
-    return({
-        show_discussion: false
-    })
-  },
-  computed: {
-    header_class: function() {
-      switch (this.item.content.type) {
-        case 'SECTION':
-          return('text-h5')
-        case 'SUBSECTION':
-          return('text-h6')
-        case 'PARAGRAPH':
-          return('text-h7')
-      }
-    },
+      return({
+                show_discussion: false,
+          // hover_discussion: false, // TODO: this?
+          artificialmoderationComponents: {
+            ContentTreeIndex: () => import('src/pages/ContentTree/artificialmoderation/ArtificialModeratorDefaultContentTreeIndex.vue')
+          }
+      })
+    },  
+    computed: {
+    
+      header_class: function() {
+        switch (this.item.content.type) {
+          case 'SECTION':
+            return('text-h5')
+          case 'SUBSECTION':
+            return('text-h6')
+          case 'PARAGRAPH':
+            return('text-h7')
+        }
+      },
 
-    startingContentNode: function() {
-     // TODO: add nof_descendants to this node object
-     // TODO extract this in method...
-      var node = {
-        children: this.comments, 
-        id: this.item.content.id}
-      return(node)
+      startingContentNode: function() {
+      // TODO: add nof_descendants to this node object
+      // TODO extract this in method...
+        var node = {
+          children: this.comments, 
+          id: this.item.content.id}
+        return(node)
+      }
     }
   }
-}
 </script>

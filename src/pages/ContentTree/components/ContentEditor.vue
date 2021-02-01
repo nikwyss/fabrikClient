@@ -88,7 +88,7 @@ import api from "src/utils/api";
 
 export default {
   name: "ContentEditor",
-  inject: ["QUASAR_TREE", "CTREE", "limitNodeTypes"],
+  inject: ["QUASAR_TREE", "CONTENTTREE", "limitNodeTypes"],
 
   data: function () {
     return {
@@ -114,13 +114,13 @@ export default {
       var parentType = null;
       if (this.localmodel.parent_id) {
         console.log(this.localmodel.parent_id);
-        const parent = this.CTREE.contenttree.entries[this.localmodel.parent_id]
+        const parent = this.CONTENTTREE.contenttree.entries[this.localmodel.parent_id]
           .content;
         parentType = parent.type;
       }
 
       var context_node_types = this.get_allowed_node_types({
-        contenttreeID: this.CTREE.contenttreeID,
+        contenttreeID: this.CONTENTTREE.contenttreeID,
         parentType: parentType,
       });
 
@@ -207,14 +207,14 @@ export default {
     saveContent: function () {
       // console.log(this.localmodel)
       console.log("Save content");
-      console.assert(this.CTREE.contenttreeID);
+      console.assert(this.CONTENTTREE.contenttreeID);
       var assemblyIdentifier = this.$route.params.assemblyIdentifier;
       console.assert(assemblyIdentifier);
 
       api
         .saveContent(
           assemblyIdentifier,
-          this.CTREE.contenttreeID,
+          this.CONTENTTREE.contenttreeID,
           this.localmodel
         )
         .then((response) => {
@@ -228,7 +228,7 @@ export default {
             // update the whole tree
             if ("contenttree" in response.data) {
               this.add_or_update_contenttree({
-                contenttreeID: this.CTREE.contenttreeID,
+                contenttreeID: this.CONTENTTREE.contenttreeID,
                 contenttree: response.data.contenttree,
               });
             }

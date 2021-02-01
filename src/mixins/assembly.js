@@ -18,7 +18,6 @@ export default {
   provide() {
     return {
       gotoAssemblyHome: this.gotoAssemblyHome,
-      gotoIndexAndMoveOn: this.gotoIndexAndMoveOn,
       gotoNextStageNr: this.gotoNextStageNr,
     }
   },
@@ -34,7 +33,8 @@ export default {
 
     ...mapGetters(
       'assemblystore',
-      ['assemblyIdentifier', 'assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'routed_stage', 'routed_stage_id', 'last_accessible_stage',
+      // 'routed_stage', 'routed_stage_id', 
+      ['assemblyIdentifier', 'assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'last_accessible_stage',
         'is_stage_done', 'is_stage_disabled', 'is_stage_completed', 'last_accessible_stage', 'is_stage_new', 'is_stage_last',
         'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages', 'get_stage_number_by_stage',
         'find_next_accessible_stage', 'assembly_stages', 'assembly', 'assembly_configuration', 'IsDelegate', 'IsManager'
@@ -107,17 +107,6 @@ export default {
 
     },
 
-
-    gotoIndexAndMoveOn: function () {
-      // const stageNr = this.assembly_sorted_stages.indexOf(this.stage_nr_last_visited)
-      console.log('update stage')
-      this.gotoNextStageNr(this.routed_stage)
-      console.log('stage has been updated: goto home')
-      this.gotoAssemblyHome()
-      // this.scrollToStage()
-
-    },
-
     gotoNextStageNr: function (stage) {
       const nextStage = this.find_next_accessible_stage(stage)
       if (!nextStage) {
@@ -134,24 +123,21 @@ export default {
   created() {
 
     // Catch all authentication status changes
-    // SYNC respectively CLEAN DATA (after logout)
-    // TODO
-    LayoutEventBus.$on('AuthenticationLoaded', data => {
-      console.log('>> AuthenticationLoaded listener in assembly')
-      // TODO: remove any personal data when loggin out
-      this.$store.dispatch('assemblystore/syncAssembly', {
-        oauthUserID: this.oauth.userid
-      })
+    LayoutEventBus.$on('AssemblyLoaded', data => {
+      if (!this.last_accessible_stage) {
+        this.stage_nr_last_visited = null
+      } else {
+        this.stage_nr_last_visited = this.get_stage_number_by_stage(this.last_accessible_stage)
+      }
     })
   },
 
   mounted: function () {
-    console.log('>> mounted')
+
+    console.log('>> APP LOADED: in assembly: do the assembly sync!!!')
+    // TODO: remove any personal data when loggin out
     this.$store.dispatch('assemblystore/syncAssembly', {
       oauthUserID: this.oauth.userid
     })
-
-    console.assert(this.last_accessible_stage)
-    this.stage_nr_last_visited = this.get_stage_number_by_stage(this.last_accessible_stage)
   }
 }

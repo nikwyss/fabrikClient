@@ -48,23 +48,7 @@ export default {
 
   created: function () {
 
-    LayoutEventBus.$on('AuthenticationLoaded', data => {
-      console.log("...retrieve public index (if not yet done)")
-      this.$store.dispatch('publicindexstore/syncPublicIndex')
-    })
+    console.log('>> APP LOADED: in publicHome: do the publicindex sync!!!')
+    this.$store.dispatch('publicindexstore/syncPublicIndex')
   }
 }
-
-
-
-
-// // Catch all authentication status changes
-// LayoutEventBus.$on('AuthenticationLoaded', data => {
-//   console.assert(this.contenttreeID)
-//   // TODO: remove any personal data when loggin out
-//   this.$store.dispatch('contentstore/syncContenttree', {
-//     assemblyIdentifier: this.assemblyIdentifier,
-//     contenttreeID: this.contenttreeID,
-//     oauthUserID: this.oauth.userid
-//   })
-// })

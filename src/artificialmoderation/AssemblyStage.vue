@@ -1,5 +1,5 @@
 <template>
-<div class="justify-center center">
+<div class="justify-center center" v-if="stage">
 
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="left" role="2" amGroup='ongoingassemblyPage' :ongoing="ongoing">

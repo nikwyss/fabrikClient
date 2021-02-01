@@ -117,7 +117,8 @@ export default {
 
     ...mapGetters(
      'publicindexstore',
-      ['published_assemblies', 'ongoing_assemblies', 'IsUserDelegateOfOngoingAssembly', 'IsThereAnAssemblyOngoing', 'IsThereNothingGoingOn', 'UsersDelegateAssemblies']
+      ['published_assemblies', 'ongoing_assemblies', 'IsUserDelegateOfOngoingAssembly', 'IsThereAnAssemblyOngoing', 
+      'IsThereAnAssemblyInPublicState', 'IsThereNothingGoingOn', 'UsersDelegateAssemblies']
       ), 
 
     salutation: function () {

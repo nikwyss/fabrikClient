@@ -66,7 +66,7 @@ import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer";
 
 export default {
   name: "PopupProfile",
-  // inject: ['QUASAR_TREE', 'CTREE', 'limitNodeTypes'],
+  // inject: ['QUASAR_TREE', 'CONTENTTREE', 'limitNodeTypes'],
 
   data: function () {
     return {

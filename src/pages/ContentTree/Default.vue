@@ -4,7 +4,7 @@
 
             <!-- DISABLED WARNING -->
             <q-banner dense inline-actions class="text-white bg-red" v-if="routed_stage.stage.disabled" style="padding:2em; margin-bottom:1em;">
-            This ContentTree Stage is disabled and, therefore, not visible for users.
+            This Stage is disabled and, therefore, not visible for users.
             </q-banner>
 
             <!-- EDIT CONTENT -->
@@ -34,7 +34,6 @@ export default {
         ComponentStageEditor,
         ComponentContentTree
     },
-    // inject: ['CTREE'],
     mixins: [ContentTreeMixin]
 }
 </script>

@@ -10,6 +10,7 @@ import { LayoutEventBus } from 'src/utils/eventbus.js'
 // import { date } from 'quasar'
 
 var state = {
+  monitors: {},
   assemblydata: {},
   randomSeed: null,
   current_stages: {}
@@ -17,20 +18,13 @@ var state = {
 
 const getters = {
 
-  monitored_route_changes: (state, getters, rootState) => {
-    return ({
-      routed_assembly_identifier: rootState.monitors.routed_assembly_identifier,
-      routed_stage_id: rootState.monitors.routed_stage_id
-    })
-  },
-
   assemblyIdentifier: (state, getters) => {
 
     // NEEDED, encforces responsivity of the router params!
-    const last_update = getters.monitored_route_changes.routed_assembly_identifier
-    void (last_update)
+    state.monitors.routed_assembly_identifier = Date.now()
+    const last_update = state.monitors.routed_assembly_identifier
+    void last_update
 
-    console.log("(Re-)-render Assembly Vuex Data (Assembly Identifier changed)")
     return Router.currentRoute.params?.assemblyIdentifier
   },
 
@@ -104,52 +98,24 @@ const getters = {
 
   },
 
-  // assembly_progression: (state, getters) => {
-  //   console.assert(assemblyIdentifier)
-  //   const assemblyIdentifier = Router.currentRoute.params.assemblyIdentifier
-  //   return (state.assemblydata[assemblyIdentifier]?.progression)
-  // },
 
-
-  /** Get Stage from StageID transmitted in the URL  */
-  routed_stage_id: (state) => {
-
-    // NEEDED: enforces responsivity of the router params!
-    console.log("(Re-)-render Stage Vuex Data (stageID params changed)")
-    const last_update = getters.monitored_route_changes.routed_stage_id
-    void (last_update)
-
-    let stage_id = Router.currentRoute.params.stageID
-    console.log("NEW STAGE ID FROM ROUTE", stage_id)
-
-    return stage_id ? parseInt(stage_id) : null
-  },
-
-  routed_stage: (state, getters) => {
-
-    if (!getters.routed_stage_id) {
-      return null
-    }
-
-    if (!getters.assembly_stages) {
-      console.log('assemmbly is not yet loaded')
-      return null
-    }
-    return (getters.assembly_stages[getters.routed_stage_id])
-  },
-
-  assembly_stages: state => {
+  assembly_stages: (state, getters) => {
     console.log(">> assembly_stages")
-    const assemblyIdentifier = Router.currentRoute.params.assemblyIdentifier
-    console.assert(assemblyIdentifier)
-    console.assert(state.assemblydata[assemblyIdentifier])
-    return state.assemblydata[assemblyIdentifier]?.stages
+
+    if (!getters.assemblyIdentifier) {
+      return null
+    }
+
+    return state.assemblydata[getters.assemblyIdentifier]?.stages
   },
 
   assembly_sorted_stages: (state, getters) => {
     console.log(">>..:Sort stages :")
     const stages = getters.assembly_stages
-    console.assert(stages)
+    if (!stages) {
+      return null
+    }
+
     if (stages) {
       return Object.values(stages).sort((a, b) => a.stage.order_position < b.stage.order_position ? -1 : a.stage.order_position > b.stage.order_position ? 1 : 0)
     }
@@ -210,6 +176,11 @@ const getters = {
   /** Which stages are freely open / accessible */
   assembly_accessible_stage_ids: (state, getters) => {
     const accessible_stages = getters.assembly_accessible_stages
+
+    if (!accessible_stages) {
+      return null
+    }
+
     return accessible_stages.map(stage => stage.stage.id)
   },
 
@@ -218,6 +189,7 @@ const getters = {
     console.assert(sorted_stages)
     const stage_number = sorted_stages.indexOf(stage)
     console.assert(stage_number > -1)
+
     return (stage_number)
   },
 
@@ -301,14 +273,7 @@ const getters = {
     console.assert(stage)
     return getters.is_stage_accessible(stage) ||
       getters.is_stage_completed(stage)
-  },
-
-
-
-  // TODO: really needed?
-  // get_stage_id_by_nr: (state) => (stage_nr) => {
-  //   return (sorted_stages[stage_nr].stage.id)
-  // }
+  }
 }
 
 const actions = {
@@ -316,10 +281,6 @@ const actions = {
   touchRandomSeed({ commit }) {
     commit('set_random_seed')
   },
-
-  // setCachedStageID({ commit }, { assembly, stageID }) {
-  //   commit('setCachedStageID', { assembly, stageID })
-  // },
 
   syncAssembly: ({ state, dispatch, getters, rootState, rootGetters }, { oauthUserID }) => {
     // console.log(` sync assembly ${assemblyIdentifier}`)
@@ -338,8 +299,11 @@ const actions = {
     if (expired || wrongUser) {
       console.log(' Assembly not in sync  or wrong user...', wrongUser, expired, state.assemblydata[assemblyIdentifier].access_date)
       dispatch('retrieveAssembly', { assemblyIdentifier: assemblyIdentifier })
+      return null
     }
 
+    console.log("Assembly retrieved from localStorage")
+    LayoutEventBus.$emit('AssemblyLoaded')
     return (null)
   },
 
@@ -362,6 +326,8 @@ const actions = {
           commit('storeAssembly', { assemblyIdentifier, data })
 
           // end loading
+          console.log("Assembly retrieved from Resource Server")
+          LayoutEventBus.$emit('AssemblyLoaded')
           LayoutEventBus.$emit('hideLoading')
 
         }
@@ -372,8 +338,12 @@ const actions = {
         console.warn('Request Error')
       })
 
-    // console.log("just launched in vuex")
-  }
+  },
+
+  monitor_route_changes({ state, commit }, { to, from }) {
+    commit('monitor_route_changes', { to, from })
+  },
+
 }
 
 const mutations = {
@@ -386,20 +356,6 @@ const mutations = {
       state.randomSeed = randomSeed
     }
   },
-
-  // setCachedStageID(state, { assembly, stageID }) {
-
-  //   // keep list of opened contents (if previously available)
-  //   console.log('update current  stage id for the given assembly' + stageID)
-
-  //   // prepare folder
-  //   if (!(assembly.identifier in state.current_stages)) {
-  //     Vue.set(state.current_stages, assembly.identifier, null)
-  //   }
-  //   // Vue.set  makes the change reactive!!
-  //   Vue.set(state.current_stages, assembly.identifier, stageID)
-  //   // console.log('...store: new stage has been set...' + stageID)
-  // },
 
   storeAssembly(state, { assemblyIdentifier, data }) {
     console.log(`Store assembly ${assemblyIdentifier}`)
@@ -415,6 +371,18 @@ const mutations = {
       Vue.set(state.assemblydata[assemblyIdentifier].stages, stageID, { 'progression': null })
     }
     Vue.set(state.assemblydata[assemblyIdentifier].stages[stageID], 'progression', progression)
+  },
+
+
+  monitor_route_changes(state, { to, from }) {
+    const now = Date.now()
+
+    // Track assemblyIdentifier
+    if (from.params?.assemblyIdentifier !== to.params?.assemblyIdentifier) {
+      console.log(">> ROUTE: new assemblyIdentifier")
+      // LayoutEventBus.$emit('AppLoaded')
+      Vue.set(state.monitors, 'routed_assembly_identifier', now)
+    }
   }
 }
 

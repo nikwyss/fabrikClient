@@ -2,7 +2,7 @@
 
 <div align="center" >
 
-  <q-tabs v-model="currenttab">
+  <q-tabs v-model="currenttab" v-if="stages_by_section && assembly_sorted_stages">
     <CustomQRouteTab
       name="home"
       icon="mdi-calendar-text"
@@ -99,6 +99,10 @@ export default {
 
   computed: {
     stages_by_section: function () {
+      if (!this.sections) {
+        return null
+      }
+
       return (this.sections.map(section => this.getFirstStageBySection(section))) 
     }
   },

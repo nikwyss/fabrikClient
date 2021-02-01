@@ -96,7 +96,7 @@ import { LayoutEventBus } from "src/utils/eventbus.js";
 export default {
   name: "PopupProfile",
   components: { AlgorithmDisclaimer },
-  // inject: ['QUASAR_TREE', 'CTREE', 'limitNodeTypes'],
+  // inject: ['QUASAR_TREE', 'CONTENTTREE', 'limitNodeTypes'],
 
   props: {
     destination_route: Object,

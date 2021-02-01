@@ -20,9 +20,9 @@
                 :assembly_id="assembly.id"
                 :model="routed_stage" />
 
-            <div class="text-h3">{{routed_stage.stage.title}}</div>
+            <!-- <div class="text-h3">{{routed_stage.stage.title}}</div> -->
 
-            <p>{{routed_stage.stage.info}}</p>
+            <!-- <p>{{routed_stage.stage.info}}</p> -->
         </div>
 
         <q-spinner-dots color="secondary" size="7em" v-if="!contenttree"/>

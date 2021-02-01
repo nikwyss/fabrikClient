@@ -180,8 +180,6 @@ const ApiService = {
       // (token should already be refreshed...)
       console.log('Second attempt....')
       response = await axios(data)
-      console.log('second try')
-      console.log(response)
 
       // What if the second attempt fails?
       if (response.retoken) {

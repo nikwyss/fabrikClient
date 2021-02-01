@@ -141,7 +141,7 @@ const mutations = {
     if (expanded_old) {
       contenttree.expanded = expanded_old
     }
-    console.log(contenttree)
+    // console.log(contenttree)
     console.log('new copy saved...')
     Vue.set(state.contenttree, contenttreeID, contenttree)
   },

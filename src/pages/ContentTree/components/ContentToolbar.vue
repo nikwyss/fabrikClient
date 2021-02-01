@@ -79,7 +79,6 @@
 <script>
 // import ContentRating from "./ContentRating";
 import ContentBackground from "./ContentBackground";
-// import ContentEditor from "./ContentEditor"
 import ApiService from "src/utils/xhr";
 import { mapActions, mapGetters } from "vuex";
 
@@ -87,7 +86,7 @@ export default {
   name: "ContentToolbarComponent",
   props: ["obj"],
   components: { ContentBackground },
-  inject: ["QUASAR_TREE", "contenttreeID", "popup_content_form"], // is injecting ctree needed: only for contenttree_id, right?
+  inject: ["QUASAR_TREE", "contenttreeID", "popup_content_form"], // is injecting CONTENTTREE needed: only for contenttree_id, right?
   data() {
     return {
       confirm_deletion: false,
@@ -115,8 +114,9 @@ export default {
       return this.track_changes ? "brown-9" : "grey-6";
     },
 
-    ...mapGetters( 'assemblystore', ['assemblyIdentifier'])
-
+    ...mapGetters(
+        'assemblystore', ['assemblyIdentifier', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+    )
   },
 
   methods: {
