@@ -34,8 +34,8 @@ const pkce_config = {
   onAccessTokenExpiry(refreshAccessToken) {
     console.log('Expired! Access token needs to be renewed.')
     console.log('We will try to get a new access token via grant code or refresh token.')
-    LayoutEventBus.$emit('ReloadPayload')
-
+    // LayoutEventBus.$emit('ReloadPayload')
+    // TODO. disabled due to refresh error
     return refreshAccessToken()
   },
   onInvalidGrant(refreshAuthCodeOrRefreshToken) {

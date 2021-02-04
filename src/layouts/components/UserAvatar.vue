@@ -4,7 +4,7 @@
       icon="mdi-image-filter-hdr"
       :style="{ 'background-color': profile ? profile.CO: 'inherit'}"
       :text-color="profile ? 'white' : 'primary'"
-      class="q-ma-sm"
+      class="q-mr-sm"
     >
       <!-- {{letters}} -->
     </q-avatar>

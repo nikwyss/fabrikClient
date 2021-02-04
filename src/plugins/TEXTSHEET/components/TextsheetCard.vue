@@ -17,7 +17,7 @@
     </span>
 
     <q-card class="q-ma-none full-width"  flat v-if="item">
-      <q-card-section class="full-width" >
+      <q-card-section class="full-width q-px-none" >
         <div class="col-12" >
           <div :class="header_class">{{heading_number}} {{item.content.title}}</div>
           <div class="text-body1 text-justify" v-if="item.content.text" v-dompurify-html="item.content.text"/>
@@ -27,14 +27,14 @@
 
     <DefaultDiscussionBlock 
       :item="item" 
-      :customLimitNodeTypes="['COMMENT', 'QUESTION', 'ANSWER']"
-      :artificialmoderationComponents="artificialmoderationComponents" :comments="comments" :customStartingParentID="item.content.id" />
+      :artificialmoderationComponents="artificialmoderationComponents" 
+      :comments="comments" />
 
   </div>
 </template>
 
 <script>
-// import ContentRating from "src/pages/ContentTree/components/ContentRating"
+// import ContentRatingThumbs from "src/pages/ContentTree/components/ContentRatingThumbs"
 // import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
 import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDiscussionBlock"

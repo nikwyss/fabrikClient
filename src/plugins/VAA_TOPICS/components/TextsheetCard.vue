@@ -1,5 +1,5 @@
 <template>
-<span>
+<span class="full-width">
   
     <span v-on:click.stop v-if="standalone" style="float:right;">
       <ContentToolbar
@@ -8,44 +8,27 @@
       </ContentToolbar>
     </span>
 
-    <q-card class="q-ma-none full-width" flat v-if="item">
-      <q-card-section horizontal class="full-width ">
-        <div class=" col-10">
-        <div class="q-mt-sm q-mb-xs" :class="header_class">{{heading_number}} {{item.content.title}}</div>
-        <div class="text-caption text-grey" v-if="item.content.text">
-          {{item.content.text}}
+    <q-card class="q-ma-none full-width"  flat v-if="item">
+      <q-card-section class="full-width q-px-none">
+        <div class="col-12" >
+          <div :class="header_class">{{heading_number}} {{item.content.title}}</div>
+          <div class="text-body1 text-justify" v-if="item.content.text" v-dompurify-html="item.content.text"/>
         </div>
-        </div>
+      </q-card-section>
+    </q-card>
 
-        <!-- <q-card-actions class=" col-2">
-          <q-btn  @click="show_discussion=!show_discussion" dense text-color="purple" round icon="mdi-comment-outline" size="sm" class="">
-            <q-badge color="red" v-if="comments.length" floating>{{comments.length}}</q-badge>
-          </q-btn>
-          <q-btn @click="show_discussion=!show_discussion" dense text-color="green" round icon="mdi-help-circle-outline" class=""  size="sm">
-            <q-badge color="red" v-if="questions.length" floating>{{questions.length}}</q-badge>
-          </q-btn>
-        </q-card-actions> -->
-        </q-card-section>
+    <DefaultDiscussionBlock 
+      :item="item" 
+      :artificialmoderationComponents="artificialmoderationComponents" 
+      :comments="comments" />
 
-    </q-card><br>
-
-    <DefaultDiscussionBlock :item="item"  :comments="comments" :artificialmoderationComponents="artificialmoderationComponents" 
-          :startingNode="startingContentNode"/>
-
-
-    <!-- <ComponentContentTree
-      v-if="show_discussion"
-      class="bg-grey-3 q-pa-md col-10 q-ml-xl "
-      :dense="true"
-      label="Offene Diskussion"
-    />  -->
   </span>
 </template>
 
 
 <script>
 // import { Fragment } from 'vue-fragment'
-import ContentRating from "src/pages/ContentTree/components/ContentRating"
+import ContentRatingThumbs from "src/pages/ContentTree/components/ContentRatingThumbs"
 import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
 // import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
@@ -53,9 +36,9 @@ import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDisc
 
 export default {
   name: 'TextsheetCard',
-  props: ['item', 'standalone', 'heading_number', 'comments','questions'],
+  props: ['item', 'standalone', 'heading_number', 'comments'],
   // questions added for debigging : is it still usefukk?
-  components: { ContentRating, ContentEditor, ContentToolbar, DefaultDiscussionBlock},
+  components: { ContentRatingThumbs, ContentEditor, ContentToolbar, DefaultDiscussionBlock},
   data: function() {
       return({
                 show_discussion: false,
@@ -68,14 +51,14 @@ export default {
     computed: {
     
       header_class: function() {
-        switch (this.item.content.type) {
-          case 'SECTION':
+        // switch (this.item.content.type) {
+          // case 'SECTION':
             return('text-h5')
-          case 'SUBSECTION':
-            return('text-h6')
-          case 'PARAGRAPH':
-            return('text-h7')
-        }
+          // case 'SUBSECTION':
+            // return('text-h6')
+          // case 'PARAGRAPH':
+            // return('text-h7')
+        // }
       },
 
       startingContentNode: function() {

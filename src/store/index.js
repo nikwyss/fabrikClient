@@ -38,7 +38,6 @@ export default new Vuex.Store({
       // add some timelag for this monitor method: all other ajax call have priority.
       // take 3 seconds as default value
       const default_timeout = 3000
-      console.assert(key)
       if (!timeout && timeout !== 0) { timeout = default_timeout }
       setTimeout(function () {
 
@@ -67,6 +66,7 @@ export default new Vuex.Store({
           console.log('API Monitored.' + event)
 
           // stage monitor
+          // TODO: emit event to update any kind of data
           if (response.data && 'stage_progression' in response.data) {
             dispatch('assemblystore/storeAssemblyProgression', {
               assemblyIdentifier: response.data.assembly_identifier,

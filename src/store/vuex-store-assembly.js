@@ -297,7 +297,7 @@ const actions = {
     const expired = !(state.assemblydata[assemblyIdentifier]) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
     // console.log()
     if (expired || wrongUser) {
-      console.log(' Assembly not in sync  or wrong user...', wrongUser, expired, state.assemblydata[assemblyIdentifier].access_date)
+      console.log(' Assembly not in sync  or wrong user...', expired, state.assemblydata[assemblyIdentifier].access_date)
       dispatch('retrieveAssembly', { assemblyIdentifier: assemblyIdentifier })
       return null
     }

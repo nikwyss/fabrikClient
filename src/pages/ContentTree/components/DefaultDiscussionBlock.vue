@@ -10,10 +10,10 @@
           :icon="show_discussion ? 'mdi-comment' : 'mdi-comment-outline'"
           size="md"
         >
-          <q-badge :color="nof_descendants_unread ? 'red' : 'green'" v-if="comments.length" floating>{{nof_descendants_unread ? nof_descendants_unread: nof_descendants}}</q-badge> 
+          <q-badge v-if="comments.length && nof_descendants_unread" color="red" floating>{{nof_descendants_unread}}</q-badge> 
           <q-tooltip v-if="!show_discussion" anchor="top left" self="bottom left">{{$t('contenttree.comment_section_tooltip')}}</q-tooltip>
           <q-tooltip v-if="show_discussion" anchor="top left" self="bottom left">{{$t('contenttree.close_comment_section_tooltip')}}</q-tooltip>
-          &nbsp;{{'Fragen und Kommentare'}}
+          &nbsp;{{'Fragen und Kommentare'}} {{nof_descendants ? `(${nof_descendants})` : ''}}
         </q-btn>
       </div>
 
@@ -25,8 +25,8 @@
           :startingNode="startingNode"
           :dense="true"
           :customStartingNodes="comments"
-          :customStartingParentID="customStartingParentID"
-          :customLimitNodeTypes="customLimitNodeTypes"
+          :customStartingParentID="item.content.id"
+          :customLimitNodeTypes="['COMMENT', 'QUESTION', 'ANSWER']"
           :hideNoEntryText="true"
           :hideNofEntriesText="true"
           :artificialmoderationComponents="artificialmoderationComponents"
@@ -51,7 +51,7 @@ import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
 export default {
   name: 'DefaultDiscussionBlock',
   components: { ComponentContentTree },
-  props: ['artificialmoderationComponents', 'item' , 'comments', 'customLimitNodeTypes', 'customStartingParentID', 'startingNode'],
+  props: ['artificialmoderationComponents', 'item' , 'comments', 'startingNode'],
   data: function() {
     return({
         show_discussion: false
@@ -77,10 +77,12 @@ export default {
     },
 
     nof_descendants: function () {
-      if (!this.comments){
+      if (!this.comments?.length){
         return 0
       }
-      const nof_descendants = this.comments.reduce((a, b) => (a.nof_descendants + b.nof_descendants))
+      const nof_descendants = this.comments.reduce(function (accumulator, child) {
+        return accumulator + child.nof_descendants;
+      }, 0);
       return (nof_descendants + this.comments.length)
     }    
   }

@@ -29,7 +29,7 @@
         <q-space />
         <q-btn flat color="primary" round icon="mdi-clipboard-edit"> Discuss & Rate</q-btn>
 
-        <!-- <ContentRating
+        <!-- <ContentRatingThumbs
           name="`elRating${content.content.id}`"
           v-if="standalone && IsContributor"
           :content="content"
@@ -70,7 +70,7 @@
 
 <script>
 // import { Fragment } from 'vue-fragment'
-import ContentRating from "src/pages/ContentTree/components/ContentRating"
+import ContentRatingThumbs from "src/pages/ContentTree/components/ContentRatingThumbs"
 import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
 import { mapGetters } from "vuex";
@@ -83,7 +83,7 @@ export default {
     // }
   },
   props: ['content', 'standalone', 'default_content_type'],
-  components: { ContentRating, ContentEditor, ContentToolbar},
+  components: { ContentRatingThumbs, ContentEditor, ContentToolbar},
   inject: ['openIndex', 'openArgument'],
   ...mapGetters( 'assemblystore', ['assemblyIdentifier'])
 

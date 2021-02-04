@@ -139,5 +139,13 @@ export default {
     this.$store.dispatch('assemblystore/syncAssembly', {
       oauthUserID: this.oauth.userid
     })
+  },
+
+  activated: function () {
+    console.log("---ACTIVATED-------")
+  },
+
+  activated: function () {
+    console.log("---UPDATED-------")
   }
 }

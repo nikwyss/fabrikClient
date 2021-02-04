@@ -118,6 +118,7 @@ export default {
 
     LayoutEventBus.$on(['AssemblyLoaded', 'AfterLogout'], data => {
       // TOKEN Changed: reload/reset of contenttree data needed?
+      console.log("shall we sync contentree?")
       if (this.contenttreeID) {
         console.log("SYNC contentTree (contenttree mixin) --------------------")
         // TODO: remove any personal data when loggin out
@@ -127,6 +128,10 @@ export default {
           oauthUserID: this.oauth.userid
         })
       }
+
+      console.log("---START MONITORS-------")
+      this.monitorApi()
+
     })
   }
 }

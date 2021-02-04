@@ -65,7 +65,7 @@
         :obj="obj"
       />
 
-      <!-- <ContentRating
+      <!-- <ContentRatingThumbs
         v-if="IsContributor"
         name="`elRating${obj.content.id}`"
         :content="obj"
@@ -77,7 +77,7 @@
 
 
 <script>
-// import ContentRating from "./ContentRating";
+// import ContentRatingThumbs from "./ContentRatingThumbs";
 import ContentBackground from "./ContentBackground";
 import ApiService from "src/utils/xhr";
 import { mapActions, mapGetters } from "vuex";

@@ -147,23 +147,23 @@ export default {
         assembly_identifier: this.assemblyIdentifier,
         stage_id: STAGEID,
         sub: USERID,
-      };
-      console.log("slkdjfjsdf09sdfs");
+      }
+
       this.$store.dispatch("monitorApi", {
         event: event,
         data: data,
         key: STAGEID,
         timeout: 0,
         force: force,
-      });
-    },
+      })
+    }
   },
 
   /**
    * Must be run before monitor are mounted...
    */
   created: function () {
-    console.log("created survey index page");
+
     // Completed Response?
     if (!this.is_stage_completed(this.routed_stage)) {
       if (this.is_a_survey_response) {

@@ -60,13 +60,12 @@ export default {
       // Monitor about stage visit
       let data = {
         assembly_identifier: this.assemblyIdentifier,
-        stage_id: this.stageID
+        stage_id: parseInt(this.routed_stage_id)
       }
-      // console.log('HHHH')
       this.$store.dispatch('monitorApi', {
-        event: this.Constants.MONITOR_STAGE_ENTERING,
-        data: data,
-        key: parseInt(this.stageID)
+        event: this.Constants.MONITOR_STAGE_ENTERING, data
+        // ,
+        // key: parseInt(this.routed_stage_id)
       })
     }
   }

@@ -7,7 +7,7 @@
             icon="mdi-arrow-left"
             @click="gotoAssemblyHome()" /> -->
 
-        <div v-if="assembly && routed_stage">
+        <div v-if="assembly && routed_stage" >
 
             <!-- DISABLED WARNING -->
             <q-banner dense inline-actions class="text-white bg-red" v-if="routed_stage.stage.disabled" style="padding:2em; margin-bottom:1em;">
@@ -25,30 +25,50 @@
             <!-- <p>{{routed_stage.stage.info}}</p> -->
         </div>
 
-        <q-spinner-dots color="secondary" size="7em" v-if="!contenttree"/>
+        <div class="" v-if="routed_stage && contenttree"  class="text-vessel">
 
-        <div class="" v-if="routed_stage && contenttree">
-            <!-- gt-sm: SHOW ONLY ON WIDE SCREENS -->
-            <div class="row justify-between gt-xs ">
 
-                <div class="col-12 col-sm-6">
-                    <h2 class=" q-mb-none q-ml-md">{{routed_stage.stage.title}}</h2>
-                </div>
+        <!-- INTRODUCTION -->
+        <h2>{{routed_stage.stage.title}}</h2>
+        <p class="text-body1">{{routed_stage.stage.info}}</p>
 
-            </div>
-            <div class="row justify-between" v-for="(nodeL1, keyL1)  in contenttree.structure.children"
+
+            <!-- <div class="row justify-between">
+                <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
+            </div> -->
+
+  
+
+         <!-- TOPIC RATING -->
+         <div class="row justify-between" v-for="(nodeL1, keyL1)  in contenttree.structure.children"
                     :key="`L1${nodeL1.id}`">
-                <TextsheetCard 
-                    :level="1"
-                    :comments="filter_entries(nodeL1.children, ['COMMENT'])"
-                    :questions="filter_entries(nodeL1.children, ['QUESTION'])"
-                    :heading_number="(keyL1+1)"
-                    :item="contenttree.entries[nodeL1.id]"/>
 
-                <RatingSlider />
-            </div>
+            <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
+
+            <TextsheetCard 
+                :level="1"
+                :comments="filter_entries(nodeL1.children, ['COMMENT', 'QUESTION'])"
+                :heading_number="(keyL1+1)"
+                :item="contenttree.entries[nodeL1.id]"/>
+
+            <ContentRatingSlider :content="contenttree.entries[nodeL1.id]" />
+        </div>
+        
+
+
+         <div class="row justify-between">
+                <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
+         </div>
+
+
+        <!-- RESULT -->
+        <h2>Resultat</h2>
+        <div class="row justify-between">
+            Sie haben noch nicht alle Themen bewertet?
 
         </div>
+    </div>
+
     </q-page>
 </template>
 
@@ -57,7 +77,7 @@
 import ContentTreeMixin from 'src/mixins/contenttree'
 import ComponentStageEditor from 'src/pages/ContentTree/components/StageEditor';
 import TextsheetCard from './components/TextsheetCard';
-import RatingSlider from 'src/layouts/components/RatingSlider';
+import ContentRatingSlider from 'src/pages/ContentTree/components/ContentRatingSlider';
 
 
 export default {
@@ -65,7 +85,7 @@ export default {
     components: {
         ComponentStageEditor,
         TextsheetCard,
-        RatingSlider
+        ContentRatingSlider
     },
 
     mixins: [ContentTreeMixin]

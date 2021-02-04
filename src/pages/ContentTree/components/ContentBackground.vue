@@ -59,7 +59,7 @@
 <script>
 
 export default{
-  name: "ContentRating",
+  name: "ContentBackground",
   props: ["obj"],
   methods: {
 

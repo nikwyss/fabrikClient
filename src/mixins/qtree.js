@@ -84,8 +84,15 @@ export default {
             var nof_descendants = 0
             var nof_descendants_unread = 0
             if (this.customStartingNodes.length) {
-                nof_descendants = this.customStartingNodes.reduce((a, b) => (a.nof_descendants + b.nof_descendants + 1))
-                nof_descendants_unread = this.customStartingNodes.reduce((a, b) => (a.nof_descendants_unread + b.nof_descendants_unread + 1))
+                nof_descendants = this.customStartingNodes.reduce(function (accumulator, child) {
+                    return accumulator + child.nof_descendants + 1;
+                }, 0);
+                nof_descendants_unread = this.customStartingNodes.reduce(function (accumulator, child) {
+                    return accumulator + child.nof_descendants_unread;
+                }, 0);
+
+                // nof_descendants = this.customStartingNodes.reduce((a, b) => (a.nof_descendants + b.nof_descendants + 1))
+                // nof_descendants_unread = this.customStartingNodes.reduce((a, b) => (a.nof_descendants_unread + b.nof_descendants_unread + 1))
             }
             var node = {
                 children: this.customStartingNodes,

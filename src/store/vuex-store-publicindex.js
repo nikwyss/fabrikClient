@@ -149,7 +149,7 @@ const actions = {
 
           // save data
           console.assert(response.data !== null && response.data !== undefined)
-          console.log('save full contenttree to cache.')
+          console.log('save full contenttree to cache.', response.data.length)
           commit('storePublicIndex', response.data)
 
           // end loading

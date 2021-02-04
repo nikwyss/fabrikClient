@@ -113,14 +113,14 @@
                     class="q-mb-lg"
                     :style="!prop.node.nof_descendants && rootNodeIDs.includes(prop.node.id) ? 'margin-left:1.5em' : ''">
                       <div class="float-right q-pa-null">
-                    <ContentRating
+                    <ContentRatingThumbs
                         v-if="IsContributor"
                         name="`elRating${obj.content.id}`"
                         :content="cachedNode(prop.node.id)"
                     />
                     </div>
 
-                    <span class="text-bold "> {{ cachedNode(prop.node.id).content.title }}</span><br>
+                    <span class="text-bold "> {{ cachedNode(prop.node.id).content.title }} ({{ cachedNode(prop.node.id).content.type }})</span><br>
                     {{ cachedNode(prop.node.id).content.text }}
                     <!-- style="margin-bottom:0.5em"  -->
 
@@ -169,7 +169,7 @@ import QTreeMixin from "src/mixins/qtree"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 import ContentEditor from "./ContentEditor"
 import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer"
-import ContentRating from "./ContentRating";
+import ContentRatingThumbs from "./ContentRatingThumbs";
 import UserAvatar from "src/layouts/components/UserAvatar"
 import { mapGetters} from "vuex";
     
@@ -177,7 +177,7 @@ export default {
     name: "ContentTree",
     props: ["artificialmoderationComponents", 'hideNoEntryText', 'hideNofEntriesText'],
     mixins: [QTreeMixin],
-    components: {AlgorithmDisclaimer, ContentEditor, ContentToolbar, ContentRating, UserAvatar},
+    components: {AlgorithmDisclaimer, ContentEditor, ContentToolbar, ContentRatingThumbs, UserAvatar},
     provide() {
         return {
             popup_content_form: this.popup_content_form
