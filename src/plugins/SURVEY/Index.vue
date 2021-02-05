@@ -63,6 +63,7 @@ import i18nPluginMixin from "./i18n";
 // import Configuration from 'src/utils/configuration'
 import ArtificialModeratorSURVEYIndexTop from "./artificialmoderation/IndexTop";
 // import {mapGetters} from 'vuex'
+import { runtimeStore } from "src/store/runtime.store"
 
 export default {
   name: "Survey",
@@ -115,7 +116,7 @@ export default {
       re = /:USERID:/g;
       newurl = newurl.replace(re, this.oauth.userid);
       re = /:STAGEID:/g;
-      newurl = newurl.replace(re, this.routed_stage_id);
+      newurl = newurl.replace(re, runtimeStore.stageID)
       re = /:ASSEMBLYIDENTIFIER:/g;
       newurl = newurl.replace(re, this.assemblyIdentifier);
       // console.log(USERID)
@@ -133,7 +134,7 @@ export default {
       // }
 
       /* By this method we allow the API to monitor userz activities */
-      const STAGEID = this.routed_stage_id;
+      const STAGEID = runtimeStore.stageID;
       const USERID = this.oauth.userid;
       console.log(this.oauth.userid + "oauth_userid");
 
@@ -145,14 +146,14 @@ export default {
       // Notify API
       const data = {
         assembly_identifier: this.assemblyIdentifier,
-        stage_id: STAGEID,
-        sub: USERID,
+        stage_id: parseInt(STAGEID),
+        sub: parseInt((USERID)),
       }
 
       this.$store.dispatch("monitorApi", {
         event: event,
         data: data,
-        key: STAGEID,
+        key: parseInt(STAGEID),
         timeout: 0,
         force: force,
       })

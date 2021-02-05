@@ -62,6 +62,7 @@ const actions = {
         .then(
           response => {
             // update
+            console.log("contenttree retrieved from api.")
             console.assert(response.data)
 
             LayoutEventBus.$emit('hideLoading')
@@ -77,9 +78,9 @@ const actions = {
             });
           }
         )
-        .catch(
-          console.log('request error')
-        )
+        .catch((error) => {
+          console.warn("Request Error", error)
+        });
     })
   },
 
@@ -91,14 +92,22 @@ const actions = {
     commit('update_contents', { modifiedContents });
   },
 
+  update_rating({ commit }, { contenttreeID, contentID, rating }) {
+    commit('update_rating', { contenttreeID, contentID, rating })
+  },
+
   update_expanded_branches({ commit }, { contenttreeID, startingContentID, expanded }) {
     // console.log(expanded)
     commit('update_expanded_branches', { contenttreeID, startingContentID, expanded });
   },
 
+  // router_watch: ({ state, dispatch, localgetters, rootState, rootGetters }, { assemblyIdentifier, contenttreeID, oauthUserID }) => {
+  // }, 
+
   syncContenttree: ({ state, dispatch, localgetters, rootState, rootGetters }, { assemblyIdentifier, contenttreeID, oauthUserID }) => {
     console.log(` sync contenttree ${contenttreeID}`)
-    console.assert(contenttreeID)
+
+    // console.assert(contenttreeID)
     if (!state.contenttree || !(state.contenttree[contenttreeID])) {
       // no cached version exists: load the data from resource server...
       console.log('First time load of contenttree')
@@ -109,16 +118,21 @@ const actions = {
     // wrong user? and renew cache all x- minutes!
     const wrongUser = oauthUserID != state.contenttree[contenttreeID].access_sub
     const expired = !state.assemblydata || !(state.assemblydata[assemblyIdentifier]) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
+    if (wrongUser) {
+      // Delete immediately the cached data
+      console.log("wrong user: content has been deleted")
+      dispatch('delete_contenttree', { contenttreeID: contenttreeID })
+    }
+
     if (expired || wrongUser) {
       // too old cache: load the data from resource server...
-      console.log('Cache expired: reload contenttree')
+      console.log('Cache invalid: reload contenttree', expired, wrongUser)
       dispatch('retrieveContenttree', {
         assemblyIdentifier: assemblyIdentifier,
         contenttreeID: contenttreeID,
         timelag: true
       })
     }
-
     return (null)
   }
 }
@@ -135,7 +149,7 @@ const mutations = {
       expanded_old = state.contenttree[contenttreeID].expanded_by_default
       configuration_old = state.contenttree[contenttreeID].configuration
     }
-    console.log(configuration)
+    // console.log(configuration)
 
     contenttree.configuration = configuration ? configuration : configuration_old
     if (expanded_old) {
@@ -154,7 +168,7 @@ const mutations = {
       console.log('modified contents: ' + contentID)
 
       let modifiedContent = modifiedContents[contentID]
-      console.log(modifiedContent)
+      // console.log(modifiedContent)
       let contenttreeID = modifiedContent.content.contenttree_id
       if (modifiedContent.progression) {
         Vue.set(state.contenttree[contenttreeID].entries[modifiedContent.content.id], 'progression', modifiedContent.progression)
@@ -171,8 +185,37 @@ const mutations = {
   update_expanded_branches(state, { contenttreeID, startingContentID, expanded }) {
     // in case content or progression changes (without changing hierarchy...)
     let key = contenttreeID + '-' + startingContentID
-    console.log(expanded)
+    // console.log(expanded)
     Vue.set(state.expanded_branches, key, expanded)
+  },
+
+  delete_contenttree(state, { contenttreeID }) {
+    // in case content or progression changes (without changing hierarchy...)
+    // console.log(expanded)
+    Vue.set(state.contenttree, key, null)
+  },
+
+  update_rating(state, { contenttreeID, contentID, rating }) {
+    // in case content or progression changes (without changing hierarchy...)
+    if (rating === null || rating === undefined) {
+      // invalid rating value
+      // console.log("empty rating")
+      return (null)
+    }
+
+    // let key = contenttreeID + '-' + startingContentID
+    const progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
+    if (!progression) {
+      // prgression not created yet, rigth?
+      // console.log("missing progression")
+      return (null)
+    }
+
+    // store value
+    progression.rating = rating
+    progression.rated = true
+    Vue.set(state.contenttree[contenttreeID].entries[contentID], 'prgression', progression)
+    // console.log("new rating stored: ", rating)
   }
 }
 

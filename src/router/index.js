@@ -5,6 +5,8 @@ import VueRouter from 'vue-router'
 import routes from './routes'
 import { LayoutEventBus } from "src/utils/eventbus"
 import store from "src/store"
+import { runtimeMutations } from "src/store/runtime.store";
+
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation
@@ -27,8 +29,18 @@ export default route(function ({ Vue }) {
   Vue.use(VueRouter)
 
   Router.afterEach((to, from) => {
+
+    if (to.params?.stageID) {
+      runtimeMutations.setStageID(to.params?.stageID)
+    }
+    if (to.params?.assemblyIdentifier) {
+      runtimeMutations.setAssemblyIdentifier(to.params?.assemblyIdentifier)
+    }
+
     // store.Router
     store.dispatch('assemblystore/monitor_route_changes', { to, from })
+    // console.log(to, from, store, Vue)
+    // store.dispatch('assemblystore/monitor_route_changes', { to, from })
   })
 
   /* Get Object of current route/page (including name and params) */

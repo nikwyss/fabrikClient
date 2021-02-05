@@ -97,16 +97,28 @@ const getters = {
     // }
 
   },
+  assembly_userid: (state, getters) => {
+    console.log(">> NOTE: cache userid")
 
+    if (!getters.assemblyIdentifier) {
+      return null
+    }
+    return state.assemblydata[getters.assemblyIdentifier]?.access_sub
+  },
 
   assembly_stages: (state, getters) => {
-    console.log(">> assembly_stages")
+    console.log(">> NOTE: assembly_stages")
 
     if (!getters.assemblyIdentifier) {
       return null
     }
 
     return state.assemblydata[getters.assemblyIdentifier]?.stages
+  },
+
+  get_assembly_stage: (state, getters, rootState, rootGetters, test1, test2) => (stageID) => {
+    const stages = getters.assembly_stages
+    return (stages[stageID])
   },
 
   assembly_sorted_stages: (state, getters) => {
@@ -305,6 +317,26 @@ const actions = {
     console.log("Assembly retrieved from localStorage")
     LayoutEventBus.$emit('AssemblyLoaded')
     return (null)
+  },
+
+
+  syncStage: ({ state, dispatch, getters, rootState, rootGetters})  => (stageID) => {
+    // const stages = getters.assembly_stages
+    // console.assert(stages[stageID])
+
+    // preload contenttree (if attached)
+    const contenttree_id = stages[stageID]?.stage.contenttree_id
+    if (contenttree_id) {
+      console.log(test1, test2)
+      console.log("Preload/sync: contenttree")
+      // this.$store.dispatch('contentstore/syncContenttree', {
+      //   assemblyIdentifier: getters.assemblyIdentifier,
+      //   contenttreeID: contenttree_id,
+      //   oauthUserID: getters.assembly_userid
+      // })
+    }
+    return (stages[stageID])
+
   },
 
   storeAssemblyProgression({ commit }, { assemblyIdentifier, stageID, progression }) {

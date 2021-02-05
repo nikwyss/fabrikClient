@@ -81,10 +81,8 @@
 </template>
 
 <script>
-import ApiService from "src/utils/xhr";
-import { mapActions } from "vuex";
-import { mapGetters } from "vuex";
-import api from "src/utils/api";
+import {mapGetters, mapActions } from "vuex"
+import api from "src/utils/api"
 
 export default {
   name: "ContentEditor",

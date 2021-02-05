@@ -30,11 +30,13 @@ import { mapGetters} from 'vuex'
 
 export default{
     name: "ArtificialModeratorTEXTSHEETMain",
-    ...mapGetters(
-      'assemblystore',
-      ['is_stage_completed']
-    ),    
     inject: ['gotoIndexAndMoveOn', 'STAGE'],
-    components: {ArtificialModerator}
+    components: {ArtificialModerator},
+    computed: {
+        ...mapGetters(
+        'assemblystore',
+        ['is_stage_completed']
+        )
+    }
 }
 </script>

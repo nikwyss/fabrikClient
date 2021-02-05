@@ -33,7 +33,7 @@ export default{
         },
 
         ...mapGetters(
-        'assemblystore', ['assembly_scheduled_stages',  'assembly_sorted_stages', 'assemblyIdentifier']
+        'assemblystore', ['assembly_scheduled_stages',  'assembly_sorted_stages']
         )
     } // see provide attribute in the antecedents
 }

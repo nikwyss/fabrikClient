@@ -65,7 +65,7 @@
         <h2>Resultat</h2>
         <div class="row justify-between">
             Sie haben noch nicht alle Themen bewertet?
-
+            <ChartRadar :personalData="chartRadarPersonalData" :populationData="chartRadarPopulationData"  :labels="chartRadarLabels" />
         </div>
     </div>
 
@@ -78,16 +78,33 @@ import ContentTreeMixin from 'src/mixins/contenttree'
 import ComponentStageEditor from 'src/pages/ContentTree/components/StageEditor';
 import TextsheetCard from './components/TextsheetCard';
 import ContentRatingSlider from 'src/pages/ContentTree/components/ContentRatingSlider';
+import ChartRadar from 'src/layouts/components/ChartRadar';
 
 
 export default {
     name: 'VAATopics',
+    mixins: [ContentTreeMixin],
     components: {
         ComponentStageEditor,
         TextsheetCard,
-        ContentRatingSlider
+        ContentRatingSlider,
+        ChartRadar
     },
-
-    mixins: [ContentTreeMixin]
+    computed: {
+        chartEntries() {
+            const children = this.contenttree.structure.children
+            return children.map(child => this.contenttree.entries[child.id])
+        },
+        chartRadarPersonalData() {
+            // console.log(this.entries)
+            return this.chartEntries.map(entry => entry.progression?.rating+50)
+        },
+        chartRadarLabels() {
+            return this.chartEntries.map(entry => entry.content?.title)
+        },
+        chartRadarPopulationData() {
+            return this.chartEntries.map(entry => Math.random()*100)
+        }
+    },
 }
 </script>

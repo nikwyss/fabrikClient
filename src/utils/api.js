@@ -97,6 +97,22 @@ export default {
     return await ApiService.get(url)
   },
 
+  async setContentRating(assemblyIdentifier, contentID, rating) {
+
+
+    // compose url
+    let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/content/${contentID}/rating/${rating}`;
+    // Renew token (if required)
+    // console.log(url)
+    await Vue.prototype.oauth.refresh_token_if_required()
+    console.log(url)
+    const result = await ApiService.put(url)
+    if (!result.data.OK) {
+      throw ("Rating could not be saved");
+    }
+    return (result)
+  },
+
   async saveContent(assemblyIdentifier, contenttreeID, data) {
 
     // compose url

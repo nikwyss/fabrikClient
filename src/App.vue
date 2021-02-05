@@ -182,6 +182,7 @@ export default {
     LayoutEventBus.$on("hideNotificationBanners", (data) => {
       this.$refs?.maincontent?.hideNotificationBanner();
     })
+    // TODO: are thes event catch multiple times?
   },
   
   

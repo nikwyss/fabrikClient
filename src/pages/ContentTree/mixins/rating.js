@@ -1,6 +1,5 @@
-import { mapActions } from "vuex";
-import ApiService from "src/utils/xhr";
-// import Configuration from 'src/utils/configuration'
+import { mapActions } from "vuex"
+import api from "src/utils/api"
 
 export default {
   name: "ContentRatingSlider",
@@ -12,42 +11,54 @@ export default {
   },
 
   methods: {
-    setRating: function (rating) {
+    setRating: function (rating, lagged = false) {
+
 
       console.log("set rating...");
       console.assert(rating !== null && rating !== undefined);
       console.assert(this.content.content.id);
-      var identifier = this.$route.params.assemblyIdentifier;
-      console.assert(identifier);
-      this.progression_rating = rating;
+      var assemblyIdentifier = this.$route.params.assemblyIdentifier;
 
-      let url = `${process.env.ENV_APISERVER_URL}/assembly/${identifier}/content/${this.content.content.id}/rating/${rating}`;
-      console.log(url);
-      console.log("xhr request");
-      const message = this.$i18n.t('contenttree.rating_response')
-      ApiService.get(url).then((response) => {
-        // store changed contents to vuex
-        if (response.data.OK) {
-          console.log("rating received");
-          console.log(response.data);
+      // TODO: is thiss necessary? (at least not in case of the slider => model variable)
+      this.progression_rating = rating;
+      console.log("...=> api")
+      api.setContentRating(
+        assemblyIdentifier,
+        this.content.content.id,
+        rating
+      )
+        .then((response) => {
+          console.log("Rating saved");
+
+          // update content, if necessary!
           if (response.data.modified_contents) {
             this.update_contents({
               modifiedContents: response.data.modified_contents,
             });
           }
-        }
 
-        console.log("rating response? ", response.data.OK)
-        this.$q.notify({
-          type: response.data.OK ? "nFabrikInfo" : "nFabrikError",
-          message: message,
-        });
-      });
+          // notify success, if desired...
+          if (!lagged) {
+            // only give feedback, if action has not been lagged
+            const message = this.$i18n.t('contenttree.rating_response')
+            this.$q.notify({
+              type: response.data.OK ? "nFabrikInfo" : "nFabrikError",
+              message: message,
+            });
+          }
+        })
+
+        // Error Handling is done in Axios Interceptor
+        .catch((error) => {
+          console.warn("Request Error", error);
+          this.$q.notify({
+            type: "nFabrikError",
+            message: 'Oha. Die Bewertung konnte nicht gespeichert werden!',
+          })
+        })
     },
 
-    ...mapActions({
-      update_contents: "contentstore/update_contents",
-    }),
+    ...mapActions('contentstore', ['update_contents', 'update_rating'])
   },
 
   mounted: function () {

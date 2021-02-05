@@ -298,5 +298,22 @@ export default {
 
      ...mapGetters( 'assemblystore', ['assemblyName'])  
   }
+
+  // mounted: function() {
+    
+  //   // LayoutEventBus.$on("NewStageEntered", data => {
+  //   //   console.log("EVENTBUS: New stage entered...", data)
+  //   //   // this.$root.reload();
+
+  //   //   if (data.stage.stage.contenttree_id && data.assemblyIdentifier) {
+  //   //     console.log("new stage is loaded: check if contenttree is in sync")
+  //   //     this.$store.dispatch('contentstore/syncContenttree', {
+  //   //       assemblyIdentifier: this.$router.route.params.assemblyIdentifier,
+  //   //       contenttreeID: stage.stage.contenttree_id,
+  //   //       oauthUserID: this.oauth.userid
+  //   //     })
+  //   //   }
+  //   // })
+  // }
 }
 </script>

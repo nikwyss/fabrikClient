@@ -1,7 +1,8 @@
 import { mapGetters } from 'vuex'
 import AssemblyMixin from 'src/mixins/assembly'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
-
+// import { LayoutEventBus } from 'src/utils/eventbus'
+import { runtimeStore } from "src/store/runtime.store"
 
 export default {
 
@@ -9,7 +10,7 @@ export default {
     AssemblyMixin,
     ReactiveProvideMixin({
       name: 'STAGE',
-      include: ['routed_stage_id', 'routed_stage'],
+      include: ['routed_stage'],
     })
   ],
   provide() {
@@ -22,24 +23,29 @@ export default {
   computed: {
 
     /** Get Stage from StageID transmitted in the URL  */
-    routed_stage_id: function () {
-      return (this.$route.params.stageID)
-    },
+    // routed_stage_id: function () {
+    //   console.log(runtimeStore.stageID, "RUNTIME")
+    //   return (this.$route.params.stageID)
+    // },
 
     routed_stage: function () {
-      console.assert(this.routed_stage_id)
+      console.assert(runtimeStore.stageID)
 
-      if (!this.assembly_stages) {
-        console.log('assemmbly is not yet loaded')
+      if (!this.get_assembly_stage(runtimeStore.stageID)) {
+        console.log('assembly is not yet loaded')
         return null
       }
 
-      console.log("STAGE IS LOADED", this.routed_stage_id)
-      return (this.assembly_stages[this.routed_stage_id])
+      // const stage = this.assembly_stages[runtimeStore.stageID]
+      // LayoutEventBus.$emit("NewStageEntered", {
+      //   assemblyIdentifier: this.assemblyIdentifier,
+      //   stage: this.assembly_stages[runtimeStore.stageID]
+      // })
+      return (this.assembly_stages[runtimeStore.stageID])
     },
 
     ...mapGetters({
-      assembly_stages: 'assemblystore/assembly_stages'
+      get_assembly_stage: 'assemblystore/get_assembly_stage'
     })
   },
 
@@ -55,18 +61,36 @@ export default {
     },
 
     monitorApi: function () {
+      if (runtimeStore.stageID) {
+        this.monitorApiStage()
+
+      } else {
+        this.monitorApiAssembly()
+      }
+    },
+
+    monitorApiStage: function () {
       /* By this method we allow the API to monitor user activities */
+
       console.log("monitor stage api")
+      console.assert(runtimeStore.stageID)
+
       // Monitor about stage visit
       let data = {
         assembly_identifier: this.assemblyIdentifier,
-        stage_id: parseInt(this.routed_stage_id)
+        stage_id: runtimeStore.stageID
       }
       this.$store.dispatch('monitorApi', {
         event: this.Constants.MONITOR_STAGE_ENTERING, data
         // ,
-        // key: parseInt(this.routed_stage_id)
+        // key: parseInt(runtimeStore.stageID)
       })
     }
   }
+
+
+  // mounted: function () {
+
+
+  // }
 }

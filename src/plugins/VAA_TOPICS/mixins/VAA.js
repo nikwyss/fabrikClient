@@ -1,5 +1,6 @@
 // import StageMixin from 'src/mixins/stage'
 import { mapGetters, mapState } from 'vuex'
+import { runtimeStore } from "src/store/runtime.store"
 
 
 export default {
@@ -22,20 +23,20 @@ export default {
   computed: {
 
     /** Get Stage from StageID transmitted in the URL  */
-    routed_stage_id: function () {
-      return (this.$route.params.stageID)
-    },
+    // routed_stage_id: function () {
+    //   return (this.$route.params.stageID)
+    // },
 
     routed_stage: function () {
-      console.assert(this.routed_stage_id)
+      console.assert(runtimeStore.stageID)
 
       if (!this.assembly_stages) {
         console.log('assemmbly is not yet loaded')
         return null
       }
 
-      console.log("STAGE IS LOADED", this.routed_stage_id)
-      return (this.assembly_stages[this.routed_stage_id])
+      console.log("STAGE IS LOADED", runtimeStore.stageID)
+      return (this.assembly_stages[runtimeStore.stageID])
     },
 
     sectionsEnabled: function () {
@@ -43,7 +44,7 @@ export default {
     },
 
     currentSection: function () {
-      if (!this.routed_stage_id) {
+      if (!runtimeStore.stageID) {
         return 'INTRO'
       }
       console.log("ROUTED STAGE", this.routed_stage)

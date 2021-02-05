@@ -1,7 +1,7 @@
 <template>
 
  <!-- :style="{'background-color': backgroundColor}" -->
-  <div class="q-pa-md full-width" :class="noneResponse ? 'bg-orange-1' : 'bg-blue-1'">
+  <div class="q-pa-md full-width" :class="noneResponse ? 'bg-orange-4' : 'bg-grey-1'">
 
     <!-- <q-badge color="secondary">
     </q-badge> -->
@@ -22,7 +22,7 @@
       v-model="value"
       :min="min"
       :max="max"
-      @change="startSetRatingTimer"
+      @change="initSetRating"
       label
       label-always
       :label-value="getSlideLabel"
@@ -51,14 +51,17 @@
 import RatingMixin from "../mixins/rating"
 import { colors } from 'quasar'
 const { rgbToHex } = colors
+// import { mapActions } from "vuex"
+
 
 export default {
   name: "ContentRatingSlider",
   mixins: [RatingMixin],
   data: function() {
     return({
+        apiTimer: null,
         min: -50,
-        max: +50,
+        max: 50,
         scaleLabel: [
           'Unwichtig',
           'Eher unwichtig',
@@ -113,9 +116,22 @@ export default {
       return this.progression_rating === null || this.progression_rating === undefined
     }
   },
+
   methods: {
-    startSetRatingTimer() {
-      console.log('start timer,')
+
+    
+    initSetRating() {
+      // interrupt previoius saveRating actions
+      clearInterval(this.apiTimer)      
+      // Save rating with a 3 second lag. (To prevent high frequent api requests..)
+      const apiCall = () => this.setRating(this.progression_rating, true)
+      this.apiTimer = setTimeout(apiCall, 3000)
+
+      // immediatly update ratings in vuex store (=> allows to update the dynamically generated charts)
+      this.update_rating({
+        contenttreeID: this.content.content.contenttree_id, 
+        contentID: this.content.content.id, 
+        rating: this.progression_rating })
     }
   }
 }

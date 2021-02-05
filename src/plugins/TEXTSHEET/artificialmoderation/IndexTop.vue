@@ -35,11 +35,11 @@ export default{
     
     name: 'ArtificialModeratorTEXTSHEETMain',
     inject: ['gotoAssemblyHome', 'gotoIndexAndMoveOn', 'STAGE'], 
+    components: {ArtificialModerator},
     computed: {
     ...mapGetters(
         'assemblystore',
         ['assemblyIdentifier', 'is_stage_new','is_stage_completed', 'is_stage_first']
-    )},
-    components: {ArtificialModerator}
+    )}
 }
 </script>

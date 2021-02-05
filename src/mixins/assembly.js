@@ -33,7 +33,6 @@ export default {
 
     ...mapGetters(
       'assemblystore',
-      // 'routed_stage', 'routed_stage_id', 
       ['assemblyIdentifier', 'assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'last_accessible_stage',
         'is_stage_done', 'is_stage_disabled', 'is_stage_completed', 'last_accessible_stage', 'is_stage_new', 'is_stage_last',
         'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages', 'get_stage_number_by_stage',
@@ -50,7 +49,12 @@ export default {
     },
 
     monitorApi: function () {
+      this.monitorApiAssembly()
+    },
+
+    monitorApiAssembly: function () {
       /* By this method we allow the API to monitor user activities */
+      console.assert(this.assemblyIdentifier, "in monitorApiAssembly")
 
       // Monitor about stage visit
       let data = {
@@ -141,11 +145,21 @@ export default {
     })
   },
 
-  activated: function () {
-    console.log("---ACTIVATED-------")
-  },
+  /**
+  * Ensure that all contenttrees is up to date
+  **/
+  // watch: {
+  //   // if route changes, hide TextLoading
+  //   $route(to, from) {
+  //     console.log("router watch in assembly.mixin")
+  //     console.log(from, to, 'ddddd')
+  //   }
+  // },
+  // activated: function () {
+  //   console.log("---ACTIVATED-------")
+  // },
 
-  activated: function () {
-    console.log("---UPDATED-------")
-  }
+  // activated: function () {
+  //   console.log("---UPDATED-------")
+  // }
 }

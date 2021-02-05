@@ -77,7 +77,6 @@
 
 
 <script>
-// import ContentRatingThumbs from "./ContentRatingThumbs";
 import ContentBackground from "./ContentBackground";
 import ApiService from "src/utils/xhr";
 import { mapActions, mapGetters } from "vuex";

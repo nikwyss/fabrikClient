@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex'
 import StageMixin from 'src/mixins/stage'
-import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
+import { runtimeStore } from "src/store/runtime.store"
 
 
 export default {
@@ -35,10 +35,16 @@ export default {
       // Mixin is only usable for pages with assemblyIdentifier in the URL
 
       console.log("RETRIEVE contenttreeID..", this.routed_stage)
-      if (!this.routed_stage) {
+      if (!this.routed_stage || !this.routed_stage?.stage?.contenttree_id) {
         console.log(" routed_stage not loaded")
         return (null)
       }
+
+      // this.$store.dispatch('contentstore/syncContenttree', {
+      //   assemblyIdentifier: this.assemblyIdentifier,
+      //   contenttreeID: this.routed_stage?.stage?.contenttree_id,
+      //   oauthUserID: this.oauth.userid
+      // })
 
       return (this.routed_stage?.stage?.contenttree_id)
     },
@@ -50,6 +56,7 @@ export default {
 
       console.log('start fetching the contenttree', this.contenttreeID)
       console.assert(this.assemblyIdentifier)
+
 
       // retrieve from localStorage
       const contenttree = this.get_contenttree({
@@ -73,7 +80,7 @@ export default {
       this.$router.push({
         name: this.routed_stage.stage.type, params: {
           assemblyIdentifier: identifier,
-          stageID: this.routed_stage_id,
+          stageID: runtimeStore.stageID,
           contenttreeID: this.contenttreeID
         }
       })
@@ -92,7 +99,7 @@ export default {
         name: this.routed_stage.stage.type,
         params: {
           assemblyIdentifier: this.assemblyIdentifier,
-          stageID: this.routed_stage_id,
+          stageID: runtimeStore.stageID,
           contentID: contentID
         }
       })
@@ -114,24 +121,27 @@ export default {
     }
   },
 
-  created() {
 
-    LayoutEventBus.$on(['AssemblyLoaded', 'AfterLogout'], data => {
-      // TOKEN Changed: reload/reset of contenttree data needed?
-      console.log("shall we sync contentree?")
-      if (this.contenttreeID) {
-        console.log("SYNC contentTree (contenttree mixin) --------------------")
-        // TODO: remove any personal data when loggin out
-        this.$store.dispatch('contentstore/syncContenttree', {
-          assemblyIdentifier: this.assemblyIdentifier,
-          contenttreeID: this.contenttreeID,
-          oauthUserID: this.oauth.userid
-        })
-      }
 
-      console.log("---START MONITORS-------")
-      this.monitorApi()
+  // created() {
 
-    })
-  }
+  //   // LayoutEventBus.$on('AssemblyLoaded', data => {
+  //   // LayoutEventBus.$on(['AssemblyLoaded', 'AfterLogout'], data => {
+  //   //   // TOKEN Changed: reload/reset of contenttree data needed?
+  //   //   console.log("shall we sync contentree?")
+  //   //   if (this.contenttreeID) {
+  //   //     console.log("SYNC contentTree (contenttree mixin) --------------------")
+  //   //     // TODO: remove any personal data when loggin out
+  //   //     this.$store.dispatch('contentstore/syncContenttree', {
+  //   //       assemblyIdentifier: this.assemblyIdentifier,
+  //   //       contenttreeID: this.contenttreeID,
+  //   //       oauthUserID: this.oauth.userid
+  //   //     })
+  //   //   }
+
+  //   //   console.log("---START MONITORS-------")
+  //   //   this.monitorApi()
+
+  //   // })
+  // }
 }
