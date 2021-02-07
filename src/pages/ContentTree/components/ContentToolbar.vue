@@ -80,6 +80,8 @@
 import ContentBackground from "./ContentBackground";
 import ApiService from "src/utils/xhr";
 import { mapActions, mapGetters } from "vuex";
+import { runtimeStore } from "src/store/runtime.store";
+
 
 export default {
   name: "ContentToolbarComponent",
@@ -101,7 +103,7 @@ export default {
 
   computed: {
     // assemblyAcls: function () {
-    //   return this.oauth.acls(this.assemblyIdentifier);
+    //   return this.oauth.acls(runtimeStore.assemblyIdentifier);
     // },
 
     track_changes_icon: function () {
@@ -114,7 +116,7 @@ export default {
     },
 
     ...mapGetters(
-        'assemblystore', ['assemblyIdentifier', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+        'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
     )
   },
 
@@ -160,7 +162,7 @@ export default {
     // TODO: move deleteentry to contenttre.js
     deleteEntry(content, justification) {
       console.log("deleteEntry");
-      var identifier = this.$route.params.assemblyIdentifier;
+      var identifier = runtimeStore.assemblyIdentifier;
       console.assert(identifier);
       let url = `${process.env.ENV_APISERVER_URL}/assembly/${identifier}/contenttree/${QUASAR_TREE.contenttreeID}/content/${content.id}`;
       var data = { justification: justification };

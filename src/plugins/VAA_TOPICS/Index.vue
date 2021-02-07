@@ -1,6 +1,6 @@
 <template>
     <q-page class="doc_content">
-
+<!-- {{this.contenttree.access_date }} -->
         <!-- <q-btn align="around" 
             class="btn-fixed-width" color="brown-5" 
             label="Back to the assembly home"
@@ -50,7 +50,7 @@
                 :comments="filter_entries(nodeL1.children, ['COMMENT', 'QUESTION'])"
                 :heading_number="(keyL1+1)"
                 :item="contenttree.entries[nodeL1.id]"/>
-
+<!-- {{oauth.userid}} -->
             <ContentRatingSlider :content="contenttree.entries[nodeL1.id]" />
         </div>
         

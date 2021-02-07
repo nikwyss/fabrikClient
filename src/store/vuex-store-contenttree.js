@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 import api from 'src/utils/api'
-import { date } from 'quasar'
+// import { date } from 'quasar'
 
 
 var state = {
@@ -101,41 +101,35 @@ const actions = {
     commit('update_expanded_branches', { contenttreeID, startingContentID, expanded });
   },
 
-  // router_watch: ({ state, dispatch, localgetters, rootState, rootGetters }, { assemblyIdentifier, contenttreeID, oauthUserID }) => {
-  // }, 
-
   syncContenttree: ({ state, dispatch, localgetters, rootState, rootGetters }, { assemblyIdentifier, contenttreeID, oauthUserID }) => {
     console.log(` sync contenttree ${contenttreeID}`)
 
-    // console.assert(contenttreeID)
-    if (!state.contenttree || !(state.contenttree[contenttreeID])) {
-      // no cached version exists: load the data from resource server...
-      console.log('First time load of contenttree')
-      dispatch('retrieveContenttree', { assemblyIdentifier: assemblyIdentifier, contenttreeID: contenttreeID })
-      return (null)
-    }
-
     // wrong user? and renew cache all x- minutes!
-    const wrongUser = oauthUserID != state.contenttree[contenttreeID].access_sub
-    const expired = !state.assemblydata || !(state.assemblydata[assemblyIdentifier]) || api.expiredCacheDate(state.assemblydata[assemblyIdentifier].access_date)
+    const wrongUser = oauthUserID != state.contenttree[contenttreeID]?.access_sub
     if (wrongUser) {
-      // Delete immediately the cached data
-      console.log("wrong user: content has been deleted")
-      dispatch('delete_contenttree', { contenttreeID: contenttreeID })
+      // delete the full contenttree store
+      console.log("WRONG user: content has been deleted")
+      Vue.set(state, 'contenttree', {})
     }
 
-    if (expired || wrongUser) {
-      // too old cache: load the data from resource server...
-      console.log('Cache invalid: reload contenttree', expired, wrongUser)
-      dispatch('retrieveContenttree', {
-        assemblyIdentifier: assemblyIdentifier,
-        contenttreeID: contenttreeID,
-        timelag: true
-      })
+    const emptyContenttree = !(state.contenttree[contenttreeID])
+    const expired = !emptyContenttree && api.expiredCacheDate(state.contenttree[contenttreeID]?.access_date)
+    if (!expired && !emptyContenttree && !wrongUser) {
+      // CACHE IS UP TO DATE!
+      console.log('Contenttree Cache IS UP TO DATE')
+      return (true)
     }
-    return (null)
+
+    // too old or missing cache: load the data from resource server...
+    console.log('Cache invalid: reload contenttree', expired, wrongUser, emptyContenttree)
+    dispatch('retrieveContenttree', {
+      assemblyIdentifier: assemblyIdentifier,
+      contenttreeID: contenttreeID,
+      timelag: true
+    })
   }
 }
+
 
 const mutations = {
 
@@ -180,6 +174,7 @@ const mutations = {
         Vue.set(state.contenttree[contenttreeID].entries[modifiedContent.content.id], 'creator', modifiedContent.creator)
       }
     }
+    console.log("updated contenttree content", modifiedContents)
   },
 
   update_expanded_branches(state, { contenttreeID, startingContentID, expanded }) {
@@ -207,14 +202,14 @@ const mutations = {
     const progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
     if (!progression) {
       // prgression not created yet, rigth?
-      // console.log("missing progression")
+      console.log("missing progression")
       return (null)
     }
 
     // store value
     progression.rating = rating
     progression.rated = true
-    Vue.set(state.contenttree[contenttreeID].entries[contentID], 'prgression', progression)
+    Vue.set(state.contenttree[contenttreeID].entries[contentID], 'progression', progression)
     // console.log("new rating stored: ", rating)
   }
 }

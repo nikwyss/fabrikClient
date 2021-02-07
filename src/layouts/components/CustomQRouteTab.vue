@@ -38,8 +38,7 @@ import { QRouteTab  } from 'quasar'
 export default {
   name: 'CustomQRouteTab',
   props: ['name', 'disable', 'menuOffset', 'to', 'icon', 'label', 'tooltip', 'tooltipIfDisabled','highlighted'],
-
-  extends: QRouteTab,
+  extends: QRouteTab
 
   // methods: {
 
@@ -70,8 +69,8 @@ export default {
     // }
   // },
 
-  mounted () {
-    // this.$router !== void 0 && this.check_for_assembly_routes()
-  }
+  // mounted () {
+  //   // this.$router !== void 0 && this.check_for_assembly_routes()
+  // }
 }
 </script>

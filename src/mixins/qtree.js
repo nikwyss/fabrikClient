@@ -133,7 +133,7 @@ export default {
         },
 
         ...mapGetters({
-            assemblyIdentifier: 'assemblystore/assemblyIdentifier',
+            // assemblyIdentifier: 'assemblystore/assemblyIdentifier',
             get_allowed_node_types: 'contentstore/get_allowed_node_types',
             get_default_expanded_branches_from_store: 'contentstore/get_default_expanded_branches_from_store',
         }),

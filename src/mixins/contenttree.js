@@ -2,7 +2,7 @@ import { mapGetters } from 'vuex'
 import StageMixin from 'src/mixins/stage'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { runtimeStore } from "src/store/runtime.store"
-
+import { LayoutEventBus } from 'src/utils/eventbus.js'
 
 export default {
   // mixins: [StageMixin],
@@ -34,34 +34,29 @@ export default {
     contenttreeID: function () {
       // Mixin is only usable for pages with assemblyIdentifier in the URL
 
-      console.log("RETRIEVE contenttreeID..", this.routed_stage)
+      // console.log("RETRIEVE contenttreeID..", this.routed_stage)
       if (!this.routed_stage || !this.routed_stage?.stage?.contenttree_id) {
         console.log(" routed_stage not loaded")
         return (null)
       }
 
-      // this.$store.dispatch('contentstore/syncContenttree', {
-      //   assemblyIdentifier: this.assemblyIdentifier,
-      //   contenttreeID: this.routed_stage?.stage?.contenttree_id,
-      //   oauthUserID: this.oauth.userid
-      // })
-
       return (this.routed_stage?.stage?.contenttree_id)
     },
+
 
     contenttree: function () {
       if (!this.contenttreeID) {
         return null
       }
 
-      console.log('start fetching the contenttree', this.contenttreeID)
-      console.assert(this.assemblyIdentifier)
+      console.assert(runtimeStore.assemblyIdentifier)
 
 
       // retrieve from localStorage
       const contenttree = this.get_contenttree({
         contenttreeID: this.contenttreeID
       })
+
 
       return (contenttree)
     },
@@ -76,10 +71,9 @@ export default {
     openIndex: function () {
 
       // REDIRECT TO ARGUMENT PAGE
-      var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({
         name: this.routed_stage.stage.type, params: {
-          assemblyIdentifier: identifier,
+          assemblyIdentifier: runtimeStore.assemblyIdentifier,
           stageID: runtimeStore.stageID,
           contenttreeID: this.contenttreeID
         }
@@ -93,12 +87,10 @@ export default {
       }
 
       // REDIRECT TO ARGUMENT PAGE
-      // console.log(this.item)
-      var identifier = this.$route.params.assemblyIdentifier
       this.$router.push({
         name: this.routed_stage.stage.type,
         params: {
-          assemblyIdentifier: this.assemblyIdentifier,
+          assemblyIdentifier: runtimeStore.assemblyIdentifier,
           stageID: runtimeStore.stageID,
           contentID: contentID
         }
@@ -121,27 +113,25 @@ export default {
     }
   },
 
+  mounted() {
 
-
-  // created() {
-
-  //   // LayoutEventBus.$on('AssemblyLoaded', data => {
-  //   // LayoutEventBus.$on(['AssemblyLoaded', 'AfterLogout'], data => {
-  //   //   // TOKEN Changed: reload/reset of contenttree data needed?
-  //   //   console.log("shall we sync contentree?")
-  //   //   if (this.contenttreeID) {
-  //   //     console.log("SYNC contentTree (contenttree mixin) --------------------")
-  //   //     // TODO: remove any personal data when loggin out
-  //   //     this.$store.dispatch('contentstore/syncContenttree', {
-  //   //       assemblyIdentifier: this.assemblyIdentifier,
-  //   //       contenttreeID: this.contenttreeID,
-  //   //       oauthUserID: this.oauth.userid
-  //   //     })
-  //   //   }
-
-  //   //   console.log("---START MONITORS-------")
-  //   //   this.monitorApi()
-
-  //   // })
-  // }
+    // when stage has been loaded already
+    if (this.routed_stage?.stage.contenttree_id && this.oauth.userid) {
+      this.$store.dispatch('contentstore/syncContenttree', {
+        assemblyIdentifier: runtimeStore.assemblyIdentifier,
+        contenttreeID: this.routed_stage.stage.contenttree_id,
+        oauthUserID: this.oauth.userid
+      })
+    } else {
+      // Stage is not yet loaded: so wait until it is...
+      LayoutEventBus.$once("EventStageLoaded", (stage) => {
+        console.log(stage)
+        this.$store.dispatch('contentstore/syncContenttree', {
+          assemblyIdentifier: runtimeStore.assemblyIdentifier,
+          contenttreeID: stage.stage.contenttree_id,
+          oauthUserID: this.oauth.userid
+        })
+      });
+    }
+  }
 }

@@ -9,7 +9,7 @@ export default {
       // published_assemblies: this.published_assemblies,
       clickAssemblyLink: this.clickAssemblyLink,
       // assemblyName: this.assemblyName,
-      // assemblyIdentifier: this.assemblyIdentifier,
+      // assemblyIdentifier: runtimeStore.assemblyIdentifier,
       // IsThereNothingGoingOn: this.IsThereNothingGoingOn,
       // IsThereAnAssemblyInPublicState: this.IsThereAnAssemblyInPublicState,
       // IsThereAnAssemblyOngoing: this.IsThereAnAssemblyOngoing,

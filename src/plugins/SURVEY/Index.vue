@@ -118,7 +118,7 @@ export default {
       re = /:STAGEID:/g;
       newurl = newurl.replace(re, runtimeStore.stageID)
       re = /:ASSEMBLYIDENTIFIER:/g;
-      newurl = newurl.replace(re, this.assemblyIdentifier);
+      newurl = newurl.replace(re, runtimeStore.assemblyIdentifier);
       // console.log(USERID)
       // console.log(newurl)
       window.location.href = newurl;
@@ -145,7 +145,7 @@ export default {
 
       // Notify API
       const data = {
-        assembly_identifier: this.assemblyIdentifier,
+        assembly_identifier: runtimeStore.assemblyIdentifier,
         stage_id: parseInt(STAGEID),
         sub: parseInt((USERID)),
       }

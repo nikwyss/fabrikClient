@@ -124,7 +124,7 @@ const actions = {
     console.log("...is public index in sync?")
     if (state.publicIndex === null || state.publicIndex === undefined) {
       // no cached version exists: load the data from resource server...
-      console.log("...cache is empty")
+      console.log("...NO => cache is empty")
       dispatch('retrievePublicIndex')
       return (null)
     }
@@ -133,7 +133,7 @@ const actions = {
     const expired = api.expiredCacheDate(state.publicIndex.access_date)
     if (expired) {
       // too old cache: load the data from resource server...
-      console.log("...cache is outdated")
+      console.log("NO => ...cache is outdated")
       dispatch('retrievePublicIndex')
     }
 
@@ -148,8 +148,8 @@ const actions = {
         response => {
 
           // save data
+          console.log('save PublicIndex to cache.', response)
           console.assert(response.data !== null && response.data !== undefined)
-          console.log('save full contenttree to cache.', response.data.length)
           commit('storePublicIndex', response.data)
 
           // end loading

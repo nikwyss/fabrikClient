@@ -220,7 +220,8 @@ export default {
   methods: {
     
     clickAuthLink: function () {
-      const destination_route = { name: "home" };
+      // const destination_route = { name: "home" };
+      const destination_route = this.$router.currentRouteObject()
       this.oauth.login(destination_route);
     },
 
@@ -300,6 +301,8 @@ export default {
   }
 
   // mounted: function() {
+    // console.log(this.$router.currentRouteObject(), "current route")
+    // console.log(this.$router.currentRoute, "current route")
     
   //   // LayoutEventBus.$on("NewStageEntered", data => {
   //   //   console.log("EVENTBUS: New stage entered...", data)

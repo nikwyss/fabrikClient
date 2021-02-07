@@ -2,7 +2,7 @@
 
  <!-- :style="{'background-color': backgroundColor}" -->
   <div class="q-pa-md full-width" :class="noneResponse ? 'bg-orange-4' : 'bg-grey-1'">
-
+<!-- {{oauth.userid}} {{ progression_rating}} -->
     <!-- <q-badge color="secondary">
     </q-badge> -->
       Wie wichtig ist Ihnen dieses Thema? Bitte verschieben Sie den Regler.

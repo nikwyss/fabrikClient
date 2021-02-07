@@ -169,8 +169,8 @@ const ApiService = {
 
     // retry parameter is set within the interceptor on 403 errors.
     // At this point, the jwt token is already refreshed (within the interceptor) 
-    console.log('PERMISSION ERROR: Initiate a secont attempt')
     if (response.retoken) {
+      console.log('PERMISSION ERROR: Initiate a secont attempt')
 
       // Re-issue tokens (in ApiService)
       // console.log("refresh token status set")
@@ -189,7 +189,6 @@ const ApiService = {
       // Headers are set again. dont neet to this.
       temp_oauth_jwt = null
     }
-
 
     if (temp_oauth_jwt && WithoutAuthHeader(data)) {
       // re-set the header
@@ -280,8 +279,8 @@ const axiosErrorHandling = async function (error) {
       }
 
       // Token Refresh, seems not be possible / desired :-(
+      console.log('Not Authenticated')
       LayoutEventBus.$emit('showAuthenticationWarning')
-      console.log('Invalid Authentication Token')
       return Promise.reject(error)
     }
   }

@@ -30,7 +30,7 @@ Vue.filter('formatTimeLeft', function (value) {
   if (months > 1) {
     result.push(`${months} Monate`)
     days -= (30 * days)
-    console.log(days)
+    // console.log(days)
     hours = 0
     minutes = 0
     seconds = 0

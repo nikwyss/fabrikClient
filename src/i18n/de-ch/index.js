@@ -312,6 +312,8 @@ export default {
   },
 
   contenttree: {
+    comment_section_tooltip: 'Haben Sie an dieser Stelle Fragen oder Anregungen?',
+    close_comment_section_tooltip: 'Klicken Sie hier um die Kommentarspalte wieder zu schliessen',
     no_entries: 'Es sind noch keine Kommentare oder Fragen vorhanden. Machen Sie den Anfang?',
     no_filter_results: 'Keine Einträge passen zu dieser Sucheingabe!',
     created_by: 'von {username}',
@@ -361,6 +363,10 @@ export default {
         wrong_contenttype: 'The content has a wrong type.',
         type_misconfiguration: 'The Contenttree is misconfigured. No type can be assigned to the content.'
       }
+    },
+    am: {
+      index: `Haben an dieser Stelle Fragen oder Anregungen? Die anderen Delegierten
+                würde das sicher auch interessieren. | Hier ist Platz für Fragen und Kommentare zum obigen Abschnitt. | Hier wurden von anderen Besuchern bereits Beiträge eingegeben.`
     }
   }
 }

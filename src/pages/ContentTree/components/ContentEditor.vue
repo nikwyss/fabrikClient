@@ -83,6 +83,7 @@
 <script>
 import {mapGetters, mapActions } from "vuex"
 import api from "src/utils/api"
+import { runtimeStore } from 'src/store/runtime.store';
 
 export default {
   name: "ContentEditor",
@@ -206,7 +207,7 @@ export default {
       // console.log(this.localmodel)
       console.log("Save content");
       console.assert(this.CONTENTTREE.contenttreeID);
-      var assemblyIdentifier = this.$route.params.assemblyIdentifier;
+      var assemblyIdentifier = runtimeStore.assemblyIdentifier;
       console.assert(assemblyIdentifier);
 
       api

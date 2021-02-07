@@ -9,7 +9,7 @@
       exact
       :to="{ 
         name: 'assembly_home', 
-        params: {assemblyIdentifier: this.assemblyIdentifier}
+        params: {assemblyIdentifier: assemblyIdentifier}
       }"
       :label="$t('menu.items.home.label')"
       :menuOffset="menuOffset"
@@ -25,7 +25,7 @@
       :to="{
         name: 'VAA_QUESTIONNAIRE_TOPICS',
         params: {
-          assemblyIdentifier: this.assemblyIdentifier,
+          assemblyIdentifier: assemblyIdentifier,
           stageID: stages_by_section[1].stage.id
           }
       }"
@@ -43,7 +43,7 @@
       :to="{
         name: 'VAA_QUESTIONNAIRE_QUESTIONS',
         params: {
-          assemblyIdentifier: this.assemblyIdentifier,
+          assemblyIdentifier: assemblyIdentifier,
           stageID: stages_by_section[2].stage.id
           }
       }"
@@ -63,7 +63,7 @@
       :to="{
         name: 'VAA_QUESTIONNAIRE_ANALYSES',
         params: {
-          assemblyIdentifier: this.assemblyIdentifier,
+          assemblyIdentifier: assemblyIdentifier,
           stageID: stages_by_section[2].stage.id
         }
       }"
@@ -84,6 +84,7 @@
 <script>
 import CustomQRouteTab from "src/layouts/components/CustomQRouteTab";
 import VAAMixin from '../mixins/VAA'
+import { runtimeStore } from 'src/store/runtime.store';
 
 export default {
 
@@ -93,11 +94,13 @@ export default {
   components: { CustomQRouteTab },
   data: function () {
     return {
+      assemblyIdentifier: runtimeStore.assemblyIdentifier,
       currenttab: "",
     };
   },
 
   computed: {
+
     stages_by_section: function () {
       if (!this.sections) {
         return null

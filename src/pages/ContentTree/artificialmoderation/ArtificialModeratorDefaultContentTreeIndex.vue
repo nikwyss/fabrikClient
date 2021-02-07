@@ -24,6 +24,7 @@
 <script>
 import ArtificialModerator from 'src/artificialmoderation/components/ArtificialModerator'
 import { mapGetters } from "vuex";
+// import { runtimeStore } from "src/store/runtime.store";
 
 export default{
     name: "ArtificialModeratorContentTreeIndex",
@@ -32,7 +33,7 @@ export default{
     inject: ['popup_content_form'],
     computed: { 
       ...mapGetters(
-        'assemblystore', ['assemblyIdentifier', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+        'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
       )
     },
     methods: {

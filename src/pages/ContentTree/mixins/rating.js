@@ -1,5 +1,6 @@
 import { mapActions } from "vuex"
 import api from "src/utils/api"
+import { runtimeStore } from "src/store/runtime.store";
 
 export default {
   name: "ContentRatingSlider",
@@ -17,13 +18,13 @@ export default {
       console.log("set rating...");
       console.assert(rating !== null && rating !== undefined);
       console.assert(this.content.content.id);
-      var assemblyIdentifier = this.$route.params.assemblyIdentifier;
+      // var assemblyIdentifier = runtimeStore.runtimeStore.assemblyIdentifier;
 
       // TODO: is thiss necessary? (at least not in case of the slider => model variable)
       this.progression_rating = rating;
       console.log("...=> api")
       api.setContentRating(
-        assemblyIdentifier,
+        runtimeStore.assemblyIdentifier,
         this.content.content.id,
         rating
       )

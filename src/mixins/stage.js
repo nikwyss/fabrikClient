@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex'
 import AssemblyMixin from 'src/mixins/assembly'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
-// import { LayoutEventBus } from 'src/utils/eventbus'
+import { LayoutEventBus } from 'src/utils/eventbus'
 import { runtimeStore } from "src/store/runtime.store"
 
 export default {
@@ -29,19 +29,20 @@ export default {
     // },
 
     routed_stage: function () {
-      console.assert(runtimeStore.stageID)
 
-      if (!this.get_assembly_stage(runtimeStore.stageID)) {
+      if (!this.assembly_stages) {
         console.log('assembly is not yet loaded')
+        return (null)
+      }
+
+      if (!this.assembly_stages[runtimeStore.stageID]) {
+        console.error('invalid stage in this assembly')
         return null
       }
 
-      // const stage = this.assembly_stages[runtimeStore.stageID]
-      // LayoutEventBus.$emit("NewStageEntered", {
-      //   assemblyIdentifier: this.assemblyIdentifier,
-      //   stage: this.assembly_stages[runtimeStore.stageID]
-      // })
-      return (this.assembly_stages[runtimeStore.stageID])
+      const stage = this.assembly_stages[runtimeStore.stageID]
+      LayoutEventBus.$emit("EventStageLoaded", stage)
+      return (stage)
     },
 
     ...mapGetters({
@@ -77,7 +78,7 @@ export default {
 
       // Monitor about stage visit
       let data = {
-        assembly_identifier: this.assemblyIdentifier,
+        assembly_identifier: runtimeStore.assemblyIdentifier,
         stage_id: runtimeStore.stageID
       }
       this.$store.dispatch('monitorApi', {

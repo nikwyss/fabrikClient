@@ -51,7 +51,8 @@ export default {
   async publicProfile() {
 
     // Renew token (if required)
-    await Vue.prototype.oauth.refresh_token_if_required()
+    // refresh_token method is done earlier, while launching app.
+    // await Vue.prototype.oauth.refresh_token_if_required()
 
     /* Notify Resource Server about certain user activities in the client app. */
     let url = `${process.env.ENV_APISERVER_URL}/profile`
@@ -110,6 +111,7 @@ export default {
     if (!result.data.OK) {
       throw ("Rating could not be saved");
     }
+
     return (result)
   },
 

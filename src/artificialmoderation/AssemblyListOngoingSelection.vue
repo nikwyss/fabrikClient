@@ -9,7 +9,7 @@
       :ongoing="ongoing"
     >
 
-      <template v-if="IsDelegate && !oauth.payload.userEmail">
+      <template v-if="IsDelegate && !oauth.incompleteProfile">
         Bevor es los geht, müsssen Sie noch kurz beim Sekretariat vorbei. Dort wird noch eine Kontaktangabe von Ihnen benötigt.
       </template>
 
@@ -42,11 +42,12 @@
             /> -->
       </template>
 
-      <template v-if="oauth.authorized && !assemblyAcls.length">
+      <template v-if="oauth.authorized && (!assemblyAcls || !assemblyAcls.length)">
         Wir können Sie im Moment nicht zu der Veranstaltung zulassen.
       </template>
-
-      <template v-if="!oauth.authorized && !assemblyAcls.length">
+      
+      <!-- TODO: use v-else -->
+      <template v-if="!oauth.authorized && (!assemblyAcls || !assemblyAcls.length)">
         {{$t('assemblies.am.invitation_to_authenticate')}}
       </template>
 
@@ -69,7 +70,7 @@
         <q-chip
           size="md"
           icon="mdi-forward"
-          v-if="assemblyAcls.length > 0"
+          v-if="assemblyAcls && assemblyAcls.length > 0"
           outline
           color="primary"
           text-color="primary"
@@ -111,7 +112,7 @@ export default {
   inject: ["clickAssemblyLink"],
   computed: {
       ...mapGetters(
-        'assemblystore', ['assemblyAcls', 'assemblyIdentifier', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+        'assemblystore', ['assemblyAcls', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
       )
   //   assemblyAcls: function () {
   //     return this.oauth.acls(this.assembly.identifier);

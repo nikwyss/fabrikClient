@@ -7,7 +7,9 @@ import { Router } from 'src/router'
 import api from 'src/utils/api'
 import constants from 'src/utils/constants'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
+import { runtimeStore } from "src/store/runtime.store";
 // import { date } from 'quasar'
+
 
 var state = {
   monitors: {},
@@ -18,23 +20,23 @@ var state = {
 
 const getters = {
 
-  assemblyIdentifier: (state, getters) => {
+  // runtimeStore.assemblyIdentifier: (state, getters) => {
 
-    // NEEDED, encforces responsivity of the router params!
-    state.monitors.routed_assembly_identifier = Date.now()
-    const last_update = state.monitors.routed_assembly_identifier
-    void last_update
+  //   // NEEDED, encforces responsivity of the router params!
+  //   state.monitors.routed_assembly_identifier = Date.now()
+  //   const last_update = state.monitors.routed_assembly_identifier
+  //   void last_update
 
-    return Router.currentRoute.params?.assemblyIdentifier
-  },
+  //   return Router.currentRoute.params?.assemblyIdentifier
+  // },
 
   assembly: (state, getters) => {
 
-    if (!getters.assemblyIdentifier) {
+    if (!runtimeStore.assemblyIdentifier) {
       return null
     }
 
-    return (state.assemblydata[getters.assemblyIdentifier]?.assembly)
+    return (state.assemblydata[runtimeStore.assemblyIdentifier]?.assembly)
   },
 
   assemblyName: (state, getters) => {
@@ -51,11 +53,11 @@ const getters = {
    */
   assemblyAcls: (state, getters, rootState, rootGetters) => {
 
-    if (!getters.assemblyIdentifier) {
+    if (!runtimeStore.assemblyIdentifier) {
       return null
     }
     const translateAclMethod = rootGetters["publicprofilestore/translateOauthAcls"]
-    return translateAclMethod(getters.assemblyIdentifier)
+    return translateAclMethod(runtimeStore.assemblyIdentifier)
   },
 
   IsManager: (state, getters) => {
@@ -100,25 +102,27 @@ const getters = {
   assembly_userid: (state, getters) => {
     console.log(">> NOTE: cache userid")
 
-    if (!getters.assemblyIdentifier) {
+    if (!runtimeStore.assemblyIdentifier) {
       return null
     }
-    return state.assemblydata[getters.assemblyIdentifier]?.access_sub
+    return state.assemblydata[runtimeStore.assemblyIdentifier]?.access_sub
   },
 
   assembly_stages: (state, getters) => {
     console.log(">> NOTE: assembly_stages")
 
-    if (!getters.assemblyIdentifier) {
+    if (!runtimeStore.assemblyIdentifier) {
       return null
     }
 
-    return state.assemblydata[getters.assemblyIdentifier]?.stages
+    return state.assemblydata[runtimeStore.assemblyIdentifier]?.stages
   },
 
-  get_assembly_stage: (state, getters, rootState, rootGetters, test1, test2) => (stageID) => {
+  stage: (state, getters, rootState, rootGetters, test1, test2) => {
     const stages = getters.assembly_stages
-    return (stages[stageID])
+    console.log("START XXXXXXXXXXXX")
+
+    return (stages[runtimeStore.stageID])
   },
 
   assembly_sorted_stages: (state, getters) => {
@@ -296,7 +300,7 @@ const actions = {
 
   syncAssembly: ({ state, dispatch, getters, rootState, rootGetters }, { oauthUserID }) => {
     // console.log(` sync assembly ${assemblyIdentifier}`)
-    const assemblyIdentifier = getters.assemblyIdentifier
+    const assemblyIdentifier = runtimeStore.assemblyIdentifier
     if (!state.assemblydata[assemblyIdentifier]) {
       // no cached version exists: load the data from resource server...
       dispatch('retrieveAssembly', { assemblyIdentifier: assemblyIdentifier })
@@ -314,30 +318,20 @@ const actions = {
       return null
     }
 
-    console.log("Assembly retrieved from localStorage")
+    console.log("AssemblyLoaded: Assembly retrieved from localStorage")
     LayoutEventBus.$emit('AssemblyLoaded')
     return (null)
   },
 
 
-  syncStage: ({ state, dispatch, getters, rootState, rootGetters})  => (stageID) => {
-    // const stages = getters.assembly_stages
-    // console.assert(stages[stageID])
+  // syncStage: ({ state, dispatch, getters, rootState, rootGetters }) => (stageID) => {
+  //   // const stages = getters.assembly_stages
+  //   // console.assert(stages[stageID])
 
-    // preload contenttree (if attached)
-    const contenttree_id = stages[stageID]?.stage.contenttree_id
-    if (contenttree_id) {
-      console.log(test1, test2)
-      console.log("Preload/sync: contenttree")
-      // this.$store.dispatch('contentstore/syncContenttree', {
-      //   assemblyIdentifier: getters.assemblyIdentifier,
-      //   contenttreeID: contenttree_id,
-      //   oauthUserID: getters.assembly_userid
-      // })
-    }
-    return (stages[stageID])
+  //   // preload contenttree (if attached)
+  //   return (stages[stageID])
 
-  },
+  // },
 
   storeAssemblyProgression({ commit }, { assemblyIdentifier, stageID, progression }) {
     console.log('Store stage progression in localstorage')
@@ -358,7 +352,7 @@ const actions = {
           commit('storeAssembly', { assemblyIdentifier, data })
 
           // end loading
-          console.log("Assembly retrieved from Resource Server")
+          console.log("EVENT: AssemblyLoaded: Assembly retrieved from Resource Server")
           LayoutEventBus.$emit('AssemblyLoaded')
           LayoutEventBus.$emit('hideLoading')
 

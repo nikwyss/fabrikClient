@@ -1,20 +1,21 @@
 // import { boot } from 'quasar/wrappers';
+import store from 'src/store'
 
-/// POLYFILL (IE11 for oAuth2 PKCE Module)
-; (function (window) {
-  if (typeof window.TextEncoder !== 'function') {
-    const TextEncodingPolyfill = require('text-encoding');
-    window.TextEncoder = TextEncodingPolyfill.TextEncoder;
-    window.TextDecoder = TextEncodingPolyfill.TextDecoder;
-  }
-  if (typeof window.crypto === 'undefined') {
-    const { webcrypto } = require("webcrypto-shim")
-  }
-  if (typeof window.fetch === 'undefined') {
-    const { fetch } = require('whatwg-fetch')
-    // window.fetch = fetch
-  }
-}(window));
+  /// POLYFILL (IE11 for oAuth2 PKCE Module)
+  ; (function (window) {
+    if (typeof window.TextEncoder !== 'function') {
+      const TextEncodingPolyfill = require('text-encoding');
+      window.TextEncoder = TextEncodingPolyfill.TextEncoder;
+      window.TextDecoder = TextEncodingPolyfill.TextDecoder;
+    }
+    if (typeof window.crypto === 'undefined') {
+      const { webcrypto } = require("webcrypto-shim")
+    }
+    if (typeof window.fetch === 'undefined') {
+      const { fetch } = require('whatwg-fetch')
+      // window.fetch = fetch
+    }
+  }(window));
 
 
 const { OAuth2AuthCodePKCE } = require('@bity/oauth2-auth-code-pkce')
@@ -130,6 +131,10 @@ export default {
           if (this.payload) {
             return (this.payload.sub)
           }
+        },
+
+        incompleteProfile: function () {
+          return (!this.payload || !this.payload.userEmail)
         }
       },
 
@@ -155,7 +160,6 @@ export default {
         refresh_token_if_required: async function () {
           // console.log(this.payload.exp)
           if (Vue.prototype.pkce.isAuthorized()) {
-
             const expired = Vue.prototype.pkce.isAccessTokenExpired()
             if (expired) {
               await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
@@ -170,12 +174,38 @@ export default {
         // temp
         console.log("oAuth2 Plugin created")
 
+        // LayoutEventBus.$on("AuthenticationLoaded", () => {
+
+        //   // SYNC USER PROFILE
+        //   // is email already set: if not => redirect to userprofile...
+        //   console.log("app.vue: AuthenticationLoaded => syncProfile..")
+
+        //   Vue.$store.dispatch("publicprofilestore/syncProfile", {
+        //     oauthUserID: this.userid,
+        //     oauthUserEmail: this.payload.userEmail
+        //   })
+
+        //   // this.$emit('AppLoaded')
+        // })
+
         LayoutEventBus.$on('AfterLogout', data => {
           this.enforce_reactivity += 1
         })
 
         LayoutEventBus.$on('ReloadPayload', data => {
           this.enforce_reactivity += 1
+        })
+
+        LayoutEventBus.$once('AuthenticationLoaded', data => {
+          // SYNC USER PROFILE
+          // is email already set: if not => redirect to userprofile...
+          console.log("--EVENT AuthenticationLoaded => syncProfile..")
+          if (this.userid) {
+            store.dispatch("publicprofilestore/syncProfile", {
+              oauthUserID: this.userid,
+              oauthUserEmail: this.payload?.userEmail
+            });
+          }
         })
 
         // console.log("INI oAUTH2 Mixin")
@@ -198,8 +228,9 @@ export default {
 
               // Authentication process is finished: it is clarified, if a user is logged in or not
               // you may start the user-specific api calls..
-              console.log("AUTHENTICATION LOADED")
-              LayoutEventBus.$emit('AuthenticationLoaded')
+              if (this.userid) {
+                LayoutEventBus.$emit('AuthenticationLoaded')
+              }
 
             })
               .catch(error => {
@@ -211,45 +242,38 @@ export default {
 
                 // Authentication process is finished: it is clarified, if a user is logged in or not
                 // you may start the user-specific api calls..
-                console.log("emit AuthenticationLoaded")
-                LayoutEventBus.$emit('AuthenticationLoaded')
+                if (this.userid) {
+                  LayoutEventBus.$emit('AuthenticationLoaded')
+                }
 
               })
           } else {
-
-            // DEFAULT Browser Reload
-            console.log("Relaunch App: Read Authorization Token from Localstorage")
-            const jwt = Vue.prototype.pkce?.state?.accessToken?.value
-            if (jwt) {
-              console.log("...emit AfterTokenChanged")
-              LayoutEventBus.$emit('AfterTokenChanged', jwt)
+            if (this.userid) {
+              LayoutEventBus.$emit('AuthenticationLoaded')
             }
-
-            // Authentication process is finished: it is clarified, if a user is logged in or not
-            // you may start the user-specific api calls..
-            console.log("emit AuthenticationLoaded")
-            LayoutEventBus.$emit('AuthenticationLoaded')
-
           }
         })
           .catch((error) => {
             LayoutEventBus.$emit('AfterTokenChanged', null)
-            // if (error) {
-            //   LayoutEventBus.$emit('LoginError', error)
-            //   console.error(error)
-            //   Vue.prototype.logout()
-            // }
-            // Authentication process is finished: it is clarified, if a user is logged in or not
-            // you may start the user-specific api calls..
-            console.log("AUTHENTICATION LOADED", error)
-            // LayoutEventBus.$emit('AuthenticationLoaded')
           })
 
         if (!this.ongoing) {
           // Authentication process is finished: it is clarified, if a user is logged in or not
           // you may start the user-specific api calls..
-          console.log("AUTHENTICATION LOADED")
-          LayoutEventBus.$emit('AuthenticationLoaded')
+
+          // AfterTokenChanged
+
+          // DEFAULT Browser Reload
+          console.log("1.))) Relaunch App: Read Authorization Token from Localstorage")
+          const jwt = Vue.prototype.pkce?.state?.accessToken?.value
+          if (jwt) {
+            console.log("...emit AfterTokenChanged")
+            LayoutEventBus.$emit('AfterTokenChanged', jwt)
+          }
+
+          if (this.userid) {
+            LayoutEventBus.$emit('AuthenticationLoaded')
+          }
         }
       }
     })

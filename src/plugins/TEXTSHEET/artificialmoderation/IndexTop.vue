@@ -39,7 +39,7 @@ export default{
     computed: {
     ...mapGetters(
         'assemblystore',
-        ['assemblyIdentifier', 'is_stage_new','is_stage_completed', 'is_stage_first']
+        ['is_stage_new','is_stage_completed', 'is_stage_first']
     )}
 }
 </script>

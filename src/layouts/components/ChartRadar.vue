@@ -1,5 +1,5 @@
 <template>
-    <ChartRadarBase :chart-data="radarChartData" :options="radarChartOptions" style="width:100%; max-width:700px;"/>
+    <ChartRadarBase v-if="this.public_profile" :chart-data="radarChartData" :options="radarChartOptions" style="width:100%; max-width:700px;"/>
 </template>
 
 
@@ -24,7 +24,7 @@ export default {
         labels: this.linebreakLabels,
         datasets: [
           {
-            label: this.public_profile.U,
+            label: this.public_profile?.U,
             backgroundColor: "rgb(54, 162, 235, 0.55)",
             data: this.personalData
           },

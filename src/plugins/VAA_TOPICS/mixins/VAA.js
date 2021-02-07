@@ -61,7 +61,7 @@ export default {
 
     ...mapGetters(
       'assemblystore',
-      ['assembly_sorted_stages', 'assemblyIdentifier', 'assembly_stages',
+      ['assembly_sorted_stages', 'assembly_stages',
         'assembly_sorted_stages', 'is_stage_accessible']
     )
   },

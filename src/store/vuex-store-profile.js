@@ -80,7 +80,8 @@ const actions = {
 
     if (!oauthUserID) {
       // Not logged in.
-      console.assert(!state.publicProfile)
+      console.log("NOT LOGGED IN")
+      // console.assert(!state.publicProfile)
       return (null)
     }
 
@@ -147,7 +148,6 @@ const actions = {
 
           console.log('save retrieved profile to cache.')
           const data = response.data
-          console.log(data)
           commit('storePublicProfile', { data })
 
           dispatch('checkProfileRequirements', { oauthUserID, oauthUserEmail })
@@ -175,7 +175,12 @@ const mutations = {
 
   storePublicProfile(state, { data }) {
     // Vue.set  makes the change reactive!!
+    // console.log(data.user, "llllllll")
+    // Vue.set(state.publicProfile.user, 'U', data.user.U)
+    // Vue.set(state.publicProfile, 'user', data.user)
     Vue.set(state, 'publicProfile', data)
+    // Vue.set(state.publicProfile, 'user', data.user)
+    // Vue.set(state.publicProfile.user, 'U', data.user.U)
   },
 
   storeOauthAcls(state, oauthAcls) {

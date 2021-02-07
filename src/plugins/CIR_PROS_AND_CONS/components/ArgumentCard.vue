@@ -73,19 +73,19 @@
 import ContentRatingThumbs from "src/pages/ContentTree/components/ContentRatingThumbs"
 import ContentEditor from "src/pages/ContentTree/components/ContentEditor"
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 
 export default {
   name: 'ArgumentCard',
   computed: {
     // assemblyAcls: function () {
-    //   return this.oauth.acls(this.assemblyIdentifier);
+    //   return this.oauth.acls(runtimeStore.assemblyIdentifier);
     // }
   },
   props: ['content', 'standalone', 'default_content_type'],
   components: { ContentRatingThumbs, ContentEditor, ContentToolbar},
-  inject: ['openIndex', 'openArgument'],
-  ...mapGetters( 'assemblystore', ['assemblyIdentifier'])
+  inject: ['openIndex', 'openArgument']
+  // ...mapGetters( 'assemblystore', ['assemblyIdentifier'])
 
 }
 </script>

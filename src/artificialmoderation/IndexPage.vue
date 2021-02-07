@@ -155,7 +155,7 @@ export default {
     },
 
     clickAuthLink: function () {
-      const destination_route = { name: "assemblies_ongoing_list" };
+      const destination_route = { name: "home" };
       this.oauth.login(destination_route);
     },
   },

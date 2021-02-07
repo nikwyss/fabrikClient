@@ -3,6 +3,7 @@ import { LayoutEventBus } from 'src/utils/eventbus.js'
 // import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { scroll } from 'quasar'
 // TODO: do without: vue-reactive-provide, instead write a plugin...
+import { runtimeStore } from "src/store/runtime.store";
 
 const { getScrollTarget, setScrollPosition } = scroll
 
@@ -33,7 +34,7 @@ export default {
 
     ...mapGetters(
       'assemblystore',
-      ['assemblyIdentifier', 'assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'last_accessible_stage',
+      ['assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'last_accessible_stage',
         'is_stage_done', 'is_stage_disabled', 'is_stage_completed', 'last_accessible_stage', 'is_stage_new', 'is_stage_last',
         'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages', 'get_stage_number_by_stage',
         'find_next_accessible_stage', 'assembly_stages', 'assembly', 'assembly_configuration', 'IsDelegate', 'IsManager'
@@ -44,7 +45,7 @@ export default {
   methods: {
 
     clickBackToAssemblyListButton: function () {
-      this.set_current_assemblyIdentifier(null)
+      runtimeStore.setAssemblyIdentifier(null)
       this.$router.push({ name: 'assemblies' })
     },
 
@@ -54,18 +55,18 @@ export default {
 
     monitorApiAssembly: function () {
       /* By this method we allow the API to monitor user activities */
-      console.assert(this.assemblyIdentifier, "in monitorApiAssembly")
+      console.assert(runtimeStore.assemblyIdentifier, "in monitorApiAssembly")
 
       // Monitor about stage visit
       let data = {
-        assembly_identifier: this.assemblyIdentifier
+        assembly_identifier: runtimeStore.assemblyIdentifier
       }
 
       console.log("monitor assembly data")
       this.$store.dispatch('monitorApi', {
         event: this.Constants.MONITOR_ASSEMBLY_ENTERING,
         data: data,
-        key: this.assemblyIdentifier
+        key: runtimeStore.assemblyIdentifier
       })
     },
 
@@ -103,7 +104,7 @@ export default {
 
       route = {
         name: 'assembly_home',
-        params: { assemblyIdentifier: this.assemblyIdentifier }
+        params: { assemblyIdentifier: runtimeStore.assemblyIdentifier }
       }
       // }
       console.log(route)

@@ -123,6 +123,7 @@ import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import ArtificialModeratorAssemblyHome from "src/artificialmoderation/AssemblyHome";
 import ArtificialModeratorAssemblyStage from "src/artificialmoderation/AssemblyStage";
 import { mapGetters} from "vuex";
+import { runtimeStore } from "src/store/runtime.store";
 
 export default {
   name: "PageAssemblyHome",
@@ -165,7 +166,7 @@ export default {
     clickPluginLink: function (stage) {
       console.log("clickPluginLink");
       var params = {
-        assemblyIdentifier: this.assemblyIdentifier,
+        assemblyIdentifier: runtimeStore.assemblyIdentifier,
         stageID: stage.stage.id,
         contenttreeID: stage.stage.contenttree_id,
       };

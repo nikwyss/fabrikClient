@@ -1,5 +1,6 @@
 <template>
   <div id="q-app">
+    
     <router-view
       :key="componentKey"
       ref="maincontent"
@@ -10,7 +11,7 @@
 <script>
 import { mapActions, mapGetters} from "vuex"
 import { LayoutEventBus } from "src/utils/eventbus"
-// import api from "src/utils/api";
+import store from "src/store";
 
 export default {
   name: "App",
@@ -32,6 +33,7 @@ export default {
 
 
   created() {
+    console.log("GLOBAL EVENTBUS LISTENERS")
 
     // Catch globally all show and hide TextLoading events
     LayoutEventBus.$on("reload", () => {
@@ -156,25 +158,24 @@ export default {
       }
     })
 
-    LayoutEventBus.$on("AuthenticationLoaded", () => {
+    // LayoutEventBus.$on("AuthenticationLoaded", () => {
 
-      // SYNC USER PROFILE
-      // is email already set: if not => redirect to userprofile...
-      console.log("app.vue: AuthenticationLoaded => syncProfile..")
-      this.$store.dispatch("publicprofilestore/syncProfile", {
-        oauthUserID: this.oauth.userid,
-        oauthUserEmail: this.oauth.payload.userEmail
-      });
+    //   // // SYNC USER PROFILE
+    //   // // is email already set: if not => redirect to userprofile...
+    //   // console.log("app.vue: AuthenticationLoaded => syncProfile..")
+    //   // store.dispatch("publicprofilestore/syncProfile", {
+    //   //   oauthUserID: this.oauth.userid,
+    //   //   oauthUserEmail: this.oauth.payload.userEmail
+    //   // });
 
-      this.$emit('AppLoaded')
-    })
+    //   this.$emit('AppLoaded')
+    // })
 
 
     LayoutEventBus.$on("PublicProfileLoaded", () => {
 
       // SYNC USER PROFILE
       // is email already set: if not => redirect to userprofile...
-      console.log("app.vue: AuthenticationLoaded => syncProfile..")
       this.$store.dispatch("publicprofilestore/setUsernameDerivate", {
         usernameDerivate: this.usernameDerivate()});
     });
@@ -182,20 +183,14 @@ export default {
     LayoutEventBus.$on("hideNotificationBanners", (data) => {
       this.$refs?.maincontent?.hideNotificationBanner();
     })
-    // TODO: are thes event catch multiple times?
+    // TODO: are these event catch multiple times?
   },
   
   
   mounted: function () {
-    const that = this;
-    this.$root.reload = function () {
-      console.log("reload initiated...");
-      that.componentKey += 1;
-      console.log(that.componentKey);
-    }
-
+    this.$root.reload = () => { this.componentKey += 1}
     this.touchRandomSeed()
-    // console.log("APP MOUNTED...");
+    console.log("APP MOUNTED...");
   },
 }
 </script>

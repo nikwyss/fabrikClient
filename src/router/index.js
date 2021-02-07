@@ -30,12 +30,14 @@ export default route(function ({ Vue }) {
 
   Router.afterEach((to, from) => {
 
-    if (to.params?.stageID) {
-      runtimeMutations.setStageID(to.params?.stageID)
-    }
     if (to.params?.assemblyIdentifier) {
-      runtimeMutations.setAssemblyIdentifier(to.params?.assemblyIdentifier)
+      runtimeMutations.setAssemblyIdentifier(to.params.assemblyIdentifier)
+
+      if (to.params?.stageID) {
+        runtimeMutations.setStageID(to.params.stageID)
+      }
     }
+
 
     // store.Router
     store.dispatch('assemblystore/monitor_route_changes', { to, from })

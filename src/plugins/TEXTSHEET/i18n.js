@@ -15,14 +15,6 @@ const messages = {
                 button_end_of_page_on_last_stage: `Sie sind schon fertig mit dem Text? Dann folgen Sie mir bitte.`,
                 already_seen: `Sie können sich das ruhig noch etwas länger anschauen und bei Bedarf kommentieren.`
             }
-        },
-        contenttree: {
-            comment_section_tooltip: 'Haben Sie an dieser Stelle Fragen oder Anregungen?',
-            close_comment_section_tooltip: 'Klicken Sie hier um die Kommentarspalte wieder zu schliessen',
-            am: {
-                index: `Haben an dieser Stelle Fragen oder Anregungen? Die anderen Delegierten
-                würde das sicher auch interessieren. | Hier ist Platz für Fragen und Kommentare zum obigen Abschnitt. | Hier wurden von anderen Besuchern bereits Beiträge eingegeben.`
-            }
         }
     }
 }

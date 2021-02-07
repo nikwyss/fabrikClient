@@ -35,7 +35,7 @@ export default{
         //     return this.oauth.acls(assemblyIdentifier);
         // },
       ...mapGetters(
-        'assemblystore', ['assemblyIdentifier', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+        'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
       )
     },
     methods: {
