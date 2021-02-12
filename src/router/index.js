@@ -38,9 +38,6 @@ export default route(function ({ Vue }) {
       }
     }
 
-
-    // store.Router
-    store.dispatch('assemblystore/monitor_route_changes', { to, from })
     // console.log(to, from, store, Vue)
     // store.dispatch('assemblystore/monitor_route_changes', { to, from })
   })

@@ -35,7 +35,7 @@ export default {
         return null
       }
 
-      console.log("STAGE IS LOADED", runtimeStore.stageID)
+      console.log("STAGE IS LOADED", runtimeStore.stageID, this.assembly_stages)
       return (this.assembly_stages[runtimeStore.stageID])
     },
 
@@ -77,5 +77,14 @@ export default {
         return (this.stageTypes[type] == section)
       })
     }
-  }
+  },
+
+
+  // beforeUnmount: function () {
+  //   alert("beforeUnmount")
+  // },
+
+  // beforeUpdate: function () {
+  //   alert("beforeUpdate")
+  // }
 }

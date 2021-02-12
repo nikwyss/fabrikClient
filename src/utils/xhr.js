@@ -160,12 +160,9 @@ const ApiService = {
 
     var response = null
     response = await axios(data)
-    console.log('just launched')
 
     // TOKEN SHOULD BE ALRIGHT NOW:
     // DO the secont attempt
-    // if (response.status == 449){
-    // if (ReloginOnStatus403(data)) {
 
     // retry parameter is set within the interceptor on 403 errors.
     // At this point, the jwt token is already refreshed (within the interceptor) 

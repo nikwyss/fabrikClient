@@ -9,7 +9,6 @@
     <!-- ASSEMBLY DESCRIPTION -->
     <div >
 
-
       <!-- <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div> -->
       <h2>Um was wir sie heute bitten</h2>
       <!-- <h2>{{ assembly.caption }}</h2> -->
@@ -21,10 +20,12 @@
       <!-- <span>{{ $t('assemblies.home_description', {relative_end_date: $options.filters.formatTimeLeft(assembly.date_end)}) }}</span> -->
     </div>
 
-    <!-- AM-OVERVIEW -->
+    <!-- AM-OVERVIEW (INTRO STAGES) -->
     <div class="q-mb-xl">
-
-      <ArtificialModeratorAssemblyHome align="left" />
+      <ArtificialModeratorAssemblyHome 
+        v-if="$nLength(assembly_scheduled_stages)"
+        assembly_scheduled_stages
+        align="left" />
     </div>
 
     <!-- STAGES -->
@@ -82,6 +83,13 @@
               class="text-subtitle2"
               v-dompurify-html="localStage.stage.info"
             />
+
+            <q-btn color="white" text-color="black" class="q-mt-md" 
+              @click="clickPluginLink(localStage)"
+              v-if="is_stage_idle(localStage)" 
+              label="Öffnen" />
+
+
           </q-card-section>
 
           <!-- AM-STAGE -->
@@ -90,7 +98,8 @@
             align="right"
           >
             <ArtificialModeratorAssemblyStage
-              v-if="localStageNr==stage_nr_last_visited"
+
+              v-if="localStageNr==stage_nr_last_visited && next_scheduled_stage" 
               :stage="localStage"
             />
           </q-card-section>
@@ -99,12 +108,11 @@
       </q-step>
     </q-stepper>
 
-    <!-- AM-OVERVIEW -->
+    <!-- AM-OVERVIEW (FINAL REMARKS -->
     <div class="q-mb-xl">
       <ArtificialModeratorAssemblyHome
-        v-if="!assembly_scheduled_stages"
-        :ongoing="!assembly_sorted_stages || assembly_sorted_stages === undefined"
-        :numberOfStages="numberOfStages"
+        v-if="!$nLength(assembly_scheduled_stages)"
+        :ongoing="$unloaded(assembly_sorted_stages)"
         align="left"
       />
     </div>
@@ -120,8 +128,8 @@
 <script>
 import AssemblyMixin from "src/mixins/assembly";
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
-import ArtificialModeratorAssemblyHome from "src/artificialmoderation/AssemblyHome";
-import ArtificialModeratorAssemblyStage from "src/artificialmoderation/AssemblyStage";
+import ArtificialModeratorAssemblyHome from "./artificialmoderation/AssemblyHome";
+import ArtificialModeratorAssemblyStage from "./artificialmoderation/AssemblyStage";
 import { mapGetters} from "vuex";
 import { runtimeStore } from "src/store/runtime.store";
 
@@ -136,7 +144,7 @@ export default {
 
   provide() {
     return {
-      clickPluginLink: this.clickPluginLink,
+      clickPluginLink: this.clickPluginLink
     };
   },
 

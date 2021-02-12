@@ -3,7 +3,8 @@ import { LayoutEventBus } from 'src/utils/eventbus.js'
 // import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { scroll } from 'quasar'
 // TODO: do without: vue-reactive-provide, instead write a plugin...
-import { runtimeStore } from "src/store/runtime.store";
+import { runtimeStore, runtimeMutations } from "src/store/runtime.store";
+import constants from 'src/utils/constants';
 
 const { getScrollTarget, setScrollPosition } = scroll
 
@@ -34,9 +35,9 @@ export default {
 
     ...mapGetters(
       'assemblystore',
-      ['assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'last_accessible_stage',
+      ['assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'last_accessible_stage', 'is_stage_idle',
         'is_stage_done', 'is_stage_disabled', 'is_stage_completed', 'last_accessible_stage', 'is_stage_new', 'is_stage_last',
-        'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages', 'get_stage_number_by_stage',
+        'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages', 'get_stage_number_by_stage', 'next_scheduled_stage',
         'find_next_accessible_stage', 'assembly_stages', 'assembly', 'assembly_configuration', 'IsDelegate', 'IsManager'
       ]
     )
@@ -45,29 +46,8 @@ export default {
   methods: {
 
     clickBackToAssemblyListButton: function () {
-      runtimeStore.setAssemblyIdentifier(null)
+      runtimeMutations.setAssemblyIdentifier(null)
       this.$router.push({ name: 'assemblies' })
-    },
-
-    monitorApi: function () {
-      this.monitorApiAssembly()
-    },
-
-    monitorApiAssembly: function () {
-      /* By this method we allow the API to monitor user activities */
-      console.assert(runtimeStore.assemblyIdentifier, "in monitorApiAssembly")
-
-      // Monitor about stage visit
-      let data = {
-        assembly_identifier: runtimeStore.assemblyIdentifier
-      }
-
-      console.log("monitor assembly data")
-      this.$store.dispatch('monitorApi', {
-        event: this.Constants.MONITOR_ASSEMBLY_ENTERING,
-        data: data,
-        key: runtimeStore.assemblyIdentifier
-      })
     },
 
     stageTransition: function (newVal, oldVal) {
@@ -107,12 +87,15 @@ export default {
         params: { assemblyIdentifier: runtimeStore.assemblyIdentifier }
       }
       // }
-      console.log(route)
+      // console.log(route)
       this.$router.push(route, this.laggedScrollToStage)
 
     },
 
     gotoNextStageNr: function (stage) {
+      console.assert(stage)
+      console.log("gotoNextStageNr")
+
       const nextStage = this.find_next_accessible_stage(stage)
       if (!nextStage) {
         return (null)
@@ -129,13 +112,15 @@ export default {
 
     // Catch all authentication status changes
     LayoutEventBus.$on('AssemblyLoaded', data => {
-      if (!this.last_accessible_stage) {
-        this.stage_nr_last_visited = null
-      } else {
+      console.log("LayoutEventBus on AssemblyLoaded")
+      if (this.last_accessible_stage) {
         this.stage_nr_last_visited = this.get_stage_number_by_stage(this.last_accessible_stage)
+      } else {
+        this.stage_nr_last_visited = null
       }
     })
   },
+
 
   mounted: function () {
 
@@ -144,6 +129,8 @@ export default {
     this.$store.dispatch('assemblystore/syncAssembly', {
       oauthUserID: this.oauth.userid
     })
+
+    this.$root.monitorLog(constants.MONITOR_ASSEMBLY_ENTERING)
   },
 
   /**

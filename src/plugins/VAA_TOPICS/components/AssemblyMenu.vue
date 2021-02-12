@@ -1,10 +1,24 @@
+<style scoped>
+
+.trennbar {
+    /* hyphens */
+   -moz-hyphens: auto;
+   -o-hyphens: auto;
+   -webkit-hyphens: auto;
+   -ms-hyphens: auto;
+   hyphens: auto; 
+}
+   
+</style>
+
 <template>
 
 <div align="center" >
 
-  <q-tabs v-model="currenttab" v-if="stages_by_section && assembly_sorted_stages">
+  <q-tabs v-model="currenttab" v-if="assembly_sorted_stages && stages_by_section">
     <CustomQRouteTab
       name="home"
+      class="trennbar"
       icon="mdi-calendar-text"
       exact
       :to="{ 
@@ -20,6 +34,7 @@
 
     <CustomQRouteTab
       name="showcase"
+      class="trennbar"
       icon="mdi-eye-outline"
       v-if="stages_by_section[1]"
       :to="{

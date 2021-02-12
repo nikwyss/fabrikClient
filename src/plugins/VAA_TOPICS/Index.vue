@@ -6,7 +6,6 @@
             label="Back to the assembly home"
             icon="mdi-arrow-left"
             @click="gotoAssemblyHome()" /> -->
-
         <div v-if="assembly && routed_stage" >
 
             <!-- DISABLED WARNING -->
@@ -24,7 +23,7 @@
 
             <!-- <p>{{routed_stage.stage.info}}</p> -->
         </div>
-
+<!-- {{contenttree}} -->
         <div class="" v-if="routed_stage && contenttree"  class="text-vessel">
 
 
@@ -60,12 +59,12 @@
                 <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
          </div>
 
-
         <!-- RESULT -->
-        <h2>Resultat</h2>
-        <div class="row justify-between">
-            Sie haben noch nicht alle Themen bewertet?
-            <ChartRadar :personalData="chartRadarPersonalData" :populationData="chartRadarPopulationData"  :labels="chartRadarLabels" />
+        <div v-if="ratingCompleted">
+            <h2>Resultat</h2>
+            <div class="row justify-between">
+                <ChartRadar :personalData="chartRadarPersonalData" :populationData="chartRadarPopulationData"  :labels="chartRadarLabels" />
+            </div>
         </div>
     </div>
 
@@ -91,6 +90,7 @@ export default {
         ChartRadar
     },
     computed: {
+
         chartEntries() {
             const children = this.contenttree.structure.children
             return children.map(child => this.contenttree.entries[child.id])
@@ -104,6 +104,19 @@ export default {
         },
         chartRadarPopulationData() {
             return this.chartEntries.map(entry => Math.random()*100)
+        },
+
+        ratingCompleted() {
+
+            const allRated = this.numberOfUnratedTopLevelEntries == 0
+            // console.log("Inside watchForCompletedRatings")
+            // console.log("", allRated)
+            // console.log("", this.is_stage_scheduled(this.routed_stage))
+            if (allRated && this.is_stage_scheduled(this.routed_stage)) {
+                this.markIdle()
+            }
+
+            return (allRated)           
         }
     },
 }

@@ -3,13 +3,13 @@ import VueI18n from 'vue-i18n'
 import messages from 'src/i18n'
 // import { Quasar } from 'quasar'
 import { date } from 'quasar'
+const { getDateDiff, formatDate } = date
 
 Vue.use(VueI18n)
 
 
 // Date Filters:
 /////////////////////////////////
-const { getDateDiff, formatDate } = date
 
 // Format Date
 Vue.filter('formatDate', function (value) {

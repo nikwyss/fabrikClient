@@ -15,6 +15,7 @@ const getters = {
 
   get_contenttree: (state) => ({ contenttreeID }) => {
     // return state.things.find(thing => thing.identifier === id)
+    // console.log(contenttreeID)
     console.assert(contenttreeID)
     if (!(contenttreeID in state.contenttree)) {
       return (null)

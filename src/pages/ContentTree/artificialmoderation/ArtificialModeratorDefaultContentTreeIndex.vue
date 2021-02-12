@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import ArtificialModerator from 'src/artificialmoderation/components/ArtificialModerator'
+import ArtificialModerator from 'src/components/ArtificialModerator'
 import { mapGetters } from "vuex";
 // import { runtimeStore } from "src/store/runtime.store";
 

@@ -4,7 +4,7 @@
         <q-btn v-if="!!item.content.text" 
           flat
           align="right"
-          @click="show_discussion = !show_discussion"
+          @click="toggleDiscussion"
           text-color="grey-7"
           :class="[show_discussion ? 'bg-grey-3' : '']"
           :icon="show_discussion ? 'mdi-comment' : 'mdi-comment-outline'"
@@ -46,6 +46,7 @@
 <script>
 
 import ComponentContentTree from "src/pages/ContentTree/components/ContentTree"
+import constants from 'src/utils/constants';
 
 
 export default {
@@ -85,6 +86,17 @@ export default {
       }, 0);
       return (nof_descendants + this.comments.length)
     }    
+  },
+  methods: {
+    toggleDiscussion() {
+      this.show_discussion = !this.show_discussion
+      const extra = {content_id: this.item.content.id}
+      if (this.show_discussion) {
+        this.$root.monitorLog(constants.MONITOR_DISCUSSION_SHOW, extra)
+      }else{
+        this.$root.monitorLog(constants.MONITOR_DISCUSSION_HIDE, extra)
+      }
+    }
   }
 }
 </script>

@@ -60,9 +60,7 @@
 <script>
 import StageMixin from "src/mixins/stage";
 import i18nPluginMixin from "./i18n";
-// import Configuration from 'src/utils/configuration'
 import ArtificialModeratorSURVEYIndexTop from "./artificialmoderation/IndexTop";
-// import {mapGetters} from 'vuex'
 import { runtimeStore } from "src/store/runtime.store"
 
 export default {
@@ -70,14 +68,9 @@ export default {
   components: { ArtificialModeratorSURVEYIndexTop },
   mixins: [StageMixin, i18nPluginMixin],
 
-  data() {
-    return {
-      // Events
-      MonitorSurveyCompleting: "MonitorSurveyCompleting",
-    };
-  },
-
   computed: {
+
+
     check_data: function () {
       console.log("check survey data..");
 
@@ -102,11 +95,12 @@ export default {
       if (this.$route.query.completed) {
         return true;
       }
-    },
+    }
   },
 
   methods: {
-    redirect: function () {
+
+    redirectToSurveyProvider: function () {
       // all data available
       const SID = this.routed_stage.stage.custom_data.SID;
       // this.$router.currentRoute.path
@@ -124,63 +118,24 @@ export default {
       window.location.href = newurl;
 
       return true;
-    },
-
-    monitorApi: function (event, force) {
-      console.log("Force MonitorApi: " + event + " - " + force);
-      console.assert(event);
-      // if (!event) {
-      //     event = this.Constants.MONITOR_STAGE_ENTERING
-      // }
-
-      /* By this method we allow the API to monitor userz activities */
-      const STAGEID = runtimeStore.stageID;
-      const USERID = this.oauth.userid;
-      console.log(this.oauth.userid + "oauth_userid");
-
-      if (!STAGEID || this.$route.query.U != USERID) {
-        console.log("wrong response data...");
-        return false;
-      }
-
-      // Notify API
-      const data = {
-        assembly_identifier: runtimeStore.assemblyIdentifier,
-        stage_id: parseInt(STAGEID),
-        sub: parseInt((USERID)),
-      }
-
-      this.$store.dispatch("monitorApi", {
-        event: event,
-        data: data,
-        key: parseInt(STAGEID),
-        timeout: 0,
-        force: force,
-      })
     }
   },
 
-  /**
-   * Must be run before monitor are mounted...
-   */
   created: function () {
 
     // Completed Response?
     if (!this.is_stage_completed(this.routed_stage)) {
+
       if (this.is_a_survey_response) {
-        console.log("Completed response!");
-        const event = this.MonitorSurveyCompleting;
-        const force = true;
-        this.monitorApi(event, force);
+
+        this.markCompleted()
         return true;
 
-        // Initiating Survey => redirect to Provider
       } else {
-        console.log("Redirect to Provider..?");
-        this.redirect();
-        return true;
+
+        this.redirectToSurveyProvider();
       }
     }
-  },
-};
+  }
+}
 </script>

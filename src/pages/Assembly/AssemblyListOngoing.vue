@@ -66,8 +66,8 @@
 </template>
 
 <script>
-import ArtificialModeratorAssemblyListOngoing from "src/artificialmoderation/AssemblyListOngoing";
-import ArtificialModeratorAssemblyListOngoingSelection from "src/artificialmoderation/AssemblyListOngoingSelection";
+import ArtificialModeratorAssemblyListOngoing from "./artificialmoderation/AssemblyListOngoing";
+import ArtificialModeratorAssemblyListOngoingSelection from "./artificialmoderation/AssemblyListOngoingSelection";
 import PublicIndex from "src/mixins/publicIndex";
 
 export default {

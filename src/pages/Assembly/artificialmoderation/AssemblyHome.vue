@@ -3,7 +3,9 @@
     <!-- RIGHT SIDE:  -->
     <ArtificialModerator alignment="right" role="1" amGroup='ongoingassemblyPage' :ongoing="ongoing">
         <template v-if="assembly_scheduled_stages.length==assembly_sorted_stages.length">
-            {{$tc('stages.am.welcome_full_schedule', assembly_sorted_stages.length, {'numberOfStages': assembly_sorted_stages.length}) }}
+            {{$tc('stages.am.welcome_full_schedule', assembly_sorted_stages.length, {
+                'numberOfStages': assembly_sorted_stages.length
+            }) }}
         </template>
         <template v-if="assembly_scheduled_stages.length && assembly_scheduled_stages.length < assembly_sorted_stages.length">
             {{$tc('stages.am.welcome_partial_schedule', assembly_sorted_stages.length, {
@@ -20,7 +22,7 @@
 </template>
 
 <script>
-import ArtificialModerator from './components/ArtificialModerator'
+import ArtificialModerator from 'src/components/ArtificialModerator'
 import { mapGetters} from 'vuex'
 
 export default{

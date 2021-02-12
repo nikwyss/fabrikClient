@@ -1,21 +1,22 @@
 // import { boot } from 'quasar/wrappers';
 import store from 'src/store'
+import { runtimeStore } from "src/store/runtime.store";
 
-  /// POLYFILL (IE11 for oAuth2 PKCE Module)
-  ; (function (window) {
-    if (typeof window.TextEncoder !== 'function') {
-      const TextEncodingPolyfill = require('text-encoding');
-      window.TextEncoder = TextEncodingPolyfill.TextEncoder;
-      window.TextDecoder = TextEncodingPolyfill.TextDecoder;
-    }
-    if (typeof window.crypto === 'undefined') {
-      const { webcrypto } = require("webcrypto-shim")
-    }
-    if (typeof window.fetch === 'undefined') {
-      const { fetch } = require('whatwg-fetch')
-      // window.fetch = fetch
-    }
-  }(window));
+/// POLYFILL (IE11 for oAuth2 PKCE Module)
+; (function (window) {
+  if (typeof window.TextEncoder !== 'function') {
+    const TextEncodingPolyfill = require('text-encoding');
+    window.TextEncoder = TextEncodingPolyfill.TextEncoder;
+    window.TextDecoder = TextEncodingPolyfill.TextDecoder;
+  }
+  if (typeof window.crypto === 'undefined') {
+    const { webcrypto } = require("webcrypto-shim")
+  }
+  if (typeof window.fetch === 'undefined') {
+    const { fetch } = require('whatwg-fetch')
+    // window.fetch = fetch
+  }
+}(window));
 
 
 const { OAuth2AuthCodePKCE } = require('@bity/oauth2-auth-code-pkce')
@@ -35,15 +36,18 @@ const pkce_config = {
   onAccessTokenExpiry(refreshAccessToken) {
     console.log('Expired! Access token needs to be renewed.')
     console.log('We will try to get a new access token via grant code or refresh token.')
-    // LayoutEventBus.$emit('ReloadPayload')
-    // TODO. disabled due to refresh error
     return refreshAccessToken()
   },
   onInvalidGrant(refreshAuthCodeOrRefreshToken) {
-    console.log('Expired! Auth code or refresh token needs to be renewed.')
-    console.log('...Redirecting to auth server to obtain a new auth grant code.')
-    LayoutEventBus.$emit('ReloadPayload')
-    return refreshAuthCodeOrRefreshToken()
+    console.log('Expired! Auth code or refresh token needs to be renewed. => Redirect to authserver!')
+    // However, in some special cases a redirect is not desired. i.e. when sending final eventmessages before closing the browser.
+    if (!runtimeStore.appExitState) {
+      LayoutEventBus.$emit('ReloadPayload')
+      return refreshAuthCodeOrRefreshToken()
+    } else {
+      // app has been exited already : never ever redirect again...
+      return Promise
+    }
   }
 }
 
@@ -64,6 +68,7 @@ export default {
     }
 
     Vue.prototype.logout = function () {
+      LayoutEventBus.$emit('BeforeLogout', {}, true)
 
       Vue.prototype.pkce.reset();
 
@@ -125,7 +130,6 @@ export default {
           }
         },
 
-
         userid: function () {
           // console.log('...OAUTH: loading userid..')
           if (this.payload) {
@@ -143,13 +147,6 @@ export default {
          * Returns a list of all roles obtained by the authenticated user for the given assembly
          * @param {*} assemblyIdentifier 
          */
-        // acls: function (assemblyIdentifier) {
-        //   if (!this.payload || !this.payload.roles) {
-        //     return ([])
-        //   }
-        //   return (translate_auth_roles_to_acls(this.payload.roles, assemblyIdentifier))
-        // },
-
         ...mapActions({
           touchRandomSeed: "assemblystore/touchRandomSeed",
           storeOauthAcls: "publicprofilestore/storeOauthAcls"
@@ -160,9 +157,12 @@ export default {
         refresh_token_if_required: async function () {
           // console.log(this.payload.exp)
           if (Vue.prototype.pkce.isAuthorized()) {
+            console.log("CHECK IF EXPRIRED in ... refresh_token_if_required")
             const expired = Vue.prototype.pkce.isAccessTokenExpired()
             if (expired) {
+              console.log("EXPRIRED in ... refresh_token_if_required")
               await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
+              console.log("Reload payload in ... refresh_token_if_required")
               LayoutEventBus.$emit('ReloadPayload')
             }
           }
@@ -170,23 +170,6 @@ export default {
       },
 
       created: function () {
-
-        // temp
-        console.log("oAuth2 Plugin created")
-
-        // LayoutEventBus.$on("AuthenticationLoaded", () => {
-
-        //   // SYNC USER PROFILE
-        //   // is email already set: if not => redirect to userprofile...
-        //   console.log("app.vue: AuthenticationLoaded => syncProfile..")
-
-        //   Vue.$store.dispatch("publicprofilestore/syncProfile", {
-        //     oauthUserID: this.userid,
-        //     oauthUserEmail: this.payload.userEmail
-        //   })
-
-        //   // this.$emit('AppLoaded')
-        // })
 
         LayoutEventBus.$on('AfterLogout', data => {
           this.enforce_reactivity += 1

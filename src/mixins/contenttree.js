@@ -61,6 +61,20 @@ export default {
       return (contenttree)
     },
 
+    // topLevelChildren: function () {
+    //   return (this.startingContentNode.children.map(x => x.id))
+    //   // if(this.startingContentID) {
+    //   // }
+    //   // return(this.contenttree.structure.children.map(x=> x.id))
+    // },
+
+    numberOfUnratedTopLevelEntries() {
+      const unrated_children = Object.filter(this.contenttree.structure.children, x => this.contenttree.entries[x.id]?.progression?.rated !== true)
+      // Object.filter(contenttree.structure.children, TEXTTYPES)" 
+      console.log("nof: unrated child", unrated_children)
+      return (Object.values(unrated_children).length)
+    },
+
     ...mapGetters({
       get_contenttree: 'contentstore/get_contenttree'
     })
@@ -98,7 +112,6 @@ export default {
     },
 
     filter_entries: function (nodes, TYPES) {
-
       console.assert(this.contenttreeID && this.contenttree !== null)
       var local_contenttree = this.contenttree
       let filtered = nodes.filter(
@@ -110,7 +123,24 @@ export default {
     isRead: function (content) {
       console.assert('progression' in content)
       return (!content.progression)
-    }
+    },
+
+
+    // unratedTopics: function (nodes, TYPES) {
+    //   console.assert(this.contenttreeID && this.contenttree !== null)
+    //   var local_contenttree = this.contenttree
+    //   let filtered = nodes.filter(
+    //     item => TYPES.includes(local_contenttree.entries[item.id].content.type)
+    //   )
+    //   return (filtered)
+    // },
+
+    // hasUnratedChildren: function (content) {
+    //   console.assert(content)
+    //   return (!content.progression)
+    // }
+
+
   },
 
   mounted() {

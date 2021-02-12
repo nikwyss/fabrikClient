@@ -3,6 +3,7 @@ import AssemblyMixin from 'src/mixins/assembly'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { LayoutEventBus } from 'src/utils/eventbus'
 import { runtimeStore } from "src/store/runtime.store"
+import constants from 'src/utils/constants'
 
 export default {
 
@@ -19,14 +20,7 @@ export default {
     }
   },
 
-
   computed: {
-
-    /** Get Stage from StageID transmitted in the URL  */
-    // routed_stage_id: function () {
-    //   console.log(runtimeStore.stageID, "RUNTIME")
-    //   return (this.$route.params.stageID)
-    // },
 
     routed_stage: function () {
 
@@ -51,8 +45,13 @@ export default {
   },
 
   methods: {
+
     gotoIndexAndMoveOn: function () {
+
       // const stageNr = this.assembly_sorted_stages.indexOf(this.stage_nr_last_visited)
+      this.markIdle()
+
+      // Goto index and move on!
       console.log('update stage')
       this.gotoNextStageNr(this.routed_stage)
       console.log('stage has been updated: goto home')
@@ -61,37 +60,18 @@ export default {
 
     },
 
-    monitorApi: function () {
-      if (runtimeStore.stageID) {
-        this.monitorApiStage()
+    markCompleted() {
 
-      } else {
-        this.monitorApiAssembly()
-      }
+      // Notify stage as completed
+      console.log("COMPLETED: Completed stage!");
+      this.$root.monitorFire(constants.MONITOR_STAGE_COMPLETED);
     },
 
-    monitorApiStage: function () {
-      /* By this method we allow the API to monitor user activities */
+    markIdle() {
 
-      console.log("monitor stage api")
-      console.assert(runtimeStore.stageID)
-
-      // Monitor about stage visit
-      let data = {
-        assembly_identifier: runtimeStore.assemblyIdentifier,
-        stage_id: runtimeStore.stageID
-      }
-      this.$store.dispatch('monitorApi', {
-        event: this.Constants.MONITOR_STAGE_ENTERING, data
-        // ,
-        // key: parseInt(runtimeStore.stageID)
-      })
+      // Notify stage as completed
+      console.log("IDLE: Mark as Idle (unalert stage )")
+      this.$root.monitorFire(constants.MONITOR_STAGE_IDLE)
     }
   }
-
-
-  // mounted: function () {
-
-
-  // }
 }

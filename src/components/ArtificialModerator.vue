@@ -61,7 +61,6 @@
 </template>
 
 <script>
-// import { Fragment } from 'vue-fragment'
 import { mapGetters } from "vuex";
 
 const numberOfActors = 2;

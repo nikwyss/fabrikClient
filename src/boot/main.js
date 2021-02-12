@@ -1,6 +1,5 @@
 import Vue from 'vue'
 
-
 // APP CONSTANTS
 /////////////////////////////////
 import Constants from 'src/utils/constants'
@@ -27,31 +26,10 @@ Vue.prototype.$nLength = function (object1) {
   }
   return (object1.length)
 }
+Vue.prototype.$unloaded = function (object1) {
+  return object1 === null || object1 === undefined
+}
 
-// Vue.prototype.$check4OutdatedData = function (dbdatestring, frequencyMinutes) {
-//   console.assert(typeof frequencyMinutes === 'number' && frequencyMinutes)
-
-//   if (!dbdatestring) {
-//     console.log('dbdatestring is emtpy...')
-//     return (true)
-//   }
-
-//   var thresholdDate = new Date();
-//   thresholdDate.setMinutes(thresholdDate.getMinutes() - frequencyMinutes)
-//   const dbdate = new Date(dbdatestring)
-//   console.log(`OUTDATED AS SOON AS:  ${thresholdDate} > ${dbdate}`)
-//   if (thresholdDate > dbdate) {
-//     console.log('OUTDATED')
-//     return (true)
-//   }
-
-//   // Not Outdated
-//   return (false)
-// }
-
-// Reactive Provide/Injects
-// import ReactiveProvide from 'vue-reactive-provide'
-// Vue.use(ReactiveProvide)
 
 // AUTH
 /////////////////////////////////

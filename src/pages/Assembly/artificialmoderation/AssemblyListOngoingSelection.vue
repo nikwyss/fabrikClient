@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import ArtificialModerator from "./components/ArtificialModerator";
+import ArtificialModerator from "src/components/ArtificialModerator";
 import { mapGetters } from "vuex";
 
 export default {

@@ -1,10 +1,12 @@
 <template>
 <div class="justify-center center" v-if="stage">
 
-    <!-- RIGHT SIDE:  -->
+    <!-- ONLY SHOWN WHEN ATLEAST ONE SCHEDULED STAGE IS ON THE AGENDA  -->
+
     <ArtificialModerator alignment="left" role="2" amGroup='ongoingassemblyPage' :ongoing="ongoing">
         
-        <!-- // TODO: differentiate by alert status -->
+        <!-- No Stage left => Tagessoll erfüllt
+        <!-- At least one stage is still open -->
         <template v-if="is_stage_new(stage) && is_stage_first(stage) && !is_stage_last(stage) && !is_stage_completed(stage)">
             {{$t('stages.am.enter_first') }}
         </template>
@@ -21,38 +23,51 @@
             {{$t('stages.am.enter_unique_stage') }}
         </template>
 
-        <template v-if="!is_stage_new(stage) && is_stage_alert(stage) && !is_stage_completed(stage)">
+        <template v-if="is_stage_scheduled(stage)">
             {{$t('stages.am.attention_needed') }}
         </template>
 
-        <template v-if="!is_stage_new(stage) && !is_stage_alert(stage) && !is_stage_completed(stage)">
+        <template v-if="!is_stage_scheduled(stage) && $nLength(assembly_scheduled_stages)">
             {{$t('stages.am.already_seen') }}
         </template>
 
+        <template v-if="!is_stage_scheduled(stage) && !$nLength(assembly_scheduled_stages)">
+            {{$t('stages.am.all_stages_already_seen') }}
+        </template>
+
+
+
+
         <!-- ACTION CHIPS -->
         <template  v-slot:actions>
-        <q-chip v-if="stage && !is_stage_last(stage) && is_stage_skippable(stage)" :size="is_stage_skippable(stage) ? 'md' : 'md'" icon="mdi-arrow-down" 
-            clickable @click="gotoNextStageNr(stage)">
-            {{ $t('stages.goto_next_stage') }}
-        </q-chip>
-        <q-chip :size="is_stage_skippable(stage) ? 'md' : 'md'" icon="mdi-arrow-right" v-if="stage && !is_stage_completed(stage)" 
-                clickable @click="clickPluginLink(stage)">
-            {{ $t('stages.please_enter_stage') }}
-        </q-chip>
-        <q-chip size="sm" icon="mdi-arrow-down" v-if="stage && is_stage_last(stage) && is_stage_skippable(stage)" 
+
+        <Button v-if="$nLength(assembly_scheduled_stages) && !is_stage_last(stage) && !is_stage_scheduled(stage)" icon="mdi-arrow-down" 
+            clickable @click="gotoNextStageNr(stage)"
+          :label="$t('stages.goto_next_stage')"
+        ></Button>
+
+        <!-- :size="is_stage_scheduled(stage) ? 'lg' : 'md'"  -->
+        <Button icon="mdi-arrow-right" v-if="stage && !is_stage_completed(stage) && is_stage_scheduled(stage)" 
+          :label="$t('stages.please_enter_stage')"
+          @click="clickPluginLink(stage)"
+        ></Button>
+
+
+        <!-- LAST STAGE COMPLETED -->
+        <!-- <q-chip size="sm" icon="mdi-arrow-down" v-if="stage && is_stage_last(stage) && is_stage_skippable(stage)" 
             clickable @click="goto_final_message">
             {{ $t('stages.goto_final_message') }}
-        </q-chip>
+        </q-chip> -->
         </template>
 
     </ArtificialModerator>
-
 
     </div>
 </template>
 
 <script>
-import ArtificialModerator from './components/ArtificialModerator'
+import ArtificialModerator from 'src/components/ArtificialModerator'
+import Button from "src/components/ArtificialModeratorButton";
 import { mapGetters} from 'vuex'
 
 export default{
@@ -65,12 +80,12 @@ export default{
         ...mapGetters(
         'assemblystore', [
             'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled',
-            'is_stage_done', 'is_stage_completed', 'is_stage_new', 'is_stage_last', 'is_stage_skippable',
-            'is_stage_first', 'is_stage_alert'
+            'is_stage_done', 'is_stage_completed', 'is_stage_new', 'is_stage_last',
+            'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'is_first_day'
             ]
         )
     },
-    components: {ArtificialModerator},
+    components: {ArtificialModerator, Button},
     props: ['stage']
 }
 </script>

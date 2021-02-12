@@ -27,7 +27,7 @@ export default {
   async authProfile(profile) {
 
     // Renew token (if required)
-    await Vue.prototype.oauth.refresh_token_if_required()
+    // await Vue.prototype.oauth.refresh_token_if_required()
 
     /* Update Auth Profile => Emailadress/ Username etc... */
     profile.client_id = process.env.ENV_OAUTH_CLIENT_ID
@@ -52,7 +52,7 @@ export default {
 
     // Renew token (if required)
     // refresh_token method is done earlier, while launching app.
-    // await Vue.prototype.oauth.refresh_token_if_required()
+    // // await Vue.prototype.oauth.refresh_token_if_required()
 
     /* Notify Resource Server about certain user activities in the client app. */
     let url = `${process.env.ENV_APISERVER_URL}/profile`
@@ -60,21 +60,23 @@ export default {
     return await ApiService.get(url)
   },
 
-  async monitorActivities({ event, data }) {
+  async monitorActivities(buffer) {
 
     // Renew token (if required)
-    await Vue.prototype.oauth.refresh_token_if_required()
-
+    // await Vue.prototype.oauth.refresh_token_if_required()
+    console.log("/api")
     /* Notify Resource Server about certain user activities in the client app. */
-    let url = `${process.env.ENV_APISERVER_URL}/monitor/${event}`
+    let url = `${process.env.ENV_APISERVER_URL}/monitor`
     console.log('monitor activies in API')
-    return await ApiService.post(url, { content: data })
+    const response = await ApiService.put(url, { buffer })
+    return response.data
+
   },
 
   async retrievePublicIndex() {
 
     // Renew token (if required)
-    await Vue.prototype.oauth.refresh_token_if_required()
+    // await Vue.prototype.oauth.refresh_token_if_required()
 
     let url = `${process.env.ENV_APISERVER_URL}/assemblies`
     return await ApiService.get(url)
@@ -92,7 +94,7 @@ export default {
   async retrieveContenttree(assemblyIdentifier, contenttreeID) {
 
     // Renew token (if required)
-    await Vue.prototype.oauth.refresh_token_if_required()
+    // await Vue.prototype.oauth.refresh_token_if_required()
 
     let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/contenttree/${contenttreeID}/contenttree`
     return await ApiService.get(url)
@@ -105,7 +107,7 @@ export default {
     let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/content/${contentID}/rating/${rating}`;
     // Renew token (if required)
     // console.log(url)
-    await Vue.prototype.oauth.refresh_token_if_required()
+    // await Vue.prototype.oauth.refresh_token_if_required()
     console.log(url)
     const result = await ApiService.put(url)
     if (!result.data.OK) {

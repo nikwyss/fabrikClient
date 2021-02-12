@@ -61,6 +61,8 @@
     >
 
       {{$t('index.am.information_for_public_visitors')}}
+
+
       <template v-slot:actions>
         <Button
           :label="$t('index.iam_ready')"
@@ -96,9 +98,9 @@
 </template>
 
 <script>
-import ArtificialModerator from "./components/ArtificialModerator";
-import Button from "./components/Button";
-import { mapGetters, mapActions } from 'vuex'
+import ArtificialModerator from "src/components/ArtificialModerator";
+import Button from "src/components/ArtificialModeratorButton";
+import { mapGetters } from 'vuex'
 
 export default {
   name: "ArtificialModeratorIndexPage",

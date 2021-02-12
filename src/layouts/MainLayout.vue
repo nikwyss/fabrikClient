@@ -36,6 +36,11 @@
            demokratiefabrik.ch
           </q-chip>
 
+
+  <!-- <br />ddd
+ ---   {{ monitorDebug}} -->
+
+
     <!-- MAIN MENU -->
     <MainMenu :assemblyName="assemblyName" />
 
@@ -185,13 +190,13 @@ import MainMenu from "./components/MainMenu"
 import Footer from "./components/Footer"
 // TODO: load it dynamically based on assembly configuration parameter... (allow for mulitple plugins)
 import AssemblyMenu from "../plugins/VAA_TOPICS/components/AssemblyMenu"
-import PublicIndex from "src/mixins/publicIndex"
+// import PublicIndex from "src/mixins/publicIndex"
 import { mapGetters} from 'vuex'
 
 
 export default {
   name: "MainLayout",
-  mixins: [PublicIndex],
+  // mixins: [PublicIndex],
   // inject: ['assemblyName'], // not necessary=>defined in the mixin...
   components: {
     // ComponentDrawer,
@@ -297,6 +302,11 @@ export default {
     },
 
 
+
+    // monitorDebug (){
+    //   return (this.$store.monitorDebug)
+    //   //  ...mapGetters('monitorDebug')      
+    // },
      ...mapGetters( 'assemblystore', ['assemblyName'])  
   }
 

@@ -152,7 +152,7 @@
 </template>
 
 <script>
-import ArtificialModerator from 'src/artificialmoderation/components/ArtificialModerator'
+import ArtificialModerator from 'src/components/ArtificialModerator'
 
 export default {
   name: 'PageBackground',

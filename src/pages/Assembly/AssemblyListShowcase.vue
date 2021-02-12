@@ -41,8 +41,8 @@
 
 <script>
 
-import ArtificialModeratorAssemblyListShowcase from 'src/artificialmoderation/AssemblyListShowcase'
-import ArtificialModeratorAssemblyListShowcaseSelection from 'src/artificialmoderation/AssemblyListShowcaseSelection'
+import ArtificialModeratorAssemblyListShowcase from './artificialmoderation/AssemblyListShowcase'
+import ArtificialModeratorAssemblyListShowcaseSelection from './artificialmoderation/AssemblyListShowcaseSelection'
 // import PublicIndex from "src/mixins/publicIndex"
 
 export default {

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import ArtificialModerator from './components/ArtificialModerator'
+import ArtificialModerator from 'src/components/ArtificialModerator'
 import AssemblyMixin from 'src/mixins/assembly'
 
 export default{

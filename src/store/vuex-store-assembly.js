@@ -8,27 +8,17 @@ import api from 'src/utils/api'
 import constants from 'src/utils/constants'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { runtimeStore } from "src/store/runtime.store";
-// import { date } from 'quasar'
-
+import { date } from 'quasar'
 
 var state = {
   monitors: {},
   assemblydata: {},
   randomSeed: null,
-  current_stages: {}
+  stages: {}
+  // current_stages: {}
 }
 
 const getters = {
-
-  // runtimeStore.assemblyIdentifier: (state, getters) => {
-
-  //   // NEEDED, encforces responsivity of the router params!
-  //   state.monitors.routed_assembly_identifier = Date.now()
-  //   const last_update = state.monitors.routed_assembly_identifier
-  //   void last_update
-
-  //   return Router.currentRoute.params?.assemblyIdentifier
-  // },
 
   assembly: (state, getters) => {
 
@@ -89,16 +79,8 @@ const getters = {
     const assemblyIdentifier = Router.currentRoute.params.assemblyIdentifier
     console.assert(assemblyIdentifier)
     return (state.assemblydata[assemblyIdentifier]?.configuration)
-
-    // if (!(assemblyIdentifier in state.assemblydata)) {
-    //   return (null)
-    // }
-
-    // if ('configuration' in state.assemblydata[assemblyIdentifier]) {
-    //   return (state.assemblydata[assemblyIdentifier].configuration)
-    // }
-
   },
+
   assembly_userid: (state, getters) => {
     console.log(">> NOTE: cache userid")
 
@@ -112,16 +94,33 @@ const getters = {
     console.log(">> NOTE: assembly_stages")
 
     if (!runtimeStore.assemblyIdentifier) {
+      console.log('...identifier not ready')
       return null
     }
 
-    return state.assemblydata[runtimeStore.assemblyIdentifier]?.stages
+    console.log(runtimeStore.assemblyIdentifier)
+    const stage_keys = state.assemblydata[runtimeStore.assemblyIdentifier]?.stages
+    if (!stage_keys) {
+      console.log('...assembly not ready')
+      return null
+    }
+
+    // filter only the stages of the specific assembly
+    const stages = Object.keys(state.stages)
+      .filter(key => stage_keys.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = state.stages[key];
+        return obj;
+      }, {})
+
+
+    console.log("this are assembly stages", stages)
+    return stages
   },
+
 
   stage: (state, getters, rootState, rootGetters, test1, test2) => {
     const stages = getters.assembly_stages
-    console.log("START XXXXXXXXXXXX")
-
     return (stages[runtimeStore.stageID])
   },
 
@@ -137,27 +136,43 @@ const getters = {
     }
   },
 
-  /** Which stage is  the last one that is freely open / accessible */
-  last_accessible_stage: (state, getters) => {
-    console.log(">> last_accessible_stage")
+
+  /** Which stage is  the next scheduled stage (if empty, no stages available or no scheduled stage available) */
+  next_scheduled_stage: (state, getters) => {
+    console.log(">> next_scheduled_stage")
     // console.log(getters.assembly_sorted_stages)
     const stages = getters.assembly_sorted_stages
     if (!stages) {
       console.log('assemmbly is not yet loaded')
       return null
     }
-
+    // console.log("sorted stages,", stages)
+    // console.log(getters.is_stage_scheduled(stages[1]))
     const last_accessible_stage = stages.find(stage => true &&
-      !getters.is_stage_skippable(stage) &&
+      getters.is_stage_scheduled(stage) &&
       !getters.is_stage_disabled(stage) &&
       !getters.is_stage_completed(stage))
 
-    if (!last_accessible_stage) {
+    return last_accessible_stage
+  },
+
+  /** Which stage is  the last one that is freely open / accessible */
+  last_accessible_stage: (state, getters) => {
+
+    const nextScheduledStage = getters.next_scheduled_stage
+    const stages = getters.assembly_sorted_stages
+
+    if (!stages) {
+      console.log('assemmbly is not yet loaded')
+      return null
+    }
+
+    if (!nextScheduledStage) {
       // it seems that all stages are open! => take the last one...
       return (stages[stages.length - 1])
     }
 
-    return last_accessible_stage
+    return nextScheduledStage
   },
 
   /* Return all stages, that are still to absolve */
@@ -167,7 +182,7 @@ const getters = {
       console.log('assemmbly is not yet loaded')
       return null
     }
-    return sorted_stages.filter(stage => !getters.is_stage_scheduled(stage))
+    return sorted_stages.filter(stage => getters.is_stage_scheduled(stage))
   },
 
   /** Which stages are freely open / accessible */
@@ -201,9 +216,14 @@ const getters = {
   },
 
   get_stage_number_by_stage: (state, getters) => (stage) => {
+    console.assert(stage)
     const sorted_stages = getters.assembly_sorted_stages
     console.assert(sorted_stages)
-    const stage_number = sorted_stages.indexOf(stage)
+    const sorted_stage_ids = sorted_stages.map(stage => stage.stage.id)
+    // console.log(sorted_stage_ids)
+    const stage_number = sorted_stage_ids.indexOf(stage.stage.id)
+    // console.log(stage_number, "stage_number of stage: ", stage)
+    // console.log("sorted_stage: ", sorted_stages)
     console.assert(stage_number > -1)
 
     return (stage_number)
@@ -235,11 +255,10 @@ const getters = {
   /* Is there still an activity required on this stage? */
   is_stage_scheduled: (state, getters) => (stage) => {
     console.assert(stage)
-    const last_accessible_stage = getters.last_accessible_stage
-    console.assert(last_accessible_stage)
-    return stage.stage.order_position >= last_accessible_stage.stage.order_position &&
-      !getters.is_stage_completed(stage) &&
-      !getters.is_stage_disabled(stage)
+    if (getters.is_stage_completed(stage)) {
+      return (false)
+    }
+    return getters.is_stage_alert(stage) || getters.is_stage_new(stage)
   },
 
   /** Which stage is new => no progression entry is available */
@@ -249,30 +268,38 @@ const getters = {
     return !stage.progression
   },
 
+  /**
+   * Not scheduled, not new, not completeed => just idle
+   */
   is_stage_alert: (state) => (stage) => {
+    // when progression entry not yet exists...
+    return !stage.progression
+  },
+
+  is_stage_idle: (state, getters) => (stage) => {
     console.assert(stage)
-    // whenn status is set TO STATUS_ALERT
-    return stage.progression?.status == constants.STATUS_ALERT
+    return !getters.is_stage_scheduled(stage) &&
+      !getters.is_stage_completed(stage) &&
+      !getters.is_stage_disabled(stage)
   },
 
   is_stage_skipped: (state) => (stage) => {
     console.assert(stage)
-    // whenn status is set TO STATUS_ALERT
-    return stage.progression?.status == constants.STATUS_SKIPPED
+    return stage.progression?.skipped
   },
 
   is_stage_disabled: (state) => (stage) => {
     console.assert(stage)
     // only admins see deleted attribute.
-    return (stage.progression?.status == constants.STATUS_LOCKED)
+    return (stage.progression?.locked)
     // TODO: not anymore available, right? return (stage.stage.disabled || stage.stage.deleted)
   },
 
   /** All stages that are not alerted, and are not new are skippable, right? */
-  is_stage_skippable: (state, getters) => (stage) => {
-    console.assert(stage)
-    return (!getters.is_stage_alert(stage) && !getters.is_stage_new(stage))
-  },
+  // is_stage_skippable: (state, getters) => (stage) => {
+  //   console.assert(stage)
+  //   return (!getters.is_stage_alert(stage) && !getters.is_stage_new(stage))
+  // },
 
   is_stage_completed: (state) => (stage) => {
     console.assert(stage)
@@ -289,6 +316,11 @@ const getters = {
     console.assert(stage)
     return getters.is_stage_accessible(stage) ||
       getters.is_stage_completed(stage)
+  },
+
+  is_first_day: (state, getters) => (stage) => {
+    console.log(stage.progression.date_created)
+    console.log(date.isSameDate(stage.progression.date_created, Date.now(), 'day'))
   }
 }
 
@@ -323,21 +355,6 @@ const actions = {
     return (null)
   },
 
-
-  // syncStage: ({ state, dispatch, getters, rootState, rootGetters }) => (stageID) => {
-  //   // const stages = getters.assembly_stages
-  //   // console.assert(stages[stageID])
-
-  //   // preload contenttree (if attached)
-  //   return (stages[stageID])
-
-  // },
-
-  storeAssemblyProgression({ commit }, { assemblyIdentifier, stageID, progression }) {
-    console.log('Store stage progression in localstorage')
-    commit('storeAssemblyProgression', { assemblyIdentifier, stageID, progression })
-  },
-
   retrieveAssembly({ commit }, { assemblyIdentifier }) {
 
     console.log('Retrieve assembly from resource server')
@@ -364,12 +381,7 @@ const actions = {
         console.warn('Request Error')
       })
 
-  },
-
-  monitor_route_changes({ state, commit }, { to, from }) {
-    commit('monitor_route_changes', { to, from })
-  },
-
+  }
 }
 
 const mutations = {
@@ -385,31 +397,62 @@ const mutations = {
 
   storeAssembly(state, { assemblyIdentifier, data }) {
     console.log(`Store assembly ${assemblyIdentifier}`)
+
+    // data.stages.forEach(stage)
+    const stages = state.stages
+    Vue.set(state, 'stages', Object.assign({}, stages, data.stages))
+
     // Vue.set  makes the change reactive!!
+    // console.log(data.stages, "TESTTEST")
+    data.stages = Object.keys(data.stages)
+    // .map(stage => stage.stage.id)
+    // console.log(data.stages, "TESTTEST")
     Vue.set(state.assemblydata, assemblyIdentifier, data)
-  },
 
-  storeAssemblyProgression(state, { assemblyIdentifier, stageID, progression }) {
-    console.log(`Store assembly progression ${assemblyIdentifier}`)
-    // Vue.set  makes the change reactive!!
-    if (!(stageID in state.assemblydata[assemblyIdentifier].stages)) {
-      Vue.set(state.assemblydata[assemblyIdentifier], 'stages', stageID)
-      Vue.set(state.assemblydata[assemblyIdentifier].stages, stageID, { 'progression': null })
-    }
-    Vue.set(state.assemblydata[assemblyIdentifier].stages[stageID], 'progression', progression)
   },
 
 
-  monitor_route_changes(state, { to, from }) {
-    const now = Date.now()
+  storeAssemblyObject(state, { assemblyIdentifier, assembly }) {
+    console.log(`Store assembly ${assemblyIdentifier} object`)
+    Vue.set(state.assemblydata[assemblyIdentifier], 'assembly', assembly)
+  },
+  storeAssemblyProgression(state, { assemblyIdentifier, progression }) {
+    console.log(`Store assembly ${assemblyIdentifier} progressions`)
+    Vue.set(state.assemblydata[assemblyIdentifier], 'progression', progression)
+  },
+  storeStageObject(state, { stageID, stage }) {
+    console.log(`Store stage ${stageID} object`)
+    Vue.set(state.stages[stageID], 'stage', stage)
+  },
+  storeStageProgression(state, { stageID, progression }) {
+    console.log(`Store stage ${stageID} progression`, progression)
+    Vue.set(state.stages[stageID], 'progression', progression)
+  },
 
-    // Track assemblyIdentifier
-    if (from.params?.assemblyIdentifier !== to.params?.assemblyIdentifier) {
-      console.log(">> ROUTE: new assemblyIdentifier")
-      // LayoutEventBus.$emit('AppLoaded')
-      Vue.set(state.monitors, 'routed_assembly_identifier', now)
-    }
-  }
+
+
+
+  // storeAssemblyProgression(state, { assemblyIdentifier, stageID, progression }) {
+  //   console.log(`Store assembly progression ${assemblyIdentifier}`)
+  //   // Vue.set  makes the change reactive!!
+  //   if (!(stageID in state.assemblydata[assemblyIdentifier].stages)) {
+  //     Vue.set(state.assemblydata[assemblyIdentifier], 'stages', stageID)
+  //     Vue.set(state.assemblydata[assemblyIdentifier].stages, stageID, { 'progression': null })
+  //   }
+  //   Vue.set(state.assemblydata[assemblyIdentifier].stages[stageID], 'progression', progression)
+  // }
+
+
+  // monitor_route_changes(state, { to, from }) {
+  //   const now = Date.now()
+
+  //   // Track assemblyIdentifier
+  //   if (from.params?.assemblyIdentifier !== to.params?.assemblyIdentifier) {
+  //     console.log(">> ROUTE: new assemblyIdentifier")
+  //     // LayoutEventBus.$emit('AppLoaded')
+  //     Vue.set(state.monitors, 'routed_assembly_identifier', now)
+  //   }
+  // }
 }
 
 export const assemblystore = {
