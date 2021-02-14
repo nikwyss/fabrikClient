@@ -247,6 +247,8 @@ const getters = {
 
   is_stage_last: (state, getters) => (stage) => {
     console.assert(stage)
+    console.assert(stage.stage)
+
     const sorted_stages = getters.assembly_sorted_stages
     console.assert(sorted_stages[sorted_stages.length - 1])
     return (sorted_stages[sorted_stages.length - 1]?.stage.id == stage.stage.id)
@@ -273,7 +275,7 @@ const getters = {
    */
   is_stage_alert: (state) => (stage) => {
     // when progression entry not yet exists...
-    return !stage.progression
+    return stage.progression?.alerted
   },
 
   is_stage_idle: (state, getters) => (stage) => {

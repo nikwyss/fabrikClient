@@ -189,7 +189,7 @@
 import MainMenu from "./components/MainMenu"
 import Footer from "./components/Footer"
 // TODO: load it dynamically based on assembly configuration parameter... (allow for mulitple plugins)
-import AssemblyMenu from "../plugins/VAA_TOPICS/components/AssemblyMenu"
+import AssemblyMenu from "../plugins/VAA_QUESTIONNAIRE_TOPICS/components/AssemblyMenu"
 // import PublicIndex from "src/mixins/publicIndex"
 import { mapGetters} from 'vuex'
 

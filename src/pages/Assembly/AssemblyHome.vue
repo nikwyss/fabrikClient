@@ -88,8 +88,6 @@
               @click="clickPluginLink(localStage)"
               v-if="is_stage_idle(localStage)" 
               label="Öffnen" />
-
-
           </q-card-section>
 
           <!-- AM-STAGE -->
@@ -97,11 +95,19 @@
             class="col-12 "
             align="right"
           >
-            <ArtificialModeratorAssemblyStage
+            <!-- <ArtificialModeratorAssemblyStage
 
               v-if="localStageNr==stage_nr_last_visited && next_scheduled_stage" 
               :stage="localStage"
-            />
+            /> -->
+
+            <keep-alive>
+            <component :is="componentStageTeaser" 
+              v-if="localStageNr==stage_nr_last_visited && next_scheduled_stage" 
+              :stage="localStage"></component>
+            </keep-alive>
+            
+
           </q-card-section>
 
         </q-card>
@@ -115,40 +121,72 @@
         :ongoing="$unloaded(assembly_sorted_stages)"
         align="left"
       />
-    </div>
 
     </div>
+  </div>
 
-    <!-- MANAGER: NEW STAGE -->
-    <ComponentStageEditor v-if="assembly && IsManager" />
-  </q-page>
+  <!-- MANAGER: NEW STAGE -->
+  <component :is="componentStageEditor" v-if="assembly && IsManager"></component>
+
+</q-page>
 </template>
 
 
 <script>
 import AssemblyMixin from "src/mixins/assembly";
-import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
-import ArtificialModeratorAssemblyHome from "./artificialmoderation/AssemblyHome";
-import ArtificialModeratorAssemblyStage from "./artificialmoderation/AssemblyStage";
+import ArtificialModeratorAssemblyHome from "./artificialmoderation/AssemblyHome"
+import ArtificialModeratorAssemblyStage from "./artificialmoderation/AssemblyStage"
 import { mapGetters} from "vuex";
 import { runtimeStore } from "src/store/runtime.store";
 
 export default {
   name: "PageAssemblyHome",
   mixins: [AssemblyMixin],
+
+ data() {
+    return {
+      componentStageTeaser: null,
+      componentStageEditor: () => {console.log("LOAD EDITOR"); import("src/pages/ContentTree/components/StageEditor")}
+    }
+  },
+
   components: {
-    ComponentStageEditor, // load dynamically when required...
-    ArtificialModeratorAssemblyHome,
-    ArtificialModeratorAssemblyStage,
+    ArtificialModeratorAssemblyHome
   },
 
   provide() {
     return {
       clickPluginLink: this.clickPluginLink
-    };
+    }
   },
 
+  computed: {
+
+    stageType: function() {
+      return this.stage_last_visited?.stage?.type
+    },
+
+    ...mapGetters(
+      'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
+    )
+  },
+
+  watch: {
+    stage_last_visited(before, after) {
+      this.updateComponentStageTeaser()
+    }
+  },
+  
   methods: {
+
+    updateComponentStageTeaser: function() {
+      if (this.stageType) {
+        this.componentStageTeaser = () => import(`src/plugins/${this.stageType}/artificialmoderation/Teaser`)
+            .then(component => {return component})
+            .catch(err => {this.componentStageTeaser = ArtificialModeratorAssemblyStage})
+      }
+    },
+
     getStepCaption: function (stage, stageNr) {
       var caption = "";
       // PREFIX
@@ -168,6 +206,7 @@ export default {
     },
 
     getStepTitle: function (stage) {
+        //  this.loadComponent(this.stageType);
       return stage.stage.title;
     },
 
@@ -222,16 +261,6 @@ export default {
 
       return color;
     }
-  },
-
-  computed: {
-    ...mapGetters(
-      'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
-    )
-  },
-
-  mounted: function () {
-    // this.scrollToStage()
-  },
-};
+  }
+}
 </script>

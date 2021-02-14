@@ -25,7 +25,7 @@ export default {
   },
 
 
-  data: function () {
+  data() {
     return {
       stage_nr_last_visited: null
     }
@@ -40,7 +40,11 @@ export default {
         'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages', 'get_stage_number_by_stage', 'next_scheduled_stage',
         'find_next_accessible_stage', 'assembly_stages', 'assembly', 'assembly_configuration', 'IsDelegate', 'IsManager'
       ]
-    )
+    ),
+
+    stage_last_visited() {
+      return this.assembly_sorted_stages[this.stage_nr_last_visited]
+    }
   },
 
   methods: {
