@@ -71,7 +71,7 @@ import Button from "src/components/ArtificialModeratorButton";
 import { mapGetters} from 'vuex'
 
 export default{
-    name: "TeaserTextSheetStage",
+    name: "Teaser",
     inject: ['clickPluginLink', 'gotoNextStageNr'], 
     computed: {
         ongoing: function() {

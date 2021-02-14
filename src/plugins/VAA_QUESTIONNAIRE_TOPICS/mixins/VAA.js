@@ -31,7 +31,6 @@ export default {
       console.assert(runtimeStore.stageID)
 
       if (!this.assembly_stages) {
-        console.log('assemmbly is not yet loaded')
         return null
       }
 

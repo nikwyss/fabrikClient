@@ -85,7 +85,7 @@ export default {
   async retrieveAssembly(assemblyIdentifier) {
 
     // Renew token (if required)
-    await Vue.prototype.oauth.refresh_token_if_required()
+    // await Vue.prototype.oauth.refresh_token_if_required()
 
     let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}`
     return await ApiService.get(url)
@@ -129,7 +129,7 @@ export default {
     }
 
     // Renew token (if required)
-    await Vue.prototype.oauth.refresh_token_if_required()
+    // await Vue.prototype.oauth.refresh_token_if_required()
     return await ApiService.put(url, { content: data })
   }
 }

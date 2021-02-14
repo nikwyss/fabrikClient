@@ -229,6 +229,18 @@ const getters = {
     return (stage_number)
   },
 
+
+  get_stage_number_by_stage_id: (state, getters) => (stageID) => {
+    console.assert(stageID)
+    const sorted_stages = getters.assembly_sorted_stages
+    console.assert(sorted_stages)
+    const sorted_stage_ids = sorted_stages.map(stage => stage.stage.id)
+    const stage_number = sorted_stage_ids.indexOf(stageID)
+    console.assert(stage_number > -1)
+
+    return (stage_number)
+  },
+
   find_next_accessible_stage: (state, getters) => (previous_stage) => {
     // console.log("previous stage: moveon ", previous_stage)
     console.assert(previous_stage)

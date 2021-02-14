@@ -49,7 +49,7 @@
                 :comments="filter_entries(nodeL1.children, ['COMMENT', 'QUESTION'])"
                 :heading_number="(keyL1+1)"
                 :item="contenttree.entries[nodeL1.id]"/>
-<!-- {{oauth.userid}} -->
+                <!-- {{oauth.userid}} -->
             <ContentRatingSlider :content="contenttree.entries[nodeL1.id]" />
         </div>
         
@@ -63,7 +63,7 @@
         <div v-if="ratingCompleted">
             <h2>Resultat</h2>
             <div class="row justify-between">
-                <ChartRadar :personalData="chartRadarPersonalData" :populationData="chartRadarPopulationData"  :labels="chartRadarLabels" />
+                <ChartBar :personalData="chartBarPersonalData" :labels="chartBarLabels" />
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@ import ContentTreeMixin from 'src/mixins/contenttree'
 import ComponentStageEditor from 'src/pages/ContentTree/components/StageEditor';
 import TextsheetCard from './components/TextsheetCard';
 import ContentRatingSlider from 'src/pages/ContentTree/components/ContentRatingSlider';
-import ChartRadar from 'src/layouts/components/ChartRadar';
+import ChartBar from 'src/components/charts/ChartBar';
 
 
 export default {
@@ -87,37 +87,31 @@ export default {
         ComponentStageEditor,
         TextsheetCard,
         ContentRatingSlider,
-        ChartRadar
+        ChartBar
     },
     computed: {
-
-        chartEntries() {
-            const children = this.contenttree.structure.children
-            return children.map(child => this.contenttree.entries[child.id])
-        },
-        chartRadarPersonalData() {
-            // console.log(this.entries)
-            return this.chartEntries.map(entry => entry.progression?.rating+50)
-        },
-        chartRadarLabels() {
-            return this.chartEntries.map(entry => entry.content?.title)
-        },
-        chartRadarPopulationData() {
-            return this.chartEntries.map(entry => Math.random()*100)
-        },
-
+        
         ratingCompleted() {
 
             const allRated = this.numberOfUnratedTopLevelEntries == 0
-            // console.log("Inside watchForCompletedRatings")
-            // console.log("", allRated)
-            // console.log("", this.is_stage_scheduled(this.routed_stage))
             if (allRated && this.is_stage_scheduled(this.routed_stage)) {
                 this.markIdle()
             }
 
             return (allRated)           
+        },
+
+        sortedChartEntries() {
+            const children = this.contenttree.structure.children
+            const entries = children.map(child => this.contenttree.entries[child.id])
+            return Object.values(entries).sort((a, b) => a.progression.rating > b.progression.rating ? -1 : a.progression.rating > b.progression.rating ? 1 : 0)
+        },
+        chartBarPersonalData() {
+            return this.sortedChartEntries.map(entry => entry.progression?.rating+50)
+        },
+        chartBarLabels() {
+            return this.sortedChartEntries.map(entry => entry.content?.title)
         }
-    },
+    }
 }
 </script>

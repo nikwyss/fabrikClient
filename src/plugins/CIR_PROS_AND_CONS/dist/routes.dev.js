@@ -15,7 +15,7 @@ var routes = [{
   path: '/:assemblyIdentifier/pros_and_cons/:containerID/',
   component: function component() {
     return Promise.resolve().then(function () {
-      return _interopRequireWildcard(require('layouts/MainLayout.vue'));
+      return _interopRequireWildcard(require('src/plugins/VAA_QUESTIONNAIRE_SUMMARY/node_modules/layouts/MainLayout.vue'));
     });
   },
   children: [{

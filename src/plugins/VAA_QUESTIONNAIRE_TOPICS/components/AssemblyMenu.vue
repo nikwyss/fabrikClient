@@ -14,7 +14,6 @@
 <template>
 
 <div align="center" >
-
   <q-tabs v-model="currenttab" v-if="assembly_sorted_stages && stages_by_section">
     <CustomQRouteTab
       name="home"
@@ -92,6 +91,7 @@
     />
 
   </q-tabs>
+
 </div>
 </template>
 
@@ -110,8 +110,8 @@ export default {
   data: function () {
     return {
       assemblyIdentifier: runtimeStore.assemblyIdentifier,
-      currenttab: "",
-    };
+      currenttab: ""
+    }
   },
 
   computed: {

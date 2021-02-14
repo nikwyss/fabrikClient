@@ -35,9 +35,12 @@ export default {
 
     ...mapGetters(
       'assemblystore',
-      ['assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled', 'last_accessible_stage', 'is_stage_idle',
-        'is_stage_done', 'is_stage_disabled', 'is_stage_completed', 'last_accessible_stage', 'is_stage_new', 'is_stage_last',
-        'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages', 'get_stage_number_by_stage', 'next_scheduled_stage',
+      ['assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled',
+        'last_accessible_stage', 'is_stage_idle',
+        'is_stage_done', 'is_stage_disabled', 'is_stage_completed', 'last_accessible_stage',
+        'is_stage_new', 'is_stage_last',
+        'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages',
+        'get_stage_number_by_stage_id', 'get_stage_number_by_stage', 'next_scheduled_stage',
         'find_next_accessible_stage', 'assembly_stages', 'assembly', 'assembly_configuration', 'IsDelegate', 'IsManager'
       ]
     ),
@@ -108,6 +111,16 @@ export default {
       this.stage_nr_last_visited = this.get_stage_number_by_stage(nextStage)
     },
 
+    gotoDefaultStageTeaser: function () {
+      if (runtimeStore.stageID) {
+        this.stage_nr_last_visited = this.get_stage_number_by_stage_id(runtimeStore.stageID)
+      } else if (this.last_accessible_stage) {
+        this.stage_nr_last_visited = this.get_stage_number_by_stage(this.last_accessible_stage)
+      } else {
+        this.stage_nr_last_visited = null
+      }
+    },
+
     ...mapActions({ setCachedStageID: 'assemblystore/setCachedStageID' })
   },
 
@@ -115,14 +128,12 @@ export default {
   created() {
 
     // Catch all authentication status changes
-    LayoutEventBus.$on('AssemblyLoaded', data => {
+    LayoutEventBus.$once('AssemblyLoaded', data => {
       console.log("LayoutEventBus on AssemblyLoaded")
-      if (this.last_accessible_stage) {
-        this.stage_nr_last_visited = this.get_stage_number_by_stage(this.last_accessible_stage)
-      } else {
-        this.stage_nr_last_visited = null
-      }
+      this.gotoDefaultStageTeaser()
     })
+
+    this.gotoDefaultStageTeaser()
   },
 
 

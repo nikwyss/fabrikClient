@@ -62,7 +62,7 @@ const ApiService = {
 
     // console.error(typeof (token))
     if (token) {
-      console.log("............NEW NEW new header jwt set: ", !!token)
+      console.log("............NEW NEW new header jwt set: ", !!token, token.substring(token.length - 5))
       axios.defaults.headers.common[HTTP_HEADER] = 'JWT ' + token
     } else {
       console.log("............Remove header jwt set: ", !!token)

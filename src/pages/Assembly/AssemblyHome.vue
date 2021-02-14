@@ -50,10 +50,7 @@
         :color="getColor(localStage)"
         :done-icon="getIcon(localStage)"
       > 
-        <!-- :header-nav="is_stage_accessible(localStage) && stage_last_visited != localStage" -->
-        <!-- :active-icon="getIcon(localStage, localStageNr)"
-        :error-icon="getIcon(localStage, localStageNr)" -->
-
+        
         <!-- MANAGERS: STAGE EDITOR -->
         <ComponentStageEditor
           :key=" `AE${localStageNr}` "
@@ -81,6 +78,7 @@
           >
             <div
               class="text-subtitle2"
+              v-if="!is_stage_completed(localStage)"
               v-dompurify-html="localStage.stage.info"
             />
 
@@ -95,11 +93,6 @@
             class="col-12 "
             align="right"
           >
-            <!-- <ArtificialModeratorAssemblyStage
-
-              v-if="localStageNr==stage_nr_last_visited && next_scheduled_stage" 
-              :stage="localStage"
-            /> -->
 
             <keep-alive>
             <component :is="componentStageTeaser" 
@@ -121,7 +114,6 @@
         :ongoing="$unloaded(assembly_sorted_stages)"
         align="left"
       />
-
     </div>
   </div>
 
@@ -228,11 +220,9 @@ export default {
       if (this.is_stage_disabled(stage)) {
         return "mdi-cancel";
       }
-
       if (this.last_accessible_stage == stage) {
         return "mdi-bell";
       }
-
       if (this.last_accessible_stage?.stage.order_position < stage.stage.order_position) {
         return "mdi-clock-time-eleven-outline";
       }
@@ -246,7 +236,6 @@ export default {
       if (this.is_stage_disabled(stage)) {
         return "grey-4";
       }
-
       if (this.is_stage_completed(stage)) {
         return "green-3";
       }
