@@ -69,7 +69,7 @@ export default {
         },
 
         startingContentNodeLevel: function () {
-            console.log('get startingContentNode')
+            // console.log('get startingContentNodeLevel')
             if (this.customStartingContentNode) {
                 return (this.customStartingContentNode.level)
             }
@@ -108,11 +108,11 @@ export default {
         limitNodeTypes: function () {
             // get customLimitNodeTypes
             var allowed_node_types = this.get_allowed_node_types({ contenttreeID: this.CONTENTTREE.contenttreeID })
-            console.log(allowed_node_types)
+            // console.log(allowed_node_types)
             if (this.customLimitNodeTypes) {
                 allowed_node_types = allowed_node_types.filter(v => this.customLimitNodeTypes.includes(v))
             }
-            console.log(allowed_node_types)
+            // console.log(allowed_node_types)
             return (allowed_node_types)
         },
 
@@ -278,7 +278,7 @@ export default {
             console.log('ZOOOM TO CONTENT')
 
             // collapsse all siblings to improve overview
-            console.log('CALL CLOSE CHILDREN FOR PARENT' + content.parent_id)
+            // console.log('CALL CLOSE CHILDREN FOR PARENT' + content.parent_id)
             this.collapse_all_children(content.parent_id)
 
             // expand newly added content and its parent...
@@ -351,7 +351,7 @@ export default {
         },
 
         get_node_by_id_via_branch: function (node_id) {
-            console.log('get node by id via branch: ' + node_id)
+            // console.log('get node by id via branch: ' + node_id)
             // console.log(this.$refs)
             // let node = this.$refs.qtree.getNodeByKey(node_id)
             // return(node)

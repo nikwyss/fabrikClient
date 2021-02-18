@@ -71,7 +71,7 @@ export default {
     numberOfUnratedTopLevelEntries() {
       const unrated_children = Object.filter(this.contenttree.structure.children, x => this.contenttree.entries[x.id]?.progression?.rated !== true)
       // Object.filter(contenttree.structure.children, TEXTTYPES)" 
-      console.log("nof: unrated child", unrated_children)
+      // console.log("nof: unrated child", unrated_children)
       return (Object.values(unrated_children).length)
     },
 
@@ -155,7 +155,7 @@ export default {
     } else {
       // Stage is not yet loaded: so wait until it is...
       LayoutEventBus.$once("EventStageLoaded", (stage) => {
-        console.log(stage)
+        // console.log(stage)
         this.$store.dispatch('contentstore/syncContenttree', {
           assemblyIdentifier: runtimeStore.assemblyIdentifier,
           contenttreeID: stage.stage.contenttree_id,

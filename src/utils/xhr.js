@@ -6,27 +6,11 @@
 import Vue from 'vue'
 import axios from 'axios'
 import { LayoutEventBus } from 'src/utils/eventbus'
+import store from 'src/store'
 
 
-
-/* 
-One more thing to keep in mind, Axios by default has the timeout set to 0, which means no timeout. But in most cases, we need to set request timeouts in our application along with a retry period. We will discuss how to retry a failed request in the below sections but you can change the default timeout of our httpClient while creating it.
-TODO: set timeout above 0 for axios!!!!!!!
-const httpClient = axios.create({
-    baseUrl: process.env.VUE_APP_BASE_URL,
-    timeout: 1000, // indicates, 1000ms ie. 1 second
-    headers: {
-            responseType: 'text'
-
-        "Content-Type": "application/json",
-    }
-});
-
-
-*/
 const HTTP_HEADER = 'Authorization'
 const RequestOrigin = 'ApiService'
-
 
 const ReloginOnStatus403 = (config = {}) => {
   return Object.prototype.hasOwnProperty.call(config, 'ReloginOnStatus403') && !config.ReloginOnStatus403 ?
@@ -53,14 +37,6 @@ const ApiService = {
    */
   setHeader(token) {
 
-    // console.log('Set axios header: ' + token.length > 0)
-    // console.log('Set XHR Request header. Including token:' + !!token)
-    // if (typeof (token) !== 'string' && token !== null) {
-    //   console.log("AAAAAAAAAAAAAAAAAAAAAA")
-    //   return (null)
-    // }
-
-    // console.error(typeof (token))
     if (token) {
       console.log("............NEW NEW new header jwt set: ", !!token, token.substring(token.length - 5))
       axios.defaults.headers.common[HTTP_HEADER] = 'JWT ' + token
@@ -142,7 +118,17 @@ const ApiService = {
    * Perform a custom Axios request.
    **/
   async customRequest(data) {
-    console.log('launch XHR custom request')
+
+    // WAIT FOR ONGOING TOKEN REQUESTS!
+    async function waitingLoopForOngoingTokenRefresh() {
+      if (store.state.ongoingTokenRefresh) {
+        console.log("..... WAITING LOOP FOR ONGOING TOKEN REFESH")
+        await timeout(500)
+        await waitingLoopForOngoingTokenRefresh()
+      }
+    }
+
+    await waitingLoopForOngoingTokenRefresh()
 
     // Assert that header is set, when somebody is authenticated.
     var temp_oauth_jwt = null
@@ -152,7 +138,7 @@ const ApiService = {
 
     if (WithoutAuthHeader(data)) {
       // cache the current header and remove it
-      console.log('remove XHR header')
+      // console.log('remove XHR header')
       temp_oauth_jwt = this.getHeader()
       this.removeHeader()
     }
@@ -169,13 +155,9 @@ const ApiService = {
     if (response.retoken) {
       console.log('PERMISSION ERROR: Initiate a secont attempt')
 
-      // Re-issue tokens (in ApiService)
-      // console.log("refresh token status set")
-      // await response.retoken()
-
       // Re-axios (same as before...)
       // (token should already be refreshed...)
-      console.log('Second attempt....')
+      // console.log('Second attempt....')
       response = await axios(data)
 
       // What if the second attempt fails?
@@ -266,7 +248,10 @@ const axiosErrorHandling = async function (error) {
       if (Vue.prototype.pkce.isAuthorized()) {
 
         // Refresh Token
+        store.dispatch("tokenRefreshStarts")
         await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
+        store.dispatch("tokenRefreshEnds")
+
         if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
           const jwt = Vue.prototype.pkce.state.accessToken.value
           ApiService.setHeader(jwt)

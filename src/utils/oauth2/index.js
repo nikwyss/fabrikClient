@@ -35,11 +35,16 @@ const pkce_config = {
 
   onAccessTokenExpiry(refreshAccessToken) {
     console.log('Expired! Access token needs to be renewed.')
-    console.log('We will try to get a new access token via grant code or refresh token.')
+    console.log("PKCE: ", Vue.prototype.pkce)
+    // console.log('We will try to get a new access token via grant code or refresh token.')
     return refreshAccessToken()
   },
   onInvalidGrant(refreshAuthCodeOrRefreshToken) {
-    console.log('Expired! Auth code or refresh token needs to be renewed. => Redirect to authserver!')
+    console.log('Expired! Auth code AND refresh token needs to be renewed. => Redirect to authserver!')
+    // console.log("PKCE: ", Vue.prototype.pkce)
+    // NOT TRUE IN MANY CASES => parallel accesses?!!!
+    console.trace()
+
     // However, in some special cases a redirect is not desired. i.e. when sending final eventmessages before closing the browser.
     if (!runtimeStore.appExitState) {
       LayoutEventBus.$emit('ReloadPayload')
@@ -73,11 +78,11 @@ export default {
       Vue.prototype.pkce.reset();
 
       // 1. technical level notification: e.g. replace token in axios / delete user cache
-      console.log("oAUTH: token reset => emit AfterTokenChanged")
+      // console.log("oAUTH: token reset => emit AfterTokenChanged")
       LayoutEventBus.$emit('AfterTokenChanged', null)
 
       // 2: user level notification  
-      console.log("oAUTH: token updated => emit AfterLogout")
+      // console.log("oAUTH: token updated => emit AfterLogout")
       LayoutEventBus.$emit('AfterLogout')
     }
 
@@ -106,7 +111,7 @@ export default {
         },
 
         payload: function () {
-          console.log('...OAUTH: loaeding payload..')
+          // console.log('...OAUTH: loaeding payload..')
           if (!this.authorized || !('accessToken' in Vue.prototype.pkce.state)) {
             // LayoutEventBus.$emit('AfterTokenChanged', null)
             // console.log('...OAUTH: not authorized')
@@ -160,9 +165,11 @@ export default {
             console.log("CHECK IF EXPRIRED in ... refresh_token_if_required")
             const expired = Vue.prototype.pkce.isAccessTokenExpired()
             if (expired) {
-              console.log("EXPRIRED in ... refresh_token_if_required")
+              // console.log("EXPRIRED in ... refresh_token_if_required")
+              store.dispatch("tokenRefreshStarts")
               await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
-              console.log("Reload payload in ... refresh_token_if_required")
+              store.dispatch("tokenRefreshEnds")
+              // console.log("Reload payload in ... refresh_token_if_required")
               LayoutEventBus.$emit('ReloadPayload')
             }
           }
@@ -183,6 +190,7 @@ export default {
           // SYNC USER PROFILE
           // is email already set: if not => redirect to userprofile...
           console.log("--EVENT AuthenticationLoaded => syncProfile..")
+          console.log("PKCE: ", Vue.prototype.pkce)
           if (this.userid) {
             store.dispatch("publicprofilestore/syncProfile", {
               oauthUserID: this.userid,
@@ -244,10 +252,9 @@ export default {
           // Authentication process is finished: it is clarified, if a user is logged in or not
           // you may start the user-specific api calls..
 
-          // AfterTokenChanged
-
           // DEFAULT Browser Reload
-          console.log("1.))) Relaunch App: Read Authorization Token from Localstorage")
+          const jwtshort = jwt ? jwt.substring(jwt.length - 5) : 'jwt empty'
+          console.log("1.))) Relaunch App: Read Authorization Token from Localstorage. JWT: ", jwtshort)
           const jwt = Vue.prototype.pkce?.state?.accessToken?.value
           if (jwt) {
             console.log("...emit AfterTokenChanged")

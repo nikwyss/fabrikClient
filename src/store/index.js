@@ -24,16 +24,29 @@ export default new Vuex.Store({
   strict: false, // disable for production
   state: {
     monitor_buffer: [],
-    monitor_date: Date.now()
+    monitor_date: Date.now(),
+    ongoingTokenRefresh: false // dont send any api requests while this boolean is set to true
   },
 
-  // getters: {
-  //   monitorDebug: (state, getters) => {
-  //     return (state.monitor_buffer)
-  //   }
-  // },
+  getters: {
+    isTokenRefreshOngoing: (state) => {
+      return (state.ongoingTokenRefresh)
+    }
+  },
 
   actions: {
+
+    tokenRefreshStarts: ({ state, dispatch, commit }) => {
+      /* resets the counter to zero */
+      commit('tokenRefreshStarts')
+      console.log("[start token refresh]")
+    },
+
+    tokenRefreshEnds: ({ state, dispatch, commit }) => {
+      /* resets the counter to zero */
+      commit('tokenRefreshEnds')
+      console.log("[end token refresh]")
+    },
 
     monitorSetup: ({ state, dispatch, commit }) => {
       /* resets the counter to zero */
@@ -80,7 +93,7 @@ export default new Vuex.Store({
 
     /* monitor request in any case.. */
     monitorLog: ({ state, dispatch, commit }, { eventString, data }) => {
-      console.log(".", eventString)
+      // console.log(".", eventString)
 
       // add newest event to the event buffer
       if (eventString) {
@@ -110,7 +123,7 @@ export default new Vuex.Store({
 
     /* monitor request in any case.. */
     updateStore: ({ state, dispatch, commit }, { data }) => {
-      console.log(".", data)
+      // console.log(".", data)
 
       if ('assemblies' in data) {
         Object.keys(data.assemblies).map(assemblyIdentifier => {
@@ -143,6 +156,14 @@ export default new Vuex.Store({
   },
 
   mutations: {
+
+    tokenRefreshEnds(state) {
+      Vue.set(state, 'ongoingTokenRefresh', false)
+    },
+
+    tokenRefreshStarts(state) {
+      Vue.set(state, 'ongoingTokenRefresh', true)
+    },
 
     monitor_setup(state) {
       const now = new Date()

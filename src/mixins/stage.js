@@ -52,9 +52,9 @@ export default {
       this.markIdle()
 
       // Goto index and move on!
-      console.log('update stage')
+      // console.log('update stage')
+      // console.log('stage has been updated: goto index')
       this.gotoNextStageNr(this.routed_stage)
-      console.log('stage has been updated: goto home')
       this.gotoAssemblyHome()
       // this.scrollToStage()
 

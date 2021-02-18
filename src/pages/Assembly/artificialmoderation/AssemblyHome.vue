@@ -17,6 +17,7 @@
             {{$t('stages.am.welcome_empty_schedule', {'numberOfStages': assembly_sorted_stages.length}) }}
         </template>
     </ArtificialModerator>
+
     </div>
 
 </template>

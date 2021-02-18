@@ -51,7 +51,7 @@ const getters = {
   },
 
   IsUserDelegateOfOngoingAssembly: (state, getters) => {
-    console.log("IsUserDelegateOfOngoingAssembly", getters.UsersDelegateAssemblies)
+    // console.log("IsUserDelegateOfOngoingAssembly", getters.UsersDelegateAssemblies)
     const assemblies = getters.UsersDelegateAssemblies
     return (assemblies && Object.values(assemblies).length > 0)
   },
@@ -79,52 +79,15 @@ const getters = {
 
     return (!getters.IsThereAnAssemblyOngoing && !getters.IsThereAnAssemblyInPublicState)
   }
-
-
-
-  // currentPublicAssembly() {
-
-  //   // const assemblies = this.UsersDelegateAssemblies
-  //   const assemblyIdentifier = this.currentAssemblyIdentifier
-  //   if (assemblyIdentifier) {
-  //     return this.getAssembly(assemblyIdentifier)
-  //   }
-  // },
-
-
-  // assemblyIdentifier() {
-
-  //   const assemblies = this.UsersDelegateAssemblies
-  //   return (this.$route?.params?.assemblyIdentifier)
-  // },
-
-
-  // assemblyName() {
-
-  //   const assembly = this.currentPublicAssembly
-  //   if (assembly) {
-  //     return (assembly.title)
-  //   }
-  // },
-
-
-
-  // getAssembly: (state) => (assemblyIdentifier) => {
-  //   // return state.things.find(thing => thing.identifier === id)
-  //   console.assert(assemblyIdentifier)
-  //   return (state.publicIndex?.assemblies[assemblyIdentifier])
-  //   // if (state.publicIndex?.assemblies[assemblyIdentifier]) {
-  //   // }
-  // },
 }
 
 const actions = {
 
   syncPublicIndex: ({ state, dispatch, localgetters, rootState, rootGetters }) => {
-    console.log("...is public index in sync?")
+    // console.log("...is public index in sync?")
     if (state.publicIndex === null || state.publicIndex === undefined) {
       // no cached version exists: load the data from resource server...
-      console.log("...NO => cache is empty")
+      console.log("...public Index cache is empty")
       dispatch('retrievePublicIndex')
       return (null)
     }
@@ -133,7 +96,7 @@ const actions = {
     const expired = api.expiredCacheDate(state.publicIndex.access_date)
     if (expired) {
       // too old cache: load the data from resource server...
-      console.log("NO => ...cache is outdated")
+      console.log("public Index cache is outdated")
       dispatch('retrievePublicIndex')
     }
 
@@ -148,7 +111,7 @@ const actions = {
         response => {
 
           // save data
-          console.log('save PublicIndex to cache.', response)
+          // console.log('save PublicIndex to cache.', response)
           console.assert(response.data !== null && response.data !== undefined)
           commit('storePublicIndex', response.data)
 

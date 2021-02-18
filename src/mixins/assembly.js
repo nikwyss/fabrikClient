@@ -24,12 +24,11 @@ export default {
     }
   },
 
-
-  data() {
-    return {
-      stage_nr_last_visited: null
-    }
-  },
+  // data() {
+  //   return {
+  //     stage_nr_last_visited: null
+  //   }
+  // },
 
   computed: {
 
@@ -37,18 +36,35 @@ export default {
       'assemblystore',
       ['assembly', 'assembly_sorted_stages', 'is_stage_accessible', 'is_stage_scheduled',
         'last_accessible_stage', 'is_stage_idle',
-        'is_stage_done', 'is_stage_disabled', 'is_stage_completed', 'last_accessible_stage',
+        'is_stage_done', 'is_stage_disabled', 'is_stage_completed',
         'is_stage_new', 'is_stage_last',
         'is_stage_first', 'is_stage_alert', 'assembly_scheduled_stages', 'assembly_stages',
         'get_stage_number_by_stage_id', 'get_stage_number_by_stage', 'next_scheduled_stage',
-        'find_next_accessible_stage', 'assembly_stages', 'assembly', 'assembly_configuration', 'IsDelegate', 'IsManager'
+        'find_next_accessible_stage', 'assembly_stages', 'assembly_configuration', 'IsDelegate', 'IsManager'
       ]
     ),
+
+    stage_nr_last_visited: {
+      get() {
+        return this.get_stage_number_by_stage_id(runtimeStore.stageID)
+      },
+      set(stageNr) {
+        const stageID = this.assembly_sorted_stages[stageNr].stage.id
+        console.log("set stageID by stageNR", stageNr, stageID)
+        runtimeMutations.setStageID(stageID)
+      }
+    },
 
     stage_last_visited() {
       return this.assembly_sorted_stages[this.stage_nr_last_visited]
     }
   },
+  // watch: {
+  //   stage_nr_last_visited(after, before) {
+  //     console.log(before, after, "waaaatchhhh NR")
+  //     // this.updateComponentStageTeaser()
+  //   }
+  // },
 
   methods: {
 
@@ -72,7 +88,7 @@ export default {
       console.log('Do the scrolling...')
       // let anchorid = `stage${this.stage_nr_last_visited}`
       var element = document.getElementsByClassName('q-stepper__tab--active');
-      if (element) {
+      if (element && element[0]) {
         const el = element[0]
         const target = getScrollTarget(el)
         const offset = el.offsetTop
@@ -88,13 +104,13 @@ export default {
     gotoAssemblyHome: function () {
 
       var route = null
+      console.log(this.stage_nr_last_visited, "stage before assembly")
 
       route = {
         name: 'assembly_home',
         params: { assemblyIdentifier: runtimeStore.assemblyIdentifier }
       }
-      // }
-      // console.log(route)
+
       this.$router.push(route, this.laggedScrollToStage)
 
     },
@@ -107,8 +123,9 @@ export default {
       if (!nextStage) {
         return (null)
       }
-
+      // console.log(this.stage_nr_last_visited, "old stage")
       this.stage_nr_last_visited = this.get_stage_number_by_stage(nextStage)
+      // console.log(this.stage_nr_last_visited, "new stage")
     },
 
     gotoDefaultStageTeaser: function () {
@@ -139,7 +156,7 @@ export default {
 
   mounted: function () {
 
-    console.log('>> APP LOADED: in assembly: do the assembly sync!!!')
+    console.log('>> APP LOADED: in assembly. Stage: ', this.stage_nr_last_visited)
     // TODO: remove any personal data when loggin out
     this.$store.dispatch('assemblystore/syncAssembly', {
       oauthUserID: this.oauth.userid

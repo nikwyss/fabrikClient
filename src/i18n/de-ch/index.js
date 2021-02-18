@@ -168,7 +168,7 @@ export default {
       enter_first: 'Wir möchten gerne hier anfangen. Sind Sie bereit?',
       enter_continue: 'Wir möchten nun gerne hier weiterfahren. Sind Sie bereit?',
       enter_end: 'Bevor wir für heute Schluss machen: Darf ich Sie bitten mir zu folgen.',
-      already_seen: 'Das haben Sie sich heute schon angesehen. Jetzt brauchen wir Sie andernorts. Kommen Sie mit?',
+      already_seen: 'Das haben Sie sich schon angesehen. Jetzt brauchen wir Sie andernorts. Kommen Sie mit?',
       all_stages_already_seen: 'Wenn Sie möchten, können Sie sich das natürlich noch einmal ansehen?',
       already_completed: 'Dieser Bereich haben Sie bereits abgeschlossen.',
       attention_needed: 'Hierzu hätten wir noch einen Wunsch. Folgen Sie uns bitte.',

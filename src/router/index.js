@@ -52,7 +52,7 @@ export default route(function ({ Vue }) {
     const current = this.resolve(this.currentRouteObject()).href
     if (target === current) {
       // Reload      
-      console.log("EVENT BUS!!!")
+      // console.log("EVENT BUS!!!")
       LayoutEventBus.$emit('reload')
     } else {
       // Push

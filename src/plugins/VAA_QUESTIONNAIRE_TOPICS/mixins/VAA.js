@@ -43,7 +43,7 @@ export default {
     },
 
     currentSection: function () {
-      if (!runtimeStore.stageID) {
+      if (!runtimeStore.stageID || !this.routed_stage) {
         return 'INTRO'
       }
       console.log("ROUTED STAGE", this.routed_stage)

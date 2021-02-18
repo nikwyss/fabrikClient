@@ -164,11 +164,12 @@ export default {
   },
 
   watch: {
-    stage_last_visited(before, after) {
+    stage_last_visited(after, before) {
+      // console.log(before, after, "waaaatchhhh", this.stage_nr_last_visited)
       this.updateComponentStageTeaser()
     }
   },
-  
+
   methods: {
 
     updateComponentStageTeaser: function() {

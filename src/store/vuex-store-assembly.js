@@ -91,14 +91,14 @@ const getters = {
   },
 
   assembly_stages: (state, getters) => {
-    console.log(">> NOTE: assembly_stages")
+    // console.log(">> NOTE: assembly_stages")
 
     if (!runtimeStore.assemblyIdentifier) {
       console.log('...identifier not ready')
       return null
     }
 
-    console.log(runtimeStore.assemblyIdentifier)
+    // console.log(runtimeStore.assemblyIdentifier)
     const stage_keys = state.assemblydata[runtimeStore.assemblyIdentifier]?.stages
     if (!stage_keys) {
       console.log('...assembly not ready')
@@ -114,7 +114,7 @@ const getters = {
       }, {})
 
 
-    console.log("this are assembly stages", stages)
+    // console.log("this are assembly stages", stages)
     return stages
   },
 
@@ -125,7 +125,7 @@ const getters = {
   },
 
   assembly_sorted_stages: (state, getters) => {
-    console.log(">>..:Sort stages :")
+    // console.log(">>..:Sort stages :")
     const stages = getters.assembly_stages
     if (!stages) {
       return null
@@ -152,7 +152,7 @@ const getters = {
       getters.is_stage_scheduled(stage) &&
       !getters.is_stage_disabled(stage) &&
       !getters.is_stage_completed(stage))
-
+    // console.trace()
     return last_accessible_stage
   },
 
@@ -172,6 +172,7 @@ const getters = {
       return (stages[stages.length - 1])
     }
 
+    // console.log('current stage: ', nextScheduledStage)
     return nextScheduledStage
   },
 
@@ -236,6 +237,7 @@ const getters = {
     console.assert(sorted_stages)
     const sorted_stage_ids = sorted_stages.map(stage => stage.stage.id)
     const stage_number = sorted_stage_ids.indexOf(stageID)
+    // console.log("find stage", stageID, " in ", sorted_stage_ids)
     console.assert(stage_number > -1)
 
     return (stage_number)
@@ -246,7 +248,7 @@ const getters = {
     console.assert(previous_stage)
     const next_stage = getters.assembly_accessible_stages.find(stage => true &&
       stage.stage.order_position > previous_stage.stage.order_position)
-    console.log("new stage found", next_stage)
+    // console.log("new stage found", next_stage)
     return next_stage
   },
 
@@ -333,8 +335,8 @@ const getters = {
   },
 
   is_first_day: (state, getters) => (stage) => {
-    console.log(stage.progression.date_created)
-    console.log(date.isSameDate(stage.progression.date_created, Date.now(), 'day'))
+    // console.log(stage.progression.date_created)
+    return date.isSameDate(stage.progression.date_created, Date.now(), 'day')
   }
 }
 
@@ -364,19 +366,19 @@ const actions = {
       return null
     }
 
-    console.log("AssemblyLoaded: Assembly retrieved from localStorage")
+    // console.log("AssemblyLoaded: Assembly retrieved from localStorage")
     LayoutEventBus.$emit('AssemblyLoaded')
     return (null)
   },
 
   retrieveAssembly({ commit }, { assemblyIdentifier }) {
 
-    console.log('Retrieve assembly from resource server')
+    // console.log('Retrieve assembly from resource server')
     api.retrieveAssembly(assemblyIdentifier)
       .then(
         response => {
 
-          console.log('save retrieved assembly to cache.')
+          // console.log('save retrieved assembly to cache.')
           // console.log(assemblyIdentifier)
           // console.log(response)
           const data = response.data
@@ -410,7 +412,7 @@ const mutations = {
   },
 
   storeAssembly(state, { assemblyIdentifier, data }) {
-    console.log(`Store assembly ${assemblyIdentifier}`)
+    // console.log(`Store assembly ${assemblyIdentifier}`)
 
     // data.stages.forEach(stage)
     const stages = state.stages
@@ -427,46 +429,22 @@ const mutations = {
 
 
   storeAssemblyObject(state, { assemblyIdentifier, assembly }) {
-    console.log(`Store assembly ${assemblyIdentifier} object`)
+    // console.log(`Store assembly ${assemblyIdentifier} object`)
     Vue.set(state.assemblydata[assemblyIdentifier], 'assembly', assembly)
   },
   storeAssemblyProgression(state, { assemblyIdentifier, progression }) {
-    console.log(`Store assembly ${assemblyIdentifier} progressions`)
+    // console.log(`Store assembly ${assemblyIdentifier} progressions`)
     Vue.set(state.assemblydata[assemblyIdentifier], 'progression', progression)
   },
   storeStageObject(state, { stageID, stage }) {
-    console.log(`Store stage ${stageID} object`)
+    // console.log(`Store stage ${stageID} object`)
     Vue.set(state.stages[stageID], 'stage', stage)
   },
   storeStageProgression(state, { stageID, progression }) {
-    console.log(`Store stage ${stageID} progression`, progression)
+    // console.log(`Store stage ${stageID} progression`, progression)
     Vue.set(state.stages[stageID], 'progression', progression)
-  },
+  }
 
-
-
-
-  // storeAssemblyProgression(state, { assemblyIdentifier, stageID, progression }) {
-  //   console.log(`Store assembly progression ${assemblyIdentifier}`)
-  //   // Vue.set  makes the change reactive!!
-  //   if (!(stageID in state.assemblydata[assemblyIdentifier].stages)) {
-  //     Vue.set(state.assemblydata[assemblyIdentifier], 'stages', stageID)
-  //     Vue.set(state.assemblydata[assemblyIdentifier].stages, stageID, { 'progression': null })
-  //   }
-  //   Vue.set(state.assemblydata[assemblyIdentifier].stages[stageID], 'progression', progression)
-  // }
-
-
-  // monitor_route_changes(state, { to, from }) {
-  //   const now = Date.now()
-
-  //   // Track assemblyIdentifier
-  //   if (from.params?.assemblyIdentifier !== to.params?.assemblyIdentifier) {
-  //     console.log(">> ROUTE: new assemblyIdentifier")
-  //     // LayoutEventBus.$emit('AppLoaded')
-  //     Vue.set(state.monitors, 'routed_assembly_identifier', now)
-  //   }
-  // }
 }
 
 export const assemblystore = {

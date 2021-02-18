@@ -57,17 +57,17 @@ const actions = {
     const timeout = timelag ? 5 : 0
     setTimeout(() => {
 
-      console.log('Retrieve contenttree from resource server' + contenttreeID)
+      // console.log('Retrieve contenttree from resource server' + contenttreeID)
       console.assert(contenttreeID)
       api.retrieveContenttree(assemblyIdentifier, contenttreeID)
         .then(
           response => {
             // update
-            console.log("contenttree retrieved from api.")
+            // console.log("contenttree retrieved from api.")
             console.assert(response.data)
 
             LayoutEventBus.$emit('hideLoading')
-            console.log('save full contenttree to cache.')
+            // console.log('save full contenttree to cache.')
             console.assert('OK' in response.data)
             console.assert('contenttree' in response.data)
             let configuration = 'configuration' in response.data ? response.data.configuration : null
@@ -103,7 +103,7 @@ const actions = {
   },
 
   syncContenttree: ({ state, dispatch, localgetters, rootState, rootGetters }, { assemblyIdentifier, contenttreeID, oauthUserID }) => {
-    console.log(` sync contenttree ${contenttreeID}`)
+    // console.log(` sync contenttree ${contenttreeID}`)
 
     // wrong user? and renew cache all x- minutes!
     const wrongUser = oauthUserID != state.contenttree[contenttreeID]?.access_sub
@@ -117,7 +117,7 @@ const actions = {
     const expired = !emptyContenttree && api.expiredCacheDate(state.contenttree[contenttreeID]?.access_date)
     if (!expired && !emptyContenttree && !wrongUser) {
       // CACHE IS UP TO DATE!
-      console.log('Contenttree Cache IS UP TO DATE')
+      // console.log('Contenttree Cache IS UP TO DATE')
       return (true)
     }
 
@@ -137,7 +137,7 @@ const mutations = {
   add_or_update_contenttree(state, { contenttreeID, contenttree, configuration }) {
 
     // keep list of opened contents (if previously available)
-    console.log('update contenttree')
+    // console.log('update contenttree')
     let configuration_old = null;
     let expanded_old = null;
     if (contenttreeID in state.contenttree) {
@@ -151,7 +151,7 @@ const mutations = {
       contenttree.expanded = expanded_old
     }
     // console.log(contenttree)
-    console.log('new copy saved...')
+    // console.log('new copy saved...')
     Vue.set(state.contenttree, contenttreeID, contenttree)
   },
 
@@ -160,7 +160,7 @@ const mutations = {
     console.assert(modifiedContents !== undefined)
     console.assert(modifiedContents !== null)
     for (let contentID in modifiedContents) {
-      console.log('modified contents: ' + contentID)
+      // console.log('modified contents: ' + contentID)
 
       let modifiedContent = modifiedContents[contentID]
       // console.log(modifiedContent)
@@ -175,7 +175,7 @@ const mutations = {
         Vue.set(state.contenttree[contenttreeID].entries[modifiedContent.content.id], 'creator', modifiedContent.creator)
       }
     }
-    console.log("updated contenttree content", modifiedContents)
+    // console.log("updated contenttree content", modifiedContents)
   },
 
   update_expanded_branches(state, { contenttreeID, startingContentID, expanded }) {
@@ -203,7 +203,7 @@ const mutations = {
     const progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
     if (!progression) {
       // prgression not created yet, rigth?
-      console.log("missing progression")
+      // console.log("missing progression")
       return (null)
     }
 

@@ -4,8 +4,8 @@
  */
 
 import ApiService from 'src/utils/xhr'
-import Vue from 'vue'
 import { date } from 'quasar'
+import Vue from 'vue'
 
 export default {
 
@@ -27,7 +27,7 @@ export default {
   async authProfile(profile) {
 
     // Renew token (if required)
-    // await Vue.prototype.oauth.refresh_token_if_required()
+    await Vue.prototype.oauth.refresh_token_if_required()
 
     /* Update Auth Profile => Emailadress/ Username etc... */
     profile.client_id = process.env.ENV_OAUTH_CLIENT_ID
@@ -52,19 +52,20 @@ export default {
 
     // Renew token (if required)
     // refresh_token method is done earlier, while launching app.
-    // // await Vue.prototype.oauth.refresh_token_if_required()
+    // await Vue.prototype.oauth.refresh_token_if_required()
 
     /* Notify Resource Server about certain user activities in the client app. */
     let url = `${process.env.ENV_APISERVER_URL}/profile`
-    console.log('get public profile (API-Server)')
+    // console.log('get public profile (API-Server)')
     return await ApiService.get(url)
   },
 
   async monitorActivities(buffer) {
 
-    // Renew token (if required)
+    // Only precheck token (if this is not an APP Exit Event)
     // await Vue.prototype.oauth.refresh_token_if_required()
-    console.log("/api")
+
+    // console.log("/api")
     /* Notify Resource Server about certain user activities in the client app. */
     let url = `${process.env.ENV_APISERVER_URL}/monitor`
     console.log('monitor activies in API')
@@ -76,7 +77,7 @@ export default {
   async retrievePublicIndex() {
 
     // Renew token (if required)
-    // await Vue.prototype.oauth.refresh_token_if_required()
+    await Vue.prototype.oauth.refresh_token_if_required()
 
     let url = `${process.env.ENV_APISERVER_URL}/assemblies`
     return await ApiService.get(url)
@@ -85,7 +86,7 @@ export default {
   async retrieveAssembly(assemblyIdentifier) {
 
     // Renew token (if required)
-    // await Vue.prototype.oauth.refresh_token_if_required()
+    await Vue.prototype.oauth.refresh_token_if_required()
 
     let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}`
     return await ApiService.get(url)
@@ -94,7 +95,7 @@ export default {
   async retrieveContenttree(assemblyIdentifier, contenttreeID) {
 
     // Renew token (if required)
-    // await Vue.prototype.oauth.refresh_token_if_required()
+    await Vue.prototype.oauth.refresh_token_if_required()
 
     let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/contenttree/${contenttreeID}/contenttree`
     return await ApiService.get(url)
@@ -102,13 +103,11 @@ export default {
 
   async setContentRating(assemblyIdentifier, contentID, rating) {
 
+    // Renew token (if required)
+    await Vue.prototype.oauth.refresh_token_if_required()
 
     // compose url
     let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/content/${contentID}/rating/${rating}`;
-    // Renew token (if required)
-    // console.log(url)
-    // await Vue.prototype.oauth.refresh_token_if_required()
-    console.log(url)
     const result = await ApiService.put(url)
     if (!result.data.OK) {
       throw ("Rating could not be saved");
@@ -118,6 +117,9 @@ export default {
   },
 
   async saveContent(assemblyIdentifier, contenttreeID, data) {
+
+    // Renew token (if required)
+    await Vue.prototype.oauth.refresh_token_if_required()
 
     // compose url
     let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/contenttree/${contenttreeID}`

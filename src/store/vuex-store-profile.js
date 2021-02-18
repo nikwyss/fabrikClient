@@ -15,7 +15,7 @@ var state = {
 const getters = {
 
   get_public_profile: function (state) {
-    console.log('get public profile (VUEX)')
+    // console.log('get public profile (VUEX)')
     // console.log(state.publicProfile)
     if (!state.publicProfile) {
       return (null)
@@ -76,11 +76,11 @@ const getters = {
 const actions = {
 
   syncProfile: ({ state, dispatch, localgetters, rootState, rootGetters }, { oauthUserID, oauthUserEmail }) => {
-    console.log(` sync public profile`, oauthUserEmail)
+    // console.log(` sync public profile`, oauthUserEmail)
 
     if (!oauthUserID) {
       // Not logged in.
-      console.log("NOT LOGGED IN")
+      // console.log("NOT LOGGED IN")
       // console.assert(!state.publicProfile)
       return (null)
     }
@@ -88,7 +88,7 @@ const actions = {
     if (!state.publicProfile) {
       // no cached version exists: load the data from resource server...
       dispatch('retrievePublicProfile', { oauthUserID, oauthUserEmail })
-      console.log(' not yet fetched...')
+      // console.log(' not yet fetched...')
       return (null)
     }
 
@@ -106,7 +106,7 @@ const actions = {
   },
 
   checkProfileRequirements: ({ state, dispatch, localgetters, rootState, rootGetters }, { oauthUserID, oauthUserEmail }) => {
-    console.log(` check public profile requirements`, oauthUserEmail)
+    // console.log(` check public profile requirements`, oauthUserEmail)
 
     // CHECK Profile requierments
     console.log("CHECK STATE PROFILE")
@@ -119,7 +119,7 @@ const actions = {
   },
 
   gotoProfile: ({ state, dispatch, localgetters, rootState, rootGetters }) => {
-    console.log(` goto public profile`)
+    // console.log(` goto public profile`)
 
     // CHECK Profile requierments
 
@@ -141,12 +141,12 @@ const actions = {
 
   retrievePublicProfile({ commit, dispatch }, { oauthUserID, oauthUserEmail }) {
 
-    console.log('Retrieve public profile from resource server', oauthUserEmail)
+    // console.log('Retrieve public profile from resource server', oauthUserEmail)
     api.publicProfile()
       .then(
         response => {
 
-          console.log('save retrieved profile to cache.')
+          // console.log('save retrieved profile to cache.')
           const data = response.data
           commit('storePublicProfile', { data })
 

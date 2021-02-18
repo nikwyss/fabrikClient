@@ -13,6 +13,9 @@ export const runtimeMutations = {
   setStageID(stageID) {
     runtimeStore.stageID = parseInt(stageID)
   },
+  // setStageNr(stageID) {
+  //   runtimeStore.stageID = parseInt(stageID)
+  // },
   setAssemblyIdentifier(assemblyIdentifier) {
     runtimeStore.assemblyIdentifier = assemblyIdentifier
   }
