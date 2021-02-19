@@ -2,15 +2,13 @@
 var routes = [
 
   {
-    path: '/:assemblyIdentifier/politicaltopics/:stageID/',
+    path: '/:assemblyIdentifier/vaa/:stageID/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: 'analyses', name: 'VAA_QUESTIONNAIRE_ANALYSES', component: () => import('./Analyses') },
-      { path: 'questions/', name: 'VAA_QUESTIONNAIRE_QUESTIONS', component: () => import('./Index') },
-      { path: ':contentID/', name: 'VAA_QUESTIONNAIRE_TOPICS_CONTENT', component: () => import('./Content') },
+      { path: 'q/:contentID', name: 'VAA_QUESTIONNAIRE_QUESTIONS_ENTRY', component: () => import('./Questions') },
+      { path: 'q', name: 'VAA_QUESTIONNAIRE_QUESTIONS', component: () => import('./Questions') },
       { path: '', name: 'VAA_QUESTIONNAIRE_TOPICS', component: () => import('./Index') }
-
-
     ]
   }
 ]

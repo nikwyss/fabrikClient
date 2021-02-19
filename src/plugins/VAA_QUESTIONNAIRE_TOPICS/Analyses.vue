@@ -1,5 +1,5 @@
 <template>
-    <q-page class="doc_content">
+    <q-page class="doc_content" v-if="contenttree">
 
 
          <div class="row justify-between">

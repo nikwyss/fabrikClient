@@ -25,11 +25,12 @@
       </q-card-section>
     </q-card>
 
+
     <DefaultDiscussionBlock 
       :item="item" 
+      :discussionBlockLabel="discussionBlockLabel"
       :artificialmoderationComponents="artificialmoderationComponents" 
       :comments="comments" />
-
   </div>
 </template>
 
@@ -39,10 +40,9 @@
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar"
 import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDiscussionBlock"
 
-
 export default {
   name: 'TextsheetCard',
-  props: ['item', 'standalone', 'heading_number', 'comments'],
+  props: ['item', 'standalone', 'heading_number', 'comments', 'discussionBlockLabel'],
   inject: ['openIndex', 'CONTENTTREE'],
   components: { DefaultDiscussionBlock, ContentToolbar},
   data: function() {

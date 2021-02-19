@@ -70,8 +70,7 @@
       :highlighted="currentSection==sections[2]"
       :disable="!stages_by_section[2] || !is_stage_accessible(stages_by_section[2])"
     />
-    
-    
+        
     <CustomQRouteTab
       name="analyses"
       :to="{

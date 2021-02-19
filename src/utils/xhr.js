@@ -8,6 +8,9 @@ import axios from 'axios'
 import { LayoutEventBus } from 'src/utils/eventbus'
 import store from 'src/store'
 
+function Sleep(milliseconds) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 
 const HTTP_HEADER = 'Authorization'
 const RequestOrigin = 'ApiService'
@@ -120,10 +123,10 @@ const ApiService = {
   async customRequest(data) {
 
     // WAIT FOR ONGOING TOKEN REQUESTS!
-    async function waitingLoopForOngoingTokenRefresh() {
+    const waitingLoopForOngoingTokenRefresh = async function () {
       if (store.state.ongoingTokenRefresh) {
         console.log("..... WAITING LOOP FOR ONGOING TOKEN REFESH")
-        await timeout(500)
+        await Sleep(500)
         await waitingLoopForOngoingTokenRefresh()
       }
     }

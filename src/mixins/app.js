@@ -260,10 +260,14 @@ export default {
     // Start periodic monitorLog Raiser
     // keep this interval low (much lower than the intervall number specified in env. files) 
     // (e.g. 1 Min.)
+    let intervall = parseInt(process.env.ENV_APISERVER_MONITOR_INTERVAL_SECONDS);
+    if (!intervall) {
+      intervall = 60
+    }
     this.$root.$monitorTimer = setInterval(() => {
       // console.log("/intervall")
       this.$root.monitorLog()
-    }, parseInt(process.env.ENV_APISERVER_MONITOR_INTERVAL_SECONDS) * 1000)
+    }, intervall * 1000)
 
     // END
     console.log("*** APP MOUNTED ***")

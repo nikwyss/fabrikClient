@@ -18,7 +18,8 @@
     </q-card>
 
     <DefaultDiscussionBlock 
-      :item="item" 
+      :item="item"
+      :discussionBlockLabel="discussionBlockLabel"
       :artificialmoderationComponents="artificialmoderationComponents" 
       :comments="comments" />
 
@@ -36,7 +37,7 @@ import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDisc
 
 export default {
   name: 'TextsheetCard',
-  props: ['item', 'standalone', 'heading_number', 'comments'],
+  props: ['item', 'standalone', 'heading_number', 'comments', 'discussionBlockLabel'],
   // questions added for debigging : is it still usefukk?
   components: { ContentRatingThumbs, ContentEditor, ContentToolbar, DefaultDiscussionBlock},
   data: function() {

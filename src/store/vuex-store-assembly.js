@@ -126,6 +126,7 @@ const getters = {
 
   assembly_sorted_stages: (state, getters) => {
     // console.log(">>..:Sort stages :")
+    // console.trace()
     const stages = getters.assembly_stages
     if (!stages) {
       return null
@@ -232,8 +233,16 @@ const getters = {
 
 
   get_stage_number_by_stage_id: (state, getters) => (stageID) => {
-    console.assert(stageID)
+    if (!stageID) {
+      return (null)
+    }
+    // assembly loaded?
     const sorted_stages = getters.assembly_sorted_stages
+    if (!sorted_stages) {
+      return (null)
+    }
+
+    console.assert(stageID)
     console.assert(sorted_stages)
     const sorted_stage_ids = sorted_stages.map(stage => stage.stage.id)
     const stage_number = sorted_stage_ids.indexOf(stageID)

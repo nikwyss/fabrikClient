@@ -46,16 +46,26 @@ export default {
 
     stage_nr_last_visited: {
       get() {
+        if (isNaN(runtimeStore.stageID) || runtimeStore.stageID === null) {
+          return null
+        }
         return this.get_stage_number_by_stage_id(runtimeStore.stageID)
       },
       set(stageNr) {
-        const stageID = this.assembly_sorted_stages[stageNr].stage.id
-        console.log("set stageID by stageNR", stageNr, stageID)
-        runtimeMutations.setStageID(stageID)
+        if (stageNr === null) {
+          runtimeMutations.setStageID(null)
+        } else {
+          const stageID = this.assembly_sorted_stages[stageNr].stage.id
+          console.log("set stageID by stageNR", stageNr, stageID)
+          runtimeMutations.setStageID(stageID)
+        }
       }
     },
 
     stage_last_visited() {
+      if (this.stage_nr_last_visited === null) {
+        return null
+      }
       return this.assembly_sorted_stages[this.stage_nr_last_visited]
     }
   },
@@ -129,6 +139,8 @@ export default {
     },
 
     gotoDefaultStageTeaser: function () {
+
+
       if (runtimeStore.stageID) {
         this.stage_nr_last_visited = this.get_stage_number_by_stage_id(runtimeStore.stageID)
       } else if (this.last_accessible_stage) {

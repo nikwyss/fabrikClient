@@ -1,11 +1,6 @@
 <template>
     <q-page class="doc_content">
-<!-- {{this.contenttree.access_date }} -->
-        <!-- <q-btn align="around" 
-            class="btn-fixed-width" color="brown-5" 
-            label="Back to the assembly home"
-            icon="mdi-arrow-left"
-            @click="gotoAssemblyHome()" /> -->
+
         <div v-if="assembly && routed_stage" >
 
             <!-- DISABLED WARNING -->
@@ -19,22 +14,22 @@
                 :assembly_id="assembly.id"
                 :model="routed_stage" />
 
-            <!-- <div class="text-h3">{{routed_stage.stage.title}}</div> -->
-
-            <!-- <p>{{routed_stage.stage.info}}</p> -->
         </div>
-<!-- {{contenttree}} -->
-        <div class="" v-if="routed_stage && contenttree"  class="text-vessel">
 
 
-        <!-- INTRODUCTION -->
+
+
+
+        <div class="q-pt-xl text-vessel" v-if="routed_stage && contenttree" >
+
         <h2>{{routed_stage.stage.title}}</h2>
-        <p class="text-body1">{{routed_stage.stage.info}}</p>
 
 
-            <!-- <div class="row justify-between">
-                <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
-            </div> -->
+        
+        <ArtificialModeratorTOPICSIndexTop align="left" />
+
+
+        <!-- <p class="text-body1">{{routed_stage.stage.info}}</p> -->
 
   
 
@@ -46,10 +41,12 @@
 
             <TextsheetCard 
                 :level="1"
+                :discussionBlockLabel="`Forum zum Thema '${contenttree.entries[nodeL1.id].content.title}'`"
                 :comments="filter_entries(nodeL1.children, ['COMMENT', 'QUESTION'])"
                 :heading_number="(keyL1+1)"
                 :item="contenttree.entries[nodeL1.id]"/>
-                <!-- {{oauth.userid}} -->
+
+            <!-- RATING -->
             <ContentRatingSlider :content="contenttree.entries[nodeL1.id]" />
         </div>
         
@@ -59,12 +56,22 @@
                 <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
          </div>
 
+
+        <ArtificialModeratorTOPICSIndexBottom 
+        :ongoing="!routed_stage || oauth.authorized === null" align="left" />
+
+
         <!-- RESULT -->
         <div v-if="ratingCompleted">
-            <h2>Resultat</h2>
-            <div class="row justify-between">
+            <!-- <h2>Resultat</h2> -->
+
+
+
+            <div class="row justify-between q-pt-xl">
                 <ChartBar :personalData="chartBarPersonalData" :labels="chartBarLabels" />
             </div>
+
+
         </div>
     </div>
 
@@ -78,6 +85,8 @@ import ComponentStageEditor from 'src/pages/ContentTree/components/StageEditor';
 import TextsheetCard from './components/TextsheetCard';
 import ContentRatingSlider from 'src/pages/ContentTree/components/ContentRatingSlider';
 import ChartBar from 'src/components/charts/ChartBar';
+import ArtificialModeratorTOPICSIndexTop from './artificialmoderation/IndexTop'
+import ArtificialModeratorTOPICSIndexBottom from './artificialmoderation/IndexBottom'
 
 
 export default {
@@ -87,19 +96,12 @@ export default {
         ComponentStageEditor,
         TextsheetCard,
         ContentRatingSlider,
-        ChartBar
+        ChartBar,
+        ArtificialModeratorTOPICSIndexTop,
+        ArtificialModeratorTOPICSIndexBottom
     },
     computed: {
         
-        ratingCompleted() {
-
-            const allRated = this.numberOfUnratedTopLevelEntries == 0
-            if (allRated && this.is_stage_scheduled(this.routed_stage)) {
-                this.markIdle()
-            }
-
-            return (allRated)           
-        },
 
         sortedChartEntries() {
             const children = this.contenttree.structure.children

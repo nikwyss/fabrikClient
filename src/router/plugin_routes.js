@@ -9,5 +9,5 @@ plugin_routes.push(...vaa_topics_routes)
 plugin_routes.push(...textsheet_routes)
 plugin_routes.push(...cir_pros_and_cons_routes)
 plugin_routes.push(...survey_routes)
-
+// console.log(plugin_routes)
 export default plugin_routes

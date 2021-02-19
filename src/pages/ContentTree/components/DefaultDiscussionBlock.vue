@@ -1,26 +1,26 @@
 <template>
-  <div>
+  <div v-if="CONTENTTREE.contenttree">
       <div align="right">
         <q-btn v-if="!!item.content.text" 
           flat
           align="right"
           @click="toggleDiscussion"
           text-color="grey-7"
-          :class="[show_discussion ? 'bg-grey-3' : '']"
+          :class="[show_discussion ? 'bg-grey-1' : '']"
           :icon="show_discussion ? 'mdi-comment' : 'mdi-comment-outline'"
           size="md"
         >
           <q-badge v-if="comments.length && nof_descendants_unread" color="red" floating>{{nof_descendants_unread}}</q-badge> 
           <q-tooltip v-if="!show_discussion" anchor="top left" self="bottom left">{{$t('contenttree.comment_section_tooltip')}}</q-tooltip>
           <q-tooltip v-if="show_discussion" anchor="top left" self="bottom left">{{$t('contenttree.close_comment_section_tooltip')}}</q-tooltip>
-          &nbsp;{{'Fragen und Kommentare'}} {{nof_descendants ? `(${nof_descendants})` : ''}}
+          &nbsp;{{ discussionBlockLabel ? discussionBlockLabel : 'Fragen und Kommentare'}} {{nof_descendants ? `(${nof_descendants})` : ''}}
         </q-btn>
       </div>
 
       
       <transition name="fade">
         <ComponentContentTree
-          class="q-pa-md col-12 bg-grey-3"
+          class="q-pa-md col-12 bg-grey-1"
           v-if="show_discussion"
           :startingNode="startingNode"
           :dense="true"
@@ -52,7 +52,7 @@ import constants from 'src/utils/constants';
 export default {
   name: 'DefaultDiscussionBlock',
   components: { ComponentContentTree },
-  props: ['artificialmoderationComponents', 'item' , 'comments', 'startingNode'],
+  props: ['artificialmoderationComponents', 'item' , 'comments', 'startingNode', 'discussionBlockLabel'],
   data: function() {
     return({
         show_discussion: false

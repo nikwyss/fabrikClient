@@ -1,5 +1,5 @@
 import { mapGetters } from 'vuex'
-import StageMixin from 'src/mixins/stage'
+import ContentTreeMixin from 'src/mixins/contenttree'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { runtimeStore } from "src/store/runtime.store"
 import { LayoutEventBus } from 'src/utils/eventbus.js'
@@ -8,10 +8,10 @@ export default {
   // mixins: [StageMixin],
 
   mixins: [
-    StageMixin,
+    ContentTreeMixin,
     ReactiveProvideMixin({
-      name: 'CONTENTTREE',
-      include: ['contenttreeID', 'contenttree', 'isRead', 'ratingCompleted'],
+      name: 'CONTENT',
+      include: ['contentID', 'content'],
     })
   ],
 
@@ -61,24 +61,42 @@ export default {
       return (contenttree)
     },
 
-    ratingCompleted() {
+    contentID: function () {
+      // console.log("RETRIEVE contenttreeID..", this.routed_stage)
+      return this.$route.params.contentID
+    },
 
-      const allRated = this.numberOfUnratedTopLevelEntries == 0
-      if (allRated && this.is_stage_scheduled(this.routed_stage)) {
-        this.markIdle()
+    content: function () {
+      if (!this.contentID || !this.contenttree) {
+        return null
       }
+      return this.contenttree.entries[this.contentID]
+    },
+
+
+    node: function () {
+      if (!this.contentID) {
+        return null
+      }
+      const node = Object.filter(this.contenttree.structure.children, x => x.id == this.contentID)
+      console.assert(Object.values(node).length === 1)
+      return node[0]
+    },
+
+
+
+    childRatingCompleted() {
+      // console.trace()
+      const allRated = this.numberOfUnratedChildEntries == 0
+      // if (allRated && this.is_stage_scheduled(this.routed_stage)) {
+      //   this.markIdle()
+      // }
 
       return (allRated)
     },
 
-    numberOfUnratedTopLevelEntries() {
-      if (this.contenttree == null) {
-        return null
-      }
-
-      const unrated_children = Object.filter(this.contenttree.structure.children, x => this.contenttree.entries[x.id]?.progression?.rated !== true)
-      // Object.filter(contenttree.structure.children, TEXTTYPES)" 
-      // console.log("nof: unrated child", unrated_children)
+    numberOfUnratedChildEntries() {
+      const unrated_children = Object.filter(this.node.children, x => this.contenttree.entries[x.id]?.progression?.rated !== true)
       return (Object.values(unrated_children).length)
     },
 
@@ -96,21 +114,15 @@ export default {
         name: this.routed_stage.stage.type, params: {
           assemblyIdentifier: runtimeStore.assemblyIdentifier,
           stageID: runtimeStore.stageID
-          // contenttreeID: this.contenttreeID
         }
       })
     },
 
     openArgument: function (contentID) {
 
-      if (this.standalone) {
-        return
-      }
-
       // REDIRECT TO ARGUMENT PAGE
       this.$router.push({
-        name: this.routed_stage.stage.type,
-        params: {
+        name: this.routed_stage.stage.type, params: {
           assemblyIdentifier: runtimeStore.assemblyIdentifier,
           stageID: runtimeStore.stageID,
           contentID: contentID
@@ -118,14 +130,14 @@ export default {
       })
     },
 
-    filter_entries: function (nodes, TYPES) {
-      console.assert(this.contenttreeID && this.contenttree !== null)
-      var local_contenttree = this.contenttree
-      let filtered = nodes.filter(
-        item => TYPES.includes(local_contenttree.entries[item.id].content.type)
-      )
-      return (filtered)
-    },
+    // filter_entries: function (nodes, TYPES) {
+    //   console.assert(this.contenttreeID && this.contenttree !== null)
+    //   var local_contenttree = this.node.children
+    //   let filtered = nodes.filter(
+    //     item => TYPES.includes(local_contenttree.entries[item.id].content.type)
+    //   )
+    //   return (filtered)
+    // },
 
     isRead: function (content) {
       console.assert('progression' in content)
@@ -168,7 +180,7 @@ export default {
           contenttreeID: stage.stage.contenttree_id,
           oauthUserID: this.oauth.userid
         })
-      });
+      })
     }
   }
 }

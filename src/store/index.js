@@ -57,7 +57,7 @@ export default new Vuex.Store({
 
     /** Fire events - in any cases */
     monitorFire: ({ state, dispatch, commit }, { eventString, data }) => {
-      console.log("/fire ")
+      console.log("/fire ", eventString)
 
       // add newest event to the event buffer
       if (eventString) {
