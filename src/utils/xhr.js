@@ -8,10 +8,6 @@ import axios from 'axios'
 import { LayoutEventBus } from 'src/utils/eventbus'
 import store from 'src/store'
 
-function Sleep(milliseconds) {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
-
 const HTTP_HEADER = 'Authorization'
 const RequestOrigin = 'ApiService'
 
@@ -121,17 +117,6 @@ const ApiService = {
    * Perform a custom Axios request.
    **/
   async customRequest(data) {
-
-    // WAIT FOR ONGOING TOKEN REQUESTS!
-    const waitingLoopForOngoingTokenRefresh = async function () {
-      if (store.state.ongoingTokenRefresh) {
-        console.log("..... WAITING LOOP FOR ONGOING TOKEN REFESH")
-        await Sleep(500)
-        await waitingLoopForOngoingTokenRefresh()
-      }
-    }
-
-    await waitingLoopForOngoingTokenRefresh()
 
     // Assert that header is set, when somebody is authenticated.
     var temp_oauth_jwt = null
@@ -249,18 +234,23 @@ const axiosErrorHandling = async function (error) {
       console.log('AXIOS: ReloginOnStatus403')
       error.response.status = 449
       if (Vue.prototype.pkce.isAuthorized()) {
-
-        // Refresh Token
-        store.dispatch("tokenRefreshStarts")
-        await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
-        store.dispatch("tokenRefreshEnds")
-
+        Vue.prototype.refresh_token()
         if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
-          const jwt = Vue.prototype.pkce.state.accessToken.value
-          ApiService.setHeader(jwt)
           error.config.retoken = true
           return (error.config)
         }
+        // // Refresh Token
+        // store.dispatch("tokenRefreshStarts")
+        // await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
+
+        // if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
+        //   const jwt = Vue.prototype.pkce.state.accessToken.value
+        //   ApiService.setHeader(jwt)
+        //   error.config.retoken = true
+        //   store.dispatch("tokenRefreshEnds")
+        //   return (error.config)
+        // }
+        // store.dispatch("tokenRefreshEnds")
       }
 
       // Token Refresh, seems not be possible / desired :-(
@@ -280,6 +270,7 @@ ApiService.mountAxiosInterceptor(axiosErrorHandling)
 
 LayoutEventBus.$on('AfterTokenChanged', jwt => {
   // SHOULD BE THE ONLY ONE Listener for this event!
+  console.log("SET TOKEN TO HEADER")
   if (jwt) {
     ApiService.setHeader(jwt)
   } else {

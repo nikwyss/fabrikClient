@@ -8,7 +8,7 @@ var routes = [
       { path: 'analyses', name: 'VAA_QUESTIONNAIRE_ANALYSES', component: () => import('./Analyses') },
       { path: 'q/:contentID', name: 'VAA_QUESTIONNAIRE_QUESTIONS_ENTRY', component: () => import('./Questions') },
       { path: 'q', name: 'VAA_QUESTIONNAIRE_QUESTIONS', component: () => import('./Questions') },
-      { path: '', name: 'VAA_QUESTIONNAIRE_TOPICS', component: () => import('./Index') }
+      { path: '', name: 'VAA_QUESTIONNAIRE_TOPICS', component: () => import('./Topics') }
     ]
   }
 ]

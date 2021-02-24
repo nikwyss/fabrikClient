@@ -1,9 +1,20 @@
 <template>
-  <div class="q-pa-md" style="max-width: 500px">
-    <div class="q-gutter-sm">
-      <q-btn color="teal" v-for="topic in topics" :label="topic.content.title" 
-        @click="selectTopic(topic)"
-        :key="`sm-${topic.content.id}`" />
+  <div class=" q-ma-none q-pa-none" style="max-width: 100%">
+
+    <h2>Themenwahl</h2>
+    <p>Bitte wählen Sie das Thema, welches sie bearbeiten möchten.</p>
+    <div class="q-gutter-none  q-ma-none q-pa-none">
+      <div class="row justify-between  q-ma-none q-pa-none">
+        <q-btn 
+          v-for="topic in topics" 
+          icon="mdi-sign-direction" 
+          :label="topic.content.title"
+          @click="selectTopic(topic)"
+          class="q-pa-none q-ma-none"
+          flat
+          color="teal" 
+          :key="`sm-${topic.content.id}`" />
+      </div>
     </div>
   </div>
 </template>
@@ -31,7 +42,20 @@ export default {
       let topics = this.CONTENTTREE.contenttree.structure.children.map(child => this.CONTENTTREE.contenttree.entries[child.id])
       // topics = topics.map(child => Object.assign(child.content, child.progression))
       return topics
-    }
+    },
+
+    
+    // initials() {
+    //   const initials = {}
+    //   for (const [key, topic] of Object.entries(this.topics)) {
+    //     const fullName = topic.content.title.split(' ')
+    //     const tmpinitials = fullName.shift().charAt(0) + fullName.pop().charAt(0)
+    //     console.log(tmpinitials)
+    //     initials[topic.content.id] = tmpinitials.toUpperCase()
+    //   }
+
+    //   return initials
+    // }
   },
 
 

@@ -38,8 +38,8 @@ export default new Vuex.Store({
 
     tokenRefreshStarts: ({ state, dispatch, commit }) => {
       /* resets the counter to zero */
-      commit('tokenRefreshStarts')
       console.log("[start token refresh]")
+      commit('tokenRefreshStarts')
     },
 
     tokenRefreshEnds: ({ state, dispatch, commit }) => {
@@ -52,6 +52,12 @@ export default new Vuex.Store({
       /* resets the counter to zero */
       commit('monitor_setup')
       console.log("/setup ")
+    },
+
+    monitorReset: ({ state, dispatch, commit }) => {
+      /* resets the counter to zero */
+      console.log('API Monitored. => Clear Buffer')
+      commit('reset_monitors')
     },
 
 
@@ -73,6 +79,8 @@ export default new Vuex.Store({
 
       // Send API Monitor
       console.log("/q")
+      // commit('reset_monitors')
+
       api.monitorActivities(state.monitor_buffer).then(data => {
         if (!data.ok) { return (null) }
         console.log("ACTION MONITORED: OK!")
@@ -158,10 +166,15 @@ export default new Vuex.Store({
   mutations: {
 
     tokenRefreshEnds(state) {
+      console.log("set ongoingTokenRefresh", false)
       Vue.set(state, 'ongoingTokenRefresh', false)
     },
 
     tokenRefreshStarts(state) {
+      if (state.ongoingTokenRefresh) {
+        alert("ongoingTokenRefresh has already been set...")
+      }
+      console.log("set ongoingTokenRefresh", true)
       Vue.set(state, 'ongoingTokenRefresh', true)
     },
 

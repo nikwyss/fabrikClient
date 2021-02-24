@@ -5,16 +5,16 @@
     <!-- <div align="right"> -->
     <ArtificialModerator alignment="right" role="1" amGroup='textsheetPage' :ongoing="!STAGE.routed_stage">
 
-        <template v-if="!CONTENTTREE.ratingCompleted">
+        <template v-if="!CONTENTTREE.salienceCompleted">
             Bitte bewerten Sie alle Themen. Dann können wir weiterfahren!
         </template>
 
-        <template v-else-if="CONTENTTREE.ratingCompleted">
-            Sie sehen hier nun ihre persönliche Liste der Wahltehmen. Sind sie damit mal vorerst einverstanden? 
+        <template v-else-if="CONTENTTREE.salienceCompleted">
+            Sie sehen hier nun ihre persönliche Prioritätenliste der Wahlthemen. Sind sie damit vorerst mal einverstanden? 
         </template>
 
         <template  v-slot:actions>
-        <q-chip v-if="CONTENTTREE.ratingCompleted" icon="mdi-arrow-left" clickable 
+        <q-chip v-if="CONTENTTREE.salienceCompleted" icon="mdi-arrow-left" clickable 
                 @click="gotoIndexAndMoveOn">
             Ja, wir können weiterfahren!
         </q-chip>

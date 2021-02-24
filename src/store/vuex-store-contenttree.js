@@ -96,6 +96,9 @@ const actions = {
   update_rating({ commit }, { contenttreeID, contentID, rating }) {
     commit('update_rating', { contenttreeID, contentID, rating })
   },
+  update_salience({ commit }, { contenttreeID, contentID, salience }) {
+    commit('update_salience', { contenttreeID, contentID, salience })
+  },
 
   update_expanded_branches({ commit }, { contenttreeID, startingContentID, expanded }) {
     // console.log(expanded)
@@ -109,7 +112,7 @@ const actions = {
     const wrongUser = oauthUserID != state.contenttree[contenttreeID]?.access_sub
     if (wrongUser) {
       // delete the full contenttree store
-      console.log("WRONG user: content has been deleted")
+      console.log("WRONG user...")
       Vue.set(state, 'contenttree', {})
     }
 
@@ -191,6 +194,7 @@ const mutations = {
     Vue.set(state.contenttree, key, null)
   },
 
+
   update_rating(state, { contenttreeID, contentID, rating }) {
     // in case content or progression changes (without changing hierarchy...)
     if (rating === null || rating === undefined) {
@@ -200,11 +204,13 @@ const mutations = {
     }
 
     // let key = contenttreeID + '-' + startingContentID
-    const progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
+    let progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
     if (!progression) {
-      // prgression not created yet, rigth?
-      // console.log("missing progression")
-      return (null)
+      // console.log("add temp progression entry")
+      progression = {
+        read: true,
+        view: false
+      }
     }
 
     // store value
@@ -212,6 +218,31 @@ const mutations = {
     progression.rated = true
     Vue.set(state.contenttree[contenttreeID].entries[contentID], 'progression', progression)
     // console.log("new rating stored: ", rating)
+  },
+
+  update_salience(state, { contenttreeID, contentID, salience }) {
+    // in case content or progression changes (without changing hierarchy...)
+    if (salience === null || salience === undefined) {
+      // invalid salience value
+      // console.log("empty salience")
+      return (null)
+    }
+
+    // let key = contenttreeID + '-' + startingContentID
+    let progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
+    if (!progression) {
+      // console.log("add temp progression entry")
+      progression = {
+        read: true,
+        view: false
+      }
+    }
+
+    // store value
+    progression.salience = salience
+    progression.salienced = true
+    Vue.set(state.contenttree[contenttreeID].entries[contentID], 'progression', progression)
+    // console.log("new salience stored: ", rating)
   }
 }
 

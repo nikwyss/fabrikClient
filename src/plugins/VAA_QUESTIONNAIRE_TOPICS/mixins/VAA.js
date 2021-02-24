@@ -30,7 +30,7 @@ export default {
     routed_stage: function () {
       console.assert(runtimeStore.stageID)
 
-      if (!this.assembly_stages) {
+      if (this.assembly_stages) {
         return null
       }
 

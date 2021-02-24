@@ -94,12 +94,12 @@
             align="right"
           >
 
+          <div v-if="localStageNr==stage_nr_last_visited && next_scheduled_stage">
             <keep-alive>
             <component :is="componentStageTeaser" 
-              v-if="localStageNr==stage_nr_last_visited && next_scheduled_stage" 
               :stage="localStage"></component>
             </keep-alive>
-            
+          </div>
 
           </q-card-section>
 
@@ -137,8 +137,8 @@ export default {
 
  data() {
     return {
-      componentStageTeaser: null,
-      componentStageEditor: () => {console.log("LOAD EDITOR"); import("src/pages/ContentTree/components/StageEditor")}
+      componentStageEditor: () => import("src/pages/ContentTree/components/StageEditor"),
+      componentStageTeaser: null
     }
   },
 
@@ -165,7 +165,6 @@ export default {
 
   watch: {
     stage_last_visited(after, before) {
-      // console.log(before, after, "waaaatchhhh", this.stage_nr_last_visited)
       this.updateComponentStageTeaser()
     }
   },

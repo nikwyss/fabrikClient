@@ -1,7 +1,8 @@
 import { mapGetters, mapActions } from 'vuex'
 import { LayoutEventBus } from "src/utils/eventbus"
-import constants from 'src/utils/constants';
-import { runtimeStore, runtimeMutations } from "src/store/runtime.store";
+import constants from 'src/utils/constants'
+import { runtimeStore, runtimeMutations } from "src/store/runtime.store"
+// import store from 'src/store'
 
 
 export default {
@@ -14,6 +15,7 @@ export default {
 
   data() {
     return {
+      appInitialized: false,
       componentKey: 0,
       username_derivate: '',
     };
@@ -45,6 +47,7 @@ export default {
       console.log("Shutdown Demokratiefabrik")
       runtimeMutations.exitApp()
       this.$root.monitorLog(constants.MONITOR_EXIT)
+      this.$store.dispatch("tokenRefreshEnds")
     },
 
     ...mapActions({
@@ -55,10 +58,11 @@ export default {
 
   created: function () {
 
+    // not token refresh is ongoing!!!
+    this.$store.dispatch("tokenRefreshEnds")
+
     // GlOBAL Page Unmount Listener
     window.addEventListener('beforeunload', this.onPageLeave)
-
-    this.$store.dispatch('publicindexstore/syncPublicIndex')
 
     // Catch globally all show and hide TextLoading events
     LayoutEventBus.$on("reload", () => {
@@ -74,12 +78,17 @@ export default {
       let msg_title = this.$i18n.t("app.error.service_error_title");
       let msg_body = this.$i18n.t("app.error.service_error_body");
       let icon = "mdi-alarm-light-outline";
+      let settimer = data?.settimer ? data.settimer : false;
+      let buttons = data?.nobuttons ? [] : ["hide"];
+
       let type = "error";
       this.$refs?.maincontent?.showNotificationBanner(
         type,
         msg_title,
         msg_body,
-        icon
+        icon,
+        settimer,
+        buttons
       )
     })
     LayoutEventBus.$once("showNetworkError", (data) => {
@@ -112,6 +121,27 @@ export default {
         icon
       );
     });
+
+
+    LayoutEventBus.$on("showAuthorizationInvalidToken", (data) => {
+      this.$root.monitorLog(constants.MONITOR_ERROR_INVALID_TOKEN, data)
+      let msg_title = this.$i18n.t("auth.authentication_invalid_warning_title");
+      let msg_body = this.$i18n.t("auth.authentication_invalid_warning_body");
+      let icon = "mdi-key-outline";
+      let type = "error";
+      let settimer = data?.settimer ? data.settimer : false;
+      let buttons = ['auth'];
+
+      this.$refs?.maincontent?.showNotificationBanner(
+        type,
+        msg_title,
+        msg_body,
+        icon,
+        settimer,
+        buttons
+      )
+    })
+
     LayoutEventBus.$on("showTooManyRequestsError", (data) => {
       this.$root.monitorLog(constants.MONITOR_ERROR_TOO_MANY_REQUESTS, data)
       let msg_title = this.$i18n.t("app.error.toomanyrequests_error_title");
@@ -140,6 +170,7 @@ export default {
         ["auth", "home"]
       );
     });
+
     LayoutEventBus.$on("showAuthenticationError", (data) => {
       this.$root.monitorLog(constants.MONITOR_ERROR_AUTHENTICATION, data)
       let type = "error";
@@ -156,7 +187,7 @@ export default {
 
     LayoutEventBus.$on('AfterTokenChanged', () => {
       // NOTIFY EVERYONE, THAT TOKEN HAS CHANGED NOW!
-      this.storeOauthAcls({ oauthAcls: this.oauth.payload.roles })
+      this.storeOauthAcls({ oauthAcls: this.oauth?.payload?.roles })
     })
 
     LayoutEventBus.$on("AfterProfileUpdate", (data) => {
@@ -177,12 +208,9 @@ export default {
       );
     });
 
-    LayoutEventBus.$on("BeforeLogout", (data) => {
-      this.$root.monitorLog(constants.MONITOR_LOGOUT)
-    })
-
     LayoutEventBus.$on("AfterLogout", (data) => {
-      this.$router.push({ name: "logout" });
+      this.$router.push({ name: "logout" })
+      this.$store.dispatch("monitorReset")
     });
 
     LayoutEventBus.$on('AfterLogin', data => {
@@ -200,13 +228,17 @@ export default {
         this.$router.push({ name: 'home' });
       }
 
-      // TODO: Reset VUEX STORE!!
+      // Clear data of last session...
+      this.$root.clearSession()
+
+      // TODO: Reset VUEX STORE!! remove all data of different users
 
     })
 
     LayoutEventBus.$on("PublicProfileLoaded", () => {
 
       // SYNC USER PROFILE
+      console.log("on PublicProfileLoaded")
       // is email already set: if not => redirect to userprofile...
       this.$store.dispatch("publicprofilestore/setUsernameDerivate", {
         usernameDerivate: this.usernameDerivate()
@@ -225,6 +257,7 @@ export default {
 
     // to enforce reload of page container!
     this.$root.reload = () => { this.componentKey += 1 }
+    this.$root.initialized = false
 
     // MONITOR ACTIVITIES OF USERS (periodically and on demand)
     this.$store.dispatch('monitorSetup')
@@ -253,9 +286,55 @@ export default {
       })
     }
 
+    /**
+     * Clear all the data, that we want to reset for every participation session
+     */
+    this.$root.clearSession = () => {
+      runtimeMutations.setStageID(null)
+      runtimeMutations.setAssemblyIdentifier(null)
+    }
+
+    /**
+     * Clear all the data, that is linked to a certain user. => performed at logout
+     */
+    this.$root.clearUserData = () => {
+      this.$root.clearSession()
+      // TODO
+    }
+
+    // console.log("--- end of app.js created")
   },
 
-  mounted: function () {
+  mounted: async function () {
+    console.log("*** INIT OAUTH ***")
+    // let response = null
+
+    try {
+      await this.oauth.initialize()
+    } catch (error) {
+      console.log("error in oauth initialization...", error)
+      switch (error.message) {
+        case 'ErrorInvalidGrant':
+          LayoutEventBus.$emit('showAuthorizationInvalidToken')
+          break;
+        default:
+          LayoutEventBus.$emit('showServiceError', { nobuttons: true })
+          break;
+      }
+      // end mounting...
+      return;
+    }
+
+    // check token 
+    console.log("*** TOKEN EXPIRE? ***")
+    this.appInitialized = await this.oauth.refresh_token_if_required()
+    // this.appInitialized = false
+    console.log("*** OAUTH STATUS", this.appInitialized)
+
+    // LayoutEventBus.$emit('AuthenticationLoaded')
+
+    console.log("*** APP CREATED ***")
+
 
     // Start periodic monitorLog Raiser
     // keep this interval low (much lower than the intervall number specified in env. files) 
@@ -268,6 +347,25 @@ export default {
       // console.log("/intervall")
       this.$root.monitorLog()
     }, intervall * 1000)
+
+
+    // In case of oauth error. Dont load data from resource server...
+    if (this.appInitialized) {
+
+      // Load Public Index 
+      console.log("sync publicIndex")
+      this.$store.dispatch('publicindexstore/syncPublicIndex')
+
+      if (this.oauth.userid) {
+        console.log("sync profile")
+        await this.$store.dispatch("publicprofilestore/syncProfile", {
+          oauthUserID: this.userid,
+          oauthUserEmail: this.payload?.userEmail
+        })
+
+        console.log("end of profile sync!")
+      }
+    }
 
     // END
     console.log("*** APP MOUNTED ***")

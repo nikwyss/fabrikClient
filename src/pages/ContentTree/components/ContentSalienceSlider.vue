@@ -2,7 +2,7 @@
 
  <!-- :style="{'background-color': backgroundColor}" -->
   <div class="q-pa-md full-width" :class="noneResponse ? 'bg-orange-4' : 'bg-grey-1'">
-<!-- {{oauth.userid}} {{ progression_rating}} -->
+<!-- {{oauth.userid}} {{ progression_salience}} -->
     <!-- <q-badge color="secondary">
     </q-badge> -->
       Wie wichtig ist Ihnen dieses Thema? Bitte verschieben Sie den Regler.
@@ -22,14 +22,14 @@
       v-model="value"
       :min="min"
       :max="max"
-      @change="initSetRating"
+      @change="initSetSalience"
       label
       label-always
       :label-value="getSlideLabel"
       :style="{color: getSlideColor}"
     />
       <!-- :label-value="model + 'px'" -->
-      <!-- @input.capture="getSlideLabel(progression_rating)" -->
+      <!-- @input.capture="getSlideLabel(progression_salience)" -->
 
         </q-item-section>
         <q-item-section side>
@@ -44,24 +44,24 @@
   </div>
 
   
-        <!-- <q-tooltip>{{$t('contenttree.rating.1')}}</q-tooltip> -->
+        <!-- <q-tooltip>{{$t('contenttree.salience.1')}}</q-tooltip> -->
 </template>
 
 <script>
 import RatingMixin from "../mixins/rating"
 import { colors } from 'quasar'
-const { rgbToHex } = colors
-// import { mapActions } from "vuex"
+import constants from 'src/utils/constants'
 
+const { rgbToHex } = colors
 
 export default {
-  name: "ContentRatingSlider",
+  name: "ContentSalienceSlider",
   mixins: [RatingMixin],
   data: function() {
     return({
         apiTimer: null,
-        min: -50,
-        max: 50,
+        min: 0,
+        max: 100,
         scaleLabel: [
           'Unwichtig',
           'Eher unwichtig',
@@ -76,10 +76,10 @@ export default {
 
     value: {
       get: function() {
-          return this.noneResponse ? 0 : this.progression_rating
+          return this.noneResponse ? 0 : this.progression_salience
       },        
       set: function (value) { 
-          this.progression_rating = value
+          this.progression_salience = value
       }
     },
 
@@ -96,7 +96,7 @@ export default {
     },
 
     scale100() {
-        return 100 / this.colorRange * (this.progression_rating-this.min)
+        return 100 / this.colorRange * (this.progression_salience-this.min)
     },
 
     getSlideColor() {
@@ -113,25 +113,35 @@ export default {
     },
 
     noneResponse() {
-      return this.progression_rating === null || this.progression_rating === undefined
+      return this.progression_salience === null || this.progression_salience === undefined
     }
   },
 
   methods: {
 
     
-    initSetRating() {
-      // interrupt previoius saveRating actions
-      clearInterval(this.apiTimer)      
-      // Save rating with a 3 second lag. (To prevent high frequent api requests..)
-      const apiCall = () => this.setRating(this.progression_rating, true)
-      this.apiTimer = setTimeout(apiCall, 3000)
+    initSetSalience() {
 
-      // immediatly update ratings in vuex store (=> allows to update the dynamically generated charts)
-      this.update_rating({
+      // interrupt previoius saveSalience actions
+      // clearInterval(this.apiTimer)      
+      // Save salience with a 3 second lag. (To prevent high frequent api requests..)
+      // const apiCall = () => this.setSalience(this.progression_salience, true)
+      // this.apiTimer = setTimeout(apiCall, 3000)
+
+      // INIT Salience Monitor
+      const data = {
+        contentID: this.content.content.id,
+        salience: this.progression_salience
+      }
+      this.$root.monitorLog(constants.MONITOR_SET_SALIENCE, data)
+
+
+      // immediatly update saliences in vuex store (=> allows to update the dynamically generated charts)
+      console.log("update local storage => salience")
+      this.update_salience({
         contenttreeID: this.content.content.contenttree_id, 
         contentID: this.content.content.id, 
-        rating: this.progression_rating })
+        salience: this.progression_salience })
     }
   }
 }

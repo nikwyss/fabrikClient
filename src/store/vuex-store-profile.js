@@ -174,13 +174,7 @@ const actions = {
 const mutations = {
 
   storePublicProfile(state, { data }) {
-    // Vue.set  makes the change reactive!!
-    // console.log(data.user, "llllllll")
-    // Vue.set(state.publicProfile.user, 'U', data.user.U)
-    // Vue.set(state.publicProfile, 'user', data.user)
     Vue.set(state, 'publicProfile', data)
-    // Vue.set(state.publicProfile, 'user', data.user)
-    // Vue.set(state.publicProfile.user, 'U', data.user.U)
   },
 
   storeOauthAcls(state, oauthAcls) {

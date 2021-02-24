@@ -35,75 +35,38 @@
     <div class="q-px-lg q-pb-md">
       <q-timeline color="secondary">
 
+        <!-- <q-timeline-entry heading>
+          Aktuelle Einträge
+        </q-timeline-entry> -->
+
+
         <q-timeline-entry
-          title="Event Title"
-          subtitle="February 22, 1986"
+          title="Aufschaltung der Online-Plattform «Demokratiefabrik»"
+          subtitle="30. April 2021"
+          icon="mdi-wifi"
         >
           <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Die vom Team entwickelte Online-Plattform «Demokratiefabrik» ist online! Diese wird in den kommenden Monaten in zwei Fallstudien umgesetzt.
           </div>
         </q-timeline-entry>
 
+
+        <!-- <q-timeline-entry heading>
+          2020
+        </q-timeline-entry> -->
+
         <q-timeline-entry
-          title="Event Title"
-          subtitle="February 21, 1986"
-          icon="mdi-home"
+          title="Start des SNF-Projekts «Digital Democratic Innovations to Empower Citizens in the Digital Age»"
+          subtitle="1. April 2020"
+          icon="mdi-rocket-launch-outline"
         >
           <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Im April startete das Projekt «Digital Democratic Innovations to Empower Citizens in the Digital Age» unter der Leitung von Prof. Dr. Marc Bühlmann, Dr. Marlène Gerber und Dr. Dominik Wyss und Giada Gianola, alle am Institut für Politikwissenschaft der Universität Bern tätige Forscher*innen. Zudem ergänzt Prof. Dr. André Bächtiger (Universität Stuttgart) das Team. 
+          Der Schweizerische Nationalfonds unterstützt das Projekt für eine Dauer von 36 Monaten im Rahmen des NFP77 «Digitale Transformation».  Untersucht wird, ob Digitalisierung in die Schweiz eine Chance für mehr demokratische Mitsprache darstellt.
+          Im Rahmen des Projekts wird ein digitales Beteiligungsformat entwickelt, das den Bürgerinnen und Bürgern ermöglicht, eigene Argumente und Überzeugungen in den Abstimmungs- und Wahldiskurs einzubringen. Damit soll nicht nur das Vertrauen in Online-Infrastruktur gestärkt, sondern auch die Legitimität der direkten Demokratie erhöht werden. Konkret werden im Projekt zwei Prototypen digitaler Bürger*innenbeteiligung getestet: 1) Wahlberechtigte stellen einen smartvote-Fragekatalog zusammen und 2) Stimmberechtigte erstellen ein Argumentarium zu einer eidgenössischen Abstimmungsvorlage. Um das zu ermögliche, entwickelten wir die Plattform «Demokratiefabrik», die den Teilnehmenden eine autonome Rolle im politischen Gestaltungsprozess ermöglichen soll. Die Innovation unseres Projekts liegt in einer engen Verzahnung sozialer und technischer Ansätze: Wir übernehmen ein in der Politikwissenschaft etabliertes Konzept der repräsentativ zusammengestellten Bürgerversammlungen. Im 21. Jahrhundert erleben verschiedenste Formen der Bürgerbeteiligung einen Aufschwung. Zu wissen, unter welchen Bedingungen digitale Beteiligungsformen die Demokratie stärken können, stellt die Grundlage für eine erfolgreiche Bürgerbeteiligung im digitalen Zeitalter. 
           </div>
         </q-timeline-entry>
 
-        <q-timeline-entry heading>
-          November, 2017
-        </q-timeline-entry>
-
-        <q-timeline-entry
-          title="Event Title"
-          subtitle="February 22, 1986"
-        >
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-        </q-timeline-entry>
-
-        <q-timeline-entry
-          title="Event Title"
-          subtitle="February 22, 1986"
-        >
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-        </q-timeline-entry>
-
-        <q-timeline-entry
-          title="Event Title"
-          subtitle="February 22, 1986"
-          color="orange"
-          icon="mdi-done"
-        >
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-        </q-timeline-entry>
-
-        <q-timeline-entry
-          title="Event Title"
-          subtitle="February 22, 1986"
-        >
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-        </q-timeline-entry>
-
-        <q-timeline-entry
-          title="Event Title"
-          subtitle="February 22, 1986"
-        >
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-        </q-timeline-entry>
       </q-timeline>
     </div>
   </q-page>

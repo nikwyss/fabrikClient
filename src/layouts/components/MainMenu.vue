@@ -137,7 +137,7 @@ export default {
           to : {name: 'home'},
         },
         {
-          text : 'Aktuelles',
+          text : 'News',
           to : {name: 'news'},
         },
         {

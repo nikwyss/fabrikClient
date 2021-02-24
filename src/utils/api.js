@@ -26,6 +26,8 @@ export default {
    */
   async authProfile(profile) {
 
+    console.log("API authProfile")
+
     // Renew token (if required)
     await Vue.prototype.oauth.refresh_token_if_required()
 
@@ -50,9 +52,11 @@ export default {
    */
   async publicProfile() {
 
+    console.log("API publicProfile")
+
     // Renew token (if required)
     // refresh_token method is done earlier, while launching app.
-    // await Vue.prototype.oauth.refresh_token_if_required()
+    await Vue.prototype.oauth.refresh_token_if_required()
 
     /* Notify Resource Server about certain user activities in the client app. */
     let url = `${process.env.ENV_APISERVER_URL}/profile`
@@ -62,8 +66,11 @@ export default {
 
   async monitorActivities(buffer) {
 
+    console.log("API monitorActivities")
+
     // Only precheck token (if this is not an APP Exit Event)
-    // await Vue.prototype.oauth.refresh_token_if_required()
+    // TODO: monitor activity on app closing event?
+    await Vue.prototype.oauth.refresh_token_if_required()
 
     // console.log("/api")
     /* Notify Resource Server about certain user activities in the client app. */
@@ -76,6 +83,8 @@ export default {
 
   async retrievePublicIndex() {
 
+    console.log("API retrievePublicIndex")
+
     // Renew token (if required)
     await Vue.prototype.oauth.refresh_token_if_required()
 
@@ -84,6 +93,8 @@ export default {
   },
 
   async retrieveAssembly(assemblyIdentifier) {
+
+    console.log("API retrieveAssembly")
 
     // Renew token (if required)
     await Vue.prototype.oauth.refresh_token_if_required()
@@ -94,6 +105,8 @@ export default {
 
   async retrieveContenttree(assemblyIdentifier, contenttreeID) {
 
+    console.log("API retrieveContenttree")
+
     // Renew token (if required)
     await Vue.prototype.oauth.refresh_token_if_required()
 
@@ -101,22 +114,24 @@ export default {
     return await ApiService.get(url)
   },
 
-  async setContentRating(assemblyIdentifier, contentID, rating) {
+  // async setContentRating(assemblyIdentifier, contentID, rating) {
 
-    // Renew token (if required)
-    await Vue.prototype.oauth.refresh_token_if_required()
+  //   // Renew token (if required)
+  //   await Vue.prototype.oauth.refresh_token_if_required()
 
-    // compose url
-    let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/content/${contentID}/rating/${rating}`;
-    const result = await ApiService.put(url)
-    if (!result.data.OK) {
-      throw ("Rating could not be saved");
-    }
+  //   // compose url
+  //   let url = `${process.env.ENV_APISERVER_URL}/assembly/${assemblyIdentifier}/content/${contentID}/rating/${rating}`;
+  //   const result = await ApiService.put(url)
+  //   if (!result.data.OK) {
+  //     throw ("Rating could not be saved");
+  //   }
 
-    return (result)
-  },
+  //   return (result)
+  // },
 
   async saveContent(assemblyIdentifier, contenttreeID, data) {
+
+    console.log("API saveContent")
 
     // Renew token (if required)
     await Vue.prototype.oauth.refresh_token_if_required()

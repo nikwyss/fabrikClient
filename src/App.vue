@@ -8,7 +8,6 @@
 </style>
 <template>
   <div id="q-app">
-  
     <!-- TODO animation? -->
   <transition name="fade">
     <router-view v-if="!appExitState"

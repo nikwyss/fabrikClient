@@ -400,7 +400,7 @@ const actions = {
 
         }
       )
-      .catch((error) => {
+      .catch(error => {
         console.warn(error)
         // Error Handling is done in Axios Interceptor
         console.warn('Request Error')

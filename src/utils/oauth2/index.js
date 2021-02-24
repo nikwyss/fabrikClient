@@ -1,22 +1,25 @@
 // import { boot } from 'quasar/wrappers';
 import store from 'src/store'
 import { runtimeStore } from "src/store/runtime.store";
+import ApiService from "src/utils/xhr";
+import constants from 'src/utils/constants'
 
-/// POLYFILL (IE11 for oAuth2 PKCE Module)
-; (function (window) {
-  if (typeof window.TextEncoder !== 'function') {
-    const TextEncodingPolyfill = require('text-encoding');
-    window.TextEncoder = TextEncodingPolyfill.TextEncoder;
-    window.TextDecoder = TextEncodingPolyfill.TextDecoder;
-  }
-  if (typeof window.crypto === 'undefined') {
-    const { webcrypto } = require("webcrypto-shim")
-  }
-  if (typeof window.fetch === 'undefined') {
-    const { fetch } = require('whatwg-fetch')
-    // window.fetch = fetch
-  }
-}(window));
+
+  /// POLYFILL (IE11 for oAuth2 PKCE Module)
+  ; (function (window) {
+    if (typeof window.TextEncoder !== 'function') {
+      const TextEncodingPolyfill = require('text-encoding');
+      window.TextEncoder = TextEncodingPolyfill.TextEncoder;
+      window.TextDecoder = TextEncodingPolyfill.TextDecoder;
+    }
+    if (typeof window.crypto === 'undefined') {
+      const { webcrypto } = require("webcrypto-shim")
+    }
+    if (typeof window.fetch === 'undefined') {
+      const { fetch } = require('whatwg-fetch')
+      // window.fetch = fetch
+    }
+  }(window));
 
 
 const { OAuth2AuthCodePKCE } = require('@bity/oauth2-auth-code-pkce')
@@ -35,27 +38,23 @@ const pkce_config = {
 
   onAccessTokenExpiry(refreshAccessToken) {
     console.log('Expired! Access token needs to be renewed.')
-    console.log("PKCE: ", Vue.prototype.pkce)
-    // console.log('We will try to get a new access token via grant code or refresh token.')
     return refreshAccessToken()
   },
   onInvalidGrant(refreshAuthCodeOrRefreshToken) {
-    console.log('Expired! Auth code AND refresh token needs to be renewed. => Redirect to authserver!')
-    // console.log("PKCE: ", Vue.prototype.pkce)
-    // NOT TRUE IN MANY CASES => parallel accesses?!!!
-    console.trace()
-
-    // However, in some special cases a redirect is not desired. i.e. when sending final eventmessages before closing the browser.
     if (!runtimeStore.appExitState) {
-      LayoutEventBus.$emit('ReloadPayload')
-      return refreshAuthCodeOrRefreshToken()
+      console.log("TOKEN REFRESH FAILED")
+      console.log('Expired! Auth code AND refresh token needs to be renewed. => Redirect to authserver!')
+      throw new Error("ErrorInvalidGrant");
     } else {
-      // app has been exited already : never ever redirect again...
-      return Promise
+      // TOKEN Failed. However, user is up to leave the page. (so ignore it...)
+      Promise.resolve()
     }
   }
 }
 
+function Sleep(milliseconds) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 
 export default {
 
@@ -72,8 +71,10 @@ export default {
       Vue.prototype.pkce.fetchAuthorizationCode()
     }
 
-    Vue.prototype.logout = function () {
-      LayoutEventBus.$emit('BeforeLogout', {}, true)
+    Vue.prototype.logout = async function () {
+      await store.dispatch('monitorFire', {
+        eventString: constants.MONITOR_LOGOUT, data: {}
+      })
 
       Vue.prototype.pkce.reset();
 
@@ -84,6 +85,25 @@ export default {
       // 2: user level notification  
       // console.log("oAUTH: token updated => emit AfterLogout")
       LayoutEventBus.$emit('AfterLogout')
+    }
+
+    Vue.prototype.refresh_token = async function () {
+
+      // console.log("EXPRIRED in ... refresh_token_if_required")
+      store.dispatch("tokenRefreshStarts")
+
+      try {
+        await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
+        const jwt = Vue.prototype.pkce.state.accessToken.value
+        ApiService.setHeader(jwt)
+        console.log("token refreshed...!")
+
+      } catch (error) {
+        console.log("Error while refreshing token #83", error)
+      }
+      store.dispatch("tokenRefreshEnds")
+
+      LayoutEventBus.$emit('ReloadPayload')
     }
 
     // Component Mixin
@@ -158,111 +178,114 @@ export default {
         }),
 
 
+
         /* Refresh token already before a invalid request has been issued */
         refresh_token_if_required: async function () {
           // console.log(this.payload.exp)
           if (Vue.prototype.pkce.isAuthorized()) {
+            // alert("test1")
             console.log("CHECK IF EXPRIRED in ... refresh_token_if_required")
             const expired = Vue.prototype.pkce.isAccessTokenExpired()
             if (expired) {
-              // console.log("EXPRIRED in ... refresh_token_if_required")
-              store.dispatch("tokenRefreshStarts")
-              await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
-              store.dispatch("tokenRefreshEnds")
-              // console.log("Reload payload in ... refresh_token_if_required")
-              LayoutEventBus.$emit('ReloadPayload')
+              Vue.prototype.refresh_token()
             }
           }
-        }
-      },
 
-      created: function () {
+          return true
+        },
 
-        LayoutEventBus.$on('AfterLogout', data => {
-          this.enforce_reactivity += 1
-        })
+        // /* Refresh token already before a invalid request has been issued */
+        // refresh_token_if_required: async function (iter = 0) {
 
-        LayoutEventBus.$on('ReloadPayload', data => {
-          this.enforce_reactivity += 1
-        })
+        //   if (!Vue.prototype.pkce.isAuthorized()) {
+        //     console.log("Not logged in: no token refresh required...")
+        //     Promise.resolve()
+        //   }
 
-        LayoutEventBus.$once('AuthenticationLoaded', data => {
-          // SYNC USER PROFILE
-          // is email already set: if not => redirect to userprofile...
-          console.log("--EVENT AuthenticationLoaded => syncProfile..")
-          console.log("PKCE: ", Vue.prototype.pkce)
-          if (this.userid) {
-            store.dispatch("publicprofilestore/syncProfile", {
-              oauthUserID: this.userid,
-              oauthUserEmail: this.payload?.userEmail
-            });
-          }
-        })
+        //   // WAIT FOR ONGOING TOKEN REQUESTS!
+        //   function ensureNoRefreshTokenIsOngoing() {
+        //     const maxiter = 50
+        //     let iter = 0
+        //     return new Promise(function (resolve, reject) {
+        //       (function waitForOngoingTokenRefresh() {
+        //         if (store.state.ongoingTokenRefresh !== true) return resolve();
+        //         iter++;
+        //         if (iter >= maxiter) {
+        //           console.log("TOKEN REFRESH FAILED (infinity loop)")
+        //           store.dispatch("tokenRefreshEnds")
+        //           Promise.reject("TOKEN REFRESH FAILED (infinity loop)")
+        //           // return refreshAuthCodeOrRefreshToken()
+        //         }
+        //         console.log('.')
+        //         setTimeout(waitForOngoingTokenRefresh, 300);
+        //         // } else {
+        //         // }
+        //       })()
+        //     })
+        //   }
 
-        // console.log("INI oAUTH2 Mixin")
-        // INITIAL Data Loading
-        Vue.prototype.pkce.isReturningFromAuthServer().then(hasAuthCode => {
-          if (hasAuthCode) {
-            // A valid Redirect by the auth server
-            Vue.prototype.pkce.getAccessToken().then(({ token, scopes }) => {
-              this.enforce_reactivity += 1
+        //   console.log("..ongoing token refresh?", store.state.ongoingTokenRefresh)
+        //   await ensureNoRefreshTokenIsOngoing().catch(error => Promise.reject(error))
 
-              // 1. One: technical stuff: replace token in axios
-              // note: alteady authorized: but vue has not yet been notified. (no reactivity in properties of pkce module)
-              // console.log("oAUTH: token received => emit AfterTokenChanged", token.value)
-              LayoutEventBus.$emit('AfterTokenChanged', token.value)
+        //   // console.log(store.state.ongoingTokenRefresh)
+        //   console.log("No ongoing token refresh found...")
+        //   store.dispatch("tokenRefreshStarts")
+        //   console.assert(store.state.ongoingTokenRefresh)
 
-              // Authentication process is finished: it is clarified, if a user is logged in or not
-              // you may start the user-specific api calls..
-              console.log("AFTER LOGIN")
-              LayoutEventBus.$emit('AfterLogin')
+        //   console.log("CHECK IF EXPRIRED in ... refresh_token_if_required")
+        //   const expired = Vue.prototype.pkce.isAccessTokenExpired()
+        //   if (expired) {
+        //     console.log("EXPRIRED in ... refresh_token_if_required")
+        //     const response = await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
+        //       .then(response => {
+        //         console.log(" finished: exchangeRefreshTokenForAccessToken")
+        //         if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
+        //           const jwt = Vue.prototype.pkce.state.accessToken.value
+        //           console.log("new XHR header set", jwt)
+        //           ApiService.setHeader(jwt)
+        //         }
+        //         LayoutEventBus.$emit('ReloadPayload')
+        //         store.dispatch("tokenRefreshEnds")
+        //         return true
+        //       })
+        //       .catch(error => {
+        //         console.log('errord ;', error)
+        //         // Promise.reject(error)
+        //         store.dispatch("tokenRefreshEnds")
+        //         Promise.reject(error)
+        //       })
+        //   }
+        // },
 
-              // Authentication process is finished: it is clarified, if a user is logged in or not
-              // you may start the user-specific api calls..
-              if (this.userid) {
-                LayoutEventBus.$emit('AuthenticationLoaded')
-              }
+        initialize: async function () {
 
-            })
-              .catch(error => {
-                console.log("error in oauth plugin (1)..")
-                // More errors to handle.
-                console.error(error)
-                LayoutEventBus.$emit('LoginError', error)
-                Vue.prototype.logout()
-
-                // Authentication process is finished: it is clarified, if a user is logged in or not
-                // you may start the user-specific api calls..
-                if (this.userid) {
-                  LayoutEventBus.$emit('AuthenticationLoaded')
-                }
-
-              })
-          } else {
-            if (this.userid) {
-              LayoutEventBus.$emit('AuthenticationLoaded')
-            }
-          }
-        })
-          .catch((error) => {
-            LayoutEventBus.$emit('AfterTokenChanged', null)
+          LayoutEventBus.$on('AfterLogout', data => {
+            this.enforce_reactivity += 1
+          })
+          LayoutEventBus.$on('ReloadPayload', data => {
+            this.enforce_reactivity += 1
           })
 
-        if (!this.ongoing) {
-          // Authentication process is finished: it is clarified, if a user is logged in or not
-          // you may start the user-specific api calls..
+          const hasAuthCode = await Vue.prototype.pkce.isReturningFromAuthServer()
+            .catch((potentialError) => {
+              if (potentialError) {
+                console.log(potentialError);
+                Promise.reject(potentialError)
+              }
+              console.log("catch without potentialError?", potentialError)
+            })
 
-          // DEFAULT Browser Reload
-          const jwtshort = jwt ? jwt.substring(jwt.length - 5) : 'jwt empty'
-          console.log("1.))) Relaunch App: Read Authorization Token from Localstorage. JWT: ", jwtshort)
-          const jwt = Vue.prototype.pkce?.state?.accessToken?.value
-          if (jwt) {
-            console.log("...emit AfterTokenChanged")
-            LayoutEventBus.$emit('AfterTokenChanged', jwt)
-          }
+          const token = await Vue.prototype.pkce.getAccessToken()
 
-          if (this.userid) {
-            LayoutEventBus.$emit('AuthenticationLoaded')
+          this.enforce_reactivity += 1
+
+          // 1. One: technical stuff: replace token in axios
+          // note: alteady authorized: but vue has not yet been notified. (no reactivity in properties of pkce module)
+          // console.log("oAUTH: token received => emit AfterTokenChanged", token.value)
+          LayoutEventBus.$emit('AfterTokenChanged', token.token.value)
+
+          if (hasAuthCode) {
+            LayoutEventBus.$emit('AfterLogin')
           }
         }
       }

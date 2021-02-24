@@ -170,7 +170,7 @@
 
       <!-- MAIN PAGE CONTENT -->
       <!-- <div align="center"> -->
-      <router-view />
+      <router-view v-if="$parent.appInitialized" />
 
       <br><br>
 

@@ -11,7 +11,7 @@ export default {
     StageMixin,
     ReactiveProvideMixin({
       name: 'CONTENTTREE',
-      include: ['contenttreeID', 'contenttree', 'isRead', 'ratingCompleted'],
+      include: ['contenttreeID', 'contenttree', 'isRead', 'ratingCompleted', 'salienceCompleted'],
     })
   ],
 
@@ -63,6 +63,7 @@ export default {
 
     ratingCompleted() {
 
+      console.log("rating completed?? rerun...")
       const allRated = this.numberOfUnratedTopLevelEntries == 0
       if (allRated && this.is_stage_scheduled(this.routed_stage)) {
         this.markIdle()
@@ -71,15 +72,35 @@ export default {
       return (allRated)
     },
 
+    salienceCompleted() {
+
+      console.log("salience completed?? rerun...")
+      const allSalienced = this.numberOfUnsaliencedTopLevelEntries == 0
+      if (allSalienced && this.is_stage_scheduled(this.routed_stage)) {
+        this.markIdle()
+      }
+
+      return (allSalienced)
+    },
+
+
     numberOfUnratedTopLevelEntries() {
       if (this.contenttree == null) {
         return null
       }
 
       const unrated_children = Object.filter(this.contenttree.structure.children, x => this.contenttree.entries[x.id]?.progression?.rated !== true)
-      // Object.filter(contenttree.structure.children, TEXTTYPES)" 
-      // console.log("nof: unrated child", unrated_children)
       return (Object.values(unrated_children).length)
+    },
+
+
+    numberOfUnsaliencedTopLevelEntries() {
+      if (this.contenttree == null) {
+        return null
+      }
+
+      const unsalienced_children = Object.filter(this.contenttree.structure.children, x => this.contenttree.entries[x.id]?.progression?.salienced !== true)
+      return (Object.values(unsalienced_children).length)
     },
 
     ...mapGetters({

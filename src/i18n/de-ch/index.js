@@ -63,7 +63,8 @@ export default {
         tooltip: 'Dieser Bereich ist noch nicht zugänglich. Unsere ModeratorInenn haben zuerst noch eine andere Bitte an Sie!'
       },
       home: {
-        label: 'Tagesübersicht',
+        label: 'Heutige Aufgaben',
+        // label: 'Tagesübersicht',
         tooltip: 'Was sie heute alles erwartet!'
       },
       assembly: {
@@ -91,7 +92,7 @@ export default {
     profile_last_name: 'Pseudonym',
     profile_email: 'Email',
     profile_email_hint: 'Falls Sie keine Email Adresse besitzen, dann können sie auch ihre Handy Nummer eingeben. Wir werden Sie dann via SMS kontaktieren.',
-    profile_email_disclaimer: 'Sie fragen sich, wozu wir Ihre Emailadresse benötigen? Wir werden Ihnen in den kommenden Tagen eine Handvoll Emails zusenden. (Benachrichtigungen über wichtige Ereignisse auf der Plattform, Nachbefragung für die wissenschaftliche Begleitstudie und für die Benachrichtung über die Gewinnausschreibung). Gleich nach Ende des Projektes werden wir sämtliche Emailadressen wieder von unserm Server an der Universität Bern löschen. Zu keinem Zeitpunkt werden wir Ihre Emailadresse an Dritte weiterreichen.',
+    profile_email_disclaimer: 'Sie fragen sich, wozu wir Ihre Emailadresse benötigen? Wir werden Ihnen in den kommenden Tagen eine Handvoll Emails zusenden, wie Benachrichtigungen über wichtige Ereignisse auf der Plattform, Nachbefragung für die wissenschaftliche Begleitstudie und für die Benachrichtigung über die Gewinnausschreibung.Die Daten werden auf dem Server der Universität Bern gespeichert und vertraulich behandelt.Gleich nach Ende des Projektes werden wir sämtliche Emailadressen wieder von unserm Server an der Universität Bern löschen.Ihre Emailadressen werden zu keinem Zeitpunkt an Dritte weitergegeben.',
     profile_update_action: 'Speichern',
     profile_update_success: 'Das Benutzerprofil wurde gespeichert',
     profile_update_error: 'Das Benutzerprofil konnte nicht gespeichert werden',
@@ -106,6 +107,8 @@ export default {
     authentication_succeeded_caption: 'Sie haben sich erfolgreich bei der Demokratiefabrik angemeldet. Wir danken Ihnen schon jetzt für Ihre Mithilfe.',
     authentication_warning_title: 'Anmeldung erforderlich.',
     authentication_warning_body: 'Sie haben sich noch nicht bei der Demokratiefabrik angemeldet. Für den Zugriff auf diesen Bereich ist dies jedoch erforderlich.',
+    authentication_invalid_warning_title: 'Session beendet.',
+    authentication_invalid_warning_body: 'Hoppla! Um weiterzufahren müssen Sie sich erneut anmelden.',
     authentication_error_title: 'Anmeldung schlug fehl.',
     authentication_error_body: 'Bei der Anmeldung tratt ein unerwarteter Fehler auf. Bitte kontakieren Sie uns via Email: info@demokratiefabrik.ch'
   },
@@ -200,32 +203,18 @@ export default {
   background: {
     h1: 'Alles über die Demokratiefabrik!',
     citizen_assemblies: {
-      label: 'Die Demokratiefabrik: Ein Ort für digitiale BürgerInnenversammlungen',
-      text: `Bürger*innen mittels Beteiligungsformaten wie Bürger*innenversammlungen stärker in
-              politische Entscheidungen einzubeziehen, entspricht der Forderung von immer mehr
-              politischen und akademischen Akteuren....`
+      label: 'Die Demokratiefabrik – ein Ort für digitale Bürger*innenversammlungen',
+      text: `Diese Online-Plattform, die «Demokratiefabrik» ist ein digitaler Ort, wo sich Bürger*innen treffen und gemeinsam über verschiedene Themen mitdiskutieren. Bürger*innen können sich somit stärker in politische Entscheidungen engagieren.`
     },
 
     digital_participation: {
-      label: 'Was Sie bei unserere digitalen Plattform erwartet.',
-      text: `Im Rahmen des Projekts
-              wird ein digitales Beteiligungsformat entwickelt, das den Bürgerinnen und Bürgern
-              ermöglicht, eigene Argumente und Überzeugungen in den Abstimmungs- und Wahldiskurs
-              einzubringen. Damit soll nicht nur das Vertrauen in Online-Infrastruktur gestärkt,
-              sondern auch die Legitimität der direkten Demokratie erhöht werden. Damit das gelingt
-              setzen wir auf zwei Neuerungen: Erstens, werden bei der Mitarbeit die BürgerInnen
-              von einem digitalen Moderatorenteam begleitet. Und besitzen die
-              Teilnehmenden in der Demokratiefabrik weitgehende Autonomie. Dabei werden die meisten
-              Entscheidungen in zufällig ausgelosten Kommittees gefällt. Damit erreichen wir
-              eine im Internet ansonsten selten anzutreffende Balance.
-`
+      label: 'Was Sie bei unserer digitalen Plattform erwartet',
+      text: `Im Rahmen unseres vom schweizerischen Nationalfond (SNF) unterstützten Projekts haben wir ein digitales Beteiligungsformat entwickelt (die «Demokratiefabrik», das den Bürgern*innen ermöglicht, eigene Argumente und Überzeugungen in den Abstimmungs- und Wahldiskurs einzubringen. Damit soll nicht nur das Vertrauen in Online-Infrastruktur gestärkt, sondern auch die Legitimität der direkten Demokratie erhöht werden. Damit das gelingt setzen wir auf zwei Neuerungen: Erstens, werden bei der Mitarbeit die Bürger*innen von einem digitalen Moderatorenteam begleitet. Die Teilnehmenden besitzen aber in der Demokratiefabrik weitgehende Autonomie. Zweitens werden die meisten Entscheidungen in zufällig ausgelosten Komitees gefällt. Damit erreichen wir eine im Internet ansonsten selten anzutreffende Balance zwischen den verschiedenen Stimmen.`
     },
 
     team: {
       label: 'Wer für die Demokratiefabrik verantwortlich ist',
-      text: `Involved in the projects are Prof. Marc Bühlmann, Marlène Gerber, Dominik Wyss, and
-            Giada Gianola (all University of Berne). The project benefits from expert knowledge by
-            Prof. André Bächtiger (University of Stuttgart) and Marc Klein (MIT Center for Collective Intelligence).`
+      text: `Beteiligt an den Projekten sind Prof. Dr. Marc Bühlmann, Dr. Marlène Gerber, Dr. Dominik Wyss und Giada Gianola (alle an der Universität Bern tätig). Das Projekt profitiert vom Expertenwissen von Prof. Dr. André Bächtiger (Universität Stuttgart) und Dr. Marc Klein (MIT, Center for Collective Intelligence).`
     },
 
     artificialmoderators: {
@@ -248,31 +237,22 @@ export default {
       Zu wissen, unter welchen Bedingungen digitale Beteiligungsformen die Demokratie stärken können, stellt die Grundlage für eine erfolgreiche Bürgerbeteiligung im digitalen Zeitalter.
       Der Schweizerische Nationalfonds unterstützt das Projekt ab April 2020 für eine Dauer von
       36 Monaten im Rahmen des NFP77 «Digitale Transformation».<br>
-      Lesen Sie mehr Informationen unter
-      <a href="https://anneepolitique.swiss/pages/postvotes" target="_blank">Webseite des Année Politique Suisse</a>`
+      Lesen Sie mehr Informationen unter {linkAPS}.`
     },
 
     transparency: {
-      label: 'Völlige Transparenz auf der einen Seite, ...',
+      label: 'Vollständige Transparenz',
       // text: 'Ein wichtiges Anliegen von uns ist, dass die Funktionsweise unserer Software von der angezeigt werden. {iconTechnicalTransparency}'
-      text: `Ein wichtiges Anliegen von uns ist, dass die Funktionsweise unserer Software von der 
-            interessierten Öffentlich jederzeit nachvollzogen und auf Herz und Nieren überprüft werden 
-            kann. Es ist daher für uns eine Selbstverständlichkeit, dass unsere Software open source ist. 
-            Doch auch für Leute ohne IT-Kenntnisse, schaffen wir Transparenz. Allem voran 
-            finden sich auf auf der Plattform an verschiedensten Stellen das folgende Icon {iconTechnicalTransparency}.
-            Dahinter verbergen sich jeweils Erläuterungen, warum welche Inhalte in welcher Reihenfolge
-            angezeigt werden.`
+      text: `Ein wichtiges Anliegen von uns ist, dass die Funktionsweise unserer Software von der interessierten Öffentlich jederzeit nachvollzogen und auf Herz und Nieren überprüft werden kann. 
+            Unsere Software ist Open Source, das heisst der Quelltext ist öffentlich und kann von Dritten eingesehen, geändert und genutzt werden. 
+            Der Software kann kostenlos benutz werden. Doch auch für Leute ohne IT-Kenntnisse, schaffen wir Transparenz. 
+            Allem voran finden sich auf der Plattform an verschiedensten Stellen das folgende Icon {iconTechnicalTransparency}. 
+            Dahinter verbergen sich jeweils Erläuterungen, warum welche Inhalte in welcher Reihenfolge angezeigt werden.`
     },
 
     privacy: {
-      label: '...Maximalen Datenschutz auf der anderen Seite.',
-      text: `Die Privatshpäre aller unserer TeilnehmerInnen und BesucherInnen ist uns wichtig. 
-      Daher arbeiten wir auf der Plattform ausschliesslich mit Pseudonymen. Wir erfassen einzig 
-      Personendaten (namentlich Email und allenfalls Handy-Nummer), welche für das Funktionieren 
-      der Plattform notwendig sind. Diese Daten werden sofort nach Beendigung des Bürgerinnenversammlungen
-      auf unseren Servern gelöscht. Die Daten werden allesamt auschliesslich in der Schweiz auf 
-      hauseigenen Servern gehostet (d.h. Universität Bern). Zu keinem Zeitpunkt bekommen Drittparteien Zugriff 
-      auf unsere Hardware, Software und Daten.`
+      label: 'Maximaler Datenschutz',
+      text: `Die Privatsphäre aller unserer Teilnehmenden und Besucher*innen ist uns wichtig. Daher arbeiten wir auf der Plattform ausschliesslich mit Pseudonymen. Wir erfassen einzig Personendaten (namentlich Email und allenfalls Handy-Nummer), welche für das Funktionieren der Plattform notwendig sind. Diese Daten werden sofort nach Beendigung der Bürgerinnenversammlungen auf unseren Servern gelöscht. Die Daten werden allesamt ausschliesslich in der Schweiz auf hauseigenen Servern gehostet (Universität Bern). Drittparteien bekommen zu keinem Zeitpunkt Zugriff auf unsere Hardware, Software und Daten. Wir behandeln Ihre Daten sehr vertraulich und werden keinesfalls an Dritten weitergegeben.`
     },
 
     technologies: {

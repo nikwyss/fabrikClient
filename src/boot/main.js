@@ -8,7 +8,16 @@ Vue.prototype.Constants = Constants
 // SANITIZER
 /////////////////////////////////
 import VueDOMPurifyHTML from 'vue-dompurify-html'
-Vue.use(VueDOMPurifyHTML)
+Vue.use(VueDOMPurifyHTML, {
+  namedConfigurations: {
+    'alink': {
+      ADD_ATTR: ['target'],
+
+      //     USE_PROFILES: { alink: alink }
+    }
+  }
+})
+
 
 // GLOBAL METHODS
 /////////////////////////////////

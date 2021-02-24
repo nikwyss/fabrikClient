@@ -1,6 +1,10 @@
 <template>
     <q-page class="doc_content" v-if="contenttree">
 
+
+        <h2>{{routed_stage.stage.title}}</h2>
+
+
         <div>
 
             <!-- DISABLED WARNING -->
@@ -19,20 +23,14 @@
 
         <div class="q-pt-xl text-vessel" v-if="routed_stage && contenttree" >
 
-        <h2>{{routed_stage.stage.title}}</h2>
-
-
-
 
         <!-- TOPICS -->
-        
-
         <div>
         <VAATopicSelector />
         </div>
 
-
-
+        <br />
+        <br />
 
 
         <div class="row justify-between">
@@ -44,9 +42,15 @@
         <!-- <ArtificialModeratorQUESTIONSTop align="left" /> -->
 
 <!-- {{$route.params}} -->
-        <!-- // QUESTIONS -->
         <!-- <p class="text-body1">{{routed_stage.stage.info}}</p> -->
         <div v-if="contenttree && node">
+
+        <!-- Questionnaire -->
+        <h3>Zusammenstellung der Fragen zum Thema {{contenttree.entries[node.id].content.title}}</h3></h3>
+
+
+
+
             <!-- TOPIC RATING -->
             <div class="row justify-between" v-for="(nodeL1, keyL1)  in node.children"
                         :key="`L1${nodeL1.id}`">
@@ -60,7 +64,7 @@
                     :item="contenttree.entries[nodeL1.id]"/>
 
                 <!-- RATING -->
-                <ContentRatingSlider :content="contenttree.entries[nodeL1.id]" />
+                <ContentSalienceSlider :content="contenttree.entries[nodeL1.id]" />
             </div>
             
 
@@ -96,7 +100,7 @@
 import ContentMixin from 'src/mixins/content'
 import ComponentStageEditor from 'src/pages/ContentTree/components/StageEditor';
 import VAATopicSelector from './components/TopicSelector';
-import ContentRatingSlider from 'src/pages/ContentTree/components/ContentRatingSlider';
+import ContentSalienceSlider from 'src/pages/ContentTree/components/ContentSalienceSlider';
 // import ChartBar from 'src/components/charts/ChartBar';
 import ArtificialModeratorQUESTIONSTop from './artificialmoderation/QuestionsTop'
 import ArtificialModeratorQUESTIONSBottom from './artificialmoderation/QuestionsBottom'
@@ -109,7 +113,7 @@ export default {
     components: {
         ComponentStageEditor,
         VAATopicSelector,
-        ContentRatingSlider,
+        ContentSalienceSlider,
         TextsheetCard,
         ArtificialModeratorQUESTIONSTop,
         ArtificialModeratorQUESTIONSBottom

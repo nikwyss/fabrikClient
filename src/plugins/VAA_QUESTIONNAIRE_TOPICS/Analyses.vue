@@ -7,7 +7,7 @@
          </div>
 
         <!-- RESULT -->
-        <div v-if="ratingCompleted">
+        <div v-if="salienceCompleted">
             <h2>Resultat</h2>
             <div class="row justify-between">
                 <ChartRadar :personalData="chartRadarPersonalData" :populationData="chartRadarPopulationData"  :labels="chartRadarLabels" />
@@ -23,7 +23,7 @@
 import ContentTreeMixin from 'src/mixins/contenttree'
 import ComponentStageEditor from 'src/pages/ContentTree/components/StageEditor';
 import TextsheetCard from './components/TextsheetCard';
-import ContentRatingSlider from 'src/pages/ContentTree/components/ContentRatingSlider';
+import ContentSalienceSlider from 'src/pages/ContentTree/components/ContentSalienceSlider';
 import ChartRadar from 'src/components/charts/ChartRadar';
 
 
@@ -33,7 +33,7 @@ export default {
     components: {
         ComponentStageEditor,
         TextsheetCard,
-        ContentRatingSlider,
+        ContentSalienceSlider,
         ChartRadar
     },
     computed: {
@@ -44,7 +44,7 @@ export default {
         },
         chartRadarPersonalData() {
             // console.log(this.entries)
-            return this.chartEntries.map(entry => entry.progression?.rating+50)
+            return this.chartEntries.map(entry => entry.progression?.salience)
         },
         chartRadarLabels() {
             return this.chartEntries.map(entry => entry.content?.title)
@@ -53,12 +53,12 @@ export default {
             return this.chartEntries.map(entry => Math.random()*100)
         },
 
-        ratingCompleted() {
-            const allRated = this.numberOfUnratedTopLevelEntries == 0
-            if (allRated && this.is_stage_scheduled(this.routed_stage)) {
+        salienceCompleted() {
+            const allSalienced = this.numberOfUnsaliencedTopLevelEntries == 0
+            if (allSalienced && this.is_stage_scheduled(this.routed_stage)) {
                 this.markIdle()
             }
-            return (allRated)           
+            return (allSalienced)           
         }
     },
 }

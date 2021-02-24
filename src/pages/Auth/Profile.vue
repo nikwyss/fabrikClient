@@ -87,11 +87,11 @@
 
 <script>
 // import Configuration from 'src/utils/configuration'
-import ApiService from "src/utils/xhr";
+import ApiService from "src/utils/xhr"
 import api from "src/utils/api"
-import {mapGetters} from "vuex";
-import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer";
-import { LayoutEventBus } from "src/utils/eventbus.js";
+import {mapGetters} from "vuex"
+import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer"
+import { LayoutEventBus } from "src/utils/eventbus.js"
 
 export default {
   name: "PopupProfile",

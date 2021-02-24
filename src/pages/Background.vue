@@ -118,16 +118,13 @@
       </q-expansion-item>
 
 
-
       <!-- THE NEXT STEPS OF THE PROJECT -->
       <q-expansion-item group="somegroup"
         icon="mdi-shoe-print"
         :label="$t('background.next_steps.label')"
         header-class="text-secondary">
         <q-card>
-          <q-card-section>
-            {{$t('background.next_steps.text')}}
-          </q-card-section>
+          <q-card-section v-dompurify-html:alink="$t('background.next_steps.text', {linkAPS})" />
         </q-card>
       </q-expansion-item>
 
@@ -160,6 +157,7 @@ export default {
 
   data() {
     return {
+      linkAPS: '<a href="https://anneepolitique.swiss/pages/postvotes" target="_blank"> Webseite des Année Politique Suisse</a>',
       iconTechnicalTransparency: '<i aria-hidden="true" role="presentation" class="q-tab__icon mdi mdi-monitor-clean q-icon notranslate"></i>'
     }
   },
