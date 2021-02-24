@@ -166,15 +166,10 @@ export default new Vuex.Store({
   mutations: {
 
     tokenRefreshEnds(state) {
-      console.log("set ongoingTokenRefresh", false)
       Vue.set(state, 'ongoingTokenRefresh', false)
     },
 
     tokenRefreshStarts(state) {
-      if (state.ongoingTokenRefresh) {
-        alert("ongoingTokenRefresh has already been set...")
-      }
-      console.log("set ongoingTokenRefresh", true)
       Vue.set(state, 'ongoingTokenRefresh', true)
     },
 

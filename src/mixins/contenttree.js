@@ -63,7 +63,7 @@ export default {
 
     ratingCompleted() {
 
-      console.log("rating completed?? rerun...")
+      // console.log("rating completed?? rerun...")
       const allRated = this.numberOfUnratedTopLevelEntries == 0
       if (allRated && this.is_stage_scheduled(this.routed_stage)) {
         this.markIdle()
@@ -74,7 +74,7 @@ export default {
 
     salienceCompleted() {
 
-      console.log("salience completed?? rerun...")
+      // console.log("salience completed?? rerun...")
       const allSalienced = this.numberOfUnsaliencedTopLevelEntries == 0
       if (allSalienced && this.is_stage_scheduled(this.routed_stage)) {
         this.markIdle()

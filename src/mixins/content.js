@@ -78,9 +78,9 @@ export default {
       if (!this.contentID) {
         return null
       }
-      const node = Object.filter(this.contenttree.structure.children, x => x.id == this.contentID)
-      console.assert(Object.values(node).length === 1)
-      return node[0]
+      const node = this.contenttree.structure.children.find(x => x.id == this.contentID)
+      // TODO: error handling in case of a wrong url
+      return node
     },
 
 

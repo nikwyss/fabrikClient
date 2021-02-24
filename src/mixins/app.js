@@ -185,7 +185,7 @@ export default {
       )
     })
 
-    LayoutEventBus.$on('AfterTokenChanged', () => {
+    LayoutEventBus.$on('LoginStatusUpdate', () => {
       // NOTIFY EVERYONE, THAT TOKEN HAS CHANGED NOW!
       this.storeOauthAcls({ oauthAcls: this.oauth?.payload?.roles })
     })

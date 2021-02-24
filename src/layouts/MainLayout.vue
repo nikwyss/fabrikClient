@@ -1,4 +1,3 @@
-
 <style scoped>
 .transitionlogo-enter,
 .transitionlogo-leave-to {
@@ -17,12 +16,12 @@
   transition: all 0.5s;
 }
 </style>
+
 <template>
   <q-layout
     view="hHh Lpr lFf"
     class="rounded-borders"
   >
-<!-- shadow-1  -->
     <q-header class="text-primary bg-white">
     
           <!-- "Hidden" Logo -->
@@ -36,16 +35,10 @@
            demokratiefabrik.ch
           </q-chip>
 
-
-  <!-- <br />ddd
- ---   {{ monitorDebug}} -->
-
-
     <!-- MAIN MENU -->
     <MainMenu :assemblyName="assemblyName" />
 
 
-<!-- {{$router.route.name}} -->
       <!-- LOGO -->
       <!-- <div
         align="center"
@@ -173,7 +166,6 @@
       <router-view v-if="$parent.appInitialized" />
 
       <br><br>
-
       <Footer />
 
     </q-page-container>
@@ -181,30 +173,21 @@
 </template>
 
 <script>
-// import { LayoutEventBus } from "src/utils/eventbus"
-// import { mapGetters } from "vuex"
-// import ComponentDrawer from './components/ComponentDrawer'
-// import LanguageSwitch from './components/LanguageSwitch'
-// import PopupProfile from './components/PopupProfile'
 import MainMenu from "./components/MainMenu"
 import Footer from "./components/Footer"
 // TODO: load it dynamically based on assembly configuration parameter... (allow for mulitple plugins)
 import AssemblyMenu from "../plugins/VAA_QUESTIONNAIRE_TOPICS/components/AssemblyMenu"
-// import PublicIndex from "src/mixins/publicIndex"
 import { mapGetters} from 'vuex'
 
 
 export default {
   name: "MainLayout",
-  // mixins: [PublicIndex],
-  // inject: ['assemblyName'], // not necessary=>defined in the mixin...
   components: {
     // ComponentDrawer,
     // LanguageSwitch,
     Footer,
     MainMenu,
     AssemblyMenu,
-    // PopupProfile
   },
 
   data() {
@@ -301,32 +284,7 @@ export default {
       )
     },
 
-
-
-    // monitorDebug (){
-    //   return (this.$store.monitorDebug)
-    //   //  ...mapGetters('monitorDebug')      
-    // },
      ...mapGetters( 'assemblystore', ['assemblyName'])  
   }
-
-  // mounted: function() {
-    // console.log(this.$router.currentRouteObject(), "current route")
-    // console.log(this.$router.currentRoute, "current route")
-    
-  //   // LayoutEventBus.$on("NewStageEntered", data => {
-  //   //   console.log("EVENTBUS: New stage entered...", data)
-  //   //   // this.$root.reload();
-
-  //   //   if (data.stage.stage.contenttree_id && data.assemblyIdentifier) {
-  //   //     console.log("new stage is loaded: check if contenttree is in sync")
-  //   //     this.$store.dispatch('contentstore/syncContenttree', {
-  //   //       assemblyIdentifier: this.$router.route.params.assemblyIdentifier,
-  //   //       contenttreeID: stage.stage.contenttree_id,
-  //   //       oauthUserID: this.oauth.userid
-  //   //     })
-  //   //   }
-  //   // })
-  // }
 }
 </script>

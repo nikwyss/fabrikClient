@@ -13,11 +13,10 @@ import constants from 'src/utils/constants'
       window.TextDecoder = TextEncodingPolyfill.TextDecoder;
     }
     if (typeof window.crypto === 'undefined') {
-      const { webcrypto } = require("webcrypto-shim")
+      const { webcrypto } = require('webcrypto-shim')
     }
     if (typeof window.fetch === 'undefined') {
       const { fetch } = require('whatwg-fetch')
-      // window.fetch = fetch
     }
   }(window));
 
@@ -43,7 +42,6 @@ const pkce_config = {
   onInvalidGrant(refreshAuthCodeOrRefreshToken) {
     if (!runtimeStore.appExitState) {
       console.log("TOKEN REFRESH FAILED")
-      console.log('Expired! Auth code AND refresh token needs to be renewed. => Redirect to authserver!')
       throw new Error("ErrorInvalidGrant");
     } else {
       // TOKEN Failed. However, user is up to leave the page. (so ignore it...)
@@ -52,8 +50,23 @@ const pkce_config = {
   }
 }
 
-function Sleep(milliseconds) {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
+// WAIT FOR ONGOING TOKEN REQUESTS! (wait maximal 5 seconds!)
+const ensureNoRefreshTokenIsOngoing = async function () {
+  const maxiter = 20
+  let iter = 0
+  return new Promise(function (resolve, reject) {
+    (function waitForOngoingTokenRefresh() {
+      if (store.state.ongoingTokenRefresh !== true) return resolve();
+      iter++;
+      if (iter >= maxiter) {
+        console.log("(infinity loop)")
+        store.dispatch("tokenRefreshEnds")
+        return reject("infinity loop");
+      }
+      console.log('.')
+      setTimeout(waitForOngoingTokenRefresh, 300);
+    })()
+  })
 }
 
 export default {
@@ -61,10 +74,7 @@ export default {
   install(Vue, options) {
 
     Vue.prototype.pkce = new OAuth2AuthCodePKCE(pkce_config)
-    // Vue.prototype.enforce_reactivity = 1
 
-
-    // Methods
     Vue.prototype.login = function (destination_route = null) {
       // save destiantion route to localstorage
       localStorage.setItem('oauth2authcodepkce-destination', JSON.stringify(destination_route));
@@ -77,33 +87,26 @@ export default {
       })
 
       Vue.prototype.pkce.reset();
-
-      // 1. technical level notification: e.g. replace token in axios / delete user cache
-      // console.log("oAUTH: token reset => emit AfterTokenChanged")
       LayoutEventBus.$emit('AfterTokenChanged', null)
-
-      // 2: user level notification  
-      // console.log("oAUTH: token updated => emit AfterLogout")
+      LayoutEventBus.$emit('LoginStatusUpdate', null)
       LayoutEventBus.$emit('AfterLogout')
     }
 
     Vue.prototype.refresh_token = async function () {
 
-      // console.log("EXPRIRED in ... refresh_token_if_required")
-      store.dispatch("tokenRefreshStarts")
-
+      console.log("@@@ START TOKEN REFRESH")
+      await store.dispatch("tokenRefreshStarts")
       try {
         await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
-        const jwt = Vue.prototype.pkce.state.accessToken.value
-        ApiService.setHeader(jwt)
-        console.log("token refreshed...!")
-
       } catch (error) {
         console.log("Error while refreshing token #83", error)
       }
-      store.dispatch("tokenRefreshEnds")
-
-      LayoutEventBus.$emit('ReloadPayload')
+      // TOKEN REFRESH ENDS: Notify the computed properties
+      await store.dispatch("tokenRefreshEnds")
+      const jwt = Vue.prototype.pkce.state.accessToken.value
+      LayoutEventBus.$emit('AfterTokenChanged', jwt)
+      LayoutEventBus.$emit('LoginStatusUpdate', jwt)
+      console.log("@@@ END WITH REFRESH")
     }
 
     // Component Mixin
@@ -111,7 +114,7 @@ export default {
 
       data: function () {
         return {
-          enforce_reactivity: 1
+          jwt: null
         }
       },
 
@@ -120,42 +123,51 @@ export default {
         authorized: function () {
           // enforce_reactivity: changing enforce_reactivity allows onthefly modifications of oauth data (username, logoin  status)  
           // just change this property, and all computed data is reloaded...
-          const authorized = this.enforce_reactivity > 0 && Vue.prototype.pkce.state && 'accessToken' in Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken.value && Vue.prototype.pkce.isAuthorized()
-          // console.log(`...OAUTH: authorized: ${authorized}`)
+          // if (this.enforce_reactivity < 0) { return; }
+
+          if (!this.jwt) {
+            // THis should not be required, however, you never know;-)
+            this.jwt = Vue.prototype.pkce?.state?.accessToken?.value
+          }
+
+          const authorized = this.jwt && Vue.prototype.pkce.isAuthorized()
           return (authorized)
         },
 
         ongoing: function () {
+          // if (this.enforce_reactivity < 0) { return; }
+
           // Its not yet clear, if user is logged in (i.e. login process is ongoing)
           return (this.authorized === null || this.authorized === undefined)
         },
 
         payload: function () {
+          // if (this.enforce_reactivity < 0) { return; }
           // console.log('...OAUTH: loaeding payload..')
-          if (!this.authorized || !('accessToken' in Vue.prototype.pkce.state)) {
-            // LayoutEventBus.$emit('AfterTokenChanged', null)
-            // console.log('...OAUTH: not authorized')
+
+          if (!this.authorized) {
             return (null)
           }
 
           // add xhr decorator
-          const jwt = Vue.prototype.pkce?.state?.accessToken?.value
-          const payload = JSON.parse(window.atob(jwt.split('.')[1]))
+          console.assert(this.jwt)
+          const payload = JSON.parse(window.atob(this.jwt.split('.')[1]))
+
           // console.log(payload)
           return (payload);
         },
 
         username: function () {
-          // console.log('...OAUTH: loading username..')
+          // if (this.enforce_reactivity < 0) { return; }
+
           if (this.payload) {
-            // console.log(`   username: ${this.payload.userName}`)
             return (this.payload.userName)
-            // }else{
-            //   console.log('   username: null')
           }
         },
 
         userid: function () {
+          // if (this.enforce_reactivity < 0) { return; }
+
           // console.log('...OAUTH: loading userid..')
           if (this.payload) {
             return (this.payload.sub)
@@ -163,6 +175,8 @@ export default {
         },
 
         incompleteProfile: function () {
+          // if (this.enforce_reactivity < 0) { return; }
+
           return (!this.payload || !this.payload.userEmail)
         }
       },
@@ -177,93 +191,33 @@ export default {
           storeOauthAcls: "publicprofilestore/storeOauthAcls"
         }),
 
-
-
         /* Refresh token already before a invalid request has been issued */
         refresh_token_if_required: async function () {
-          // console.log(this.payload.exp)
           if (Vue.prototype.pkce.isAuthorized()) {
-            // alert("test1")
-            console.log("CHECK IF EXPRIRED in ... refresh_token_if_required")
-            const expired = Vue.prototype.pkce.isAccessTokenExpired()
-            if (expired) {
-              Vue.prototype.refresh_token()
-            }
-          }
 
+            console.log("@@@ START REFRESH IF REQUIRED")
+            if (await Vue.prototype.pkce.isAccessTokenExpired()) {
+              console.log("..already ongoing token refresh?", store.state.ongoingTokenRefresh)
+              if (store.state.ongoingTokenRefresh) {
+                await ensureNoRefreshTokenIsOngoing().catch(error => Promise.reject(error))
+              } else {
+                store.dispatch("tokenRefreshStarts")
+              }
+              if (await Vue.prototype.pkce.isAccessTokenExpired()) {
+                await Vue.prototype.refresh_token()
+              }
+              store.dispatch("tokenRefreshEnds")
+            }
+            console.log("@@@ END WITH REFRESH IF REQUIRED")
+          }
           return true
         },
 
-        // /* Refresh token already before a invalid request has been issued */
-        // refresh_token_if_required: async function (iter = 0) {
-
-        //   if (!Vue.prototype.pkce.isAuthorized()) {
-        //     console.log("Not logged in: no token refresh required...")
-        //     Promise.resolve()
-        //   }
-
-        //   // WAIT FOR ONGOING TOKEN REQUESTS!
-        //   function ensureNoRefreshTokenIsOngoing() {
-        //     const maxiter = 50
-        //     let iter = 0
-        //     return new Promise(function (resolve, reject) {
-        //       (function waitForOngoingTokenRefresh() {
-        //         if (store.state.ongoingTokenRefresh !== true) return resolve();
-        //         iter++;
-        //         if (iter >= maxiter) {
-        //           console.log("TOKEN REFRESH FAILED (infinity loop)")
-        //           store.dispatch("tokenRefreshEnds")
-        //           Promise.reject("TOKEN REFRESH FAILED (infinity loop)")
-        //           // return refreshAuthCodeOrRefreshToken()
-        //         }
-        //         console.log('.')
-        //         setTimeout(waitForOngoingTokenRefresh, 300);
-        //         // } else {
-        //         // }
-        //       })()
-        //     })
-        //   }
-
-        //   console.log("..ongoing token refresh?", store.state.ongoingTokenRefresh)
-        //   await ensureNoRefreshTokenIsOngoing().catch(error => Promise.reject(error))
-
-        //   // console.log(store.state.ongoingTokenRefresh)
-        //   console.log("No ongoing token refresh found...")
-        //   store.dispatch("tokenRefreshStarts")
-        //   console.assert(store.state.ongoingTokenRefresh)
-
-        //   console.log("CHECK IF EXPRIRED in ... refresh_token_if_required")
-        //   const expired = Vue.prototype.pkce.isAccessTokenExpired()
-        //   if (expired) {
-        //     console.log("EXPRIRED in ... refresh_token_if_required")
-        //     const response = await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
-        //       .then(response => {
-        //         console.log(" finished: exchangeRefreshTokenForAccessToken")
-        //         if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
-        //           const jwt = Vue.prototype.pkce.state.accessToken.value
-        //           console.log("new XHR header set", jwt)
-        //           ApiService.setHeader(jwt)
-        //         }
-        //         LayoutEventBus.$emit('ReloadPayload')
-        //         store.dispatch("tokenRefreshEnds")
-        //         return true
-        //       })
-        //       .catch(error => {
-        //         console.log('errord ;', error)
-        //         // Promise.reject(error)
-        //         store.dispatch("tokenRefreshEnds")
-        //         Promise.reject(error)
-        //       })
-        //   }
-        // },
 
         initialize: async function () {
 
-          LayoutEventBus.$on('AfterLogout', data => {
-            this.enforce_reactivity += 1
-          })
-          LayoutEventBus.$on('ReloadPayload', data => {
-            this.enforce_reactivity += 1
+          LayoutEventBus.$on('AfterTokenChanged', jwt => {
+            this.jwt = jwt
           })
 
           const hasAuthCode = await Vue.prototype.pkce.isReturningFromAuthServer()
@@ -277,12 +231,14 @@ export default {
 
           const token = await Vue.prototype.pkce.getAccessToken()
 
-          this.enforce_reactivity += 1
+          // this.enforce_reactivity += 1
+          // this.jwt = Vue.prototype.pkce?.state?.accessToken?.value
 
-          // 1. One: technical stuff: replace token in axios
+          // 1. One: technical stuff: replace token in axios and in Vue.oauth.jwt
           // note: alteady authorized: but vue has not yet been notified. (no reactivity in properties of pkce module)
-          // console.log("oAUTH: token received => emit AfterTokenChanged", token.value)
           LayoutEventBus.$emit('AfterTokenChanged', token.token.value)
+          // 2. Update permissions 
+          LayoutEventBus.$emit('LoginStatusUpdate', token.token.value)
 
           if (hasAuthCode) {
             LayoutEventBus.$emit('AfterLogin')
@@ -292,3 +248,14 @@ export default {
     })
   }
 }
+
+/**
+ * AfterTokenChanged
+ * => after each token change
+ * => store token everywhere => xhr header / payload
+ * LoginStatusUpdate
+ * => after each token change
+ * => update permission /
+ * AfterLogin
+ * => only after login
+*/

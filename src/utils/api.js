@@ -66,11 +66,13 @@ export default {
 
   async monitorActivities(buffer) {
 
-    console.log("API monitorActivities")
+    console.log("@@@ API monitorActivities")
 
     // Only precheck token (if this is not an APP Exit Event)
     // TODO: monitor activity on app closing event?
     await Vue.prototype.oauth.refresh_token_if_required()
+
+    console.log("@@@ CONTINUE WITH MONITOR ACTIVITIES")
 
     // console.log("/api")
     /* Notify Resource Server about certain user activities in the client app. */

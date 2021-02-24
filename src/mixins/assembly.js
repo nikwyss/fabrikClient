@@ -56,7 +56,7 @@ export default {
           runtimeMutations.setStageID(null)
         } else {
           const stageID = this.assembly_sorted_stages[stageNr].stage.id
-          console.log("set stageID by stageNR", stageNr, stageID)
+          // console.log("set stageID by stageNR", stageNr, stageID)
           runtimeMutations.setStageID(stageID)
         }
       }
@@ -158,7 +158,7 @@ export default {
 
     // Catch all authentication status changes
     LayoutEventBus.$once('AssemblyLoaded', data => {
-      console.log("LayoutEventBus on AssemblyLoaded")
+      // console.log("LayoutEventBus on AssemblyLoaded")
       this.gotoDefaultStageTeaser()
     })
 

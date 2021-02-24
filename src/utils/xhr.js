@@ -234,15 +234,15 @@ const axiosErrorHandling = async function (error) {
       console.log('AXIOS: ReloginOnStatus403')
       error.response.status = 449
       if (Vue.prototype.pkce.isAuthorized()) {
-        Vue.prototype.refresh_token()
+        await Vue.prototype.refresh_token()
         if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
           error.config.retoken = true
           return (error.config)
         }
-        // // Refresh Token
+
+        // Refresh Token
         // store.dispatch("tokenRefreshStarts")
         // await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
-
         // if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
         //   const jwt = Vue.prototype.pkce.state.accessToken.value
         //   ApiService.setHeader(jwt)
@@ -266,6 +266,8 @@ const axiosErrorHandling = async function (error) {
   LayoutEventBus.$emit('showServiceError')
   return Promise.reject(error)
 }
+
+
 ApiService.mountAxiosInterceptor(axiosErrorHandling)
 
 LayoutEventBus.$on('AfterTokenChanged', jwt => {
@@ -276,11 +278,6 @@ LayoutEventBus.$on('AfterTokenChanged', jwt => {
   } else {
     ApiService.removeHeader()
   }
-
-  // NOTIFY EVERYONE, THAT TOKEN HAS CHANGED NOW!
-  // console.log("ApiService Header is updated => emit AfterAuthenticationStatusChanged", !!jwt)
-  // LayoutEventBus.$emit('AfterAuthenticationStatusChanged')
-
 })
 
 export { ApiService, ReloginOnStatus403, Allow400Status };
