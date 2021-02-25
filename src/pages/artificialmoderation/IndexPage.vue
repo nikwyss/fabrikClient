@@ -127,7 +127,7 @@ export default {
       if (this.oauth.authorized) {
         const salutation = this.$i18n.t(
           "index.am.salutation_for_authenticated",
-          { username: this.oauth.username }
+          { username: this.oauth.payload?.username }
         );
         return salutation;
       } else {
