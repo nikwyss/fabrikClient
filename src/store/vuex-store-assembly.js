@@ -5,13 +5,12 @@
 import Vue from 'vue'
 import { Router } from 'src/router'
 import api from 'src/utils/api'
-import constants from 'src/utils/constants'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { runtimeStore } from "src/store/runtime.store";
 import { date } from 'quasar'
 
 var state = {
-  monitors: {},
+  // monitors: {},
   assemblydata: {},
   randomSeed: null,
   stages: {}
@@ -140,7 +139,7 @@ const getters = {
 
   /** Which stage is  the next scheduled stage (if empty, no stages available or no scheduled stage available) */
   next_scheduled_stage: (state, getters) => {
-    console.log(">> next_scheduled_stage")
+    // console.log(">> next_scheduled_stage")
     // console.log(getters.assembly_sorted_stages)
     const stages = getters.assembly_sorted_stages
     if (!stages) {
@@ -380,20 +379,18 @@ const actions = {
     return (null)
   },
 
+  deleteAssemblyStore({ commit }) {
+    commit('deleteAssemblyStore')
+  },
+
   retrieveAssembly({ commit }, { assemblyIdentifier }) {
 
     // console.log('Retrieve assembly from resource server')
     api.retrieveAssembly(assemblyIdentifier)
       .then(
         response => {
-
-          // console.log('save retrieved assembly to cache.')
-          // console.log(assemblyIdentifier)
-          // console.log(response)
           const data = response.data
           commit('storeAssembly', { assemblyIdentifier, data })
-
-          // end loading
           console.log("EVENT: AssemblyLoaded: Assembly retrieved from Resource Server")
           LayoutEventBus.$emit('AssemblyLoaded')
           LayoutEventBus.$emit('hideLoading')
@@ -439,21 +436,40 @@ const mutations = {
 
   storeAssemblyObject(state, { assemblyIdentifier, assembly }) {
     // console.log(`Store assembly ${assemblyIdentifier} object`)
+    if (!state.assemblydata[assemblyIdentifier]) {
+      // happens when logout
+      return null
+    }
     Vue.set(state.assemblydata[assemblyIdentifier], 'assembly', assembly)
   },
   storeAssemblyProgression(state, { assemblyIdentifier, progression }) {
     // console.log(`Store assembly ${assemblyIdentifier} progressions`)
+    if (!state.assemblydata[assemblyIdentifier]) {
+      // happens when logout
+      return null
+    }
     Vue.set(state.assemblydata[assemblyIdentifier], 'progression', progression)
   },
   storeStageObject(state, { stageID, stage }) {
     // console.log(`Store stage ${stageID} object`)
+    if (!state.stages[stageID]) {
+      // happens when logout
+      return null
+    }
     Vue.set(state.stages[stageID], 'stage', stage)
   },
   storeStageProgression(state, { stageID, progression }) {
     // console.log(`Store stage ${stageID} progression`, progression)
+    if (!state.stages[stageID]) {
+      // happens when logout
+      return null
+    }
     Vue.set(state.stages[stageID], 'progression', progression)
+  },
+  deleteAssemblyStore(state) {
+    Vue.set(state, 'assemblydata', {})
+    Vue.set(state, 'stages', {})
   }
-
 }
 
 export const assemblystore = {

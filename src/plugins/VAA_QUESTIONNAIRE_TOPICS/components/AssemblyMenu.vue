@@ -106,7 +106,7 @@ export default {
   mixins: [VAAMixin],
   props: ['menuOffset'],
   components: { CustomQRouteTab },
-  data: function () {
+  data () {
     return {
       assemblyIdentifier: runtimeStore.assemblyIdentifier,
       currenttab: ""

@@ -9,7 +9,7 @@
       :ongoing="ongoing"
     >
 
-      <template v-if="IsDelegate && !oauth.incompleteProfile">
+      <template v-if="IsDelegate && oauth.authorized && !oauth.payload.userEmail">
         Bevor es los geht, müsssen Sie noch kurz beim Sekretariat vorbei. Dort wird noch eine Kontaktangabe von Ihnen benötigt.
       </template>
 

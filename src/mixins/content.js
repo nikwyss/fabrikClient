@@ -162,25 +162,27 @@ export default {
 
   },
 
-  mounted() {
+  // mounted() {
 
-    // when stage has been loaded already
-    if (this.routed_stage?.stage.contenttree_id && this.oauth.userid) {
-      this.$store.dispatch('contentstore/syncContenttree', {
-        assemblyIdentifier: runtimeStore.assemblyIdentifier,
-        contenttreeID: this.routed_stage.stage.contenttree_id,
-        oauthUserID: this.oauth.userid
-      })
-    } else {
-      // Stage is not yet loaded: so wait until it is...
-      LayoutEventBus.$once("EventStageLoaded", (stage) => {
-        // console.log(stage)
-        this.$store.dispatch('contentstore/syncContenttree', {
-          assemblyIdentifier: runtimeStore.assemblyIdentifier,
-          contenttreeID: stage.stage.contenttree_id,
-          oauthUserID: this.oauth.userid
-        })
-      })
-    }
-  }
+  //   // when stage has been loaded already
+  //   // if (this.routed_stage?.stage.contenttree_id && this.oauth.userid) {
+  //   //   console.log("SYNC CONTENTTREE IN CONTENT.js (1)")
+  //   //   this.$store.dispatch('contentstore/syncContenttree', {
+  //   //     assemblyIdentifier: runtimeStore.assemblyIdentifier,
+  //   //     contenttreeID: this.routed_stage.stage.contenttree_id,
+  //   //     oauthUserID: this.oauth.userid
+  //   //   })
+  //   // } else {
+  //   //   console.log("SYNC CONTENTTREE IN CONTENT.js (2)")
+  //   //   // Stage is not yet loaded: so wait until it is...
+  //   //   LayoutEventBus.$once("EventStageLoaded", (stage) => {
+  //   //     // console.log(stage)
+  //   //     this.$store.dispatch('contentstore/syncContenttree', {
+  //   //       assemblyIdentifier: runtimeStore.assemblyIdentifier,
+  //   //       contenttreeID: stage.stage.contenttree_id,
+  //   //       oauthUserID: this.oauth.userid
+  //   //     })
+  //   //   })
+  //   // }
+  // }
 }

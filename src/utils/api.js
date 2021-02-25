@@ -14,7 +14,6 @@ export default {
     if (!timeDownloaded) { return (false) }
     timeDownloaded = new Date(timeDownloaded)
     const expiringDate = date.addToDate(timeDownloaded, { minutes: parseInt(process.env.ENV_APISERVER_CACHE_EXPIRATION_MINUTES) })
-    // console.log(expiringDate)
     return (new Date(Date.now()) > expiringDate)
   },
 

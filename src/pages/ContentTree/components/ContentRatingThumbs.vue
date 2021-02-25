@@ -59,7 +59,7 @@ import RatingMixin from "../mixins/rating"
 export default {
   name: "ContentRatingThumbs",
   mixins: [RatingMixin],
-  data: function () {
+  data () {
     return {
       // TODO: do we need zero as starting value?
       progression_rating: 0,

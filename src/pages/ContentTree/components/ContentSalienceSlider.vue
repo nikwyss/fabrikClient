@@ -57,7 +57,7 @@ const { rgbToHex } = colors
 export default {
   name: "ContentSalienceSlider",
   mixins: [RatingMixin],
-  data: function() {
+  data() {
     return({
         apiTimer: null,
         min: 0,
@@ -121,12 +121,6 @@ export default {
 
     
     initSetSalience() {
-
-      // interrupt previoius saveSalience actions
-      // clearInterval(this.apiTimer)      
-      // Save salience with a 3 second lag. (To prevent high frequent api requests..)
-      // const apiCall = () => this.setSalience(this.progression_salience, true)
-      // this.apiTimer = setTimeout(apiCall, 3000)
 
       // INIT Salience Monitor
       const data = {

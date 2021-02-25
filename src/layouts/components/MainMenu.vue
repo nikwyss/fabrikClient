@@ -90,7 +90,7 @@
             </q-item>
 
             <q-item
-              @click="oauth.logout()"
+              @click="$root.logout()"
               clickable
               v-close-popup
             >
@@ -129,7 +129,7 @@ export default {
   components: {
       UserAvatar
   },
-  data: function() {
+  data () {
     return ({
       menu: [
         {
@@ -197,7 +197,7 @@ export default {
   methods: {
 
     ...mapActions({
-      gotoProfile: "publicprofilestore/gotoProfile",
+      gotoProfile: "publicprofilestore/gotoProfile"
     })
   }
 }

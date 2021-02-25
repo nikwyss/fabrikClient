@@ -89,7 +89,7 @@ export default {
   name: "ContentEditor",
   inject: ["QUASAR_TREE", "CONTENTTREE", "limitNodeTypes"],
 
-  data: function () {
+  data () {
     return {
       localmodel: {},
       error: false,

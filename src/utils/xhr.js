@@ -6,7 +6,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import { LayoutEventBus } from 'src/utils/eventbus'
-import store from 'src/store'
+import { oAuthEventBus } from "src/utils/VueOAuth2PKCE/eventbus"
 
 const HTTP_HEADER = 'Authorization'
 const RequestOrigin = 'ApiService'
@@ -37,7 +37,7 @@ const ApiService = {
   setHeader(token) {
 
     if (token) {
-      console.log("............NEW NEW new header jwt set: ", !!token, token.substring(token.length - 5))
+      console.log("............NEW NEW JWT TOKEN: ", !!token, token.substring(token.length - 5))
       axios.defaults.headers.common[HTTP_HEADER] = 'JWT ' + token
     } else {
       console.log("............Remove header jwt set: ", !!token)
@@ -186,7 +186,6 @@ const ApiService = {
 }
 
 
-
 // AXIOS  INTERCEPTOR
 /////////////////////////////////
 const axiosErrorHandling = async function (error) {
@@ -239,18 +238,6 @@ const axiosErrorHandling = async function (error) {
           error.config.retoken = true
           return (error.config)
         }
-
-        // Refresh Token
-        // store.dispatch("tokenRefreshStarts")
-        // await Vue.prototype.pkce.exchangeRefreshTokenForAccessToken()
-        // if (Vue.prototype.pkce.state && Vue.prototype.pkce.state.accessToken) {
-        //   const jwt = Vue.prototype.pkce.state.accessToken.value
-        //   ApiService.setHeader(jwt)
-        //   error.config.retoken = true
-        //   store.dispatch("tokenRefreshEnds")
-        //   return (error.config)
-        // }
-        // store.dispatch("tokenRefreshEnds")
       }
 
       // Token Refresh, seems not be possible / desired :-(
@@ -270,9 +257,7 @@ const axiosErrorHandling = async function (error) {
 
 ApiService.mountAxiosInterceptor(axiosErrorHandling)
 
-LayoutEventBus.$on('AfterTokenChanged', jwt => {
-  // SHOULD BE THE ONLY ONE Listener for this event!
-  console.log("SET TOKEN TO HEADER")
+oAuthEventBus.$on('TokenChanges', jwt => {
   if (jwt) {
     ApiService.setHeader(jwt)
   } else {

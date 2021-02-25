@@ -25,27 +25,16 @@ export default new Vuex.Store({
   state: {
     monitor_buffer: [],
     monitor_date: Date.now(),
-    ongoingTokenRefresh: false // dont send any api requests while this boolean is set to true
-  },
-
-  getters: {
-    isTokenRefreshOngoing: (state) => {
-      return (state.ongoingTokenRefresh)
-    }
   },
 
   actions: {
 
-    tokenRefreshStarts: ({ state, dispatch, commit }) => {
+    clearUserData: ({ state, dispatch, commit }) => {
       /* resets the counter to zero */
-      console.log("[start token refresh]")
-      commit('tokenRefreshStarts')
-    },
-
-    tokenRefreshEnds: ({ state, dispatch, commit }) => {
-      /* resets the counter to zero */
-      commit('tokenRefreshEnds')
-      console.log("[end token refresh]")
+      dispatch('monitorExit')
+      dispatch('publicprofilestore/deletePublicProfile', { commit })
+      dispatch('contentstore/deleteContentStore', { commit })
+      dispatch('assemblystore/deleteAssemblyStore', { commit })
     },
 
     monitorSetup: ({ state, dispatch, commit }) => {
@@ -54,16 +43,23 @@ export default new Vuex.Store({
       console.log("/setup ")
     },
 
+    monitorExit: ({ state, dispatch, commit }) => {
+      /* resets the counter to zero */
+      commit('monitor_reset', {})
+      const now = null
+      commit('monitor_update_date', { now })
+    },
+
     monitorReset: ({ state, dispatch, commit }) => {
       /* resets the counter to zero */
       console.log('API Monitored. => Clear Buffer')
-      commit('reset_monitors')
+      commit('monitor_reset', {})
     },
 
 
     /** Fire events - in any cases */
     monitorFire: ({ state, dispatch, commit }, { eventString, data }) => {
-      console.log("/fire ", eventString)
+      // console.log("/fire ", eventString)
 
       // add newest event to the event buffer
       if (eventString) {
@@ -71,20 +67,22 @@ export default new Vuex.Store({
         commit('monitor_add', { eventString, data })
       }
 
-      console.log("/" + state.monitor_buffer?.length)
+      // console.log("/" + state.monitor_buffer?.length)
 
       if (!state.monitor_buffer || state.monitor_buffer.length == 0) {
         return (null)
       }
 
       // Send API Monitor
-      console.log("/q")
-      // commit('reset_monitors')
+      // console.log("/f")
+
+      // update last-update date;-)
+      const now = new Date()
+      commit('monitor_update_date', { now })
 
       api.monitorActivities(state.monitor_buffer).then(data => {
         if (!data.ok) { return (null) }
         console.log("ACTION MONITORED: OK!")
-
 
         // Write newest data to the store!
         dispatch('updateStore', { data: data.response })
@@ -92,10 +90,8 @@ export default new Vuex.Store({
         // Dealing with Data response)
         // Most monitors do not give a response. However, when progression entry has just been
         // created or significantly modified, then progression entry is returned.
-        console.log('API Monitored. => Buffer cleared')
-        commit('reset_monitors')
-
-
+        // console.log('API Monitored. => Buffer cleared')
+        commit('monitor_reset', { now })
       })
     },
 
@@ -108,21 +104,19 @@ export default new Vuex.Store({
         // empty event is possible => only send buffered events to api (if time is ready)
         commit('monitor_add', { eventString, data })
       }
-      // console.log("/buffer")
       if (!state.monitor_buffer || state.monitor_buffer.length == 0) {
         return (null)
       }
 
-      // Fire events
-      // Push Buffered Monitors (if time is ready)
       // Check if intervall is passed => so buffer events are fiired!
+      // console.log("/t")
       const now = Date.now()
       if (getDateDiff(now, state.monitor_date, 'seconds') < (parseInt(process.env.ENV_APISERVER_MONITOR_INTERVAL_SECONDS) * 2)) {
         return (null)
       }
 
-      // Intervall does not work anymore.
       // manually fiire the monitor log
+      // console.log("/f")
       data = {}
       eventString = null
       dispatch('monitorFire', { eventString, data })
@@ -165,14 +159,6 @@ export default new Vuex.Store({
 
   mutations: {
 
-    tokenRefreshEnds(state) {
-      Vue.set(state, 'ongoingTokenRefresh', false)
-    },
-
-    tokenRefreshStarts(state) {
-      Vue.set(state, 'ongoingTokenRefresh', true)
-    },
-
     monitor_setup(state) {
       const now = new Date()
       Vue.set(state, 'monitor_date', now)
@@ -185,12 +171,27 @@ export default new Vuex.Store({
       Vue.set(state, 'monitor_buffer', buffer)
     },
 
-    reset_monitors(state) {
-      const now = new Date()
-      // Clear buffer
-      Vue.set(state, 'monitor_buffer', [])
-      // Update last timestamp date...
+    monitor_update_date(state, { now }) {
       Vue.set(state, 'monitor_date', now)
+    },
+
+    /** Delete all  buffered events [ before the date transmitted...] */
+    monitor_reset(state, { now }) {
+      if (!now) {
+        now = new Date()
+      }
+
+      if (!state.monitor_buffer) {
+        return null
+      }
+
+      // FILTER ONLY THE ONES AFTER THE GIVEN DATE
+      // console.log("reset buffer")
+      const newbuffer = state.monitor_buffer.filter(event => {
+        return getDateDiff(event.date, now, 'seconds') > 0
+      })
+      Vue.set(state, 'monitor_date', now)
+      Vue.set(state, 'monitor_buffer', newbuffer)
     }
   }
 })

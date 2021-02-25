@@ -105,14 +105,17 @@ const actions = {
     commit('update_expanded_branches', { contenttreeID, startingContentID, expanded });
   },
 
+  deleteContentStore({ commit }) {
+    commit('deleteContentStore');
+  },
+
   syncContenttree: ({ state, dispatch, localgetters, rootState, rootGetters }, { assemblyIdentifier, contenttreeID, oauthUserID }) => {
     // console.log(` sync contenttree ${contenttreeID}`)
+    // console.trace()
 
     // wrong user? and renew cache all x- minutes!
     const wrongUser = oauthUserID != state.contenttree[contenttreeID]?.access_sub
     if (wrongUser) {
-      // delete the full contenttree store
-      console.log("WRONG user...")
       Vue.set(state, 'contenttree', {})
     }
 
@@ -243,6 +246,11 @@ const mutations = {
     progression.salienced = true
     Vue.set(state.contenttree[contenttreeID].entries[contentID], 'progression', progression)
     // console.log("new salience stored: ", rating)
+  },
+
+  deleteContentStore(state) {
+    Vue.set(state, 'contenttree', {})
+    Vue.set(state, 'expanded_branches', {})
   }
 }
 

@@ -4,7 +4,7 @@ import { runtimeStore } from "src/store/runtime.store"
 
 
 export default {
-  data: function () {
+  data() {
     return {
       sections: [
         'INTRO',

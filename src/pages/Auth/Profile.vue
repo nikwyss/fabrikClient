@@ -102,7 +102,7 @@ export default {
     destination_route: Object,
   },
 
-  data: function () {
+  data () {
     return {
       profile: {
         pseudonym: "",

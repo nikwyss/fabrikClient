@@ -72,7 +72,7 @@ import i18nPluginMixin from "./i18n"
 export default {
     name: 'TextsheetDefault',
     mixins: [ContentTreeMixin, i18nPluginMixin],
-    data: function() {
+    data () {
         return {
             TEXTTYPES: ['PARAGRAPH', 'SECTION', 'SUBSECTION']
         }

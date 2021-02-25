@@ -79,22 +79,23 @@ const actions = {
     // console.log(` sync public profile`, oauthUserEmail)
 
     if (!oauthUserID) {
-      // Not logged in.
-      // console.log("NOT LOGGED IN")
-      // console.assert(!state.publicProfile)
+      // Not logged in. DELETE ALL
+      dispatch('deletePublicProfile')
       return (null)
     }
 
     if (!state.publicProfile) {
-      // no cached version exists: load the data from resource server...
       dispatch('retrievePublicProfile', { oauthUserID, oauthUserEmail })
-      // console.log(' not yet fetched...')
       return (null)
     }
 
     // wrong user? and renew cache all x- minutes!
     const wrongUser = oauthUserID != state.publicProfile.access_sub
-    const expired = api.expiredCacheDate(state.publicProfile.access_date)
+    if (wrongUser) {
+      dispatch('deletePublicProfile')
+    }
+
+    const expired = api.expiredCacheDate(state.publicProfile?.access_date)
     if (expired || wrongUser) {
       console.log(' Public Profile not in sync  or wrong user...')
       dispatch('retrievePublicProfile', { oauthUserID, oauthUserEmail })
@@ -109,7 +110,7 @@ const actions = {
     // console.log(` check public profile requirements`, oauthUserEmail)
 
     // CHECK Profile requierments
-    console.log("CHECK STATE PROFILE")
+    // console.log("CHECK STATE PROFILE")
     if (!oauthUserEmail) {
       // console.log(state.publicProfile)
       dispatch('gotoProfile')
@@ -122,7 +123,6 @@ const actions = {
     // console.log(` goto public profile`)
 
     // CHECK Profile requierments
-
     const destination_route = Router.currentRouteObject();
     console.log(destination_route)
 
@@ -134,10 +134,11 @@ const actions = {
         params: { destination_route: destination_route },
       });
     }
-
-    return (null)
   },
 
+  deletePublicProfile({ commit }) {
+    commit('storePublicProfile', {})
+  },
 
   retrievePublicProfile({ commit, dispatch }, { oauthUserID, oauthUserEmail }) {
 

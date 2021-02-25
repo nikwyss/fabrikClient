@@ -183,7 +183,6 @@ export default {
     } else {
       // Stage is not yet loaded: so wait until it is...
       LayoutEventBus.$once("EventStageLoaded", (stage) => {
-        // console.log(stage)
         this.$store.dispatch('contentstore/syncContenttree', {
           assemblyIdentifier: runtimeStore.assemblyIdentifier,
           contenttreeID: stage.stage.contenttree_id,

@@ -45,7 +45,7 @@ export default {
   props: ['item', 'standalone', 'heading_number', 'comments', 'discussionBlockLabel'],
   inject: ['openIndex', 'CONTENTTREE'],
   components: { DefaultDiscussionBlock, ContentToolbar},
-  data: function() {
+  data () {
     return({
         // hover_discussion: false, // TODO: this?
         artificialmoderationComponents: {

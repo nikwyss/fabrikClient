@@ -53,7 +53,7 @@ export default {
   name: 'DefaultDiscussionBlock',
   components: { ComponentContentTree },
   props: ['artificialmoderationComponents', 'item' , 'comments', 'startingNode', 'discussionBlockLabel'],
-  data: function() {
+  data() {
     return({
         show_discussion: false
     })

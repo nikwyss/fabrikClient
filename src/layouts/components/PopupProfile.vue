@@ -68,7 +68,7 @@ export default {
   name: "PopupProfile",
   // inject: ['QUASAR_TREE', 'CONTENTTREE', 'limitNodeTypes'],
 
-  data: function () {
+  data () {
     return {
       profile: {
         last_name: "1", //this.oauth.payload.last_name,

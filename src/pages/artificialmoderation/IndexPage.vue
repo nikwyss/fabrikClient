@@ -12,11 +12,11 @@
     >
       {{$t('index.am.general_greeting', {salutation})}}
     </ArtificialModerator>
-
+    
     <!-- RIGHT SIDE (NOT YET LOGGED IN):  -->
     <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
     <ArtificialModerator
-      v-if="oauth.authorized === false && IsThereAnAssemblyOngoing"
+      v-if="!oauth.authorized && IsThereAnAssemblyOngoing"
       alignment="right"
       role="2"
       i18n_path_prefix="index"
@@ -32,6 +32,7 @@
         </Button>
       </template>
     </ArtificialModerator>
+
     <!-- RIGHT SIDE (AUTHENTICATED DELEGATES):  -->
     <ArtificialModerator
       v-else-if="oauth.authorized === true && IsUserDelegateOfOngoingAssembly === true"
@@ -53,7 +54,7 @@
 
     <!-- RIGHT SIDE (ONLY PUBLIC STATE ASSEMBLIES):  -->
     <ArtificialModerator
-      v-else-if="!oauth.ongoing && IsThereAnAssemblyInPublicState === true"
+      v-else-if="IsThereAnAssemblyInPublicState === true"
       alignment="right"
       role="2"
       i18n_path_prefix="index"
@@ -78,7 +79,7 @@
       alignment="right"
       role="2"
       i18n_path_prefix="index"
-      v-else-if="!oauth.ongoing && IsThereNothingGoingOn === true"
+      v-else-if="IsThereNothingGoingOn === true"
       :ongoing_request="published_assemblies === null"
     >
       {{$t('index.am.factory_holiday')}}
@@ -88,7 +89,7 @@
     <ArtificialModerator
       alignment="right"
       role="2"
-      v-else-if="!oauth.ongoing"
+      v-else
       i18n_path_prefix="index"
       :ongoing_request="published_assemblies === null"
     >
@@ -106,16 +107,6 @@ export default {
   name: "ArtificialModeratorIndexPage",
   components: { ArtificialModerator, Button },
   computed: {
-
-    // ...mapGetters({
-    //   published_assemblies: 'publicindexstore/published_assemblies',
-    //   ongoing_assemblies: 'publicindexstore/ongoing_assemblies',
-    //   // getAssembly: 'publicindexstore/getAssembly',
-    //   // UsersDelegateAssemblies: 'UsersDelegateAssemblies',
-    //   // IsThereAnAssemblyInPublicState: 'publicindexstore/IsThereAnAssemblyInPublicState',
-    //   // IsThereAnAssemblyOngoing: 'publicindexstore/IsThereAnAssemblyOngoing',
-    //   // IsThereNothingGoingOn: 'publicindexstore/IsThereNothingGoingOn'
-    // }),
 
     ...mapGetters(
      'publicindexstore',

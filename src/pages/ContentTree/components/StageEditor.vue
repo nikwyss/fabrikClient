@@ -297,7 +297,7 @@ export default {
     },
   },
 
-  data: function () {
+  data () {
     return {
       show_date_start_selector: !!this.model["date_start"],
       show_date_end_selector: !!this.model["date_end"],

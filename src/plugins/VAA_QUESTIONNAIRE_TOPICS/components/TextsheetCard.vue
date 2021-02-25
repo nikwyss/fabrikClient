@@ -40,7 +40,7 @@ export default {
   props: ['item', 'standalone', 'heading_number', 'comments', 'discussionBlockLabel'],
   // questions added for debigging : is it still usefukk?
   components: { ContentRatingThumbs, ContentEditor, ContentToolbar, DefaultDiscussionBlock},
-  data: function() {
+  data () {
       return({
                 show_discussion: false,
           // hover_discussion: false, // TODO: this?

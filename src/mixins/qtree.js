@@ -15,7 +15,7 @@ export default {
 
     // non-reactive variables => access it by this.$options.varname..
     temp_content_object: null,
-    data: function () {
+    data() {
         return {
             expanded: null,
             filter: '',

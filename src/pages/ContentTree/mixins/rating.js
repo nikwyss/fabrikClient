@@ -3,7 +3,7 @@ import { mapActions } from "vuex"
 export default {
   name: "ContentRatingMixin",
   props: ["content"],
-  data: function () {
+  data() {
     return {
       progression_rating: null,
       progression_salience: null,
