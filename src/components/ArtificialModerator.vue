@@ -56,7 +56,10 @@
 
       <slot name="actions"></slot>
     </div>
-
+    <span
+      v-if="!slim"
+      class="q-mb-lg"
+    >&nbsp;</span>
   </span>
 </template>
 
@@ -79,6 +82,7 @@ export default {
     "ongoing_request",
     "randomSeed",
     "role",
+    "slim",
     "i18n_path_prefix",
     "amGroup",
   ],

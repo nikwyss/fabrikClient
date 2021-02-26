@@ -1,114 +1,233 @@
 <template>
-    <q-page class="doc_content">
 
-        <div v-if="assembly && routed_stage" >
+  <q-page class="doc_content">
 
-            <!-- DISABLED WARNING -->
-            <q-banner dense inline-actions class="text-white bg-red" v-if="routed_stage.stage.disabled" style="padding:2em; margin-bottom:1em;">
-            This Stage is disabled and, therefore, not visible for users.
-            </q-banner>
+    <!-- <h2>{{routed_stage.stage.title}}</h2> -->
 
-            <!-- EDIT CONTENT -->
-            <ComponentStageEditor 
-                v-if="IsManager"
-                :assembly_id="assembly.id"
-                :model="routed_stage" />
+    <!-- DISABLED WARNING -->
+    <q-banner
+      dense
+      inline-actions
+      class="text-white bg-red"
+      v-if="routed_stage.stage.disabled"
+      style="padding:2em; margin-bottom:1em;"
+    >
+      This Stage is disabled and, therefore, not visible for users.
+    </q-banner>
 
+    <!-- EDIT CONTENT -->
+    <ComponentStageEditor
+      v-if="IsManager"
+      :assembly_id="assembly.id"
+      :model="routed_stage"
+    />
+
+    <div
+      v-if="routed_stage && contenttree"
+      class="q-pt-xl text-vessel"
+    >
+
+      <div v-if="!salienceCompleted">
+        <ArtificialModeratorTopicsTop align="right" />
+      </div>
+
+      <h2>Themengewichtung</h2><a name="SALIENCE" />
+      <q-list bordered>
+
+        <span
+          v-for="(node, key)  in contenttree.structure.children"
+          :key="`L1${node.id}`"
+        >
+
+          <q-expansion-item
+            :group="salienceCompleted ? 'accordeon' : `group${node.id}`"
+            icon="mdi-sign-direction"
+            :default-opened="!isSalienced(contents[node.id])"
+            :caption="isSalienced(contents[node.id]) ? `Ihre Bewertung ${contents[node.id].progression.salience}` : `Unbewertet`"
+            header-class="text-primary"
+          >
+            <template
+              template
+              v-slot:header
+            >
+              <q-item-section avatar>
+                <q-knob
+                  disable
+                  show-value
+                  v-model="contents[node.id].progression.salience"
+                  style="color:black"
+                  :thickness="0.4"
+                  center-color="vaatopic-light"
+                  color="vaatopic"
+                  track-color="white"
+                  class="text-body q-ma-md"
+                >
+                  {{contents[node.id].progression.salience}}
+                </q-knob>
+              </q-item-section>
+
+              <q-item-section>
+                {{contents[node.id].content.title}}
+              </q-item-section>
+            </template>
+
+            <q-card>
+              <q-card-section>
+                <ContentSalienceSlider :content="contents[node.id]" />
+              </q-card-section>
+            </q-card>
+          </q-expansion-item>
+
+          <q-separator />
+        </span>
+
+      </q-list>
+
+      <div class="row justify-between">
+        <div class="seperator large">
+          <q-icon name="mdi-star-four-points-outline" />
+        </div>
+      </div>
+
+      <!-- RESULT / STATS -->
+      <div v-if="salienceCompleted">
+
+        <h2>Die Themen im Vergleich</h2><a name="CHARTS" />
+
+        Sie sehen hier nun ihre persönliche Prioritätenliste der Wahlthemen.
+        <br><br>
+        <q-tabs
+          v-model="chartType"
+          narrow-indicator
+          dense
+          align="justify"
+          class="text-primary"
+        >
+          <q-tab
+            :ripple="false"
+            name="chartBar"
+            label="Balkendiagram"
+          />
+          <q-tab
+            :ripple="false"
+            name="chartRadar"
+            label="Smartspider"
+          />
+        </q-tabs>
+        <ChartBar
+          v-if="chartType=='chartBar'"
+          :personalData="chartBarPersonalData"
+          :labels="chartBarLabels"
+          color="rgb(224, 202, 60, 0.45)"
+        />
+        <ChartRadar
+          v-if="chartType=='chartRadar'"
+          :personalData="chartBarPersonalData"
+          :labels="chartBarLabels"
+          color="rgb(224, 202, 60, 0.45)"
+        />
+
+        <ArtificialModeratorTopicsCharts
+          :ongoing="!routed_stage || oauth.authorized === null"
+          align="right"
+        />
+      </div>
+
+      <div v-if="salienceCompleted">
+
+        <div class="row justify-between">
+          <div class="seperator large">
+            <q-icon name="mdi-star-four-points-outline" />
+          </div>
         </div>
 
+        <h2>Forum</h2><a name="FORUM" />
+        <ComponentContentTree />
+      </div>
 
-        <div class="q-pt-xl text-vessel" v-if="routed_stage && contenttree" >
+      <div v-if="salienceCompleted">
 
-        <h2>{{routed_stage.stage.title}}</h2>
-
-
-        
-        <ArtificialModeratorTopicsTop align="left" />
-
-
-        <!-- <p class="text-body1">{{routed_stage.stage.info}}</p> -->
-
-  
-
-         <!-- TOPIC RATING -->
-         <div class="row justify-between" v-for="(nodeL1, keyL1)  in contenttree.structure.children"
-                    :key="`L1${nodeL1.id}`">
-
-            <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
-
-            <TextsheetCard 
-                :level="1"
-                :discussionBlockLabel="`Forum zum Thema '${contenttree.entries[nodeL1.id].content.title}'`"
-                :comments="filter_entries(nodeL1.children, ['COMMENT', 'QUESTION'])"
-                :heading_number="(keyL1+1)"
-                :item="contenttree.entries[nodeL1.id]"/>
-
-            <!-- RATING -->
-            <ContentSalienceSlider :content="contenttree.entries[nodeL1.id]" />
+        <div class="row justify-between">
+          <div class="seperator large">
+            <q-icon name="mdi-star-four-points-outline" />
+          </div>
         </div>
-        
 
+        <h2>Neue Themen vorschlagen</h2><a name="MODERATION" />
 
-         <div class="row justify-between">
-                <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
-         </div>
+        <ArtificialModeratorTopicsBottom
+          :ongoing="!routed_stage || oauth.authorized === null"
+          align="right"
+        />
 
+        Sind ausser Ihrer Sicht noch nicht alle Themen abgedeckt. Gibt es etwas aus Ihrer Sicht, was nicht in eines der Themen passt? Folgende Ergänzungen wurden von anderen Teilnehmenden bereits vorgeschlagen.
+      </div>
 
-        <ArtificialModeratorTopicsBottom 
-        :ongoing="!routed_stage || oauth.authorized === null" align="left" />
-
-
-        <!-- RESULT -->
-        <div v-if="salienceCompleted">
-            <!-- <h2>Resultat</h2> -->
-
-
-            <div class="row justify-between q-pt-xl">
-                <ChartBar :personalData="chartBarPersonalData" :labels="chartBarLabels" />
-            </div>
-
-        </div>
     </div>
-
-    </q-page>
+  </q-page>
 </template>
 
 
 <script>
-import ContentTreeMixin from 'src/mixins/contenttree'
-import ComponentStageEditor from 'src/pages/ContentTree/components/StageEditor';
-import TextsheetCard from './components/TextsheetCard';
-import ContentSalienceSlider from 'src/pages/ContentTree/components/ContentSalienceSlider';
-import ChartBar from 'src/components/charts/ChartBar';
-import ArtificialModeratorTopicsTop from './artificialmoderation/TopicsTop'
-import ArtificialModeratorTopicsBottom from './artificialmoderation/TopicsBottom'
+import ContentTreeMixin from "src/mixins/contenttree";
+import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
+import TextsheetCard from "./components/TextsheetCard";
+import ContentSalienceSlider from "src/pages/ContentTree/components/ContentSalienceSlider";
+import ChartBar from "src/components/charts/ChartBar";
+import ChartRadar from "src/components/charts/ChartRadar";
+import ArtificialModeratorTopicsTop from "./artificialmoderation/TopicsTop";
+import ArtificialModeratorTopicsBottom from "./artificialmoderation/TopicsBottom";
+import ArtificialModeratorTopicsCharts from "./artificialmoderation/TopicsCharts";
 
+import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDiscussionBlock";
+import ComponentContentTree from "src/pages/ContentTree/components/ContentTree";
 
 export default {
-    name: 'VAATopics',
-    mixins: [ContentTreeMixin],
-    components: {
-        ComponentStageEditor,
-        TextsheetCard,
-        ContentSalienceSlider,
-        ChartBar,
-        ArtificialModeratorTopicsTop,
-        ArtificialModeratorTopicsBottom
-    },
-    computed: {
-        
+  name: "VAATopics",
+  mixins: [ContentTreeMixin],
+  components: {
+    ComponentStageEditor,
+    TextsheetCard,
+    ContentSalienceSlider,
+    DefaultDiscussionBlock,
+    ComponentContentTree,
+    ChartBar,
+    ChartRadar,
+    ArtificialModeratorTopicsTop,
+    ArtificialModeratorTopicsCharts,
+    ArtificialModeratorTopicsBottom,
+  },
+  data() {
+    return {
+      chartType: "chartBar",
+      show_discussion: true,
+      artificialmoderationComponents: {
+        ContentTreeIndex: () =>
+          import(
+            "src/pages/ContentTree/artificialmoderation/ArtificialModeratorDefaultContentTreeIndex.vue"
+          ),
+      },
+    };
+  },
 
-        sortedChartEntries() {
-            const children = this.contenttree.structure.children
-            const entries = Object.values(children.map(child => this.contenttree.entries[child.id]))
-            return entries.sort((a, b) => b.progression.salience - a.progression.salience)
-        },
-        chartBarPersonalData() {
-            return this.sortedChartEntries.map(entry => entry.progression?.salience)
-        },
-        chartBarLabels() {
-            return this.sortedChartEntries.map(entry => entry.content?.title)
-        }
-    }
-}
+  computed: {
+    sortedChartEntries() {
+      const children = this.contenttree.structure.children;
+      const entries = Object.values(
+        children.map((child) => this.contenttree.entries[child.id])
+      );
+      return entries.sort(
+        (a, b) => b.progression.salience - a.progression.salience
+      );
+    },
+    chartBarPersonalData() {
+      return this.sortedChartEntries.map(
+        (entry) => entry.progression?.salience
+      );
+    },
+    chartBarLabels() {
+      return this.sortedChartEntries.map((entry) => entry.content?.title);
+    },
+  },
+};
 </script>

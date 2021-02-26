@@ -1,7 +1,9 @@
 <template>
   <div v-if="CONTENTTREE.contenttree">
+
       <div align="right">
-        <q-btn v-if="!!item.content.text" 
+        <q-btn 
+          v-if="!!item.content" 
           flat
           align="right"
           @click="toggleDiscussion"

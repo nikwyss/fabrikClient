@@ -3,18 +3,18 @@
 
     <!-- RIGHT SIDE:  -->
     <!-- <div align="right"> -->
-    <ArtificialModerator alignment="right" role="1" amGroup='textsheetPage' :ongoing="!STAGE.routed_stage">
+    <ArtificialModerator alignment="left" role="1" amGroup='textsheetPage' :ongoing="!STAGE.routed_stage">
 
         <template v-if="!CONTENTTREE.salienceCompleted">
             Bitte bewerten Sie alle Themen. Dann können wir weiterfahren!
         </template>
 
         <template v-else-if="CONTENTTREE.salienceCompleted">
-            Sie sehen hier nun ihre persönliche Prioritätenliste der Wahlthemen. Sind sie damit vorerst mal einverstanden? 
+            Sie sehen hier nun ihre persönliche Prioritätenliste der Wahlthemen. Sind sie mit Ihrer Priorisierung vorerst mal einverstanden? 
         </template>
 
         <template  v-slot:actions>
-        <q-chip v-if="CONTENTTREE.salienceCompleted" icon="mdi-arrow-left" clickable 
+        <q-chip v-if="CONTENTTREE.salienceCompleted" icon="mdi-arrow-right" clickable 
                 @click="gotoIndexAndMoveOn">
             Ja, wir können weiterfahren!
         </q-chip>

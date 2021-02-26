@@ -220,7 +220,6 @@ const mutations = {
     progression.rating = rating
     progression.rated = true
     Vue.set(state.contenttree[contenttreeID].entries[contentID], 'progression', progression)
-    // console.log("new rating stored: ", rating)
   },
 
   update_salience(state, { contenttreeID, contentID, salience }) {

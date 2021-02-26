@@ -1,74 +1,64 @@
 <template>
 
  <!-- :style="{'background-color': backgroundColor}" -->
-  <div class="q-pa-md full-width" :class="noneResponse ? 'bg-orange-4' : 'bg-grey-1'">
-<!-- {{oauth.userid}} {{ progression_salience}} -->
-    <!-- <q-badge color="secondary">
-    </q-badge> -->
+ <!-- // ContentSalienceSlider -->
+  <div class="q-pa-md full-width" :class="noneResponse ? 'bg-orange-4' : ''">
+
       Wie wichtig ist Ihnen dieses Thema? Bitte verschieben Sie den Regler.
 
     <q-list dense color="orange">
 
-
       <q-separator inset spaced />
 
       <q-item>
-        <q-item-section side>
-          <!-- <q-icon name="volume_down" /> -->
-        </q-item-section>
-        <q-item-section>
-          <!-- `rgb(${(100 - percent) *2.56}, ${percent *2.56},0)`} -->
-    <q-slider
-      v-model="value"
-      :min="min"
-      :max="max"
-      @change="initSetSalience"
-      label
-      label-always
-      :label-value="getSlideLabel"
-      :style="{color: getSlideColor}"
-    />
-      <!-- :label-value="model + 'px'" -->
-      <!-- @input.capture="getSlideLabel(progression_salience)" -->
+        <q-item-section side></q-item-section>
 
+        <q-item-section>
+          <q-slider
+            v-model="value"
+            :min="min"
+            :max="max"
+            @change="initSet"
+            label
+            label-always
+            :label-value="getSlideLabel"
+            :style="{color: getSlideColor}"
+          />
         </q-item-section>
-        <q-item-section side>
-          <!-- <q-icon name="mdi-volume_up" /> -->
-        </q-item-section>
+
+        <q-item-section side></q-item-section>
+
       </q-item>
 
       <q-separator inset spaced />
 
     </q-list>
-
   </div>
 
-  
-        <!-- <q-tooltip>{{$t('contenttree.salience.1')}}</q-tooltip> -->
 </template>
 
 <script>
-import RatingMixin from "../mixins/rating"
 import { colors } from 'quasar'
+import { mapActions } from "vuex"
 import constants from 'src/utils/constants'
 
 const { rgbToHex } = colors
 
 export default {
   name: "ContentSalienceSlider",
-  mixins: [RatingMixin],
+  props: ["content"],
   data() {
     return({
-        apiTimer: null,
-        min: 0,
-        max: 100,
-        scaleLabel: [
-          'Unwichtig',
-          'Eher unwichtig',
-          'Mittelmässsig',
-          'Eher wichtig',
-          'Sehr wichtig'
-        ],
+      progression_salience: null,
+      min: 0,
+      max: 100,
+      scaleLabel: [
+        'Unwichtig',
+        'Eher unwichtig',
+        'Mittelmässsig',
+        'Eher wichtig',
+        'Sehr wichtig'
+      ],
     })
   },
 
@@ -76,7 +66,7 @@ export default {
 
     value: {
       get: function() {
-          return this.noneResponse ? 0 : this.progression_salience
+          return this.noneResponse ? 50 : this.progression_salience
       },        
       set: function (value) { 
           this.progression_salience = value
@@ -104,14 +94,20 @@ export default {
         return "grey"
       }
 
+      // const color = rgbToHex({
+      //   b: Math.round(this.scale100*2.5),
+      //   g: 202,
+      //   r: 60,
+      // })
+
       const color = rgbToHex({
-        b: Math.round(this.scale100*2.55),
-        g: 50,
-        r: 50,
+        r: Math.round(this.scale100*2.24),
+        g: Math.round(this.scale100*2.02),
+        b: 60,
       })
       return color
     },
-
+// rgb(224, 202, 60, 0.25)
     noneResponse() {
       return this.progression_salience === null || this.progression_salience === undefined
     }
@@ -119,8 +115,7 @@ export default {
 
   methods: {
 
-    
-    initSetSalience() {
+    initSet() {
 
       // INIT Salience Monitor
       const data = {
@@ -129,13 +124,21 @@ export default {
       }
       this.$root.monitorLog(constants.MONITOR_SET_SALIENCE, data)
 
-
       // immediatly update saliences in vuex store (=> allows to update the dynamically generated charts)
-      console.log("update local storage => salience")
       this.update_salience({
-        contenttreeID: this.content.content.contenttree_id, 
-        contentID: this.content.content.id, 
-        salience: this.progression_salience })
+        contenttreeID: this.content.content.contenttree_id,
+        contentID: this.content.content.id,
+        salience: this.progression_salience
+      })
+    },
+
+    ...mapActions('contentstore', ['update_salience'])
+
+  },
+
+  mounted: function () {
+    if (this.content && this.content.progression) {
+      this.progression_salience = this.content.progression.salience
     }
   }
 }

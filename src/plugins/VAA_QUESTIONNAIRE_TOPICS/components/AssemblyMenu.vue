@@ -34,7 +34,7 @@
     <CustomQRouteTab
       name="showcase"
       class="trennbar"
-      icon="mdi-eye-outline"
+      icon="mdi-sign-direction"
       v-if="stages_by_section[1]"
       :to="{
         name: 'VAA_QUESTIONNAIRE_TOPICS',

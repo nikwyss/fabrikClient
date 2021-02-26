@@ -14,9 +14,7 @@
         </transition>
       </div>
 
-
     <div align="center">
-
       <ArtificialModeratorIndexPage />
     </div>
   </q-page>
@@ -26,7 +24,6 @@
 import Vue from 'vue'
 import ArtificialModeratorIndexPage from "./artificialmoderation/IndexPage"
 import PublicMixin from "src/mixins/publicIndex"
-// import {mapGetters} from 'vuex'
 
 export default Vue.extend({
   name: 'PageIndex',

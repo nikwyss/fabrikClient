@@ -1,5 +1,5 @@
 <style scoped>
-.transitionlogo-enter,
+/* .transitionlogo-enter,
 .transitionlogo-leave-to {
   height: 40px;
   opacity: 0;
@@ -14,7 +14,7 @@
 .transitionlogo-enter-active,
 .transitionlogo-leave-active {
   transition: all 0.5s;
-}
+} */
 </style>
 
 <template>

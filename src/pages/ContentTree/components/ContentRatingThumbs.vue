@@ -1,16 +1,18 @@
 <template>
+<span>
+
   <q-btn-toggle
     stack
     flat
     padding="0px"
     class="q-pa-none q-ma-none"
     color="brown"
-    :value="progression_rating"
-    @input.capture="setRating"
+    v-model="progression_rating"
+    @input.capture="initSet"
     :options="[
-          {value: 1, slot: 'one', toggleColor:'red', textColor:'grey-5'},
-          {value: 2, slot: 'two', toggleColor:'orange', textColor:'grey-5'},
-          {value: 3, slot: 'three', toggleColor:'green', textColor:'grey-5'}
+          {value: 0, slot: 'one', toggleColor:'red', textColor:'grey-5'},
+          {value: 50, slot: 'two', toggleColor:'orange', textColor:'grey-5'},
+          {value: 100, slot: 'three', toggleColor:'green', textColor:'grey-5'}
         ]"
   >
     <template v-slot:one>
@@ -51,20 +53,55 @@
       </q-icon>
     </template>
   </q-btn-toggle>
+</span>
 </template>
 
 <script>
-import RatingMixin from "../mixins/rating"
+import { mapActions } from "vuex"
+import constants from 'src/utils/constants'
 
 export default {
   name: "ContentRatingThumbs",
-  mixins: [RatingMixin],
+  props: ["content"],
   data () {
     return {
       // TODO: do we need zero as starting value?
-      progression_rating: 0,
+      progression_rating: 50,
+    }
+  },
 
-    };
+  computed: {
+    noneResponse() {
+      return this.progression_rating === null || this.progression_rating === undefined
+    }
+  },
+
+  methods: {
+
+    initSet() {
+      const data = {
+        contentID: this.content.content.id,
+        rating: this.progression_rating
+      }
+      this.$root.monitorLog(constants.MONITOR_SET_RATING, data)
+
+      // immediatly update saliences in vuex store (=> allows to update the dynamically generated charts)
+      // console.log("update local storage => rating")
+      this.update_rating({
+        contenttreeID: this.content.content.contenttree_id,
+        contentID: this.content.content.id,
+        rating: this.progression_rating
+      })
+    },
+
+    ...mapActions('contentstore', ['update_rating'])
+  },
+  
+  mounted: function () {
+    if (this.content && this.content.progression) {
+      this.progression_rating = this.content.progression.rating
+    }
   }
+  
 }
 </script>

@@ -47,6 +47,7 @@ export default route(function ({ Vue }) {
     return ({ name: this.currentRoute.name, params: this.currentRoute.params })
   }
 
+  /* Reload Page, when redirecting to the same page */
   Router.pushR = function (route) {
     const target = this.resolve(route).href
     const current = this.resolve(this.currentRouteObject()).href
@@ -57,6 +58,30 @@ export default route(function ({ Vue }) {
     } else {
       // Push
       this.push(route)
+    }
+  }
+
+  /* Dont do anything when redirecting to the same page */
+  Router.pushI = function (route) {
+    const target = this.resolve(route).href
+    const current = this.resolve(this.currentRouteObject()).href
+    if (target !== current) {
+      this.push(route)
+    }
+  }
+
+  /* Scroll To Anchor */
+  Router.anchor = function (anchor) {
+    // scroll to element
+    const el = document.querySelector(`a[name=${anchor}]`)
+    console.log(el, "el")
+    el && el.scrollIntoView()
+
+    // account for fixed header
+    const headerHeight = 200
+    var scrolledY = window.scrollY;
+    if (scrolledY) {
+      window.scroll(0, scrolledY - headerHeight);
     }
   }
 

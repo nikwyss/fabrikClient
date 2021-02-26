@@ -1,5 +1,6 @@
 <template>
-<span class="full-width">
+<!-- , bgcolor ? `bg-${bgcolor}` : '' -->
+<span :class="['full-width']">
   
     <span v-on:click.stop v-if="standalone" style="float:right;">
       <ContentToolbar
@@ -10,8 +11,10 @@
 
     <q-card class="q-ma-none full-width"  flat v-if="item">
       <q-card-section class="full-width q-px-none">
-        <div class="col-12" >
-          <div :class="header_class">{{heading_number}} {{item.content.title}}</div>
+        <div :class="['full-width', color ? `text-${color}` : '']">
+          <div :class="header_class" >
+            <q-icon :name="heading_icon" size="56px" v-if="heading_icon" />
+            {{heading_number}} {{item.content.title}}</div>
           <div class="text-body1 text-justify" v-if="item.content.text" v-dompurify-html="item.content.text"/>
         </div>
       </q-card-section>
@@ -37,7 +40,7 @@ import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDisc
 
 export default {
   name: 'TextsheetCard',
-  props: ['item', 'standalone', 'heading_number', 'comments', 'discussionBlockLabel'],
+  props: ['item', 'standalone', 'heading_number', 'comments', 'discussionBlockLabel', 'color', 'bgcolor', 'heading_icon'],
   // questions added for debigging : is it still usefukk?
   components: { ContentRatingThumbs, ContentEditor, ContentToolbar, DefaultDiscussionBlock},
   data () {
@@ -52,14 +55,18 @@ export default {
     computed: {
     
       header_class: function() {
-        // switch (this.item.content.type) {
-          // case 'SECTION':
+        switch (this.item.content.type) {
+          case 'SECTION':
             return('text-h5')
-          // case 'SUBSECTION':
-            // return('text-h6')
-          // case 'PARAGRAPH':
-            // return('text-h7')
-        // }
+          case 'SUBSECTION':
+            return('text-h6')
+          case 'PARAGRAPH':
+            return('text-h7')
+          case 'VAA_TOPIC':
+            return('text-h3')
+          default:
+            return('text-h5')
+        }
       },
 
       startingContentNode: function() {

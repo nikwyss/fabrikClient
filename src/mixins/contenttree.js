@@ -24,8 +24,8 @@ export default {
 
   data() {
     return {
-      is_loaded: false,
-      checked_sync_state: false
+      // is_loaded: false,
+      // checked_sync_state: false
     }
   },
 
@@ -59,6 +59,10 @@ export default {
 
 
       return (contenttree)
+    },
+
+    contents() {
+      return this.contenttree.entries
     },
 
     ratingCompleted() {
@@ -150,7 +154,17 @@ export default {
 
     isRead: function (content) {
       console.assert('progression' in content)
-      return (!content.progression)
+      return (content.progression)
+    },
+
+    isSalienced: function (content) {
+      console.assert('progression' in content)
+      return (content.progression?.salience)
+    },
+
+    isRated: function (content) {
+      console.assert('progression' in content)
+      return (content.progression?.rating)
     },
 
 

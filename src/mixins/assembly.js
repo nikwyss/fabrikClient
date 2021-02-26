@@ -1,21 +1,18 @@
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { LayoutEventBus } from 'src/utils/eventbus.js'
-// import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { scroll } from 'quasar'
-// TODO: do without: vue-reactive-provide, instead write a plugin...
-import { runtimeStore, runtimeMutations } from "src/store/runtime.store";
-import constants from 'src/utils/constants';
+import { runtimeStore, runtimeMutations } from "src/store/runtime.store"
+import constants from 'src/utils/constants'
 
 const { getScrollTarget, setScrollPosition } = scroll
 
-/* Make available all the properties and methods in any descendant object.*/
+/* Note: Make available all the properties and methods in any descendant object.*/
 // const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
 //   name: 'ABLY',
 //   include: ['assemblyAcls']
 // })
 
 export default {
-  // mixins: [ReactiveProvidePropertiesMixin],
 
   provide() {
     return {
@@ -23,12 +20,6 @@ export default {
       gotoNextStageNr: this.gotoNextStageNr,
     }
   },
-
-  // data() {
-  //   return {
-  //     stage_nr_last_visited: null
-  //   }
-  // },
 
   computed: {
 
@@ -69,12 +60,6 @@ export default {
       return this.assembly_sorted_stages[this.stage_nr_last_visited]
     }
   },
-  // watch: {
-  //   stage_nr_last_visited(after, before) {
-  //     console.log(before, after, "waaaatchhhh NR")
-  //     // this.updateComponentStageTeaser()
-  //   }
-  // },
 
   methods: {
 
@@ -165,33 +150,13 @@ export default {
     this.gotoDefaultStageTeaser()
   },
 
-
   mounted: function () {
 
-    console.log('>> APP LOADED: in assembly. Stage: ', this.stage_nr_last_visited)
-    // TODO: remove any personal data when loggin out
+    // console.log('>> APP LOADED: in assembly. Stage: ', this.stage_nr_last_visited)
     this.$store.dispatch('assemblystore/syncAssembly', {
       oauthUserID: this.oauth.userid
     })
 
     this.$root.monitorLog(constants.MONITOR_ASSEMBLY_ENTERING)
-  },
-
-  /**
-  * Ensure that all contenttrees is up to date
-  **/
-  // watch: {
-  //   // if route changes, hide TextLoading
-  //   $route(to, from) {
-  //     console.log("router watch in assembly.mixin")
-  //     console.log(from, to, 'ddddd')
-  //   }
-  // },
-  // activated: function () {
-  //   console.log("---ACTIVATED-------")
-  // },
-
-  // activated: function () {
-  //   console.log("---UPDATED-------")
-  // }
+  }
 }

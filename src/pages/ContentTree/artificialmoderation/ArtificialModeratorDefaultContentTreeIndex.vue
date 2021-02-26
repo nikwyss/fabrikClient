@@ -1,45 +1,59 @@
 <template>
-<div class="justify-center center">
+  <div class="justify-center center">
     <!-- RIGHT SIDE:  -->
     <!-- <div align="right"> -->
-    <ArtificialModerator alignment="right" role="2" amGroup='textsheetPage' :ongoing="ongoing">
+    <ArtificialModerator
+      alignment="right"
+      role="2"
+      amGroup='textsheetPage'
+      :ongoing="ongoing"
+    >
 
-        <template>
-            {{ $tc('contenttree.am.index', startingContentNode.children.length) }}
-        </template>
+      <template>
+        {{ $tc('contenttree.am.index', startingContentNode.children.length) }}
+      </template>
 
-        <!-- ACTION CHIPS -->
-        <template  v-slot:actions>
+      <!-- ACTION CHIPS -->
+      <template v-slot:actions>
         <q-chip
-            v-if="startingContentNode.children.length < 2 && IsContributor"
-            icon="mdi-tooltip-plus-outline" clickable @click="popup_create">
-            {{ $t('contenttree.add_comment_or_question') }}
+          v-if="startingContentNode.children.length < 2 && IsContributor"
+          icon="mdi-tooltip-plus-outline"
+          clickable
+          @click="popup_create"
+        >
+          {{ $t('contenttree.add_comment_or_question') }}
         </q-chip>
-        </template>
+      </template>
     </ArtificialModerator>
-      <!-- </div> -->
-    </div>
+    <!-- </div> -->
+  </div>
 </template>
 
 <script>
-import ArtificialModerator from 'src/components/ArtificialModerator'
+import ArtificialModerator from "src/components/ArtificialModerator";
 import { mapGetters } from "vuex";
 // import { runtimeStore } from "src/store/runtime.store";
 
-export default{
-    name: "ArtificialModeratorContentTreeIndex",
-    components: {ArtificialModerator},
-    props: ['ongoing', 'startingContentNode'],
-    inject: ['popup_content_form'],
-    computed: { 
-      ...mapGetters(
-        'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
-      )
+export default {
+  name: "ArtificialModeratorContentTreeIndex",
+  components: { ArtificialModerator },
+  props: ["ongoing", "startingContentNode"],
+  inject: ["popup_content_form"],
+  computed: {
+    ...mapGetters("assemblystore", [
+      "IsDelegate",
+      "IsExpert",
+      "IsContributor",
+      "IsObserver",
+      "IsManager",
+    ]),
+  },
+  methods: {
+    popup_create() {
+      this.popup_content_form("create", {
+        parent_id: this.startingContentNode.id,
+      });
     },
-    methods: {
-        popup_create () {
-            this.popup_content_form('create', {parent_id: this.startingContentNode.id})
-        }
-    }
-}
+  },
+};
 </script>

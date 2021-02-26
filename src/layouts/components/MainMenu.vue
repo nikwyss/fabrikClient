@@ -120,7 +120,6 @@
 
 <script>
 import UserAvatar from "./UserAvatar"
-// import { LayoutEventBus } from "src/utils/eventbus"
 import { mapGetters, mapActions } from "vuex"
 
 export default {
