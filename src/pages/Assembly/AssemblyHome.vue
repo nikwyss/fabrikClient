@@ -1,19 +1,22 @@
 <style lang="sass" scoped>
 .q-stepper__dot
-    width: 50px !important
-    height: 50px !important
+  width: 50px !important
+  height: 50px !important
 </style>
 <template>
-  <q-page class="doc_content" v-if="assembly">
+  <q-page
+    class="doc_content"
+    v-if="assembly"
+  >
 
     <!-- ASSEMBLY DESCRIPTION -->
-    <div >
+    <div>
 
       <!-- <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div> -->
       <h2>Um was wir sie heute bitten</h2>
       <!-- <h2>{{ assembly.caption }}</h2> -->
       <p>{{ assembly.info }}</p>
-            <!-- <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div> -->
+      <!-- <div class="caption">{{ $t('assemblies.home_caption', {assembly_title: assembly.title}) }}</div> -->
 
       <!-- <h2>{{$t('stages.home_title', {current_date: $options.filters.formatDate(Date.now())})}}</h2> -->
 
@@ -22,14 +25,15 @@
 
     <!-- AM-OVERVIEW (INTRO STAGES) -->
     <div class="q-mb-xl">
-      <ArtificialModeratorAssemblyHome 
+      <ArtificialModeratorAssemblyHome
         v-if="$nLength(assembly_scheduled_stages)"
         assembly_scheduled_stages
-        align="left" />
+        align="left"
+      />
     </div>
 
     <!-- STAGES -->
-      <!-- inactive-icon="mdi-disabled" -->
+    <!-- inactive-icon="mdi-disabled" -->
     <q-stepper
       v-if="assembly_sorted_stages &&  oauth.authorized !== null"
       v-model="stage_nr_last_visited"
@@ -49,8 +53,8 @@
         :title="getStepTitle(localStage)"
         :color="getColor(localStage)"
         :done-icon="getIcon(localStage)"
-      > 
-        
+      >
+
         <!-- MANAGERS: STAGE EDITOR -->
         <ComponentStageEditor
           :key=" `AE${localStageNr}` "
@@ -82,10 +86,14 @@
               v-dompurify-html="localStage.stage.info"
             />
 
-            <q-btn color="white" text-color="black" class="q-mt-md" 
+            <q-btn
+              color="white"
+              text-color="black"
+              class="q-mt-md"
               @click="clickPluginLink(localStage)"
-              v-if="is_stage_idle(localStage)" 
-              label="Öffnen" />
+              v-if="is_stage_idle(localStage)"
+              label="Öffnen"
+            />
           </q-card-section>
 
           <!-- AM-STAGE -->
@@ -94,12 +102,14 @@
             align="right"
           >
 
-          <div v-if="localStageNr==stage_nr_last_visited && next_scheduled_stage">
-            <keep-alive>
-            <component :is="componentStageTeaser" 
-              :stage="localStage"></component>
-            </keep-alive>
-          </div>
+            <div v-if="localStageNr==stage_nr_last_visited && next_scheduled_stage">
+              <keep-alive>
+                <component
+                  :is="componentStageTeaser"
+                  :stage="localStage"
+                ></component>
+              </keep-alive>
+            </div>
 
           </q-card-section>
 
@@ -115,69 +125,86 @@
         align="left"
       />
     </div>
-  </div>
+    </div>
 
-  <!-- MANAGER: NEW STAGE -->
-  <component :is="componentStageEditor" v-if="assembly && IsManager"></component>
+    <!-- MANAGER: NEW STAGE -->
+    <component
+      :is="componentStageEditor"
+      v-if="assembly && IsManager"
+    ></component>
 
-</q-page>
+  </q-page>
 </template>
 
 
 <script>
 import AssemblyMixin from "src/mixins/assembly";
-import ArtificialModeratorAssemblyHome from "./artificialmoderation/AssemblyHome"
-import ArtificialModeratorAssemblyStage from "./artificialmoderation/AssemblyStage"
-import { mapGetters} from "vuex";
+import ArtificialModeratorAssemblyHome from "./artificialmoderation/AssemblyHome";
+import ArtificialModeratorAssemblyStage from "./artificialmoderation/AssemblyStage";
+import { mapGetters } from "vuex";
 import { runtimeStore } from "src/store/runtime.store";
 
 export default {
   name: "PageAssemblyHome",
   mixins: [AssemblyMixin],
 
- data() {
+  data() {
     return {
-      componentStageEditor: () => import("src/pages/ContentTree/components/StageEditor"),
-      componentStageTeaser: null
-    }
+      componentStageEditor: () =>
+        import("src/pages/ContentTree/components/StageEditor"),
+      // componentStageTeaser: null,
+    };
   },
 
   components: {
-    ArtificialModeratorAssemblyHome
+    ArtificialModeratorAssemblyHome,
   },
 
   provide() {
     return {
-      clickPluginLink: this.clickPluginLink
-    }
+      clickPluginLink: this.clickPluginLink,
+    };
   },
 
   computed: {
-
-    stageType: function() {
-      return this.stage_last_visited?.stage?.type
+    stageType: function () {
+      return this.stage_last_visited?.stage?.type;
     },
 
-    ...mapGetters(
-      'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
-    )
+    componentStageTeaser() {
+      console.assert(this.stageType);
+      return () =>
+        import(
+          `src/plugins/${this.assemblyType}/artificialmoderation/${this.stageType}/StageTeaser`
+        )
+          .then((teaser) => teaser)
+          .catch(() => ArtificialModeratorAssemblyStage);
+    },
+
+    ...mapGetters("assemblystore", [
+      "assemblyType",
+      "IsDelegate",
+      "IsExpert",
+      "IsContributor",
+      "IsObserver",
+      "IsManager",
+    ]),
   },
 
-  watch: {
-    stage_last_visited(after, before) {
-      this.updateComponentStageTeaser()
-    }
-  },
+  // watch: {
+  //   stage_last_visited(after, before) {
+  //     this.updateComponentStageTeaser();
+  //   },
+  // },
 
   methods: {
-
-    updateComponentStageTeaser: function() {
-      if (this.stageType) {
-        this.componentStageTeaser = () => import(`src/plugins/${this.stageType}/artificialmoderation/Teaser`)
-            .then(component => {return component})
-            .catch(err => {this.componentStageTeaser = ArtificialModeratorAssemblyStage})
-      }
-    },
+    // updateComponentStageTeaser: function() {
+    //   if (this.stageType) {
+    //     this.componentStageTeaser = () => import(`src/plugins/${this.stageType}/artificialmoderation/Teaser`)
+    //         .then(component => {return component})
+    //         .catch(err => {this.componentStageTeaser = ArtificialModeratorAssemblyStage})
+    //   }
+    // },
 
     getStepCaption: function (stage, stageNr) {
       var caption = "";
@@ -198,7 +225,7 @@ export default {
     },
 
     getStepTitle: function (stage) {
-        //  this.loadComponent(this.stageType);
+      //  this.loadComponent(this.stageType);
       return stage.stage.title;
     },
 
@@ -214,16 +241,19 @@ export default {
         params: params,
       });
     },
-        
+
     getIcon(stage) {
-      console.assert(stage)
+      console.assert(stage);
       if (this.is_stage_disabled(stage)) {
         return "mdi-cancel";
       }
       if (this.last_accessible_stage == stage) {
         return "mdi-bell";
       }
-      if (this.last_accessible_stage?.stage.order_position < stage.stage.order_position) {
+      if (
+        this.last_accessible_stage?.stage.order_position <
+        stage.stage.order_position
+      ) {
         return "mdi-clock-time-eleven-outline";
       }
 
@@ -244,12 +274,15 @@ export default {
         return "blue-9";
       }
 
-      if (this.last_accessible_stage?.stage.order_position < stage.stage.order_position) {
+      if (
+        this.last_accessible_stage?.stage.order_position <
+        stage.stage.order_position
+      ) {
         return "orange-5";
       }
 
       return color;
-    }
-  }
-}
+    },
+  },
+};
 </script>

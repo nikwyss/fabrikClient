@@ -23,21 +23,20 @@
     class="rounded-borders"
   >
     <q-header class="text-primary bg-white">
-    
-          <!-- "Hidden" Logo -->
-          <q-chip
-            style="position:fixed; bottom:0px; left:0px; padding:1em; margin:0px"
-            size="sm"
-            color="white"
-            text-color="grey"
-            class=" q-mt-md"
-          >
-           demokratiefabrik.ch
-          </q-chip>
 
-    <!-- MAIN MENU -->
-    <MainMenu :assemblyName="assemblyName" />
+      <!-- "Hidden" Logo -->
+      <q-chip
+        style="position:fixed; bottom:0px; left:0px; padding:1em; margin:0px"
+        size="sm"
+        color="white"
+        text-color="grey"
+        class=" q-mt-md"
+      >
+        demokratiefabrik.ch
+      </q-chip>
 
+      <!-- MAIN MENU -->
+      <MainMenu :assemblyName="assemblyName" />
 
       <!-- LOGO -->
       <!-- <div
@@ -55,9 +54,13 @@
       </div> -->
 
       <!-- DYNAMIC MENU -->
-      <AssemblyMenu :menuOffset="menuOffset" v-if="is_assembly_page" />
+      <component
+        :is="AssemblyMenuComponentLoader"
+        :menuOffset="menuOffset"
+        v-if="is_assembly_page"
+      />
       <!-- END DYNAMIC MENU -->
-  
+
     </q-header>
 
     <!-- CONTENT -->
@@ -173,21 +176,15 @@
 </template>
 
 <script>
-import MainMenu from "./components/MainMenu"
-import Footer from "./components/Footer"
-// TODO: load it dynamically based on assembly configuration parameter... (allow for mulitple plugins)
-import AssemblyMenu from "../plugins/VAA_QUESTIONNAIRE_TOPICS/components/AssemblyMenu"
-import { mapGetters} from 'vuex'
-
+import MainMenu from "./components/MainMenu";
+import Footer from "./components/Footer";
+import { mapGetters } from "vuex";
 
 export default {
   name: "MainLayout",
   components: {
-    // ComponentDrawer,
-    // LanguageSwitch,
     Footer,
     MainMenu,
-    AssemblyMenu,
   },
 
   data() {
@@ -205,11 +202,41 @@ export default {
     };
   },
 
+  /**
+   * Ensure that all (error) messages disappear, when route changes...
+   **/
+  watch: {
+    // if route changes, hide TextLoading
+    $route(to, from) {
+      this.hideLoadingGif();
+      this.hideNotificationBanner();
+    },
+  },
+
+  computed: {
+    // https://medium.com/@codetheorist/using-vuejs-computed-properties-for-dynamic-module-imports-2046743afcaf
+    AssemblyMenuComponentLoader() {
+      return () => import(`../plugins/${this.assemblyType}/Menu.vue`);
+    },
+
+    frontpage: function () {
+      return this.$route.name == "home";
+    },
+
+    is_assembly_page: function () {
+      return (
+        this.$route.name === "assemblies" ||
+        !!this.$route.params.assemblyIdentifier
+      );
+    },
+
+    ...mapGetters("assemblystore", ["assemblyName", "assemblyType"]),
+  },
+
   methods: {
-    
     clickAuthLink: function () {
       // const destination_route = { name: "home" };
-      const destination_route = this.$router.currentRouteObject()
+      const destination_route = this.$router.currentRouteObject();
       this.oauth.login(destination_route);
     },
 
@@ -260,31 +287,18 @@ export default {
     gotoHome() {
       this.$router.push({ name: "home" });
     },
+
+    // loadComponent() {
+    //   this.AssemblyMenuComponentLoader().then((comp) => {
+    //     console.log(comp.data);
+    //   });
+    // },
   },
 
-  /**
-   * Ensure that all (error) messages disappear, when route changes...
-   **/
-  watch: {
-    // if route changes, hide TextLoading
-    $route(to, from) {
-      this.hideLoadingGif();
-      this.hideNotificationBanner();
-    },
+  mounted() {
+    // if (this.is_assembly_page) {
+    // loadComponent();
+    // }
   },
-
-  computed: {
-    frontpage: function () {
-      return this.$route.name == "home";
-    },
-    is_assembly_page: function () {
-      return (
-        this.$route.name === "assemblies" ||
-        !!this.$route.params.assemblyIdentifier
-      )
-    },
-
-     ...mapGetters( 'assemblystore', ['assemblyName'])  
-  }
-}
+};
 </script>

@@ -35,6 +35,13 @@ const getters = {
     }
   },
 
+  assemblyType: (state, getters) => {
+
+    if (getters.assembly) {
+      return (getters.assembly.type)
+    }
+  },
+
   /**
    * oAuth Server delivers user roles in the format "<role>@<assemblyIdentifier>".
    * THis method translates thes roles in a list of acls for the given Assembly.

@@ -76,14 +76,5 @@ export default {
         return (this.stageTypes[type] == section)
       })
     }
-  },
-
-
-  // beforeUnmount: function () {
-  //   alert("beforeUnmount")
-  // },
-
-  // beforeUpdate: function () {
-  //   alert("beforeUpdate")
-  // }
+  }
 }
