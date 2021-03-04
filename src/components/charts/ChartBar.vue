@@ -20,7 +20,7 @@ export default {
 
   computed: {
     linebreakLabels() {
-      const labels = this.labels.map((lab) => linebreaker(lab));
+      const labels = this.labels.map((lab) => linebreaker(lab, 100));
       return labels;
     },
 

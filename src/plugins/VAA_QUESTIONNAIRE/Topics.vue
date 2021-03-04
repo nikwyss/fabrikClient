@@ -1,8 +1,8 @@
 <template>
 
-  <q-page class="doc_content">
+  <q-page class="doc_content side_menu">
 
-    <!-- <h2>{{routed_stage.stage.title}}</h2> -->
+    <SideMenu :items="sideMenuItems" />
 
     <!-- DISABLED WARNING -->
     <q-banner
@@ -22,17 +22,21 @@
       :model="routed_stage"
     />
 
-    <div
-      v-if="routed_stage && contenttree"
-      class="q-pt-xl text-vessel"
-    >
+    <div class="q-pt-xl text-vessel">
 
-      <div v-if="!salienceCompleted">
-        <ArtificialModeratorTopicsTop align="right" />
-      </div>
+      <ArtificialModeration
+        :AM="AMs.topics_top"
+        alignment="center"
+        amGroup="sdfdsf"
+        :role="1"
+        :ctx="this"
+      />
 
       <h2>Themengewichtung</h2><a name="SALIENCE" />
-      <q-list bordered>
+      <q-list
+        bordered
+        v-if="routed_stage && contenttree"
+      >
 
         <span
           v-for="(node, key)  in contenttree.structure.children"
@@ -53,6 +57,7 @@
               <q-item-section avatar>
                 <q-knob
                   disable
+                  v-if="isSalienced(contents[node.id])"
                   show-value
                   v-model="contents[node.id].progression.salience"
                   style="color:black"
@@ -94,7 +99,15 @@
 
         <h2>Die Themen im Vergleich</h2><a name="CHARTS" />
 
-        Sie sehen hier nun ihre persönliche Prioritätenliste der Wahlthemen.
+        <ArtificialModeration
+          :AM="AMs.topics_after_saliencing"
+          alignment="center"
+          amGroup="sdfdsf"
+          :role="2"
+          :ctx="this"
+        />
+
+        <!-- Sie sehen hier nun ihre persönliche Prioritätenliste der Wahlthemen. -->
         <br><br>
         <q-tabs
           v-model="chartType"
@@ -127,9 +140,12 @@
           color="rgb(224, 202, 60, 0.45)"
         />
 
-        <ArtificialModeratorTopicsCharts
-          :ongoing="!routed_stage || oauth.authorized === null"
-          align="right"
+        <ArtificialModeration
+          :AM="AMs.topics_after_charts"
+          alignment="right"
+          amGroup="sdfdsf"
+          :role="2"
+          :ctx="this"
         />
       </div>
 
@@ -142,6 +158,15 @@
         </div>
 
         <h2>Forum</h2><a name="FORUM" />
+
+        <ArtificialModeration
+          :AM="AMs.topics_forum"
+          alignment="left"
+          amGroup="sdfdsf"
+          :role="1"
+          :ctx="this"
+        />
+
         <ComponentContentTree />
       </div>
 
@@ -155,10 +180,10 @@
 
         <h2>Neue Themen vorschlagen</h2><a name="MODERATION" />
 
-        <ArtificialModeratorTopicsBottom
+        <!-- <ArtificialModeratorTopicsBottom
           :ongoing="!routed_stage || oauth.authorized === null"
           align="right"
-        />
+        /> -->
 
         Sind ausser Ihrer Sicht noch nicht alle Themen abgedeckt. Gibt es etwas aus Ihrer Sicht, was nicht in eines der Themen passt? Folgende Ergänzungen wurden von anderen Teilnehmenden bereits vorgeschlagen.
       </div>
@@ -169,43 +194,61 @@
 
 
 <script>
+import AMs from "./artificialmoderation/ArtificialModeration.js";
+import ArtificialModeration from "src/components/ArtificialModeration.vue";
+
+import SideMenu from "src/layouts/components/SideMenu";
 import ContentTreeMixin from "src/mixins/contenttree";
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
-import TextsheetCard from "./components/TextsheetCard";
+// import TextsheetCard from "./components/TextsheetCard";
 import ContentSalienceSlider from "src/pages/ContentTree/components/ContentSalienceSlider";
 import ChartBar from "src/components/charts/ChartBar";
 import ChartRadar from "src/components/charts/ChartRadar";
-import ArtificialModeratorTopicsTop from "./artificialmoderation/TopicsTop";
-import ArtificialModeratorTopicsBottom from "./artificialmoderation/TopicsBottom";
-import ArtificialModeratorTopicsCharts from "./artificialmoderation/TopicsCharts";
-
-import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDiscussionBlock";
+// import DefaultDiscussionBlock from "src/pages/ContentTree/components/DefaultDiscussionBlock";
 import ComponentContentTree from "src/pages/ContentTree/components/ContentTree";
 
 export default {
   name: "VAATopics",
   mixins: [ContentTreeMixin],
   components: {
+    SideMenu,
     ComponentStageEditor,
-    TextsheetCard,
+    // TextsheetCard,
     ContentSalienceSlider,
-    DefaultDiscussionBlock,
+    // DefaultDiscussionBlock,
     ComponentContentTree,
     ChartBar,
     ChartRadar,
-    ArtificialModeratorTopicsTop,
-    ArtificialModeratorTopicsCharts,
-    ArtificialModeratorTopicsBottom,
+    ArtificialModeration,
   },
   data() {
     return {
+      AMs: AMs,
+      sideMenuItems: [
+        {
+          label: "Themengewichtung",
+          anchor: "SALIENCE",
+        },
+        {
+          label: "Vergleich",
+          anchor: "CHARTS",
+        },
+        {
+          label: "Forum",
+          anchor: "FORUM",
+        },
+        {
+          label: "Neue Themen",
+          anchor: "MODERATION",
+        },
+      ],
       chartType: "chartBar",
-      show_discussion: true,
+      // showDiscussion: true,
       artificialmoderationComponents: {
-        ContentTreeIndex: () =>
-          import(
-            "src/pages/ContentTree/artificialmoderation/ArtificialModeratorDefaultContentTreeIndex.vue"
-          ),
+        // ContentTreeIndex: () =>
+        //   import(
+        //     "src/pages/ContentTree/artificialmoderation/ArtificialModeratorDefaultContentTreeIndex.vue"
+        //   ),
       },
     };
   },

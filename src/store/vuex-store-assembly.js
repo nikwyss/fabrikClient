@@ -418,7 +418,6 @@ const mutations = {
   set_random_seed(state) {
     // console.log('SET RANDOM SEED IF NOT YET DONE')
     if (!state.randomSeed) {
-      // console.log('setter')
       let randomSeed = Math.floor(Math.random() * Math.floor(99)) + 1
       state.randomSeed = randomSeed
     }

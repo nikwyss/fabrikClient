@@ -80,7 +80,6 @@ export default {
     "text",
     "alignment",
     "ongoing_request",
-    "randomSeed",
     "role",
     "slim",
     "i18n_path_prefix",

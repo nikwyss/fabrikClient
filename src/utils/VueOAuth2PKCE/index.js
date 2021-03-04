@@ -98,7 +98,7 @@ export default {
 
       methods: {
         ...mapActions({
-          touchRandomSeed: "assemblystore/touchRandomSeed",
+          // touchRandomSeed: "assemblystore/touchRandomSeed",
           storeOauthAcls: "publicprofilestore/storeOauthAcls"
         }),
 

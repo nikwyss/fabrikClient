@@ -16,6 +16,7 @@
       v-model="currenttab"
       v-if="assembly_sorted_stages && stages_by_section"
     >
+      <!-- $t('menu.items.home.label') -->
       <CustomQRouteTab
         name="home"
         class="trennbar"
@@ -25,7 +26,7 @@
         name: 'assembly_home', 
         params: {assemblyIdentifier: assemblyIdentifier}
       }"
-        :label="$t('menu.items.home.label')"
+        label="Vorbereitung"
         :menuOffset="menuOffset"
         :highlighted="currentSection==sections[0]"
         :tooltip="$t('menu.items.home.tooltip')"
@@ -44,9 +45,9 @@
           stageID: stages_by_section[1].stage.id
           }
       }"
-        label="Wahlthemen"
+        label="Themen"
         :menuOffset="menuOffset"
-        :tooltip="$t('menu.items.assembly.tooltip')"
+        tooltip="Sie setzen die Themen"
         :tooltipIfDisabled="$t('menu.items.locked.tooltip')"
         :highlighted="currentSection==sections[1]"
         :disable="!stages_by_section[1] || !is_stage_accessible(stages_by_section[1])"

@@ -1,5 +1,5 @@
-export const linebreaker = label => {
-  const maxlen = 20
+export const linebreaker = (label, maxlen = 20) => {
+  // const maxlen = 20
   if (label.length <= maxlen) {
     return (label)
   }

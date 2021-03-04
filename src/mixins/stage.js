@@ -37,11 +37,12 @@ export default {
       const stage = this.assembly_stages[runtimeStore.stageID]
       LayoutEventBus.$emit("EventStageLoaded", stage)
       return (stage)
-    }
+    },
 
     // ...mapGetters({
-    //   get_assembly_stage: 'assemblystore/get_assembly_stage'
+    //   public_profile: "publicprofilestore/get_public_profile"
     // })
+
   },
 
   methods: {
