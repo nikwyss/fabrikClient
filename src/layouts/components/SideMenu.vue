@@ -11,6 +11,7 @@
           v-for="item in items"
           :key="item.label"
           clickable
+          :class="{hidden: (item.visible && !item.visible())}"
           :style="$q.screen.width >= $q.screen.sizes.md && selectedItems.includes(item.anchor) ? selectedStyle : ''"
           @click="scrollToAnchor(item.anchor)"
           v-ripple
@@ -24,7 +25,15 @@
             />
           </q-item-section>
 
-          <q-item-section class="gt-sm">{{item.label}}</q-item-section>
+          <q-item-section class="gt-sm">
+            <q-item-label style="width: 150px">{{item.label}}</q-item-label>
+            <q-item-label
+              v-if="item.caption"
+              style="width: 150px"
+              caption
+            >{{item.caption}}</q-item-label>
+
+          </q-item-section>
         </q-item>
       </q-list>
     </div>

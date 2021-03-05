@@ -8,7 +8,6 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
 
-      // Main Menues
       { path: '', name: 'home', component: () => import('pages/Index.vue') },
       { path: '/authorization', props: true, name: 'authorization', component: () => import(/* webpackPrefetch: true */ 'pages/Empty.vue') },
       { path: '/logout', name: 'logout', component: () => import(/* webpackPrefetch: true */ 'pages/Auth/Logout.vue') },
@@ -18,10 +17,6 @@ const routes = [
       // { path: '/showcase', name: 'showcase', component: () => import(/* webpackPrefetch: true */ 'pages/Assembly/AssemblyListShowcase.vue') },
       { path: '/ongoing', name: 'assemblies_ongoing_list', component: () => import('pages/Assembly/AssemblyListOngoing.vue') },
       {
-        path: '/:assemblyIdentifier/home', name: 'assembly_home',
-        component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages
-      },
-      {
         path: '/:assemblyIdentifier/agenda/:stageID', name: 'assembly_home_stepper',
         component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages
       },
@@ -29,31 +24,28 @@ const routes = [
         path: '/:assemblyIdentifier/stage/:stageID', name: 'stage',
         component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages
       },
-      // component: UserContentDefault, meta: meta4AssemblyPages},
       {
         path: '/:assemblyIdentifier/stage/:stageID/:contenttreeID', name: 'contenttree',
         component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages
       },
-      // component: UserContentDefault, meta: meta4AssemblyPages}, 
       {
         path: '/:assemblyIdentifier/stage/:stageID/:contenttreeID/:contentID', name: 'content',
         component: () => import('pages/ContentTree/Default.vue'), meta: meta4AssemblyPages
+      },
+
+      ...plugin_routes,
+
+      {
+        path: '/:assemblyIdentifier', name: 'assembly_home',
+        component: () => import('pages/Assembly/AssemblyHome.vue'), meta: meta4AssemblyPages
+      },
+
+      {
+        path: '*',
+        component: () => import('pages/Error404.vue')
       }
-      // component: UserContentDefault, meta: meta4AssemblyPages}
     ]
-  },
-
-  // Add Plugin Routes
-  ...plugin_routes,
-
-  // Catch all routes
-  // Always leave this as last one,
-  // but you can also remove it
-  {
-    path: '*',
-    component: () => import('pages/Error404.vue')
   }
-
 ]
 
 export default routes

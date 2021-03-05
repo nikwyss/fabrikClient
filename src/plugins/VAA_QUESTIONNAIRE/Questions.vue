@@ -9,7 +9,7 @@
 </style>
 
 <template>
-  <q-page class="doc_content side_menu">
+  <div>
 
     <SideMenu :items="sideMenuItems" />
 
@@ -35,7 +35,7 @@
     <div class="q-pt-xl text-vessel">
       <!-- <h3>Themenwahl</h3> -->
 
-      <h2>Smartvote Fragebogen</h2>
+      <h2>Smartvote Fragebogen</h2><a name="TOPICSELECTION" />
 
       <VAATopicSelector
         @input="selectTopic"
@@ -59,11 +59,68 @@
           </div>
         </div>
 
-        <!-- <h2>Smartvote Fragen zum Thema {{topic.content.title}}</h2> -->
+        <h2>Fragen-Set zum Thema {{topic.content.title}}</h2><a name="RATING" />
+        <q-list bordered>
 
-        <!-- <ArtificialModeratorQUESTIONSTop align="left" /> -->
+          <span
+            v-for="(nodeL1, keyL1)  in node.children"
+            :key="`L1${nodeL1.id}`"
+          >
+            <q-expansion-item
+              :group="salienceCompleted ? 'accordeon' : `group${nodeL1.id}`"
+              icon="mdi-sign-direction"
+              :default-opened="!isSalienced(contents[nodeL1.id])"
+              :caption="isSalienced(contents[nodeL1.id]) ? `Ihre Bewertung ${contents[nodeL1.id].progression.salience}` : `Unbewertet`"
+              header-class="text-primary"
+            >
+              <template
+                template
+                v-slot:header
+              >
+                <q-item-section
+                  avatar
+                  v-if="isSalienced(contents[nodeL1.id])"
+                >
 
-        <!-- QUESTIONS -->
+                  <q-knob
+                    disable
+                    show-value
+                    v-model="contents[nodeL1.id].progression.salience"
+                    style="color:black"
+                    :thickness="0.4"
+                    center-color="vaatopic-light"
+                    color="vaatopic"
+                    track-color="white"
+                    class="text-body q-ma-md"
+                  >
+                    {{contents[nodeL1.id].progression.salience }}
+                  </q-knob>
+                </q-item-section>
+
+                <q-item-section>
+                  {{contents[nodeL1.id].content.title}}
+                </q-item-section>
+              </template>
+
+              <q-card>
+                <q-card-section>
+                  <ContentSalienceSlider :content="contents[nodeL1.id]" />
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+
+            <q-separator />
+          </span>
+
+        </q-list>
+
+        <div class="row justify-between">
+          <div class="seperator large">
+            <q-icon name="mdi-star-four-points-outline" />
+          </div>
+        </div>
+
+        <!-- 
         <div
           class="row justify-between"
           v-for="(nodeL1, keyL1)  in node.children"
@@ -76,11 +133,11 @@
             :comments="filter_entries(nodeL1.children, ['COMMENT', 'QUESTION'])"
             :heading_number="(keyL1+1)"
             :item="contenttree.entries[nodeL1.id]"
-          />
+          /> -->
 
-          <!-- RATING -->
-          <!-- <ContentSalienceSlider :content="contenttree.entries[nodeL1.id]" /> -->
-        </div>
+        <!-- RATING -->
+        <!-- <ContentSalienceSlider :content="contenttree.entries[nodeL1.id]" /> -->
+        <!-- </div> -->
 
         <div class="row justify-between">
           <div class="seperator">
@@ -88,16 +145,19 @@
           </div>
         </div>
 
+        <h2>Moderation</h2><a name="MODERATION" />
+
+        <h2>Forum</h2><a name="FORUM" />
+        <ComponentContentTree />
         <!-- <ArtificialModeratorQUESTIONSBottom align="left" /> -->
         <!-- RESULT -->
         <!-- <div v-if="ratingCompleted"> -->
         <!-- <h2>Resultat</h2> -->
         <!-- <div class="row justify-between q-pt-xl"><ChartBar :personalData="chartBarPersonalData" :labels="chartBarLabels" />
         </div> -->
-
       </div>
     </transition>
-  </q-page>
+  </div>
 </template>
 
 
@@ -111,6 +171,7 @@ import ArtificialModeratorQUESTIONSBottom from "./artificialmoderation/Questions
 import TextsheetCard from "./components/TextsheetCard";
 import { runtimeStore } from "src/store/runtime.store";
 import SideMenu from "src/layouts/components/SideMenu";
+import ComponentContentTree from "src/pages/ContentTree/components/ContentTree";
 
 export default {
   name: "VAAQuestions",
@@ -118,24 +179,6 @@ export default {
   data: () => {
     return {
       detailView: true,
-      sideMenuItems: [
-        {
-          label: "Themenwahl",
-          anchor: "TOPICSELECTION",
-        },
-        {
-          label: "Bewertung",
-          anchor: "RATING",
-        },
-        {
-          label: "Forum",
-          anchor: "FORUM",
-        },
-        {
-          label: "Moderation",
-          anchor: "MODERATION",
-        },
-      ],
     };
   },
   components: {
@@ -143,6 +186,7 @@ export default {
     VAATopicSelector,
     ContentSalienceSlider,
     TextsheetCard,
+    ComponentContentTree,
     SideMenu,
     ArtificialModeratorQUESTIONSTop,
     ArtificialModeratorQUESTIONSBottom,
@@ -160,6 +204,31 @@ export default {
     // chartBarLabels() {
     //     return this.sortedChartEntries.map(entry => entry.content?.title)
     // }
+
+    sideMenuItems() {
+      return [
+        {
+          label: "Themenwahl",
+          caption: this.topic ? this.topic.content.title : "",
+          anchor: "TOPICSELECTION",
+        },
+        {
+          label: "Bewertung",
+          anchor: "RATING",
+          visible: () => !!this.topic,
+        },
+        {
+          label: "Moderation",
+          anchor: "MODERATION",
+          visible: () => !!this.topic,
+        },
+        {
+          label: "Forum",
+          anchor: "FORUM",
+          visible: () => !!this.topic,
+        },
+      ];
+    },
   },
 
   methods: {

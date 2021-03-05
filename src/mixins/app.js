@@ -367,6 +367,6 @@ export default {
     }
 
     // END
-    console.log("*** APP MOUNTED ***")
+    console.log("*** APP MOUNTED ***", this.$root.hasCustomMenu)
   }
 }

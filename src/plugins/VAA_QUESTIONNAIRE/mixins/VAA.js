@@ -6,26 +6,10 @@ import { runtimeStore } from "src/store/runtime.store"
 export default {
   data() {
     return {
-      sections: [
-        'INTRO',
-        'VAA_QUESTIONNAIRE_TOPICS',
-        'VAA_QUESTIONNAIRE_QUESTIONS',
-        'VAA_ANALYSES'
-      ],
-      stageTypes: {
-        'VAA_QUESTIONNAIRE_TOPICS': 'VAA_QUESTIONNAIRE_TOPICS',
-        'VAA_QUESTIONNAIRE_QUESTIONS': 'VAA_QUESTIONNAIRE_QUESTIONS',
-      }
     }
   },
 
-
   computed: {
-
-    /** Get Stage from StageID transmitted in the URL  */
-    // routed_stage_id: function () {
-    //   return (this.$route.params.stageID)
-    // },
 
     routed_stage: function () {
       console.assert(runtimeStore.stageID)
@@ -38,42 +22,55 @@ export default {
       return (this.assembly_stages[runtimeStore.stageID])
     },
 
-    sectionsEnabled: function () {
-      return ['VAA_TOPICS', 'VAA_QUESTIONS']
+    groups() {
+      return Object.keys(this.stages_by_groups)
     },
 
-    currentSection: function () {
-      if (!runtimeStore.stageID || !this.routed_stage) {
-        return 'INTRO'
+    stages_by_groups() {
+      const stages_by_groups = {}
+      if (this.assembly_stages) {
+        return null
       }
-      console.log("ROUTED STAGE", this.routed_stage)
-      const type = this.routed_stage.stage.type
-      console.assert(type)
-      if (type) {
-        if (this.stageTypes[type]) {
-          return (this.stageTypes[type])
-        } else {
-          return 'INTRO'
+
+      this.assembly_stages.forEach(stage => {
+        if (!stages_by_groups[stage.stage.group]) {
+          stages_by_groups[stage.stage.group] = []
         }
+        stages_by_groups[stage.stage.group].push(stage)
+      })
+
+      console.log("stages_by_groups", stages_by_groups)
+      return stages_by_groups
+    },
+
+    groupsAccessible: function () {
+      const groups = this.assembly_accessible_stages.map(stage => stage.stage.group)
+      return groups;
+    },
+
+    currentGroup: function () {
+      if (!runtimeStore.stageID || !this.routed_stage) {
+        return 'preparation'
       }
+      return this.routed_stage.stage.group
     },
 
     ...mapGetters(
       'assemblystore',
-      ['assembly_sorted_stages', 'assembly_stages',
+      ['assembly_sorted_stages', 'assembly_stages', 'assembly_accessible_stages',
         'assembly_sorted_stages', 'is_stage_accessible']
     )
   },
 
   methods: {
-    getFirstStageBySection: function (section) {
+    getFirstStageByGroup: function (group) {
       if (!this.assembly_sorted_stages) {
         return null
       }
 
       return this.assembly_sorted_stages.find(stage => {
         let type = stage.stage.type
-        return (this.stageTypes[type] == section)
+        return (this.stageTypes[type] == group)
       })
     }
   }

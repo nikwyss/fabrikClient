@@ -158,8 +158,8 @@ export default {
     },
 
     isSalienced: function (content) {
-      console.assert('progression' in content)
-      return (content.progression?.salience)
+      // console.log(content.progression)
+      return (content.progression && content.progression.salience)
     },
 
     isRated: function (content) {

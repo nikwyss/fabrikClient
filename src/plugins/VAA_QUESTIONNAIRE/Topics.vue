@@ -1,6 +1,6 @@
 <template>
 
-  <q-page class="doc_content side_menu">
+  <div>
 
     <SideMenu :items="sideMenuItems" />
 
@@ -189,7 +189,7 @@
       </div>
 
     </div>
-  </q-page>
+  </div>
 </template>
 
 
