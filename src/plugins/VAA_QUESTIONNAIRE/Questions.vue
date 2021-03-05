@@ -166,8 +166,6 @@ import ContentMixin from "src/mixins/content";
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import VAATopicSelector from "./components/TopicSelector";
 import ContentSalienceSlider from "src/pages/ContentTree/components/ContentSalienceSlider";
-import ArtificialModeratorQUESTIONSTop from "./artificialmoderation/QuestionsTop";
-import ArtificialModeratorQUESTIONSBottom from "./artificialmoderation/QuestionsBottom";
 import TextsheetCard from "./components/TextsheetCard";
 import { runtimeStore } from "src/store/runtime.store";
 import SideMenu from "src/layouts/components/SideMenu";
@@ -188,8 +186,6 @@ export default {
     TextsheetCard,
     ComponentContentTree,
     SideMenu,
-    ArtificialModeratorQUESTIONSTop,
-    ArtificialModeratorQUESTIONSBottom,
   },
 
   computed: {

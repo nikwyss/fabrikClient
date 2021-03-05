@@ -1,5 +1,4 @@
 import { mapGetters, mapActions } from 'vuex'
-import { LayoutEventBus } from 'src/utils/eventbus.js'
 import { scroll } from 'quasar'
 import { runtimeStore, runtimeMutations } from "src/store/runtime.store"
 import constants from 'src/utils/constants'
@@ -35,6 +34,7 @@ export default {
       ]
     ),
 
+
     stage_nr_last_visited: {
       get() {
         if (isNaN(runtimeStore.stageID) || runtimeStore.stageID === null) {
@@ -43,7 +43,7 @@ export default {
         return this.get_stage_number_by_stage_id(runtimeStore.stageID)
       },
       set(stageNr) {
-        if (stageNr === null) {
+        if (stageNr === null || stageNr === undefined) {
           runtimeMutations.setStageID(null)
         } else {
           const stageID = this.assembly_sorted_stages[stageNr].stage.id
@@ -80,7 +80,7 @@ export default {
 
     scrollToStage: function () {
       // SCROLL POSITION
-      console.log('Do the scrolling...')
+      // console.log('Do the scrolling...')
       // let anchorid = `stage${this.stage_nr_last_visited}`
       var element = document.getElementsByClassName('q-stepper__tab--active');
       if (element && element[0]) {
@@ -98,14 +98,8 @@ export default {
 
     gotoAssemblyHome: function () {
 
-      var route = null
-      console.log(this.stage_nr_last_visited, "stage before assembly")
-
-      route = {
-        name: 'assembly_home',
-        params: { assemblyIdentifier: runtimeStore.assemblyIdentifier }
-      }
-
+      // console.log(this.stage_nr_last_visited, "stage before assembly")
+      var route = this.$root.getAssemblyHomeRoute(this.assembly);
       this.$router.push(route, this.laggedScrollToStage)
 
     },
@@ -123,10 +117,25 @@ export default {
       // console.log(this.stage_nr_last_visited, "new stage")
     },
 
+    gotoStage: function (stage) {
+      console.log("gotoStage");
+      var params = {
+        assemblyIdentifier: runtimeStore.assemblyIdentifier,
+        stageID: stage.stage.id,
+        contenttreeID: stage.stage.contenttree_id,
+      };
+      this.$router.push({
+        name: stage.stage.type,
+        params: params,
+      });
+    },
+
+
+    // TODO: what is that for?
     gotoDefaultStageTeaser: function () {
 
-
-      if (runtimeStore.stageID) {
+      console.log("goto default stage teaser")
+      if (runtimeStore.stageID !== null && runtimeStore.stageID !== undefined) {
         this.stage_nr_last_visited = this.get_stage_number_by_stage_id(runtimeStore.stageID)
       } else if (this.last_accessible_stage) {
         this.stage_nr_last_visited = this.get_stage_number_by_stage(this.last_accessible_stage)
@@ -136,18 +145,6 @@ export default {
     },
 
     ...mapActions({ setCachedStageID: 'assemblystore/setCachedStageID' })
-  },
-
-
-  created() {
-
-    // Catch all authentication status changes
-    LayoutEventBus.$once('AssemblyLoaded', data => {
-      // console.log("LayoutEventBus on AssemblyLoaded")
-      this.gotoDefaultStageTeaser()
-    })
-
-    this.gotoDefaultStageTeaser()
   },
 
   mounted: function () {

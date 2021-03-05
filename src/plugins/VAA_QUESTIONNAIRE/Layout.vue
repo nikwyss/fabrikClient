@@ -8,12 +8,10 @@
 // import { LayoutEventBus } from "src/utils/eventbus";
 export default {
   name: "VAALayout",
-
-  // created() {
-  //   const CustomMenuComponentLoader = () => import(`./Menu.vue`);
-  //   // this.$root.CustomMenuComponentLoader = CustomMenuComponent;
-  //   // this.$root.hasCustomMenu = true;
-  //   LayoutEventBus.$emit("LoadCustomMenu", CustomMenuComponentLoader);
-  // },
+  // TODO: load here the assembly mixin?
+  computed: {
+    // ready() {
+    // }
+  },
 };
 </script>

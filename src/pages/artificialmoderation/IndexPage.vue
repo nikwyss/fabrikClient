@@ -12,7 +12,7 @@
     >
       {{$t('index.am.general_greeting', {salutation})}}
     </ArtificialModerator>
-    
+
     <!-- RIGHT SIDE (NOT YET LOGGED IN):  -->
     <!-- Not authenticated && assembly is ONGOING => Assuming that visitor is a delegate -->
     <ArtificialModerator
@@ -63,7 +63,6 @@
 
       {{$t('index.am.information_for_public_visitors')}}
 
-
       <template v-slot:actions>
         <Button
           :label="$t('index.iam_ready')"
@@ -101,18 +100,21 @@
 <script>
 import ArtificialModerator from "src/components/ArtificialModerator";
 import Button from "src/components/ArtificialModeratorButton";
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
   name: "ArtificialModeratorIndexPage",
   components: { ArtificialModerator, Button },
   computed: {
-
-    ...mapGetters(
-     'publicindexstore',
-      ['published_assemblies', 'ongoing_assemblies', 'IsUserDelegateOfOngoingAssembly', 'IsThereAnAssemblyOngoing', 
-      'IsThereAnAssemblyInPublicState', 'IsThereNothingGoingOn', 'UsersDelegateAssemblies']
-      ), 
+    ...mapGetters("publicindexstore", [
+      "published_assemblies",
+      "ongoing_assemblies",
+      "IsUserDelegateOfOngoingAssembly",
+      "IsThereAnAssemblyOngoing",
+      "IsThereAnAssemblyInPublicState",
+      "IsThereNothingGoingOn",
+      "UsersDelegateAssemblies",
+    ]),
 
     salutation: function () {
       if (this.oauth.authorized) {
@@ -137,10 +139,8 @@ export default {
       } else if (this.UsersDelegateAssemblies.length == 1) {
         // Single assembly: default
         const assembly = this.UsersDelegateAssemblies[0];
-        var route = {
-          name: "assembly_home",
-          params: { assemblyIdentifier: assembly.identifier },
-        };
+
+        var route = this.$root.getAssemblyHomeRoute(assembly);
         this.$router.push(route);
       } else {
         console.log("Error: no assembly found...");

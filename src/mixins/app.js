@@ -259,12 +259,26 @@ export default {
     this.$store.dispatch('monitorSetup')
 
 
-    this.$root.logout = async (eventString = null, extra = {}) => {
-      await this.$store.dispatch('monitorFire', {
-        eventString: constants.MONITOR_LOGOUT, data: {}
+    this.$root.getAssemblyHomeRoute = (assembly) => {
+      // console.log("get assembly route ", assembly)
+
+      return ({
+        name: assembly.type,
+        params: { assemblyIdentifier: assembly.identifier }
       })
-      this.oauth.logout()
-    }
+
+      // return ({
+      //   name: 'assembly_home',
+      //   params: { assemblyIdentifier: assembly.assembly.identifier }
+      // })
+    },
+
+      this.$root.logout = async (eventString = null, extra = {}) => {
+        await this.$store.dispatch('monitorFire', {
+          eventString: constants.MONITOR_LOGOUT, data: {}
+        })
+        this.oauth.logout()
+      }
 
     this.$root.monitorLog = async (eventString = null, extra = {}) => {
       if (!this.oauth.authorized) {

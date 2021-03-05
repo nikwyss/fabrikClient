@@ -97,7 +97,7 @@ const getters = {
   },
 
   assembly_stages: (state, getters) => {
-    // console.log(">> NOTE: assembly_stages")
+    console.log(">> NOTE: assembly_stages")
 
     if (!runtimeStore.assemblyIdentifier) {
       console.log('...identifier not ready')
@@ -112,13 +112,14 @@ const getters = {
     }
 
     // filter only the stages of the specific assembly
+    // console.log(state.stages, stage_keys)
+
     const stages = Object.keys(state.stages)
-      .filter(key => stage_keys.includes(key))
+      .filter(key => stage_keys.includes(`${key}`))
       .reduce((obj, key) => {
         obj[key] = state.stages[key];
         return obj;
       }, {})
-
 
     // console.log("this are assembly stages", stages)
     return stages

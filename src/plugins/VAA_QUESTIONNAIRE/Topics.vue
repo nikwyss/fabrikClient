@@ -1,6 +1,9 @@
 <template>
 
-  <div>
+  <q-page
+    class="doc_content"
+    v-if="ready"
+  >
 
     <SideMenu :items="sideMenuItems" />
 
@@ -27,8 +30,6 @@
       <ArtificialModeration
         :AM="AMs.topics_top"
         alignment="center"
-        amGroup="sdfdsf"
-        :role="1"
         :ctx="this"
       />
 
@@ -189,13 +190,13 @@
       </div>
 
     </div>
-  </div>
+  </q-page>
 </template>
 
 
 <script>
-import AMs from "./artificialmoderation/ArtificialModeration.js";
-import ArtificialModeration from "src/components/ArtificialModeration.vue";
+import AMs from "./ArtificialModeration.js";
+import ArtificialModeration from "src/artificial_moderation/ArtificialModeration.vue";
 
 import SideMenu from "src/layouts/components/SideMenu";
 import ContentTreeMixin from "src/mixins/contenttree";
@@ -243,13 +244,6 @@ export default {
         },
       ],
       chartType: "chartBar",
-      // showDiscussion: true,
-      artificialmoderationComponents: {
-        // ContentTreeIndex: () =>
-        //   import(
-        //     "src/pages/ContentTree/artificialmoderation/ArtificialModeratorDefaultContentTreeIndex.vue"
-        //   ),
-      },
     };
   },
 
@@ -270,6 +264,11 @@ export default {
     },
     chartBarLabels() {
       return this.sortedChartEntries.map((entry) => entry.content?.title);
+    },
+
+    ready() {
+      console.log("stage loaded.... ", !!this.routed_stage?.stage?.id);
+      return !!this.routed_stage?.stage?.id;
     },
   },
 };

@@ -66,6 +66,7 @@ export default {
     },
 
     ratingCompleted() {
+      console.assert(this.routed_stage)
 
       // console.log("rating completed?? rerun...")
       const allRated = this.numberOfUnratedTopLevelEntries == 0
@@ -77,6 +78,7 @@ export default {
     },
 
     salienceCompleted() {
+      console.assert(this.routed_stage)
 
       // console.log("salience completed?? rerun...")
       const allSalienced = this.numberOfUnsaliencedTopLevelEntries == 0
@@ -153,8 +155,7 @@ export default {
     },
 
     isRead: function (content) {
-      console.assert('progression' in content)
-      return (content.progression)
+      return (content?.progression)
     },
 
     isSalienced: function (content) {

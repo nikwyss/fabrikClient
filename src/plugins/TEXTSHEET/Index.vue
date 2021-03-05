@@ -1,88 +1,102 @@
 <template>
-
-    <q-page class="doc_content " >
+  <q-page class="doc_content ">
 
     <div align="center">
 
+      <!-- AM-OVERVIEW -->
+      <div class="q-mb-xl">
+        <ArtificialModeratorTEXTSHEETIndexTop
+          :ongoing="!routed_stage || oauth.authorized === null"
+          align="left"
+        />
+      </div>
+      <div
+        v-if="routed_stage && contenttree"
+        class="text-vessel"
+      >
 
-        <!-- AM-OVERVIEW -->
-        <div class="q-mb-xl">
-            <ArtificialModeratorTEXTSHEETIndexTop 
-            :ongoing="!routed_stage || oauth.authorized === null" align="left" />
-        </div>
-        <div v-if="routed_stage && contenttree" class="text-vessel">
+        <h2>{{routed_stage.stage.title}}</h2>
+        <p class="text-body1">{{routed_stage.stage.info}}</p>
 
-            <h2>{{routed_stage.stage.title}}</h2>
-            <p class="text-body1">{{routed_stage.stage.info}}</p>
+        <div
+          class="row justify-between"
+          v-for="(nodeL1, keyL1)  in filter_entries(contenttree.structure.children, TEXTTYPES)"
+          :key="`L1${nodeL1.id}`"
+        >
 
-            <div class="row justify-between" 
-                v-for="(nodeL1, keyL1)  in filter_entries(contenttree.structure.children, TEXTTYPES)" 
-                :key="`L1${nodeL1.id}`">
+          <div class="seperator">
+            <q-icon name="mdi-star-four-points-outline" />
+          </div>
 
-                <div class="seperator"><q-icon name="mdi-star-four-points-outline" /></div>
+          <TextsheetCard
+            :level="1"
+            :comments="filter_entries(nodeL1.children, ['COMMENT','QUESTION'])"
+            :heading_number="(keyL1+1)"
+            :item="contenttree.entries[nodeL1.id]"
+          />
 
-                <TextsheetCard 
-                    :level="1"
-                    :comments="filter_entries(nodeL1.children, ['COMMENT','QUESTION'])"
-                    :heading_number="(keyL1+1)"
-                    :item="contenttree.entries[nodeL1.id]"
-                />
+          <div
+            class="row justify-between"
+            v-for="(nodeL2, keyL2) in filter_entries(nodeL1.children, TEXTTYPES)"
+            :key="`L2${nodeL2.id}`"
+          >
 
-                <div class="row justify-between"
-                        v-for="(nodeL2, keyL2) in filter_entries(nodeL1.children, TEXTTYPES)"
-                        :key="`L2${nodeL2.id}`">
+            <TextsheetCard
+              :level="2"
+              :comments="filter_entries(nodeL2.children, ['COMMENT', 'QUESTION'])"
+              :heading_number="`${(keyL1+1)}.${(keyL2+1)}`"
+              :item="contenttree.entries[nodeL2.id]"
+            />
 
-                    <TextsheetCard
-                        :level="2"
-                        :comments="filter_entries(nodeL2.children, ['COMMENT', 'QUESTION'])"
-                        :heading_number="`${(keyL1+1)}.${(keyL2+1)}`"
-                        :item="contenttree.entries[nodeL2.id]"
-                    />
+            <div
+              class="row justify-between"
+              v-for="(nodeL3, keyL3) in filter_entries(nodeL2.children, TEXTTYPES)"
+              :key="`L3${nodeL3.id}`"
+            >
 
-                    <div class="row justify-between" v-for="(nodeL3, keyL3) in filter_entries(nodeL2.children, TEXTTYPES)" 
-                            :key="`L3${nodeL3.id}`">
-
-                        <TextsheetCard
-                            :comments="filter_entries(nodeL3.children, ['COMMENT', 'QUESTION'])"
-                            :level="3"
-                            :item="contenttree.entries[nodeL3.id]"/>
-                    </div>
-                </div>
+              <TextsheetCard
+                :comments="filter_entries(nodeL3.children, ['COMMENT', 'QUESTION'])"
+                :level="3"
+                :item="contenttree.entries[nodeL3.id]"
+              />
             </div>
+          </div>
         </div>
-        
-        <!-- AM-END -->
-        <div class="q-mb-xl">
-            <ArtificialModeratorTEXTSHEETIndexBottom 
-            :ongoing="!routed_stage || oauth.authorized === null" align="left" />
-        </div>
+      </div>
+
+      <!-- AM-END -->
+      <div class="q-mb-xl">
+        <ArtificialModeratorTEXTSHEETIndexBottom
+          :ongoing="!routed_stage || oauth.authorized === null"
+          align="left"
+        />
+      </div>
 
     </div>
-    </q-page>
+  </q-page>
 </template>
 
 <script>
-import ContentTreeMixin from "src/mixins/contenttree"
+import ContentTreeMixin from "src/mixins/contenttree";
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import TextsheetCard from "./components/TextsheetCard";
-import ArtificialModeratorTEXTSHEETIndexTop from './artificialmoderation/IndexTop'
-import ArtificialModeratorTEXTSHEETIndexBottom from './artificialmoderation/IndexBottom'
-import i18nPluginMixin from "./i18n"
+import ArtificialModeratorTEXTSHEETIndexTop from "./artificialmoderation/IndexTop";
+import ArtificialModeratorTEXTSHEETIndexBottom from "./artificialmoderation/IndexBottom";
+import i18nPluginMixin from "./i18n";
 
 export default {
-    name: 'TextsheetDefault',
-    mixins: [ContentTreeMixin, i18nPluginMixin],
-    data () {
-        return {
-            TEXTTYPES: ['PARAGRAPH', 'SECTION', 'SUBSECTION']
-        }
-    },
-    components: {
-        ComponentStageEditor,
-        TextsheetCard,
-        ArtificialModeratorTEXTSHEETIndexTop,
-        ArtificialModeratorTEXTSHEETIndexBottom
-    }
-}
-
+  name: "TextsheetDefault",
+  mixins: [ContentTreeMixin, i18nPluginMixin],
+  data() {
+    return {
+      TEXTTYPES: ["PARAGRAPH", "SECTION", "SUBSECTION"],
+    };
+  },
+  components: {
+    ComponentStageEditor,
+    TextsheetCard,
+    ArtificialModeratorTEXTSHEETIndexTop,
+    ArtificialModeratorTEXTSHEETIndexBottom,
+  },
+};
 </script>

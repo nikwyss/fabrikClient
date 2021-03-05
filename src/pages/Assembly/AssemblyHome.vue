@@ -4,10 +4,7 @@
   height: 50px !important
 </style>
 <template>
-  <q-page
-    class="doc_content"
-    v-if="assembly"
-  >
+  <q-page class="doc_content">
 
     <!-- ASSEMBLY DESCRIPTION -->
     <div>
@@ -50,7 +47,7 @@
         :done="true"
         :name="Number(localStageNr)"
         :caption="getStepCaption(localStage)"
-        :title="getStepTitle(localStage)"
+        :title="localStage.stage.title"
         :color="getColor(localStage)"
         :done-icon="getIcon(localStage)"
       >
@@ -90,7 +87,7 @@
               color="white"
               text-color="black"
               class="q-mt-md"
-              @click="clickPluginLink(localStage)"
+              @click="gotoStage(localStage)"
               v-if="is_stage_idle(localStage)"
               label="Öffnen"
             />
@@ -141,6 +138,7 @@
 import AssemblyMixin from "src/mixins/assembly";
 import ArtificialModeratorAssemblyHome from "./artificialmoderation/AssemblyHome";
 import ArtificialModeratorAssemblyStage from "./artificialmoderation/AssemblyStage";
+import { LayoutEventBus } from "src/utils/eventbus.js";
 import { mapGetters } from "vuex";
 import { runtimeStore } from "src/store/runtime.store";
 
@@ -160,11 +158,11 @@ export default {
     ArtificialModeratorAssemblyHome,
   },
 
-  provide() {
-    return {
-      clickPluginLink: this.clickPluginLink,
-    };
-  },
+  // provide() {
+  //   return {
+  //     gotoStage: this.gotoStage,
+  //   };
+  // },
 
   computed: {
     stageType: function () {
@@ -224,23 +222,23 @@ export default {
       }
     },
 
-    getStepTitle: function (stage) {
-      //  this.loadComponent(this.stageType);
-      return stage.stage.title;
-    },
+    // getStepTitle: function (stage) {
+    //   //  this.loadComponent(this.stageType);
+    //   return stage.stage.title;
+    // },
 
-    clickPluginLink: function (stage) {
-      console.log("clickPluginLink");
-      var params = {
-        assemblyIdentifier: runtimeStore.assemblyIdentifier,
-        stageID: stage.stage.id,
-        contenttreeID: stage.stage.contenttree_id,
-      };
-      this.$router.push({
-        name: stage.stage.type,
-        params: params,
-      });
-    },
+    // gotoStage: function (stage) {
+    //   console.log("gotoStage");
+    //   var params = {
+    //     assemblyIdentifier: runtimeStore.assemblyIdentifier,
+    //     stageID: stage.stage.id,
+    //     contenttreeID: stage.stage.contenttree_id,
+    //   };
+    //   this.$router.push({
+    //     name: stage.stage.type,
+    //     params: params,
+    //   });
+    // },
 
     getIcon(stage) {
       console.assert(stage);
@@ -283,6 +281,16 @@ export default {
 
       return color;
     },
+  },
+
+  created() {
+    // Catch all authentication status changes
+    LayoutEventBus.$once("AssemblyLoaded", (data) => {
+      // console.log("LayoutEventBus on AssemblyLoaded")
+      this.gotoDefaultStageTeaser();
+    });
+
+    this.gotoDefaultStageTeaser();
   },
 };
 </script>

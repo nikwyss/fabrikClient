@@ -23,6 +23,7 @@ export default {
   computed: {
 
     routed_stage: function () {
+      console.log("get routed_stage", runtimeStore.stageID)
 
       if (!this.assembly_stages) {
         console.log('assembly is not yet loaded')
@@ -31,10 +32,13 @@ export default {
 
       if (!this.assembly_stages[runtimeStore.stageID]) {
         console.error('invalid stage in this assembly')
+        this.gotoAssemblyHome()
         return null
       }
 
       const stage = this.assembly_stages[runtimeStore.stageID]
+
+      // console.error('stage found', stage)
       LayoutEventBus.$emit("EventStageLoaded", stage)
       return (stage)
     },
@@ -64,6 +68,7 @@ export default {
     markCompleted() {
 
       // Notify stage as completed
+      console.assert(this.routed_stage)
       console.log("COMPLETED: Completed stage!");
       this.$root.monitorFire(constants.MONITOR_STAGE_COMPLETED);
     },
@@ -72,6 +77,7 @@ export default {
 
       // Notify stage as completed
       console.log("IDLE: Mark as Idle (unalert stage )")
+      console.assert(this.routed_stage)
       this.$root.monitorFire(constants.MONITOR_STAGE_IDLE)
     }
   }

@@ -6,7 +6,7 @@
 
 <template>
   <div
-    v-if="AM"
+    v-if="AM && Object.values(AM).length"
     :align="alignment"
     class="full-width"
   >
@@ -46,16 +46,16 @@
       >
 
         <q-chip
-          v-for="item in buttons"
-          :key="item.label"
+          v-for="(item, index) in buttons"
+          :key="index"
           :icon="item.icon"
           :size="item.size ? item.size : 'md'"
           outline
           color="#EEE"
           clickable
-          @click="item.action()"
+          @click="item.action(ctx)"
         >
-          {{ item.label }}
+          {{ item.label ? item.label(ctx) : '...'}}
         </q-chip>
 
         <!-- <slot name="actions"></slot> -->
@@ -132,10 +132,13 @@ export default {
       => For each visitor and each component the allocation of actors to the Am-roles varies
       randomly. (However, the allocation remains constant over time, browser-instance and page-reloads.)
       */
+      default: null,
       type: String,
     },
     role: {
-      type: Number,
+      default: null,
+      required: false,
+      type: Number || null,
     },
   },
 
@@ -151,7 +154,9 @@ export default {
 
     text() {
       const texts = this.AM.items.map((item) => {
-        return !item.condition || item.condition(this.ctx) ? item.body : "";
+        return !item.condition || item.condition(this.ctx)
+          ? item.body(this.ctx)
+          : "";
       });
       return texts.filter((text) => text.length > 0);
     },
@@ -160,9 +165,21 @@ export default {
       var buttons = [];
       this.AM.items.forEach((item) => {
         if (item.buttons && (!item.condition || item.condition(this.ctx))) {
-          buttons = buttons.concat(item.buttons);
+          item.buttons.forEach((button) => {
+            if (button && (!button.condition || button.condition(this.ctx))) {
+              buttons.push(button);
+            }
+          });
         }
       });
+
+      if (this.AM.buttons && this.AM.buttons.length) {
+        this.AM.buttons.forEach((button) => {
+          if (button && (!button.condition || button.condition(this.ctx))) {
+            buttons.push(button);
+          }
+        });
+      }
       return buttons;
     },
 
@@ -173,7 +190,6 @@ export default {
           crc += this.amGroup.charCodeAt(i);
         }
       } else {
-        console.log(JSON.stringify(this.AM).length);
         crc = this.ctx.$options.name.length + JSON.stringify(this.AM).length;
       }
       crc = Math.round(((parseInt(this.randomLocalStorageSeed) + crc) * 3) / 2);
@@ -217,6 +233,14 @@ export default {
     ...mapGetters({
       randomLocalStorageSeed: "assemblystore/randomLocalStorageSeed",
     }),
+  },
+
+  mounted() {
+    if (!Object.values(this.AM).length) {
+      console.log(
+        "Artificial Moderator did not receive any instructions. AM is empty..."
+      );
+    }
   },
 };
 </script>

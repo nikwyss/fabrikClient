@@ -1,6 +1,6 @@
 <style lang="sass" scoped>
 .assemblycard
-    margin-bottom: 6em
+  margin-bottom: 6em
 </style>
 
 <template>
@@ -68,11 +68,11 @@
 <script>
 import ArtificialModeratorAssemblyListOngoing from "./artificialmoderation/AssemblyListOngoing";
 import ArtificialModeratorAssemblyListOngoingSelection from "./artificialmoderation/AssemblyListOngoingSelection";
-import PublicIndex from "src/mixins/publicIndex";
+// import PublicIndex from "src/mixins/publicIndex";
 
 export default {
   name: "PageAssemblyList",
-  mixins: [PublicIndex],
+  // mixins: [PublicIndex],
   components: {
     ArtificialModeratorAssemblyListOngoingSelection,
     ArtificialModeratorAssemblyListOngoing,

@@ -33,7 +33,10 @@ export default route(function ({ Vue }) {
     if (to.params?.assemblyIdentifier) {
       runtimeMutations.setAssemblyIdentifier(to.params.assemblyIdentifier)
 
-      if (to.params?.stageID) {
+      if (to.params?.stageID !== null && to.params?.stageID !== undefined) {
+        // TODO: redirect to asembly home, when stage is invalid
+
+        console.log("router after each : new stage", to.params.stageID)
         runtimeMutations.setStageID(to.params.stageID)
       }
     }
