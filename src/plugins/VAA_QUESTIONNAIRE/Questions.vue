@@ -38,7 +38,7 @@
       <h2>Smartvote Fragebogen</h2><a name="TOPICSELECTION" />
 
       <VAATopicSelector
-        @input="selectTopic"
+        @input="selectTopicPrepare"
         :topicID="topicID"
       />
 
@@ -162,6 +162,8 @@
 
 
 <script>
+import { debounce } from "quasar";
+
 import ContentMixin from "src/mixins/content";
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
 import VAATopicSelector from "./components/TopicSelector";
@@ -228,11 +230,17 @@ export default {
   },
 
   methods: {
-    selectTopic(topicID) {
-      // First, set to null, for content container to hide and fade-in again..
+    selectTopicPrepare(topicID) {
+      console.log("SELECTED");
       this.detailView = false;
       this.topicID = topicID;
+      this.debouncedSelectTopic(topicID);
+    },
 
+    selectTopic(topicID) {
+      // console.log("TOPIC SELECTED");
+      this.detailView = false;
+      this.topicID = topicID;
       const route = {
         name: topicID
           ? "VAA_QUESTIONNAIRE_QUESTIONS_ENTRY"
@@ -249,6 +257,10 @@ export default {
         this.detailView = true;
       }, 200);
     },
+  },
+
+  created() {
+    this.debouncedSelectTopic = debounce(this.selectTopic, 1000);
   },
 };
 </script>

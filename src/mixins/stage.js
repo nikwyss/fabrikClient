@@ -52,17 +52,9 @@ export default {
   methods: {
 
     gotoIndexAndMoveOn: function () {
-
-      // const stageNr = this.assembly_sorted_stages.indexOf(this.stage_nr_last_visited)
       this.markIdle()
-
-      // Goto index and move on!
-      // console.log('update stage')
-      // console.log('stage has been updated: goto index')
       this.gotoNextStageNr(this.routed_stage)
       this.gotoAssemblyHome()
-      // this.scrollToStage()
-
     },
 
     markCompleted() {

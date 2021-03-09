@@ -12,17 +12,17 @@ const AMs = {
         buttons: [
           {
             action: (ctx) => ctx.gotoStage(ctx.next_scheduled_stage),
-            label: (ctx) => 'Ja, wir können weiterfahren!'
+            label: (ctx) => 'Lass uns weiterfahren!'
           }
         ]
       },
       {
-        prosa: ' ... und auch andernorts nichts mehr zu tun gibt.',
+        prosa: ' ... und andernorts nichts mehr zu tun gibt.',
         condition: (ctx) => !ctx.groupsScheduled?.length,
         body: (ctx) => `Sie haben alle Schritte in der Vorbereitungsphase bereits erledigt.`,
       },
       {
-        body: (ctx) => `PS: Natürlich können Sie auch nocheinmal einen Blick in das Infoblatt werfen, wenn Sie das möchten.`,
+        body: (ctx) => `PS: Natürlich können Sie nochmals einen Blick in das Infoblatt werfen, wenn Sie das möchten.`,
         condition: (ctx) => ctx.stageTypes.includes("TEXTSHEET"),
       },
     ]
@@ -34,11 +34,10 @@ const AMs = {
     loading: (ctx) => !ctx.routed_stage,
     items: [
       {
-        body: (ctx) => `In diesem Abschnitt geht es darum, die wichtigsten politischen Themen der nächsten Legislatur zu identifizieren. Welche politischen Herausforderungen liegen Ihnen besonders am Herzen?
-          Bitte sagen Sie uns, für wie wichtig für sie diese Themen sind.`,
+        body: (ctx) => `Setzen Sie die Themen des Wahlkampfes! In diesem Abschnitt geht es darum, die wichtigsten politischen Themen der nächsten Legislatur zu finden.`,
       },
       {
-        body: (ctx) => `Je mehr Relevanz die BürgerInnen den Themen beimessen, desto mehr Platz erhalten sie im finalen Smartvote-Fragebogen.`
+        body: (ctx) => `Je wichtiger die Themen für die BürgerInnen sind, desto mehr Platz erhalten sie im Smartvote-Fragebogen.`
       }
     ]
   },

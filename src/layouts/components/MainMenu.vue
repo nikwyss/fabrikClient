@@ -171,17 +171,7 @@ export default {
     },
 
     username_derivation: function () {
-      if (!this.public_profile) {
-        return "";
-      }
-      const altitude = this.public_profile.ALT;
-      const fullname = this.public_profile.FN;
-      const canton = this.public_profile.CA;
-      return this.$i18n.t("auth.name_derivation", {
-        fullname: fullname,
-        canton: canton,
-        altitude: altitude,
-      });
+      return this.$root.username_derivation(this.public_profile);
     },
 
     ...mapGetters({
@@ -206,6 +196,8 @@ export default {
   methods: {
     ...mapActions({
       gotoProfile: "publicprofilestore/gotoProfile",
+      // username: "publicprofilestore/username",
+      // username_derivate: "publicprofilestore/username_derivate",
     }),
   },
   mounted() {

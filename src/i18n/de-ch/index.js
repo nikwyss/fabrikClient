@@ -85,6 +85,8 @@ export default {
   auth: {
     salutation_for_guests: 'Lieber Gast!',
     name_derivation: 'Ihr Namensgeber ist der {altitude} Meter hohe Berg "{fullname}" ({canton})',
+    name_derivation_3rd_party: 'Der Namensgeber ist der {altitude} Meter hohe Berg "{fullname}" ({canton})',
+    name_derivation_3rd_party_short: 'in Köniz stimmberechtigt, benannt nach dem {altitude} Meter hohen Berg "{fullname}" ({canton})',
     login_button_label: 'Anmeldung',
     login_button_text: 'Klicken Sie auf \'Anmeldung\', wenn Sie sich anmelden möchten. Eine Anmeldung ist notwendig, um sich aktiv in der Fabrik zu beteiligen.',
     registered_as: 'Ihr Pseudonym',

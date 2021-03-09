@@ -271,14 +271,34 @@ export default {
       //   name: 'assembly_home',
       //   params: { assemblyIdentifier: assembly.assembly.identifier }
       // })
-    },
+    }
 
-      this.$root.logout = async (eventString = null, extra = {}) => {
-        await this.$store.dispatch('monitorFire', {
-          eventString: constants.MONITOR_LOGOUT, data: {}
-        })
-        this.oauth.logout()
+    this.$root.logout = async (eventString = null, extra = {}) => {
+      await this.$store.dispatch('monitorFire', {
+        eventString: constants.MONITOR_LOGOUT, data: {}
+      })
+      this.oauth.logout()
+    }
+
+
+    this.$root.username = (profile) => {
+      return profile ? profile.U : "Anonymous";
+    }
+
+    this.$root.username_derivation = (profile, shortversion) => {
+      if (!profile) {
+        return "";
       }
+      const altitude = profile.ALT;
+      const fullname = profile.FN;
+      const canton = profile.CA;
+
+      return this.$i18n.t(`auth.name_derivation_3rd_party${shortversion ? '_short' : ''}`, {
+        fullname: fullname,
+        canton: canton,
+        altitude: altitude,
+      });
+    }
 
     this.$root.monitorLog = async (eventString = null, extra = {}) => {
       if (!this.oauth.authorized) {

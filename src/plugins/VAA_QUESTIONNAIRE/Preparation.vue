@@ -6,15 +6,15 @@
 <template>
   <q-page class="doc_content">
 
-    <!-- ASSEMBLY DESCRIPTION -->
-    <h2>Vorbereitung</h2>
-
     <ArtificialModeration
       :AM="AMs.preparation_completed"
       alignment="right"
       :ctx="that"
     />
-    <!-- {{that.gotoStage}} -->
+
+    <!-- ASSEMBLY DESCRIPTION -->
+    <h2>Vorbereitung</h2>
+
     <!-- STAGES -->
     <q-stepper
       v-if="stages"

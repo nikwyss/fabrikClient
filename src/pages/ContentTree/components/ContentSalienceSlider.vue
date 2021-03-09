@@ -27,7 +27,7 @@
             v-model="value"
             :min="min"
             :max="max"
-            @change="initSet"
+            @change="debouncedIniSet"
             label
             label-always
             :label-value="getSlideLabel"
@@ -51,6 +51,7 @@
 
 <script>
 import { colors } from "quasar";
+import { debounce } from "quasar";
 import { mapActions } from "vuex";
 import constants from "src/utils/constants";
 
@@ -131,6 +132,7 @@ export default {
 
   methods: {
     initSet() {
+      // console.log("SET NEW VALUE");
       // INIT Salience Monitor
       const data = {
         contentID: this.content.content.id,
@@ -147,6 +149,10 @@ export default {
     },
 
     ...mapActions("contentstore", ["update_salience"]),
+  },
+
+  created() {
+    this.debouncedIniSet = debounce(this.initSet, 1200);
   },
 
   mounted: function () {

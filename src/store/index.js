@@ -84,6 +84,12 @@ export default new Vuex.Store({
         if (!data.ok) { return (null) }
         console.log("ACTION MONITORED: OK!")
 
+        // Some of the events could not be stored into the DB
+        if (data.response.errors) {
+          data.response.errors.forEach(error => { console.error(error.message, error.event) })
+
+        }
+
         // Write newest data to the store!
         dispatch('updateStore', { data: data.response })
 

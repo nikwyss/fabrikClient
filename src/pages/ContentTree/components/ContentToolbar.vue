@@ -64,7 +64,6 @@
         name="`elBackground${obj.content.id}`"
         :obj="obj"
       />
-
       <!-- <ContentRatingThumbs
         v-if="IsContributor"
         name="`elRating${obj.content.id}`"
@@ -81,7 +80,6 @@ import ContentBackground from "./ContentBackground";
 import ApiService from "src/utils/xhr";
 import { mapActions, mapGetters } from "vuex";
 import { runtimeStore } from "src/store/runtime.store";
-
 
 export default {
   name: "ContentToolbarComponent",
@@ -115,9 +113,13 @@ export default {
       return this.track_changes ? "brown-9" : "grey-6";
     },
 
-    ...mapGetters(
-        'assemblystore', ['IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
-    )
+    ...mapGetters("assemblystore", [
+      "IsDelegate",
+      "IsExpert",
+      "IsContributor",
+      "IsObserver",
+      "IsManager",
+    ]),
   },
 
   methods: {
@@ -235,6 +237,6 @@ export default {
     ...mapActions({
       add_or_update_contenttree: "contentstore/add_or_update_contenttree",
     }),
-  }
+  },
 };
 </script>

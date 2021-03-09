@@ -69,10 +69,11 @@ export default {
     },
 
     stageTransition: function (newVal, oldVal) {
-      this.scrollToStage()
+      //   // this.scrollToStage()
     },
 
     laggedScrollToStage: function () {
+      console.log("KKKKKKKKKKK")
       setTimeout(() => {
         this.scrollToStage()
       }, 200)

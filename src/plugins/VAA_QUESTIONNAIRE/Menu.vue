@@ -15,6 +15,9 @@
 
     <q-tabs
       v-model="currenttab"
+      inline-label
+      outside-arrows
+      mobile-arrows
       v-if="stages_by_groups"
     >
       <CustomQRouteTab
