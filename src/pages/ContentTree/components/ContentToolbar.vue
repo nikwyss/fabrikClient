@@ -1,90 +1,176 @@
-<style>
-</style>
 <template>
-  <div
-    class="q-pa-none"
-    style=""
-  >
+  <!-- <span
+    style="display:inline-block"
+    class="vertical-bottom "
+    padding="0px"
+    color="white"
+  > -->
+  <!-- <q-toolbar shrink> -->
+  <!-- REPLY BUTTON -->
+  <!-- <q-btn
+      v-if="obj.content.append_permission"
+      @click="popup_create"
+      flat
+      padding="0px"
+      margin="0px"
+      class="q-pa-none q-ma-none"
+      size="1.1em"
+      stack
+      icon="mdi-reply-outline"
+    > Antwort -->
+  <!-- <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.reply_proposal') : $t('contenttree.toolbar.reply')}}</q-tooltip> -->
+  <!-- <q-tooltip>{{$t('contenttree.toolbar.reply')}}</q-tooltip>
+    </q-btn> -->
 
-    <q-toolbar
-      shrink
-      class="rounded-borders q-pr-none"
+  <!-- EDIT BUTTON -->
+  <!-- <q-btn
+      padding="5px"
+      stack
+      size="1.1em"
+      flat
+      @click="popup_edit"
+      v-if="obj.content.edit_permission"
     >
 
-      <!-- REPLY BUTTON -->
-      <q-btn
-        flat
-        @click="popup_create"
-        round
-        color="primary"
-        icon="mdi-reply-outline"
-      >
-        <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.reply_proposal') : $t('contenttree.toolbar.reply')}}</q-tooltip>
-      </q-btn>
+      <template> -->
+  <!-- <q-card
+    flat
+    class="bg-none"
+    bordered
+  > -->
 
-      <!-- EDIT BUTTON -->
-      <q-btn
-        padding="0px"
-        flat
-        @click="popup_edit"
-        round
-        v-if="obj.content.edit_permission"
-        color="primary"
-        icon="mdi-playlist-edit"
-      >
-        <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.edit_proposal') : $t('contenttree.toolbar.edit')}}</q-tooltip>
-      </q-btn>
+  <q-card-actions
+    align="right"
+    horizontal
+  >
 
-      <!-- DELETE -->
-      <q-btn
-        padding="0px"
-        round
-        dense
-        flat
-        size="sm"
-        v-if="obj.content.delete_permission"
-        @click="deletePrompt(obj.content)"
-        :icon="obj.content.common_property ? 'mdi-delete-outline' : 'mdi-delete-circle-outline'"
-      >
-        <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.delete_proposal') : $t('contenttree.toolbar.delete')}}</q-tooltip>
-      </q-btn>
-      <!-- <q-separator v-if="obj.content.delete_permission" vertical inset /> -->
+    <q-card-section
+      vertical
+      align="center"
+      @click="popup_edit"
+      margin="0px"
+      v-if="obj.content.edit_permission"
+      class="q-pa-sm q-ma-none  cursor-pointer"
+    >
+      <q-icon
+        right
+        size="md"
+        class="q-pa-none q-ma-none"
+        name="mdi-reply-outline"
+      />
+      <q-card-section class="q-pa-none q-ma-none">
+        Antwort
+      </q-card-section>
+    </q-card-section>
 
-      <!-- Track changes -->
-      <!-- <q-btn  @click="switchTrackChanges" :color="track_changes_color"
+    <q-card-section
+      vertical
+      align="center"
+      v-if="obj.content.append_permission"
+      @click="popup_create"
+      flat
+      margin="0px"
+      class="q-pa-sm q-ma-none cursor-pointer"
+    >
+      <q-icon
+        right
+        size="md"
+        class="q-pa-none q-ma-none"
+        name="mdi-playlist-edit"
+      />
+      <q-card-section class="q-pa-none q-ma-none">
+        Ändern</q-card-section>
+    </q-card-section>
+
+    <ContentRatingThumbs
+      name="`elRating${obj.content.id}`"
+      :content="obj"
+    />
+
+  </q-card-actions>
+
+  <!-- </q-card> -->
+
+  <!-- <div class="row items-center ">
+          <q-icon
+            right
+            name="mdi-playlist-edit"
+          />
+          <div class="text-center">
+            Ändern
+          </div>
+        </div> -->
+
+  <!-- icon="mdi-playlist-edit" -->
+  <!-- <q-icon :name="button.ratingicon">
+            <q-tooltip>{{$t(`contenttree.rating.${button.tooltipNr}`)}}</q-tooltip>
+          </q-icon> -->
+
+  <!-- </div> -->
+
+  <!-- </template> -->
+
+  <!-- <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.edit_proposal') : $t('contenttree.toolbar.edit')}}</q-tooltip> -->
+  <!-- </q-btn> -->
+
+  <!-- DELETE -->
+  <!-- <q-btn
+      padding="0px"
+      round
+      size="1.2em"
+      dense
+      flat
+      stack
+      v-if="obj.content.delete_permission"
+      size="sm"
+      @click="deletePrompt(obj.content)"
+      :icon="obj.content.common_property ? 'mdi-delete-outline' : 'mdi-delete-circle-outline'"
+    > -->
+  <!-- <q-tooltip>{{obj.content.common_property ? $t('contenttree.toolbar.delete_proposal') : $t('contenttree.toolbar.delete')}}</q-tooltip>
+    </q-btn> -->
+  <!-- <q-separator v-if="obj.content.delete_permission" vertical inset /> -->
+
+  <!-- Track changes -->
+  <!-- <q-btn  @click="switchTrackChanges" :color="track_changes_color"
         size="sm"
         class="q-mr-sm primary red" round dense flat  title="Track changes" :icon="track_changes_icon">
         <q-tooltip>{{$t('contenttree.toolbar.track_changes')}}</q-tooltip>
       </q-btn> -->
 
-      <!-- <q-separator vertical inset /> -->
+  <!-- <q-separator vertical inset /> -->
 
-      <ContentBackground
-        v-if="IsObserver"
-        name="`elBackground${obj.content.id}`"
-        :obj="obj"
-      />
-      <!-- <ContentRatingThumbs
+  <!-- <ContentRatingThumbs
         v-if="IsContributor"
         name="`elRating${obj.content.id}`"
         :content="obj"
       /> -->
+  <!-- 
+    <ContentBackground
+      v-if="IsObserver"
+      ref="backgroundDialog"
+      name="`elBackground${obj.content.id}`"
+      :obj="obj"
+    /> -->
 
-    </q-toolbar>
-  </div>
+  <!-- </q-toolbar> -->
+  <!-- </div> -->
+  <!-- </span> -->
 </template>
 
 
 <script>
-import ContentBackground from "./ContentBackground";
+// import ContentBackground from "./ContentBackground";
 import ApiService from "src/utils/xhr";
 import { mapActions, mapGetters } from "vuex";
 import { runtimeStore } from "src/store/runtime.store";
+import ContentRatingThumbs from "./ContentRatingThumbs";
 
 export default {
   name: "ContentToolbarComponent",
   props: ["obj"],
-  components: { ContentBackground },
+  components: {
+    ContentRatingThumbs,
+  },
   inject: ["QUASAR_TREE", "contenttreeID", "popup_content_form"], // is injecting CONTENTTREE needed: only for contenttree_id, right?
   data() {
     return {

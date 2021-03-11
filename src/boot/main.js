@@ -6,6 +6,17 @@ import { runtimeStore } from "src/store/runtime.store"
 import Constants from 'src/utils/constants'
 Vue.prototype.Constants = Constants
 
+// CONFIGURATION
+// outside of a Vue component:
+import { Screen } from 'quasar'
+// lg: 1440
+// md: 1024
+// sm: 600
+// xl: 1920
+const defaultSizes = Screen.sizes;
+defaultSizes.md = 900;
+Screen.setSizes(defaultSizes)
+// 
 // SANITIZER
 /////////////////////////////////
 import VueDOMPurifyHTML from 'vue-dompurify-html'

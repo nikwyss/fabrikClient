@@ -159,6 +159,9 @@ export default {
     },
 
     currentSelectedStageAM: function () {
+      if (!this.currentSelectedStage) {
+        return {};
+      }
       const type = this.currentSelectedStage.stage.type;
       if (AMs[`stage_teaser_${type}`]) {
         return AMs[`STAGE_TEASER_${type}`];

@@ -12,14 +12,14 @@
           :key="item.label"
           clickable
           :class="{hidden: (item.visible && !item.visible())}"
-          :style="$q.screen.width >= $q.screen.sizes.md && selectedItems.includes(item.anchor) ? selectedStyle : ''"
-          @click="scrollToAnchor(item.anchor)"
+          :style="$q.screen.gt.sm && selectedItems.includes(item.anchor) ? selectedStyle : ''"
+          @click="$root.scrollToAnchor(item.anchor)"
           v-ripple
         >
 
           <q-item-section class="lt-md">
             <q-radio
-              @input="scrollToAnchor"
+              @input="$root.scrollToAnchor"
               :value="selectedItem"
               :val="item.anchor"
             />
@@ -48,8 +48,6 @@
 import { mapGetters } from "vuex";
 import { dom } from "quasar";
 const { offset } = dom;
-import { scroll } from "quasar";
-const { setScrollPosition, getScrollTarget } = scroll;
 
 export default {
   name: "SideMenu",
@@ -101,21 +99,6 @@ export default {
         return anchors[anchors.length - 1];
       }
       return selected;
-    },
-
-    scrollToAnchor(anchor) {
-      const dom = document.getElementsByName(anchor);
-      const ele = dom?.item(0);
-      if (ele) {
-        this.fixedSelectedItem = anchor;
-        const offset =
-          ele.offsetTop - ele.scrollHeight - this.$root.headerOffset;
-
-        const target = getScrollTarget(ele);
-        const duration = 300;
-        setScrollPosition(target, offset, duration);
-        setTimeout(() => (this.fixedSelectedItem = null), duration);
-      }
     },
   },
 

@@ -140,8 +140,16 @@ export default {
     },
 
     methods: {
-        is_currently_expanded: function (node_id) {
-            return (this.expanded.includes(node_id))
+        is_currently_expanded: function (node) {
+            if (!node.children?.length) {
+                return;
+            }
+            // console.log(node.children.length, "chidlren")
+            return (this.expanded.includes(node.id))
+        },
+
+        is_expandable: function (node) {
+            return !!node.children?.length;
         },
 
         collapse_all_children: function (parent_id) {

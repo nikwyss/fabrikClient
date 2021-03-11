@@ -14,25 +14,33 @@
 </style>
 <template>
   <q-toolbar>
-    <q-space />
+    <!-- Left-Align: Small PAges -->
     <q-toolbar-title
-      style="min-width:200px; font-weight:400"
-      v-if="assemblyName"
-    >{{assemblyName}}</q-toolbar-title>
-    <!-- Basic Menu:  -->
+      v-if="$q.screen.lt.md && assemblyName"
+      style=" font-weight:400"
+    >
+      {{assemblyName}}
+    </q-toolbar-title>
+    <q-space v-if="$q.screen.gt.sm && assemblyName" />
+    <!-- Center: Large Pages -->
+    <q-toolbar-title
+      v-if="$q.screen.gt.sm && assemblyName"
+      style=" font-weight:400"
+    >
+      {{assemblyName}}
+    </q-toolbar-title>
+
+    <!-- Extended TOP Menu: (large page or none-assembly page)  -->
     <q-item
       v-for="item in menu"
       clickable
-      v-show="!is_assembly_page"
+      v-if="!is_assembly_page && $q.screen.gt.xs"
       :label=item.text
       :class="item.to.name == currentRoute ? 'topmenuSelected' : 'topmenuDefault'"
       @click="$router.pushR(item.to)"
       :key="item.text"
     >{{item.text}}
     </q-item>
-    <!-- </div> -->
-    <!-- <slot name="menuitems"></slot> -->
-    <!-- <q-separator vertical /> -->
 
     <!-- MENU: for assembly views  -->
     <q-btn
@@ -40,7 +48,7 @@
       flat
       icon="mdi-menu"
       label=""
-      v-if="is_assembly_page"
+      v-if="is_assembly_page || $q.screen.lt.sm "
     >
       <q-menu>
         <q-list style="min-width: 100px">

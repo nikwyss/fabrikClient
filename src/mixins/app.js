@@ -3,7 +3,8 @@ import { LayoutEventBus } from "src/utils/eventbus"
 import { oAuthEventBus } from "src/utils/VueOAuth2PKCE/eventbus"
 import constants from 'src/utils/constants'
 import { runtimeStore, runtimeMutations } from "src/store/runtime.store"
-// import store from 'src/store'
+import { scroll } from "quasar";
+const { setScrollPosition, getScrollTarget } = scroll;
 
 
 export default {
@@ -273,12 +274,27 @@ export default {
       // })
     }
 
-    this.$root.logout = async (eventString = null, extra = {}) => {
-      await this.$store.dispatch('monitorFire', {
-        eventString: constants.MONITOR_LOGOUT, data: {}
-      })
-      this.oauth.logout()
-    }
+
+    this.$root.scrollToAnchor = (anchor, duration = 300) => {
+      const dom = document.getElementsByName(anchor);
+      const ele = dom?.item(0);
+      if (ele) {
+        this.fixedSelectedItem = anchor;
+        const offset =
+          ele.offsetTop - ele.scrollHeight - this.$root.headerOffset;
+
+        const target = getScrollTarget(ele);
+        setScrollPosition(target, offset, duration);
+        setTimeout(() => (this.fixedSelectedItem = null), duration);
+      }
+    },
+
+      this.$root.logout = async (eventString = null, extra = {}) => {
+        await this.$store.dispatch('monitorFire', {
+          eventString: constants.MONITOR_LOGOUT, data: {}
+        })
+        this.oauth.logout()
+      }
 
 
     this.$root.username = (profile) => {
@@ -402,5 +418,11 @@ export default {
 
     // END
     console.log("*** APP MOUNTED ***", this.$root.hasCustomMenu)
+  },
+
+  beforeDestroy() {
+    // TODO: destroy all eventbus listeners!!!
+    // Don't forget to turn the listener off before your component is destroyed
+    // this.$root.$off('openLeftDrawer', this.openLeftDrawerCallback)
   }
 }

@@ -50,7 +50,7 @@
         <q-item>
           <q-item-section>
             <q-item-label>
-              Aktivitäten: Bewerten
+              Bewertungen
             </q-item-label>
             <q-item-label caption>
               (Relevanz und Zustimmung)
@@ -62,7 +62,7 @@
             top
           >
             <q-item-label>
-              {{S.CRC}} {{S.CRC===1 ? 'Beitrag' : 'Beiträge'}}
+              {{S.CRC}} {{S.CRC===1 ? 'Bewertung' : 'Bewertungen'}}
             </q-item-label>
           </q-item-section>
         </q-item>
@@ -71,13 +71,13 @@
 
           <q-item-section>
             <q-item-label>
-              Aktivitäten: Hinzufügen
+              Eigene Beiträge
             </q-item-label>
           </q-item-section>
 
           <q-item-section side>
             <q-item-label>
-              {{S.CCC}} {{S.CCC===1 ? 'Beitrag' : 'Beiträge'}}
+              {{S.CCC}} {{S.CCC===1 ? 'Eigenen Beitrag' : 'Eigene Beiträge'}}
             </q-item-label>
           </q-item-section>
 
@@ -86,12 +86,12 @@
         <q-item>
           <q-item-section top>
             <q-item-label>
-              Erhaltene Zustimmung
+              Durchschnittlich erhaltene Zustimmung
             </q-item-label>
           </q-item-section>
           <q-item-section side>
-            <q-item-label>{{S.RSC ? Math.round(S.RSA) + '%' : '-'}}</q-item-label>
-            <q-item-label caption>({{S.RSC}} Voten)</q-item-label>
+            <q-item-label>{{S.RSC && Number.isInteger(S.RSA) ? Math.round(S.RSA) + '%' : '-'}}</q-item-label>
+            <q-item-label caption>{{S.RSC && Number.isInteger(S.RSA) ? `(${S.RSC} Voten)`: ''}}</q-item-label>
           </q-item-section>
 
         </q-item>

@@ -69,7 +69,7 @@
         :disabled="!profile.original_email"
         v-if="!!this.profile.original_email"
         outline
-        :label="$t('app.btn_skip')"
+        :label="$t('app.btn_close')"
         @click="skipProfile"
       />
 
@@ -87,11 +87,11 @@
 
 <script>
 // import Configuration from 'src/utils/configuration'
-import ApiService from "src/utils/xhr"
-import api from "src/utils/api"
-import {mapGetters} from "vuex"
-import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer"
-import { LayoutEventBus } from "src/utils/eventbus.js"
+import ApiService from "src/utils/xhr";
+import api from "src/utils/api";
+import { mapGetters } from "vuex";
+import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer";
+import { LayoutEventBus } from "src/utils/eventbus.js";
 
 export default {
   name: "PopupProfile",
@@ -102,7 +102,7 @@ export default {
     destination_route: Object,
   },
 
-  data () {
+  data() {
     return {
       profile: {
         pseudonym: "",
@@ -119,9 +119,10 @@ export default {
   },
 
   computed: {
-
     username_derivation: function () {
-      if (!this.public_profile) {return ""}
+      if (!this.public_profile) {
+        return "";
+      }
       const altitude = this.public_profile.ALT;
       const fullname = this.public_profile.FN;
       const canton = this.public_profile.CA;
@@ -129,7 +130,7 @@ export default {
         fullname: fullname,
         canton: canton,
         altitude: altitude,
-      })
+      });
     },
 
     ...mapGetters({

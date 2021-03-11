@@ -305,7 +305,7 @@ export default {
     close_comment_section: 'Forum schliessen',
     notification_number_of_expanded: 'Sie sehen aktuell {nof_shown} von {nof_total} Beiträgen.',
     expand_all: 'Beiträge ausklappen',
-    collapse_all: 'Beiträge einklappen',
+    collapse_all: 'Beiträge schliessen',
     toolbar: {
       reply: 'Möchten Sie diesem Beitrag antworten?',
       edit: 'Möchten Sie diesen Beitrag bearbeiten?',
