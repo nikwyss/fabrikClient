@@ -28,10 +28,15 @@ export default {
     SHould the Tree be displayed in <dense> layout?
     SHould the whole ContentTree be displayed or only a specific <customStartingNodes>?
 
-    <customLimitNodeTypes>: You may additionaly limit the nodetypes to insert:...
+    <filterTypes>: You may additionaly limit the nodetypes to insert:...
     If nothing is indicated: every type is allowed, that is allowed for the given parent. */
 
-    props: ['label', 'dense', 'customStartingNodes', 'customStartingParentID', 'customLimitNodeTypes'],
+    props: [
+        'label',
+        'dense',
+        'customStartingNodes',
+        'customStartingParentID',
+        'filterTypes'],
     mixins: [ReactiveProvidePropertiesMixin],
     provide() {
         return {
@@ -106,11 +111,11 @@ export default {
 
         /* Which node types are allowed within this contenttree/branch? */
         limitNodeTypes: function () {
-            // get customLimitNodeTypes
+            // get filterTypes
             var allowed_node_types = this.get_allowed_node_types({ contenttreeID: this.CONTENTTREE.contenttreeID })
             // console.log(allowed_node_types)
-            if (this.customLimitNodeTypes) {
-                allowed_node_types = allowed_node_types.filter(v => this.customLimitNodeTypes.includes(v))
+            if (this.filterTypes) {
+                allowed_node_types = allowed_node_types.filter(v => this.filterTypes.includes(v))
             }
             // console.log(allowed_node_types)
             return (allowed_node_types)

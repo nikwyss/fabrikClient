@@ -11,14 +11,16 @@ export default {
     StageMixin,
     ReactiveProvideMixin({
       name: 'CONTENTTREE',
-      include: ['contenttreeID', 'contenttree', 'isRead', 'ratingCompleted', 'salienceCompleted'],
+      include: ['contenttreeID', 'contenttree', 'ratingCompleted', 'salienceCompleted'],
     })
   ],
 
   provide() {
     return {
+      isRead: this.isRead,
       openIndex: this.openIndex,
-      openArgument: this.openArgument
+      openArgument: this.openArgument,
+      filter_entries: this.filter_entries
     }
   },
 
@@ -71,7 +73,7 @@ export default {
       // console.log("rating completed?? rerun...")
       const allRated = this.numberOfUnratedTopLevelEntries == 0
       if (allRated && this.is_stage_scheduled(this.routed_stage)) {
-        this.markIdle()
+        this.a()
       }
 
       return (allRated)
@@ -83,7 +85,7 @@ export default {
       // console.log("salience completed?? rerun...")
       const allSalienced = this.numberOfUnsaliencedTopLevelEntries == 0
       if (allSalienced && this.is_stage_scheduled(this.routed_stage)) {
-        this.markIdle()
+        this.milestone('salienceCompleted', 4)
       }
 
       return (allSalienced)
@@ -155,7 +157,7 @@ export default {
     },
 
     isRead: function (content) {
-      return (content?.progression)
+      return (!!content?.progression)
     },
 
     isSalienced: function (content) {

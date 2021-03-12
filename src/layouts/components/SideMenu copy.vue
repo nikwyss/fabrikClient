@@ -11,17 +11,19 @@
           v-for="item in items"
           :key="item.label"
           clickable
-          :disable="enabledAnchors && !enabledAnchors.includes(item.anchor)"
           :class="{hidden: (item.visible && !item.visible())}"
-          :style="selectedItemsAnchor.includes(item.anchor) ? selectedStyle : ''"
+          :style="$q.screen.gt.sm && selectedItems.includes(item.anchor) ? selectedStyle : ''"
           @click="$root.scrollToAnchor(item.anchor)"
           v-ripple
         >
 
           <q-item-section class="lt-md">
-            <q-icon
+
+            <q-radio
               dense
-              :name="selectedItemAnchor==item.anchor ? 'mdi-checkbox-blank-circle' : 'mdi-checkbox-blank-circle-outline'"
+              @input="$root.scrollToAnchor"
+              :value="selectedItem"
+              :val="item.anchor"
             >
               <q-tooltip
                 anchor="center left"
@@ -29,11 +31,11 @@
                 :offset="[10, 10]"
                 content-class="tooltip"
               >{{item.label}}</q-tooltip>
-            </q-icon>
+            </q-radio>
           </q-item-section>
 
           <q-item-section class="gt-sm">
-            <q-item-label>{{item.label}}</q-item-label>
+            <q-item-label style="width: 150px">{{item.label}}</q-item-label>
             <q-item-label
               v-if="item.caption"
               style="width: 150px"
@@ -43,7 +45,6 @@
           </q-item-section>
         </q-item>
       </q-list>
-
     </div>
     <q-scroll-observer
       @scroll="onScroll"
@@ -55,10 +56,6 @@
 <script>
 import { mapGetters } from "vuex";
 import { dom } from "quasar";
-
-import { colors } from "quasar";
-const { changeAlpha } = colors;
-
 const { offset } = dom;
 
 export default {
@@ -66,22 +63,20 @@ export default {
   props: ["items"],
   data() {
     return {
-      scrollSelectedItemAnchor: null,
-      fixedSelectedItemAnchor: null,
-      enabledAnchors: null,
-      // step: null,
+      scrollSelectedItem: null,
+      fixedSelectedItem: null,
     };
   },
   computed: {
-    selectedItemAnchor() {
-      return this.fixedSelectedItemAnchor
-        ? this.fixedSelectedItemAnchor
-        : this.scrollSelectedItemAnchor;
+    selectedItem() {
+      return this.fixedSelectedItem
+        ? this.fixedSelectedItem
+        : this.scrollSelectedItem;
     },
 
-    selectedItemsAnchor() {
+    selectedItems() {
       // it is possible that two are selected: onclick event!
-      return [this.fixedSelectedItemAnchor, this.scrollSelectedItemAnchor];
+      return [this.fixedSelectedItem, this.scrollSelectedItem];
     },
 
     selectedStyle() {
@@ -89,34 +84,17 @@ export default {
       return `background-color: ${color}; color:#fff;`;
     },
 
-    itemAnchors() {
-      return this.items.map((item) => item.anchor);
-    },
-
     ...mapGetters({
       public_profile: "publicprofilestore/get_public_profile",
     }),
-
-    // profileColorWithAlpha() {
-    //   return changeAlpha(this.public_profile.CO, 0.7);
-    // },
   },
   methods: {
     onScroll(info) {
-      this.scrollSelectedItemAnchor = this.getSelectedItemAnchor();
+      this.scrollSelectedItem = this.getSelectedItem();
     },
 
-    getEnabledAnchors() {
-      const anchors = this.itemAnchors;
-      return anchors.filter((anchor) => !!document.getElementsByName(anchor));
-    },
-
-    refresh() {
-      this.enabledAnchors = this.getEnabledAnchors();
-    },
-
-    getSelectedItemAnchor() {
-      const anchors = JSON.parse(JSON.stringify(this.itemAnchors));
+    getSelectedItem() {
+      const anchors = this.items.map((item) => item.anchor);
       anchors.reverse();
       var selected = anchors.find((anchor) => {
         const dom = document.getElementsByName(anchor);
@@ -135,8 +113,7 @@ export default {
 
   mounted() {
     if (this.items) {
-      this.scrollSelectedItemAnchor = this.items[0].anchor;
-      this.enabledAnchors = this.getEnabledAnchors();
+      this.scrollSelectedItem = this.items[0].anchor;
     }
   },
 };

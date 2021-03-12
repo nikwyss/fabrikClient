@@ -3,7 +3,7 @@
     <a :name="`CONTENTTREE${CONTENTTREE.contenttree.id}`" />
     <div align="right">
       <q-btn
-        v-if="!!item.content"
+        v-if="!!entry.content"
         flat
         align="right"
         @click="toggleDiscussion"
@@ -13,7 +13,7 @@
         size="md"
       >
         <q-badge
-          v-if="comments.length && nof_descendants_unread"
+          v-if="childrenNodes.length && nof_descendants_unread"
           color="red"
           floating
         >{{nof_descendants_unread}}</q-badge>
@@ -35,15 +35,15 @@
       <ComponentContentTree
         class="q-pa-xs full-width bg-grey-1"
         v-if="show_discussion"
-        :startingNode="startingNode"
+        :startingNode="node"
         :dense="true"
-        :customStartingNodes="comments"
-        :customStartingParentID="item.content.id"
-        :customLimitNodeTypes="['COMMENT', 'QUESTION', 'ANSWER']"
+        :customStartingNodes="childrenNodes"
+        :customStartingParentID="entry.content.id"
+        :filterTypes="['COMMENT', 'QUESTION', 'ANSWER']"
         :hideNoEntryText="true"
         :hideNofEntriesText="true"
-        :artificialmoderationComponents="artificialmoderationComponents"
       >
+        <!-- :artificialmoderationComponents="artificialmoderationComponents" -->
         <template v-slot:actions>
           <!-- Close when possible -->
           <q-chip
@@ -69,10 +69,9 @@ export default {
   name: "DefaultDiscussionBlock",
   components: { ComponentContentTree },
   props: [
-    "artificialmoderationComponents",
-    "item",
-    "comments",
-    "startingNode",
+    // "artificialmoderationComponents",
+    "node",
+    "filterTypes",
     "discussionBlockLabel",
   ],
   data() {
@@ -81,40 +80,38 @@ export default {
     };
   },
 
-  inject: ["openIndex", "CONTENTTREE"],
+  inject: ["openIndex", "CONTENTTREE", "filter_entries", "isRead"],
 
   computed: {
+    entry() {
+      return this.CONTENTTREE.contenttree.entries[this.node.id];
+    },
+
+    childrenNodes() {
+      if (this.filterTypes) {
+        return this.filter_entries(this.node.children, this.filterTypes);
+      }
+      return this.node.children;
+    },
+
+    /* 
+    Calculate the sum of the descendants of all 
+    children with coressponding Filtertypes 
+    NOTE: this assumes, that once filtered children do not have unexcepted descendant types..
+    */
     nof_descendants_unread: function () {
       // summ up descendants_unread of the root elements
-      const that = this;
-      const counting = function (node) {
-        if (Number.isInteger(node)) {
-          return node;
-        }
-        return (
-          that.CONTENTTREE.isRead(
-            that.CONTENTTREE.contenttree.entries[node.id]
-          ) + node.nof_descendants_unread
-        );
-      };
-      var nof_descendants_unread = this.comments.reduce(function (prev, cur) {
-        return counting(prev) + counting(cur);
-      }, 0);
-      return nof_descendants_unread;
+      const listOfNumbers = this.childrenNodes.map((node) => {
+        return node.nof_descendants_unread + this.isRead(node.id);
+      });
+      return listOfNumbers.reduce((a, b) => a + b, 0);
     },
 
     nof_descendants: function () {
-      if (!this.comments?.length) {
-        return 0;
-      }
-      const nof_descendants = this.comments.reduce(function (
-        accumulator,
-        child
-      ) {
-        return accumulator + child.nof_descendants;
-      },
-      0);
-      return nof_descendants + this.comments.length;
+      const listOfNumbers = this.childrenNodes.map((node) => {
+        return node.nof_descendants + 1;
+      });
+      return listOfNumbers.reduce((a, b) => a + b, 0);
     },
   },
   methods: {
@@ -123,7 +120,7 @@ export default {
       if (this.show_discussion) {
         this.$root.scrollToAnchor(
           `CONTENTTREE${this.CONTENTTREE.contenttree.id}`,
-          50
+          0
         );
       }
 
@@ -131,7 +128,7 @@ export default {
       this.show_discussion = !this.show_discussion;
 
       // Monitor action
-      const extra = { content_id: this.item.content.id };
+      const extra = { content_id: this.entry.content.id };
       if (this.show_discussion) {
         this.$root.monitorLog(constants.MONITOR_DISCUSSION_SHOW, extra);
       } else {

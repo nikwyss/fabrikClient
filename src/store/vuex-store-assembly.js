@@ -10,22 +10,30 @@ import { runtimeStore } from "src/store/runtime.store";
 import { date } from 'quasar'
 
 var state = {
-  // monitors: {},
   assemblydata: {},
   randomSeed: null,
-  stages: {}
-  // current_stages: {}
+  stages: {},
+  milestones: {}
 }
 
 const getters = {
 
-  assembly: (state, getters) => {
+  assemblyTuple: (state, getters) => {
 
     if (!runtimeStore.assemblyIdentifier) {
       return null
     }
 
-    return (state.assemblydata[runtimeStore.assemblyIdentifier]?.assembly)
+    return (state.assemblydata[runtimeStore.assemblyIdentifier])
+  },
+
+  assembly: (state, getters) => {
+
+    if (!getters.assemblyTuple) {
+      return null
+    }
+
+    return (getters.assemblyTuple.assembly)
   },
 
   assemblyName: (state, getters) => {
@@ -41,6 +49,56 @@ const getters = {
       return (getters.assembly.type)
     }
   },
+
+  assembly_configuration: (state, getters) => {
+    if (!getters.assemblyTuple) {
+      console.log('...assemblyTuple not ready')
+      return null
+    }
+    return (getters.assemblyTuple.configuration)
+  },
+
+  assembly_userid: (state, getters) => {
+
+    if (!getters.assemblyTuple) {
+      console.log('...assemblyTuple not ready')
+      return null
+    }
+
+    return (getters.assemblyTuple.access_sub)
+  },
+
+
+  assemblyProgression: (state, getters) => {
+
+    if (!getters.assemblyTuple) {
+      return null
+    }
+
+    return (getters.assemblyTuple.progression)
+  },
+
+  assembly_stages: (state, getters) => {
+    if (!getters.assemblyTuple) {
+      console.log('...assemblyTuple not ready')
+      return null
+    }
+
+    const stage_keys = getters.assemblyTuple.stages
+
+    /** 
+     * filter only the stages of the specific assembly
+     * */
+    const stages = Object.keys(state.stages)
+      .filter(key => stage_keys.includes(`${key}`))
+      .reduce((obj, key) => {
+        obj[key] = state.stages[key];
+        return obj;
+      }, {})
+
+    return stages
+  },
+
 
   /**
    * oAuth Server delivers user roles in the format "<role>@<assemblyIdentifier>".
@@ -81,50 +139,37 @@ const getters = {
     return (state.randomSeed)
   },
 
-  assembly_configuration: (state, getters) => {
-    const assemblyIdentifier = Router.currentRoute.params.assemblyIdentifier
-    console.assert(assemblyIdentifier)
-    return (state.assemblydata[assemblyIdentifier]?.configuration)
-  },
 
-  assembly_userid: (state, getters) => {
-    console.log(">> NOTE: cache userid")
+  stageMilestones: (state) => {
+    console.log(">> NOTE: stageMilestones")
 
-    if (!runtimeStore.assemblyIdentifier) {
-      return null
-    }
-    return state.assemblydata[runtimeStore.assemblyIdentifier]?.access_sub
-  },
-
-  assembly_stages: (state, getters) => {
-    console.log(">> NOTE: assembly_stages")
-
-    if (!runtimeStore.assemblyIdentifier) {
-      console.log('...identifier not ready')
+    if (!runtimeStore.stageID) {
+      console.log('...stageID not ready')
       return null
     }
 
-    // console.log(runtimeStore.assemblyIdentifier)
-    const stage_keys = state.assemblydata[runtimeStore.assemblyIdentifier]?.stages
-    if (!stage_keys) {
-      console.log('...assembly not ready')
-      return null
+    const day = getters.assemblyProgression?.number_of_day_sessions;
+    const stateMilestones = state.milestones[day]
+    if (!stateMilestones) {
+      return []
     }
 
-    // filter only the stages of the specific assembly
-    // console.log(state.stages, stage_keys)
-
-    const stages = Object.keys(state.stages)
-      .filter(key => stage_keys.includes(`${key}`))
-      .reduce((obj, key) => {
-        obj[key] = state.stages[key];
-        return obj;
-      }, {})
-
-    // console.log("this are assembly stages", stages)
-    return stages
+    const milestones = stateMilestones[runtimeStore.stageID]
+    return milestones ? milestones : []
   },
 
+  stageMilestonesCompleted: (state, getters) => {
+
+    // Every user needs to archieve 10 milestones weights for each stage a day. 
+    const milestones = getters.stageMilestones
+    console.assert(milestones !== null)
+
+    var weights = milestones.reduce((n, milestone) => n + milestone.weight, 0)
+    console.log("current milestone weights... ", weights)
+    weights = milestones.map
+
+    return weights >= 10
+  },
 
   stage: (state, getters, rootState, rootGetters, test1, test2) => {
     const stages = getters.assembly_stages
@@ -290,7 +335,7 @@ const getters = {
     if (getters.is_stage_completed(stage)) {
       return (false)
     }
-    return getters.is_stage_alert(stage) || getters.is_stage_new(stage)
+    return getters.is_stage_alerted(stage) || getters.is_stage_new(stage)
   },
 
   /** Which stage is new => no progression entry is available */
@@ -303,7 +348,7 @@ const getters = {
   /**
    * Not scheduled, not new, not completeed => just idle
    */
-  is_stage_alert: (state) => (stage) => {
+  is_stage_alerted: (state) => (stage) => {
     // when progression entry not yet exists...
     return stage.progression?.alerted
   },
@@ -330,7 +375,7 @@ const getters = {
   /** All stages that are not alerted, and are not new are skippable, right? */
   // is_stage_skippable: (state, getters) => (stage) => {
   //   console.assert(stage)
-  //   return (!getters.is_stage_alert(stage) && !getters.is_stage_new(stage))
+  //   return (!getters.is_stage_alerted(stage) && !getters.is_stage_new(stage))
   // },
 
   is_stage_completed: (state) => (stage) => {
@@ -350,6 +395,7 @@ const getters = {
       getters.is_stage_completed(stage)
   },
 
+  // TODO rename: is_first_day_of_stage (..._of_assembly)
   is_first_day: (state, getters) => (stage) => {
     // console.log(stage.progression.date_created)
     return date.isSameDate(stage.progression.date_created, Date.now(), 'day')
@@ -388,7 +434,7 @@ const actions = {
   },
 
   deleteAssemblyStore({ commit }) {
-    commit('deleteAssemblyStore')
+    commit('deleteAssemblyStore');
   },
 
   retrieveAssembly({ commit }, { assemblyIdentifier }) {
@@ -410,8 +456,29 @@ const actions = {
         // Error Handling is done in Axios Interceptor
         console.warn('Request Error')
       })
+  },
 
-  }
+  addMilestone({ getters, commit }, { label, weigth, stateID }) {
+    console.assert(weigth)
+    console.assert(label)
+
+    const day = getters.assemblyProgression?.number_of_day_sessions;
+    if (!stageID) {
+      stageID = runtimeStore.stageID
+      console.assert(stageID)
+    }
+
+    const milestones = getters.stageMilestones
+    console.assert(milestones !== null)
+    const labels = milestones.map(milestone => milestone.label)
+    if (labels.includes(label)) {
+      // just ignore this: milestone has been already archieved before    
+      return false;
+    }
+
+    commit('addMilestone', { label, weight, day, stageID })
+    return true;
+  },
 }
 
 const mutations = {
@@ -473,9 +540,35 @@ const mutations = {
     }
     Vue.set(state.stages[stageID], 'progression', progression)
   },
+
   deleteAssemblyStore(state) {
     Vue.set(state, 'assemblydata', {})
     Vue.set(state, 'stages', {})
+    Vue.set(state, 'milestones', {})
+  },
+
+  addMilestone(state, { label, weigth, day, stageID }) {
+    console.assert(label);
+    console.assert(weigth);
+    console.assert(day);
+    console.assert(stageID);
+
+    const stateMilestones = state.milestones
+    if (!(day in stateMilestones)) {
+      stateMilestones[day] = {}
+      Vue.set(state, 'milestones', stateMilestones)
+    }
+
+    const dayMilestones = state.milestones[day]
+    console.assert(dayMilestones !== null)
+    if (!(stageID in dayMilestones)) {
+      dayMilestones[stageID] = []
+      Vue.set(state.milestones, day, dayMilestones)
+    }
+
+    const milestones = state.milestones[day][stageID]
+    milestones.push({ label, weigth })
+    Vue.set(state.milestones[day], stageID, milestones)
   }
 }
 

@@ -81,15 +81,15 @@
 </template>
 
 <script>
-import {mapGetters, mapActions } from "vuex"
-import api from "src/utils/api"
-import { runtimeStore } from 'src/store/runtime.store';
+import { mapGetters, mapActions } from "vuex";
+import api from "src/utils/api";
+import { runtimeStore } from "src/store/runtime.store";
 
 export default {
   name: "ContentEditor",
   inject: ["QUASAR_TREE", "CONTENTTREE", "limitNodeTypes"],
 
-  data () {
+  data() {
     return {
       localmodel: {},
       error: false,
@@ -103,7 +103,7 @@ export default {
     /* Get all context types that are allowed at this position.
     There are a) general contenttree restrictions (See Configuration.CONTENT_TYPES),
     There are b) parentType restrictions (See Configuration.ONTOLOGY),
-    and there are c) context restrictions (See QTree.customLimitNodeTypes-Prop)),
+    and there are c) context restrictions (See QTree.filterTypes-Prop)),
      */
     contextNodeTypes: function () {
       if (!("id" in this.localmodel)) {
@@ -113,8 +113,9 @@ export default {
       var parentType = null;
       if (this.localmodel.parent_id) {
         console.log(this.localmodel.parent_id);
-        const parent = this.CONTENTTREE.contenttree.entries[this.localmodel.parent_id]
-          .content;
+        const parent = this.CONTENTTREE.contenttree.entries[
+          this.localmodel.parent_id
+        ].content;
         parentType = parent.type;
       }
 
@@ -247,7 +248,7 @@ export default {
             message: `${response.data.MESSAGE}`,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.warn(error);
           // Error Handling is done in Axios Interceptor
           console.warn("Request Error");

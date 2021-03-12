@@ -87,7 +87,7 @@ export default {
     //   // console.trace()
     //   const allRated = this.numberOfUnratedChildEntries == 0
     //   // if (allRated && this.is_stage_scheduled(this.routed_stage)) {
-    //   //   this.markIdle()
+    //   //   this.markUnAlert()
     //   // }
 
     //   return (allRated)

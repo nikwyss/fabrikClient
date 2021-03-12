@@ -14,7 +14,9 @@ import { Screen } from 'quasar'
 // sm: 600
 // xl: 1920
 const defaultSizes = Screen.sizes;
-defaultSizes.md = 900;
+// defaultSizes.nu = 800;
+defaultSizes.md = 850;
+defaultSizes.sm = 450;
 Screen.setSizes(defaultSizes)
 // 
 // SANITIZER

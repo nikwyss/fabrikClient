@@ -95,7 +95,7 @@ export default {
       "is_stage_new",
       "is_stage_last",
       "is_stage_first",
-      "is_stage_alert",
+      "is_stage_alerted",
       "assembly_scheduled_stages",
       "is_first_day",
     ]),

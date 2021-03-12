@@ -61,7 +61,7 @@
 import StageMixin from "src/mixins/stage";
 import i18nPluginMixin from "./i18n";
 import ArtificialModeratorSURVEYIndexTop from "./artificialmoderation/IndexTop";
-import { runtimeStore } from "src/store/runtime.store"
+import { runtimeStore } from "src/store/runtime.store";
 
 export default {
   name: "Survey",
@@ -69,8 +69,6 @@ export default {
   mixins: [StageMixin, i18nPluginMixin],
 
   computed: {
-
-
     check_data: function () {
       console.log("check survey data..");
 
@@ -95,11 +93,10 @@ export default {
       if (this.$route.query.completed) {
         return true;
       }
-    }
+    },
   },
 
   methods: {
-
     redirectToSurveyProvider: function () {
       // all data available
       const SID = this.routed_stage.stage.custom_data.SID;
@@ -110,7 +107,7 @@ export default {
       re = /:USERID:/g;
       newurl = newurl.replace(re, this.oauth.userid);
       re = /:STAGEID:/g;
-      newurl = newurl.replace(re, runtimeStore.stageID)
+      newurl = newurl.replace(re, runtimeStore.stageID);
       re = /:ASSEMBLYIDENTIFIER:/g;
       newurl = newurl.replace(re, runtimeStore.assemblyIdentifier);
       // console.log(USERID)
@@ -118,24 +115,19 @@ export default {
       window.location.href = newurl;
 
       return true;
-    }
+    },
   },
 
   created: function () {
-
     // Completed Response?
     if (!this.is_stage_completed(this.routed_stage)) {
-
       if (this.is_a_survey_response) {
-
-        this.markCompleted()
+        this.markUnAlert();
         return true;
-
       } else {
-
         this.redirectToSurveyProvider();
       }
     }
-  }
-}
+  },
+};
 </script>

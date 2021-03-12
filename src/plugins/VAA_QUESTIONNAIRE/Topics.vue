@@ -195,7 +195,7 @@
 
 
 <script>
-import AMs from "./ArtificialModeration.js";
+import AMs from "../TEXTSHEET/ArtificialModeration.js";
 import ArtificialModeration from "src/artificial_moderation/ArtificialModeration.vue";
 
 import SideMenu from "src/layouts/components/SideMenu";
@@ -266,10 +266,10 @@ export default {
       return this.sortedChartEntries.map((entry) => entry.content?.title);
     },
 
-    ready() {
-      console.log("stage loaded.... ", !!this.routed_stage?.stage?.id);
-      return !!this.routed_stage?.stage?.id;
-    },
+    // ready() {
+    //   console.log("stage loaded.... ", !!this.routed_stage?.stage?.id);
+    //   return !!this.routed_stage?.stage?.id;
+    // },
   },
 };
 </script>

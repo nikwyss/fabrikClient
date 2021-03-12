@@ -12,7 +12,9 @@ export default {
   computed: {
 
     routed_stage: function () {
-      console.assert(runtimeStore.stageID)
+      if (!runtimeStore.stageID) {
+        return null;
+      }
 
       if (this.assembly_stages) {
         return null
@@ -45,16 +47,23 @@ export default {
     },
 
     groupsAccessible: function () {
+      if (!this.assembly_scheduled_stages) {
+        return;
+      }
       const groups = this.assembly_accessible_stages.map(stage => stage.stage.group)
       return groups;
     },
 
     groupsScheduled: function () {
+      if (!this.assembly_scheduled_stages) {
+        return;
+      }
       const groups = this.assembly_scheduled_stages.map(stage => stage.stage.group)
       return groups;
     },
 
     currentGroup: function () {
+      console.log("get Stage Group")
       if (!runtimeStore.stageID || !this.routed_stage) {
         return 'preparation'
       }

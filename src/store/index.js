@@ -8,7 +8,6 @@ import { contentstore } from './vuex-store-contenttree'
 import { assemblystore } from './vuex-store-assembly'
 import { publicprofilestore } from './vuex-store-profile'
 import { publicindexstore } from './vuex-store-publicindex'
-import { pluginstore } from './vuex-plugin_store'
 
 Vue.use(Vuex)
 
@@ -18,7 +17,6 @@ export default new Vuex.Store({
     assemblystore: assemblystore,
     publicindexstore: publicindexstore,
     contentstore: contentstore,
-    pluginstore: pluginstore
   },
   plugins: [createPersistedState()],
   strict: false, // disable for production

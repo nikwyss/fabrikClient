@@ -276,7 +276,6 @@ import QTreeMixin from "src/mixins/qtree";
 import ContentToolbar from "src/pages/ContentTree/components/ContentToolbar";
 import ContentEditor from "./ContentEditor";
 import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer";
-// import ContentRatingThumbs from "./ContentRatingThumbs";
 import UserAvatar from "src/layouts/components/UserAvatar";
 import { mapGetters } from "vuex";
 import ContentBackground from "./ContentBackground";

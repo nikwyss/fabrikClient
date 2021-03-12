@@ -1,4 +1,4 @@
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import AssemblyMixin from 'src/mixins/assembly'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { LayoutEventBus } from 'src/utils/eventbus'
@@ -43,34 +43,46 @@ export default {
       return (stage)
     },
 
-    // ...mapGetters({
-    //   public_profile: "publicprofilestore/get_public_profile"
-    // })
+    ready() {
+      console.log("stage loaded.... ", !!this.routed_stage?.stage?.id);
+      return !!this.routed_stage?.stage?.id;
+    },
+
+    ...mapGetters({
+      stageMilestonesCompleted: "assemblystore/stageMilestonesCompleted"
+    })
 
   },
 
   methods: {
 
+    milestone: function (milestoneLabel, weight) {
+
+      this.addMilestone({ milestoneLabel, weight })
+
+      if (this.stageMilestonesCompleted) {
+        this.markUnAlert();
+      }
+    },
+
     gotoIndexAndMoveOn: function () {
-      this.markIdle()
       this.gotoNextStageNr(this.routed_stage)
       this.gotoAssemblyHome()
     },
 
-    markCompleted() {
+    markUnAlert() {
+      if (!this.is_stage_alerted(this.routed_stage)) {
+        // ignore this statement...
+        return;
+      }
 
       // Notify stage as completed
+      console.log("IDLE: unalert stage")
       console.assert(this.routed_stage)
-      console.log("COMPLETED: Completed stage!");
-      this.$root.monitorFire(constants.MONITOR_STAGE_COMPLETED);
+      this.$root.monitorFire(constants.MONITOR_STAGE_UNALERT)
     },
 
-    markIdle() {
+    ...mapActions({ addMilestone: 'assemblystore/addMilestone' })
 
-      // Notify stage as completed
-      console.log("IDLE: Mark as Idle (unalert stage )")
-      console.assert(this.routed_stage)
-      this.$root.monitorFire(constants.MONITOR_STAGE_IDLE)
-    }
   }
 }
