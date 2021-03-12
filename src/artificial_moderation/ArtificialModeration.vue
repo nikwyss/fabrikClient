@@ -153,7 +153,6 @@ export default {
 
   computed: {
     enabled() {
-      console.log("ENABLED");
       return this.AM && (!this.AM.condition || this.AM.condition(this.ctx));
     },
 
@@ -162,15 +161,13 @@ export default {
     },
 
     validItems() {
-      return this.AM.items.filter((item) => {
-        return (
-          item.text?.length > 0 && (!item.condition || item.condition(this.ctx))
-        );
-      });
+      return this.AM.items.filter(
+        (item) => !item.condition || item.condition(this.ctx)
+      );
     },
 
     selectedItems() {
-      if (!this.validItems) {
+      if (!this.validItems.length) {
         return [];
       }
 
@@ -186,6 +183,9 @@ export default {
     },
 
     text() {
+      if (!this.selectedItems.length) {
+        return [];
+      }
       return this.selectedItems.map((item) => {
         return item.body(this.ctx);
       });
