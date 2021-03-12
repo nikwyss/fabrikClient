@@ -201,15 +201,11 @@ const mutations = {
   update_rating(state, { contenttreeID, contentID, rating }) {
     // in case content or progression changes (without changing hierarchy...)
     if (rating === null || rating === undefined) {
-      // invalid rating value
-      // console.log("empty rating")
       return (null)
     }
 
-    // let key = contenttreeID + '-' + rootNodeID
     let progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
     if (!progression) {
-      // console.log("add temp progression entry")
       progression = {
         read: true,
         view: false
@@ -219,14 +215,13 @@ const mutations = {
     // store value
     progression.rating = rating
     progression.rated = true
+
     Vue.set(state.contenttree[contenttreeID].entries[contentID], 'progression', progression)
   },
 
   update_salience(state, { contenttreeID, contentID, salience }) {
     // in case content or progression changes (without changing hierarchy...)
     if (salience === null || salience === undefined) {
-      // invalid salience value
-      // console.log("empty salience")
       return (null)
     }
 

@@ -106,8 +106,9 @@
             :style="'cursor:default; border-top:5px solid white;' + (is_expandable(prop.node) ? 'background-color: #F7F7F7;' : '')"
             class='full-width q-pt-md q-pb-md q-pr-sm q-pl-sm text-overline  vertical-top'
           >
+            <!--EXPANDABLE-ALL: :class="[prop.node.nof_descendants ? 'cursor-pointer' : '']" -->
             <div
-              :class="[prop.node.nof_descendants ? 'cursor-pointer' : '']"
+              class="cursor-pointer"
               @click="toggle_node(prop.node.id)"
             >
               <!-- <q-icon name="mdi-comment-outline" size="xs" /> -->
@@ -125,17 +126,16 @@
                 class="cursor-pointer q-ma-sm vertical-top"
                 transparent
                 @click.stop="$refs.backgroundDialog.toolbar = true"
-                v-if="is_currently_expanded(prop.node) !== false"
+                v-if="is_currently_expanded(prop.node)"
               >
+                <!-- EXPANDABLE-ALL: v-if="is_currently_expanded(prop.node) !== false" -->
                 <q-tooltip>Schauen Sie sich zusätzliche <br>Informationen zu diesem Beitrag an.</q-tooltip>
                 Info
               </q-badge>
 
               <span class="cursor-pointer float-right ">
-                <span
-                  flat
-                  v-if="is_expandable(prop.node)"
-                >
+                <span flat>
+                  <!-- EXPANDABLE-ALL:  v-if="is_expandable(prop.node)" -->
                   {{ is_currently_expanded(prop.node) ? 'EINKLAPPEN' : 'AUSKLAPPEN' }}
                   <q-tooltip>Schauen Sie sich zusätzliche <br>Informationen zu diesem Beitrag an.</q-tooltip>
                 </span>
@@ -160,7 +160,9 @@
 
         <!-- Content Body -->
         <template v-slot:default-body="prop">
+          <!-- EXPANDABLE-ALL: remove is_currently_expanded condition... -->
           <q-card
+            v-if="is_currently_expanded(prop.node)"
             flat
             class="full-width bg-none"
           >

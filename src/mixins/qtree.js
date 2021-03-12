@@ -8,7 +8,7 @@ import { ReactiveProvideMixin } from 'vue-reactive-provide'
 /* Make available all the properties and methods in any descendant object.*/
 const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
     name: 'QUASAR_TREE',
-    include: ['rootNodeID', 'startingContent', 'rootNode'],
+    include: ['startingContent', 'rootNode'],
 })
 
 export default {
@@ -53,14 +53,6 @@ export default {
 
         rootNodeID: function () {
             return (this.node.id)
-
-            // if (this.node?.id) {
-            // }
-            // Show full contenttree (then take the ID from the URL)
-            // if (this.$route.params.contentID) {
-            //     // TODO: still used?
-            //     return (Number(this.$route.params.contentID))
-            // }
         },
 
         /* Adapt to filters...and also for the case when this.node is empty => root element tree. */
@@ -129,10 +121,7 @@ export default {
 
     methods: {
         is_currently_expanded: function (node) {
-            if (!node.children?.length) {
-                return;
-            }
-            // console.log(node.children.length, "chidlren")
+            // EXPANDABLE - ALL: if (!node.children?.length) {return;}
             return (this.expanded.includes(node.id))
         },
 
@@ -169,12 +158,13 @@ export default {
         },
 
         collapse_node: function (node_id) {
-            const index = this.expanded.indexOf(node_id)
             this.expanded = this.expanded.filter(x => x != node_id)
+            this.updateExpanded()
         },
 
         expand_node: function (node_id) {
             this.expanded.push(node_id)
+            this.updateExpanded()
         },
 
         expand_more: function () {
@@ -262,29 +252,21 @@ export default {
             this.$refs.filter.focus()
         },
 
-        zoomToContent: function (content) {
-            console.log('ZOOOM TO CONTENT')
+        // zoomToContent: function (content) {
+        //     console.log('ZOOOM TO CONTENT')
 
-            // collapsse all siblings to improve overview
-            // console.log('CALL CLOSE CHILDREN FOR PARENT' + content.parent_id)
-            this.collapse_all_children(content.parent_id)
+        //     // collapsse all siblings to improve overview
+        //     // console.log('CALL CLOSE CHILDREN FOR PARENT' + content.parent_id)
+        //     this.collapse_all_children(content.parent_id)
+        //     // expand newly added content and its parent...
+        //     if (content.parent_id) {
+        //         this.expand_node(content.parent_id)
+        //     }
 
-            // expand newly added content and its parent...
-            if (content.parent_id) {
-                this.expand_node(content.parent_id)
-            }
-
-            this.expand_node(content.id)
-
-            // scroll to newly entered content
-            let anchorid = `arg${content.id}`
-            var element = document.getElementById(anchorid);
-            if (element) {
-                // See for better scrolling: https://quasar.dev/quasar-utils/scrolling-utils#Scrolling-to-an-element
-                // DEFAULT SCROLL: goes too far down. TODO: correct this
-                element.scrollIntoView();
-            }
-        },
+        //     this.expand_node(content.id)
+        //     let anchorElName = `arg${content.id}`
+        //     this.$root.scrollToAnchor(anchorElName)
+        // },
 
 
         cachedNode: function (contentID) {
@@ -380,7 +362,7 @@ export default {
             // first: check in 
             this.expanded = this.get_default_expanded_branches_from_store({
                 contenttreeID: this.CONTENTTREE.contenttreeID,
-                rootNodeID: this.CONTENTTREE.rootNodeID
+                rootNodeID: this.rootNodeID
             })
         }
 
@@ -389,15 +371,9 @@ export default {
             // console.log(this.expanded)
             this.update_expanded_branches({
                 contenttreeID: this.CONTENTTREE.contenttreeID,
-                rootNodeID: this.CONTENTTREE.rootNodeID,
+                rootNodeID: this.rootNodeID,
                 expanded: this.expanded
             })
         }
-        // console.log(this.expanded)
-
-    },
-
-    mounted: function () {
-        this.$emit('tree_is_mounted');
     }
 }
