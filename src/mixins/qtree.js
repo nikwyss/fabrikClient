@@ -8,7 +8,7 @@ import { ReactiveProvideMixin } from 'vue-reactive-provide'
 /* Make available all the properties and methods in any descendant object.*/
 const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
     name: 'QUASAR_TREE',
-    include: ['startingContentID', 'startingContent', 'startingContentNode'],
+    include: ['rootNodeID', 'startingContent', 'rootNode'],
 })
 
 export default {
@@ -26,7 +26,7 @@ export default {
     /*
     Which <label> should be displayed on top of the ContentTree?
     SHould the Tree be displayed in <dense> layout?
-    SHould the whole ContentTree be displayed or only a specific <customStartingNodes>?
+    SHould the whole ContentTree be displayed or only a specific <childrenNodes>?
 
     <filterTypes>: You may additionaly limit the nodetypes to insert:...
     If nothing is indicated: every type is allowed, that is allowed for the given parent. */
@@ -34,83 +34,66 @@ export default {
     props: [
         'label',
         'dense',
-        'customStartingNodes',
-        'customStartingParentID',
+        'node',
         'filterTypes'],
     mixins: [ReactiveProvidePropertiesMixin],
     provide() {
         return {
             // popup_content_form: this.popup_content_form,
             contenttreeID: this.CONTENTTREE.contenttreeID,
-            limitNodeTypes: this.limitNodeTypes
+            realFilterTypes: this.realFilterTypes
         }
     },
-    inject: ['CONTENTTREE'],
+    inject: ['CONTENTTREE', 'filter_entries', 'recalculate_nof_descendants_unread', 'recalculate_nof_descendants'],
     computed: {
 
-        // assemblyAcls: function () {
-        //     return this.oauth.acls(this.assemblyIdentifier);
+        // childrenNodes() {
+        //     return this.rootNode.children
         // },
 
-        startingContentID: function () {
+        rootNodeID: function () {
+            return (this.node.id)
 
-            if (this.customStartingParentID) {
-                return (this.customStartingParentID)
-            }
-
+            // if (this.node?.id) {
+            // }
             // Show full contenttree (then take the ID from the URL)
-            return (Number(this.$route.params.contentID))
+            // if (this.$route.params.contentID) {
+            //     // TODO: still used?
+            //     return (Number(this.$route.params.contentID))
+            // }
         },
 
-        startingContentNode: function () {
-            console.log('get startingContentNode')
-            if (this.customStartingContentNode) {
-                return (this.customStartingContentNode)
-            } else {
-                // console.assert(this.startingContentID)
-                return (this.CONTENTTREE.contenttree.structure)
-                // return(this.get_node_by_id(this.startingContentID))
-            }
-        },
+        /* Adapt to filters...and also for the case when this.node is empty => root element tree. */
+        rootNode: function () {
+            console.log('get rootNode')
+            var node = this.node
 
-        startingContentNodeLevel: function () {
-            // console.log('get startingContentNodeLevel')
-            if (this.customStartingContentNode) {
-                return (this.customStartingContentNode.level)
-            }
-            return (null)
-        },
-
-        customStartingContentNode: function () {
-            if (!this.customStartingParentID) {
-                return (null)
+            // Create root-Node entry
+            if (!node) {
+                node = this.CONTENTTREE.contenttree.structure
             }
 
-            var nof_descendants = 0
-            var nof_descendants_unread = 0
-            if (this.customStartingNodes.length) {
-                nof_descendants = this.customStartingNodes.reduce(function (accumulator, child) {
-                    return accumulator + child.nof_descendants + 1;
-                }, 0);
-                nof_descendants_unread = this.customStartingNodes.reduce(function (accumulator, child) {
-                    return accumulator + child.nof_descendants_unread;
-                }, 0);
+            const rootNode = { ...node }
+            const original_children_count = node.children.length
 
-                // nof_descendants = this.customStartingNodes.reduce((a, b) => (a.nof_descendants + b.nof_descendants + 1))
-                // nof_descendants_unread = this.customStartingNodes.reduce((a, b) => (a.nof_descendants_unread + b.nof_descendants_unread + 1))
+            // Correct for filterTypes
+            if (this.filterTypes) {
+                const children = this.filter_entries(node.children, this.filterTypes);
+                rootNode.children = children
             }
-            var node = {
-                children: this.customStartingNodes,
-                nof_descendants: nof_descendants,
-                nof_descendants_unread: nof_descendants_unread,
-                nof_children: this.customStartingNodes.length,
-                id: this.customStartingParentID
+
+            // Correct Numbers
+            if (original_children_count > rootNode.children.length) {
+                // recalculate metrics...                
+                rootNode.nof_descendants = this.recalculate_nof_descendants(rootNode.children)
+                rootNode.nof_descendants_unread = this.recalculate_nof_descendants_unread(rootNode.children)
             }
-            return (node)
+
+            return (rootNode)
         },
 
         /* Which node types are allowed within this contenttree/branch? */
-        limitNodeTypes: function () {
+        realFilterTypes: function () {
             // get filterTypes
             var allowed_node_types = this.get_allowed_node_types({ contenttreeID: this.CONTENTTREE.contenttreeID })
             // console.log(allowed_node_types)
@@ -121,20 +104,20 @@ export default {
             return (allowed_node_types)
         },
 
-        rootNodeIDs: function () {
-            return (this.startingContentNode.children.map(x => x.id))
-            // if(this.startingContentID) {
-            // }
-            // return(this.contenttree.structure.children.map(x=> x.id))
+        realRootNodesIDs: function () {
+            if (this.rootNode) {
+                return [];
+            }
+            return (this.rootNode.children.map(x => x.id))
         },
 
 
         total_nof_contents: function () {
-            if (!this.startingContentNode) {
+            if (!this.rootNode) {
                 return (null)
             }
 
-            return (this.startingContentNode['nof_descendants'] + 1)
+            return this.rootNode.nof_descendants + 1
         },
 
         ...mapGetters({
@@ -213,7 +196,7 @@ export default {
             }
 
             /// expand all root nodes
-            new_ids = new_ids.concat(this.rootNodeIDs)
+            new_ids = new_ids.concat(this.realRootNodesIDs)
             let all_ids = this.expanded.concat(new_ids)
 
             // Remove empty/undefineds
@@ -242,20 +225,12 @@ export default {
             console.log('expand_none')
             this.expanded = []
             this.updateExpanded()
-
-            // // Notify
-            // var nof_shown =  0
-            // var nof_total =  this.total_nof_contents
-            // this.$q.notify({
-            //     type: 'nFabrikInfo',
-            //     message: `${nof_shown} of ${nof_total} are expanded.`
-            // })
         },
 
         calculate_default_expanded_branches: function () {
 
             // get default values
-            let node = this.startingContentNode
+            let node = this.rootNode
             // TODO: do a while and loop the x level until 25 are reached...
             //    let branches = Object.keys(node.children)
             let branches = node.children.map(function (x) { return x.id });
@@ -268,7 +243,7 @@ export default {
         updateExpanded: function () {
             this.update_expanded_branches({
                 contenttreeID: this.CONTENTTREE.contenttreeID,
-                startingContentID: this.CONTENTTREE.startingContentID,
+                rootNodeID: this.CONTENTTREE.rootNodeID,
                 expanded: this.expanded
             })
         },
@@ -315,6 +290,8 @@ export default {
         cachedNode: function (contentID) {
             // With this getter the content data has to be loaded only once; 
             // and can be used in the tree.header as well as the tree.body templates. 
+            // TODO: test if useful?
+            // Alternative: put whole content in header (and leave body empty...)
             if (this.$options.temp_content_object === null || this.$options.temp_content_object.content.id != contentID) {
                 this.$options.temp_content_object = this.CONTENTTREE.contenttree.entries[contentID]
             }
@@ -403,7 +380,7 @@ export default {
             // first: check in 
             this.expanded = this.get_default_expanded_branches_from_store({
                 contenttreeID: this.CONTENTTREE.contenttreeID,
-                startingContentID: this.CONTENTTREE.startingContentID
+                rootNodeID: this.CONTENTTREE.rootNodeID
             })
         }
 
@@ -412,7 +389,7 @@ export default {
             // console.log(this.expanded)
             this.update_expanded_branches({
                 contenttreeID: this.CONTENTTREE.contenttreeID,
-                startingContentID: this.CONTENTTREE.startingContentID,
+                rootNodeID: this.CONTENTTREE.rootNodeID,
                 expanded: this.expanded
             })
         }

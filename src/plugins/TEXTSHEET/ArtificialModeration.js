@@ -50,8 +50,7 @@ const AMs = {
         ]
       }
     ]
-  },
-
+  }
 }
 
 export default AMs

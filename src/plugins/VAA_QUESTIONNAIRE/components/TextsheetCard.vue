@@ -101,7 +101,7 @@ export default {
       }
     },
 
-    startingContentNode: function () {
+    rootNode: function () {
       // TODO: add nof_descendants to this node object
       // TODO extract this in method...
       var node = {

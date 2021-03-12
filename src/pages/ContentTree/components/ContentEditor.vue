@@ -87,7 +87,7 @@ import { runtimeStore } from "src/store/runtime.store";
 
 export default {
   name: "ContentEditor",
-  inject: ["QUASAR_TREE", "CONTENTTREE", "limitNodeTypes"],
+  inject: ["QUASAR_TREE", "CONTENTTREE", "realFilterTypes"],
 
   data() {
     return {
@@ -126,7 +126,7 @@ export default {
 
       // are there any filtered node types in this context?
       context_node_types = context_node_types.filter((v) =>
-        this.limitNodeTypes.includes(v)
+        this.realFilterTypes.includes(v)
       );
       if (!context_node_types) {
         this.error = true;

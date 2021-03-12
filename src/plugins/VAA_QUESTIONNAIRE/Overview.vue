@@ -30,7 +30,6 @@
 <script>
 import ContentTreeMixin from "src/mixins/contenttree";
 import ComponentStageEditor from "src/pages/ContentTree/components/StageEditor";
-// import TextsheetCard from "./components/TextsheetCard";
 import ContentSalienceSlider from "src/pages/ContentTree/components/ContentSalienceSlider";
 import ChartRadar from "src/components/charts/ChartRadar";
 
@@ -39,7 +38,6 @@ export default {
   mixins: [ContentTreeMixin],
   components: {
     ComponentStageEditor,
-    // TextsheetCard,
     ContentSalienceSlider,
     ChartRadar,
   },

@@ -66,9 +66,8 @@ import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer";
 
 export default {
   name: "PopupProfile",
-  // inject: ['QUASAR_TREE', 'CONTENTTREE', 'limitNodeTypes'],
 
-  data () {
+  data() {
     return {
       profile: {
         last_name: "1", //this.oauth.payload.last_name,

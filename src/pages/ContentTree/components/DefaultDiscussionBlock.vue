@@ -35,15 +35,13 @@
       <ComponentContentTree
         class="q-pa-xs full-width bg-grey-1"
         v-if="show_discussion"
-        :startingNode="node"
+        :node="node"
         :dense="true"
-        :customStartingNodes="childrenNodes"
-        :customStartingParentID="entry.content.id"
         :filterTypes="['COMMENT', 'QUESTION', 'ANSWER']"
         :hideNoEntryText="true"
+        :showAM="showAM"
         :hideNofEntriesText="true"
       >
-        <!-- :artificialmoderationComponents="artificialmoderationComponents" -->
         <template v-slot:actions>
           <!-- Close when possible -->
           <q-chip
@@ -68,19 +66,21 @@ import constants from "src/utils/constants";
 export default {
   name: "DefaultDiscussionBlock",
   components: { ComponentContentTree },
-  props: [
-    // "artificialmoderationComponents",
-    "node",
-    "filterTypes",
-    "discussionBlockLabel",
-  ],
+  props: ["showAM", "node", "filterTypes", "discussionBlockLabel"],
   data() {
     return {
       show_discussion: false,
     };
   },
 
-  inject: ["openIndex", "CONTENTTREE", "filter_entries", "isRead"],
+  inject: [
+    "openIndex",
+    "CONTENTTREE",
+    "filter_entries",
+    "isRead",
+    "recalculate_nof_descendants_unread",
+    "recalculate_nof_descendants",
+  ],
 
   computed: {
     entry() {
@@ -94,24 +94,16 @@ export default {
       return this.node.children;
     },
 
-    /* 
-    Calculate the sum of the descendants of all 
-    children with coressponding Filtertypes 
-    NOTE: this assumes, that once filtered children do not have unexcepted descendant types..
-    */
+    /**
+     * Recalculate metrics considering the fitlers...
+     * NOTE: this assumes, that once filtered children do not have unexcepted descendant types..
+     */
     nof_descendants_unread: function () {
-      // summ up descendants_unread of the root elements
-      const listOfNumbers = this.childrenNodes.map((node) => {
-        return node.nof_descendants_unread + this.isRead(node.id);
-      });
-      return listOfNumbers.reduce((a, b) => a + b, 0);
+      return this.recalculate_nof_descendants_unread(this.childrenNodes);
     },
 
     nof_descendants: function () {
-      const listOfNumbers = this.childrenNodes.map((node) => {
-        return node.nof_descendants + 1;
-      });
-      return listOfNumbers.reduce((a, b) => a + b, 0);
+      return this.recalculate_nof_descendants(this.childrenNodes);
     },
   },
   methods: {

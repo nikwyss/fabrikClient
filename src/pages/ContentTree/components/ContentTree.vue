@@ -9,7 +9,7 @@
   <div class="full-width q-mb-lg">
 
     <div
-      v-if="startingContentNode.children && startingContentNode.children.length"
+      v-if="rootNode.children && rootNode.children.length"
       class="full-width "
       align="right"
     >
@@ -54,20 +54,14 @@
       </div>
     </div>
 
-    <br />
-    <q-separator inset />
-
-    <!-- AM-ContentTree Index -->
-    <div class="q-mb-xl full-width">
+    <div v-if="showAM">
       <component
-        v-if="artificialmoderationComponents && 'ContentTreeIndex' in artificialmoderationComponents"
-        :is="artificialmoderationComponents.ContentTreeIndex"
-        :startingContentNode="startingContentNode"
-        :ongoing="!startingContentNode || oauth.authorized === null"
-        align="left"
+        :is="artificialModerationComponent"
+        :AM="AMs.indexTop"
+        alignment="left"
+        :ctx="this"
       />
     </div>
-
     <!-- ContentTree Title (optional) -->
     <div
       class="text-h6"
@@ -77,16 +71,15 @@
     <!-- AFTER LOADING -->
     <div
       class="q-pa-none q-ma-none q-gutter-sm"
-      v-if="startingContentNode"
+      v-if="rootNode"
     >
-
-      <span v-if="startingContentNode.nof_descendants && !hideNofEntriesText">
-        {{startingContentNode.nof_descendants}} Beiträge
+      <span v-if="rootNode.nof_descendants && !hideNofEntriesText">
+        {{rootNode.nof_descendants}} Beiträge
       </span>
 
       <q-tree
         ref="qtree"
-        :nodes="startingContentNode.children"
+        :nodes="rootNode.children"
         label-key="id"
         :expandable="false"
         nodeKey="id"
@@ -171,57 +164,19 @@
             flat
             class="full-width bg-none"
           >
-            <q-card-section :style="!is_expandable(prop.node) && rootNodeIDs.includes(prop.node.id) ? 'margin-left:1.4em' : ''">
+            <q-card-section :style="!is_expandable(prop.node) && realRootNodesIDs.includes(prop.node.id) ? 'margin-left:1.4em' : ''">
               <div class="text-h5">{{ cachedNode(prop.node.id).content.title }}</div>
               <div class="text-caption text-grey-9">
                 {{ cachedNode(prop.node.id).content.text }}
               </div>
-
-              <!-- <span class="text-bold "> {{ cachedNode(prop.node.id).content.title }} ({{ cachedNode(prop.node.id).content.type }})</span><br> -->
-              <!-- {{ cachedNode(prop.node.id).content.text }} -->
-              <!-- style="margin-bottom:0.5em"  -->
             </q-card-section>
 
-            <!-- <q-separator /> -->
-
-            <!-- <q-card-actions v-if="IsContributor"> -->
-            <!-- <q-card-actions align="right"> -->
-            <!-- <ContentRatingThumbs
-                name="`elRating${obj.content.id}`"
-                :content="cachedNode(prop.node.id)"
-              /> -->
             <ContentToolbar
               :obj="cachedNode(prop.node.id)"
               v-if="IsContributor"
             />
 
-            <!-- </q-card-actions> -->
           </q-card>
-
-          <!-- <div
-            size="text-body1"
-            class="q-mb-lg"
-            :style="!prop.node.nof_descendants && rootNodeIDs.includes(prop.node.id) ? 'margin-left:1.5em' : ''"
-          > -->
-
-          <!-- <span class="text-bold "> {{ cachedNode(prop.node.id).content.title }} ({{ cachedNode(prop.node.id).content.type }})</span><br>
-            {{ cachedNode(prop.node.id).content.text }} -->
-          <!-- style="margin-bottom:0.5em"  -->
-          <!-- 
-            <div
-              class="q-pa-null q-ma-null"
-              v-if="IsContributor && is_currently_expanded(prop.node) !== false"
-              align="right"
-            >
-              <ContentRatingThumbs
-                name="`elRating${obj.content.id}`"
-                :content="cachedNode(prop.node.id)"
-              />
-              <ContentToolbar :obj="cachedNode(prop.node.id)" />
-
-            </div> -->
-
-          <!-- </div> -->
         </template>
       </q-tree>
 
@@ -229,7 +184,7 @@
       <ContentEditor
         ref="content_editor"
         v-if="IsContributor"
-        :parent_id="startingContentID"
+        :parent_id="rootNodeID"
       />
 
       <q-separator inset />
@@ -251,7 +206,7 @@
         <!-- Disclaimer -->
         <AlgorithmDisclaimer
           :text="disclaimerText"
-          v-if="startingContentNode.nof_descendants > 1"
+          v-if="rootNode.nof_descendants > 1"
         />
 
         <slot name="actions"></slot>
@@ -279,20 +234,16 @@ import AlgorithmDisclaimer from "src/layouts/components/AlgorithmDisclaimer";
 import UserAvatar from "src/layouts/components/UserAvatar";
 import { mapGetters } from "vuex";
 import ContentBackground from "./ContentBackground";
+import AMs from "../ArtificialModeration.js";
 
 export default {
   name: "ContentTree",
-  props: [
-    "artificialmoderationComponents",
-    "hideNoEntryText",
-    "hideNofEntriesText",
-  ],
+  props: ["showAM", "hideNoEntryText", "hideNofEntriesText"],
   mixins: [QTreeMixin],
   components: {
     AlgorithmDisclaimer,
     ContentEditor,
     ContentToolbar,
-    // ContentRatingThumbs,
     UserAvatar,
     ContentBackground,
   },
@@ -301,8 +252,16 @@ export default {
       popup_content_form: this.popup_content_form,
     };
   },
-
+  data() {
+    return {
+      AMs,
+    };
+  },
   computed: {
+    artificialModerationComponent() {
+      return () => import("src/artificial_moderation/ArtificialModeration");
+    },
+
     real_expanded: function () {
       return this.expanded || this.node.children.length == 0;
     },
@@ -310,7 +269,7 @@ export default {
     disclaimerText: function () {
       var text = this.$i18n.t("disclaimer.contenttree.basic");
 
-      if (this.startingContentNode.children.length > 30) {
+      if (this.rootNode.children.length > 30) {
         text +=
           " " + this.$i18n.t("disclaimer.contenttree.extensionExtraLarge");
       }
@@ -334,7 +293,7 @@ export default {
     },
 
     popup_create() {
-      this.popup_content_form("create", { parent_id: this.startingContentID });
+      this.popup_content_form("create", { parent_id: this.rootNodeID });
     },
   },
 };

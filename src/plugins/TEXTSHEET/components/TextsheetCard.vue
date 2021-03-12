@@ -42,6 +42,7 @@
     <DefaultDiscussionBlock
       v-if="entry.content.text.length"
       :node="node"
+      :showAM="showAM"
       :filterTypes="filterTypes"
       :discussionBlockLabel="discussionBlockLabel"
     />
@@ -66,10 +67,7 @@ export default {
   components: { DefaultDiscussionBlock, ContentToolbar },
   data() {
     return {
-      // hover_discussion: false, // TODO: this?
-      // artificialmoderationComponents: {
-      //   ContentTreeIndex: () => import('../artificialmoderation/ArtificialModeratorContentTreeIndex')
-      // }
+      showAM: true,
     };
   },
   computed: {

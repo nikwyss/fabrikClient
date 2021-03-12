@@ -24,8 +24,8 @@ const getters = {
     return (state.contenttree[contenttreeID])
   },
 
-  get_default_expanded_branches_from_store: (state) => ({ contenttreeID, startingContentID }) => {
-    let key = contenttreeID + '-' + startingContentID
+  get_default_expanded_branches_from_store: (state) => ({ contenttreeID, rootNodeID }) => {
+    let key = contenttreeID + '-' + rootNodeID
     if (!(key in state.expanded_branches)) {
       return (null)
     }
@@ -100,9 +100,9 @@ const actions = {
     commit('update_salience', { contenttreeID, contentID, salience })
   },
 
-  update_expanded_branches({ commit }, { contenttreeID, startingContentID, expanded }) {
+  update_expanded_branches({ commit }, { contenttreeID, rootNodeID, expanded }) {
     // console.log(expanded)
-    commit('update_expanded_branches', { contenttreeID, startingContentID, expanded });
+    commit('update_expanded_branches', { contenttreeID, rootNodeID, expanded });
   },
 
   deleteContentStore({ commit }) {
@@ -184,9 +184,9 @@ const mutations = {
     // console.log("updated contenttree content", modifiedContents)
   },
 
-  update_expanded_branches(state, { contenttreeID, startingContentID, expanded }) {
+  update_expanded_branches(state, { contenttreeID, rootNodeID, expanded }) {
     // in case content or progression changes (without changing hierarchy...)
-    let key = contenttreeID + '-' + startingContentID
+    let key = contenttreeID + '-' + rootNodeID
     // console.log(expanded)
     Vue.set(state.expanded_branches, key, expanded)
   },
@@ -206,7 +206,7 @@ const mutations = {
       return (null)
     }
 
-    // let key = contenttreeID + '-' + startingContentID
+    // let key = contenttreeID + '-' + rootNodeID
     let progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
     if (!progression) {
       // console.log("add temp progression entry")
@@ -230,7 +230,7 @@ const mutations = {
       return (null)
     }
 
-    // let key = contenttreeID + '-' + startingContentID
+    // let key = contenttreeID + '-' + rootNodeID
     let progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
     if (!progression) {
       // console.log("add temp progression entry")

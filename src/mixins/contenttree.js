@@ -20,7 +20,9 @@ export default {
       isRead: this.isRead,
       openIndex: this.openIndex,
       openArgument: this.openArgument,
-      filter_entries: this.filter_entries
+      filter_entries: this.filter_entries,
+      recalculate_nof_descendants: this.recalculate_nof_descendants,
+      recalculate_nof_descendants_unread: this.recalculate_nof_descendants_unread
     }
   },
 
@@ -170,22 +172,21 @@ export default {
       return (content.progression?.rating)
     },
 
+    recalculate_nof_descendants_unread: function (children) {
+      // summ up descendants_unread of the root elements
+      const listOfNumbers = children.map((node) => {
+        return node.nof_descendants_unread + this.isRead(node.id);
+      });
+      return listOfNumbers.reduce((a, b) => a + b, 0);
+    },
 
-    // unratedTopics: function (nodes, TYPES) {
-    //   console.assert(this.contenttreeID && this.contenttree !== null)
-    //   var local_contenttree = this.contenttree
-    //   let filtered = nodes.filter(
-    //     item => TYPES.includes(local_contenttree.entries[item.id].content.type)
-    //   )
-    //   return (filtered)
-    // },
-
-    // hasUnratedChildren: function (content) {
-    //   console.assert(content)
-    //   return (!content.progression)
-    // }
-
-
+    /* Calculate the sum of the descendants */
+    recalculate_nof_descendants: function (children) {
+      const listOfNumbers = children.map((node) => {
+        return node.nof_descendants + 1;
+      });
+      return listOfNumbers.reduce((a, b) => a + b, 0);
+    },
   },
 
   mounted() {

@@ -117,6 +117,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    displayMode: {
+      // what to do, when there are multiple messages to display?
+      type: String,
+      default: "randomOne",
+      validator(value) {
+        return ["randomOne", "all"].indexOf(value) !== -1;
+      },
+    },
+
     alignment: {
       // right, left, center
       type: String,
@@ -152,19 +161,40 @@ export default {
       return this.AM && this.AM.loading && this.AM.loading(this.ctx);
     },
 
-    text() {
-      const texts = this.AM.items.map((item) => {
-        return !item.condition || item.condition(this.ctx)
-          ? item.body(this.ctx)
-          : "";
+    validItems() {
+      return this.AM.items.filter((item) => {
+        return (
+          item.text?.length > 0 && (!item.condition || item.condition(this.ctx))
+        );
       });
-      return texts.filter((text) => text.length > 0);
+    },
+
+    selectedItems() {
+      if (!this.validItems) {
+        return [];
+      }
+
+      if (this.displayMode == "randomOne") {
+        // randomly select one item!
+        return [
+          this.validItems[Math.floor(Math.random() * this.validItems.length)],
+        ];
+      }
+
+      // Select all Items
+      return this.validItems;
+    },
+
+    text() {
+      return this.selectedItems.map((item) => {
+        return item.body(this.ctx);
+      });
     },
 
     buttons() {
       var buttons = [];
-      this.AM.items.forEach((item) => {
-        if (item.buttons && (!item.condition || item.condition(this.ctx))) {
+      this.selectedItems.forEach((item) => {
+        if (item.buttons) {
           item.buttons.forEach((button) => {
             if (button && (!button.condition || button.condition(this.ctx))) {
               buttons.push(button);
