@@ -153,6 +153,9 @@ export default {
     },
 
     filter_entries: function (nodes, TYPES) {
+      if (!nodes) {
+        return null;
+      }
       console.assert(this.contenttreeID && this.contenttree !== null)
       var local_contenttree = this.contenttree
       let filtered = nodes.filter(

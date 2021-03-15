@@ -74,7 +74,7 @@ const getters = {
     if (!getters.assemblyTuple) {
       return null
     }
-
+    // console.log(getters.assemblyTuple.progression)
     return (getters.assemblyTuple.progression)
   },
 
@@ -140,14 +140,13 @@ const getters = {
   },
 
 
-  stageMilestones: (state) => {
+  stageMilestones: (state, getters) => {
     console.log(">> NOTE: stageMilestones")
 
     if (!runtimeStore.stageID) {
       console.log('...stageID not ready')
       return null
     }
-
     const day = getters.assemblyProgression?.number_of_day_sessions;
     console.assert(day && day > 0)
     const stateMilestones = state.milestones[day]
@@ -482,7 +481,6 @@ const actions = {
       // just ignore this: milestone has been already archieved before    
       return false;
     }
-
     commit('addMilestone', { label, weigth, day, stageID })
     // abel, weigth, day, stage
     return true;
@@ -560,6 +558,8 @@ const mutations = {
     console.assert(weigth);
     console.assert(day);
     console.assert(stageID);
+    console.log(label, weigth, day, stageID)
+
 
     const stateMilestones = state.milestones
     if (!(day in stateMilestones)) {
@@ -574,7 +574,8 @@ const mutations = {
       Vue.set(state.milestones, day, dayMilestones)
     }
 
-    const milestones = state.milestones[day][stageID].push({ label: label, weigth: weigth })
+    const milestones = state.milestones[day][stageID]
+    milestones.push({ label: label, weigth: weigth })
     Vue.set(state.milestones[day], stageID, milestones)
   }
 }

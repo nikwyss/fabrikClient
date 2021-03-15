@@ -140,6 +140,9 @@ export default {
     },
 
     stageTypes() {
+      if (!this.stages) {
+        return null;
+      }
       return this.stages.map((stage) => stage.stage.type);
     },
 

@@ -23,7 +23,7 @@ const AMs = {
       },
       {
         body: (ctx) => `PS: Natürlich können Sie nochmals einen Blick in das Infoblatt werfen, wenn Sie das möchten.`,
-        condition: (ctx) => ctx.stageTypes.includes("TEXTSHEET"),
+        condition: (ctx) => ctx.stageTypes && ctx.stageTypes.includes("TEXTSHEET"),
       },
     ]
   },
