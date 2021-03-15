@@ -1,8 +1,9 @@
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import StageMixin from 'src/mixins/stage'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 import { runtimeStore } from "src/store/runtime.store"
 import { LayoutEventBus } from 'src/utils/eventbus.js'
+import constants from 'src/utils/constants'
 
 export default {
   // mixins: [StageMixin],
@@ -18,6 +19,8 @@ export default {
   provide() {
     return {
       isRead: this.isRead,
+      // isViewed: this.isViewed,
+      markRead: this.markRead,
       openIndex: this.openIndex,
       openArgument: this.openArgument,
       filter_entries: this.filter_entries,
@@ -159,8 +162,11 @@ export default {
     },
 
     isRead: function (content) {
-      return (!!content?.progression)
+      return (!!content?.progression?.read)
     },
+    // isViewed: function (content) {
+    //   return (!!content?.progression?.view)
+    // },
 
     isSalienced: function (content) {
       // console.log(content.progression)
@@ -187,6 +193,21 @@ export default {
       });
       return listOfNumbers.reduce((a, b) => a + b, 0);
     },
+
+    markRead(content) {
+      const data = {
+        contentID: content.content.id
+      };
+      this.$root.monitorLog(constants.MONITOR_SET_CONTENT_READ, data);
+
+      // immediatly update vuex store
+      this.update_read({
+        contenttreeID: this.contenttreeID,
+        contentID: content.content.id
+      });
+    },
+
+    ...mapActions("contentstore", ["update_read"]),
   },
 
   mounted() {

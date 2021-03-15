@@ -103,7 +103,7 @@ const getters = {
   /**
    * oAuth Server delivers user roles in the format "<role>@<assemblyIdentifier>".
    * THis method translates thes roles in a list of acls for the given Assembly.
-   * => such as  ['delegate', 'contribute', 'observe']
+   * => such as  ['delegate', 'contribution_modify', 'observe']
    */
   assemblyAcls: (state, getters, rootState, rootGetters) => {
 
@@ -124,7 +124,7 @@ const getters = {
   },
   IsContributor: (state, getters) => {
     if (!getters.assemblyAcls) { return null }
-    return getters.assemblyAcls.includes('contribute')
+    return getters.assemblyAcls.includes('contribution_add')
   },
   IsExpert: (state, getters) => {
     if (!getters.assemblyAcls) { return null }
@@ -149,6 +149,7 @@ const getters = {
     }
 
     const day = getters.assemblyProgression?.number_of_day_sessions;
+    console.assert(day && day > 0)
     const stateMilestones = state.milestones[day]
     if (!stateMilestones) {
       return []
@@ -166,8 +167,6 @@ const getters = {
 
     var weights = milestones.reduce((n, milestone) => n + milestone.weight, 0)
     console.log("current milestone weights... ", weights)
-    weights = milestones.map
-
     return weights >= 10
   },
 
@@ -458,25 +457,34 @@ const actions = {
       })
   },
 
-  addMilestone({ getters, commit }, { label, weigth, stateID }) {
+  // update_read({ commit }, { contenttreeID, contentID }) {
+  //   commit('update_read', { contenttreeID, contentID })
+  // },
+
+  addMilestone({ getters, commit }, { label, weigth }) {
     console.assert(weigth)
     console.assert(label)
 
+
     const day = getters.assemblyProgression?.number_of_day_sessions;
-    if (!stageID) {
-      stageID = runtimeStore.stageID
-      console.assert(stageID)
-    }
+    // if (!stageID) {
+    const stageID = runtimeStore.stageID
+    console.assert(stageID)
+    // }
 
     const milestones = getters.stageMilestones
+    // console.log(milestones. "milestones")
     console.assert(milestones !== null)
+    console.log(milestones)
     const labels = milestones.map(milestone => milestone.label)
+    // console.log(labeld. "labels")
     if (labels.includes(label)) {
       // just ignore this: milestone has been already archieved before    
       return false;
     }
 
-    commit('addMilestone', { label, weight, day, stageID })
+    commit('addMilestone', { label, weigth, day, stageID })
+    // abel, weigth, day, stage
     return true;
   },
 }
@@ -566,8 +574,7 @@ const mutations = {
       Vue.set(state.milestones, day, dayMilestones)
     }
 
-    const milestones = state.milestones[day][stageID]
-    milestones.push({ label, weigth })
+    const milestones = state.milestones[day][stageID].push({ label: label, weigth: weigth })
     Vue.set(state.milestones[day], stageID, milestones)
   }
 }

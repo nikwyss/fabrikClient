@@ -187,6 +187,9 @@ export default {
     // },
 
     stageGroupScheduled() {
+      if (!this.groupsScheduled) {
+        return;
+      }
       return this.groupsScheduled.includes("preparation");
     },
 

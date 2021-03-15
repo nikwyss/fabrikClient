@@ -112,7 +112,7 @@ export default {
   computed: {
     mainTopics() {
       return this.filter_entries(
-        this.contenttree.structure.children,
+        this.contenttree?.structure.children,
         this.TEXTTYPES
       );
     },
@@ -136,6 +136,10 @@ export default {
 
   mounted() {
     this.todays_first_visit = this.is_stage_alerted(this.routed_stage);
+
+    // give milesone
+    // TODO: one interaction more, or five seconds more?
+    this.milestone("readTextsheet", 10);
   },
 };
 </script>

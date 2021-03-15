@@ -6,10 +6,10 @@ i.e.  filtering and management of expanded content .
 import { mapActions, mapGetters } from 'vuex'
 import { ReactiveProvideMixin } from 'vue-reactive-provide'
 /* Make available all the properties and methods in any descendant object.*/
-const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
-    name: 'QUASAR_TREE',
-    include: ['startingContent', 'rootNode'],
-})
+// const ReactiveProvidePropertiesMixin = ReactiveProvideMixin({
+//     name: 'QUASAR_TREE',
+//     include: ['rootNode', 'realRootNodesIDs'],
+// })
 
 export default {
 
@@ -36,15 +36,20 @@ export default {
         'dense',
         'node',
         'filterTypes'],
-    mixins: [ReactiveProvidePropertiesMixin],
+    // mixins: [ReactiveProvidePropertiesMixin],
     provide() {
         return {
             // popup_content_form: this.popup_content_form,
             contenttreeID: this.CONTENTTREE.contenttreeID,
-            realFilterTypes: this.realFilterTypes
+            realFilterTypes: this.realFilterTypes,
+            toggle_node: this.toggle_node,
+            is_currently_expanded: this.is_currently_expanded,
+            // realRootNodesIDs: this.realRootNodesIDs
         }
     },
-    inject: ['CONTENTTREE', 'filter_entries', 'recalculate_nof_descendants_unread', 'recalculate_nof_descendants'],
+    inject: ['CONTENTTREE', 'filter_entries', 'isRead', 'markRead',
+        'recalculate_nof_descendants_unread',
+        'recalculate_nof_descendants'],
     computed: {
 
         // childrenNodes() {
@@ -97,7 +102,7 @@ export default {
         },
 
         realRootNodesIDs: function () {
-            if (this.rootNode) {
+            if (!this.rootNode) {
                 return [];
             }
             return (this.rootNode.children.map(x => x.id))
@@ -109,7 +114,7 @@ export default {
                 return (null)
             }
 
-            return this.rootNode.nof_descendants + 1
+            return this.rootNode.nof_descendants
         },
 
         ...mapGetters({
@@ -123,10 +128,6 @@ export default {
         is_currently_expanded: function (node) {
             // EXPANDABLE - ALL: if (!node.children?.length) {return;}
             return (this.expanded.includes(node.id))
-        },
-
-        is_expandable: function (node) {
-            return !!node.children?.length;
         },
 
         collapse_all_children: function (parent_id) {
@@ -149,11 +150,11 @@ export default {
             return (true)
         },
 
-        toggle_node: function (node_id) {
-            if (this.expanded.includes(node_id)) {
+        toggle_node: function (node_id, content) {
+            if (this.expanded.includes(node_id, content)) {
                 this.collapse_node(node_id)
             } else {
-                this.expand_node(node_id)
+                this.expand_node(node_id, content)
             }
         },
 
@@ -162,9 +163,17 @@ export default {
             this.updateExpanded()
         },
 
-        expand_node: function (node_id) {
+        expand_node: function (node_id, content) {
             this.expanded.push(node_id)
             this.updateExpanded()
+
+            if (!content) {
+                content = this.CONTENTTREE.contenttree.entries[node_id]
+            }
+
+            if (!this.isRead(content)) {
+                this.markRead(content)
+            }
         },
 
         expand_more: function () {
@@ -178,23 +187,30 @@ export default {
             if (nodes) {
                 for (let key in nodes) {
                     let node = nodes[key]
+                    console.log(node)
                     if (node) {
                         child_ids = node.children.map(y => y.id)
                         new_ids = new_ids.concat(child_ids);
                     }
                 }
             }
-
+            console.log(this.realRootNodesIDs, "lll")
             /// expand all root nodes
             new_ids = new_ids.concat(this.realRootNodesIDs)
-            let all_ids = this.expanded.concat(new_ids)
+            // let all_ids = 
 
-            // Remove empty/undefineds
-            all_ids = all_ids.filter(x => !!x)
+            var all_ids = this.expanded.concat(new_ids)
+
+            // Remove empty/undefineds & remove root node
+            all_ids = all_ids.filter(x => !!x && x !== this.rootNodeID)
             // Remove duplicates
             all_ids = [...new Set(all_ids)]
 
+            console.log(all_ids, this.rootNodeID);
+
+
             this.expanded = all_ids
+
             this.updateExpanded()
 
             // Notify
@@ -233,7 +249,7 @@ export default {
         updateExpanded: function () {
             this.update_expanded_branches({
                 contenttreeID: this.CONTENTTREE.contenttreeID,
-                rootNodeID: this.CONTENTTREE.rootNodeID,
+                rootNodeID: this.rootNodeID,
                 expanded: this.expanded
             })
         },
@@ -242,7 +258,8 @@ export default {
         treeFilterMethod(node, filter) {
             const filt = filter.toLowerCase()
             // return node.label && node.label.toLowerCase().indexOf(filt) > -1 && node.label.toLowerCase().indexOf('(*)') > -1
-            let obj = this.CONTENTTREE.contenttree.entries[node.id]
+            let obj = this.cachedNode(node.id)
+            //this.CONTENTTREE.contenttree.entries[node.id]
             let searchable = `${obj.content.title} ${obj.content.text}`
             return searchable.toLowerCase().indexOf(filt) > -1
         },
@@ -308,7 +325,8 @@ export default {
             if (node_id === null) {
                 return (null)
             }
-            var obj = this.CONTENTTREE.contenttree.entries[node_id]
+            // var obj = this.CONTENTTREE.contenttree.entries[node_id]
+            var obj = this.cachedNode(node.id)
             console.assert(obj)
             var parent_id = obj.content.parent_id
             var branch = `:${node_id}`

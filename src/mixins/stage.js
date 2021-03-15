@@ -48,19 +48,26 @@ export default {
       return !!this.routed_stage?.stage?.id;
     },
 
-    ...mapGetters({
-      stageMilestonesCompleted: "assemblystore/stageMilestonesCompleted"
-    })
+    // ...mapGetters({
+    //   stageMilestonesCompleted: "assemblystore/stageMilestonesCompleted"
+    // })
+
+    ...mapGetters("assemblystore", [
+      "stageMilestonesCompleted",
+      "is_stage_alerted"
+    ]),
 
   },
 
   methods: {
 
-    milestone: function (milestoneLabel, weight) {
+    milestone: function (milestoneLabel, weigth) {
 
-      this.addMilestone({ milestoneLabel, weight })
+      console.log("WEIGHT", weigth)
+      this.addMilestone({ label: milestoneLabel, weigth: weigth })
 
       if (this.stageMilestonesCompleted) {
+        console.log("Milestones complete!!")
         this.markUnAlert();
       }
     },

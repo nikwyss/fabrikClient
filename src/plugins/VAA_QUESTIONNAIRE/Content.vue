@@ -41,7 +41,7 @@
       :acl="assemblyAcls"
       label='Offene Diskussion'
       :contenttree="contenttree"
-      :rootNodeID="rootNodeID"
+      :startingContentID="startingContentID"
     />
 
   </q-page>

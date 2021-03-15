@@ -25,7 +25,7 @@ const AMs = {
 
   index_bottom: {
     prosa: ' Schliesst die Text-Stage ab.',
-    loading: (ctx) => !ctx.routed_stage?.stage.id || ctx.is_stage_alerted(ctx.routed_stage),
+    // loading: (ctx) => !ctx.routed_stage?.stage.id || ctx.is_stage_alerted(ctx.routed_stage),
     items: [
       {
         prosa: ' Erster Besuch am ersten Tag!.',

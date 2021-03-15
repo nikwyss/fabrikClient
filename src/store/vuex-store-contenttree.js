@@ -99,7 +99,9 @@ const actions = {
   update_salience({ commit }, { contenttreeID, contentID, salience }) {
     commit('update_salience', { contenttreeID, contentID, salience })
   },
-
+  update_read({ commit }, { contenttreeID, contentID }) {
+    commit('update_read', { contenttreeID, contentID })
+  },
   update_expanded_branches({ commit }, { contenttreeID, rootNodeID, expanded }) {
     // console.log(expanded)
     commit('update_expanded_branches', { contenttreeID, rootNodeID, expanded });
@@ -218,6 +220,24 @@ const mutations = {
 
     Vue.set(state.contenttree[contenttreeID].entries[contentID], 'progression', progression)
   },
+
+  update_read(state, { contenttreeID, contentID }) {
+    let progression = state.contenttree[contenttreeID]?.entries[contentID]?.progression
+    if (!progression) {
+      progression = {
+        read: false,
+        view: false,
+        rating: null,
+        salience: null
+      }
+    }
+
+    // store value
+    progression.read = true
+
+    Vue.set(state.contenttree[contenttreeID].entries[contentID], 'progression', progression)
+  },
+
 
   update_salience(state, { contenttreeID, contentID, salience }) {
     // in case content or progression changes (without changing hierarchy...)

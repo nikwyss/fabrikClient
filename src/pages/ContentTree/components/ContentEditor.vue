@@ -87,7 +87,7 @@ import { runtimeStore } from "src/store/runtime.store";
 
 export default {
   name: "ContentEditor",
-  inject: ["QUASAR_TREE", "CONTENTTREE", "realFilterTypes"],
+  inject: ["CONTENTTREE", "realFilterTypes"],
 
   data() {
     return {

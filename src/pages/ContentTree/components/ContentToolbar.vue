@@ -171,7 +171,8 @@ export default {
   components: {
     ContentRatingThumbs,
   },
-  inject: ["QUASAR_TREE", "contenttreeID", "popup_content_form"], // is injecting CONTENTTREE needed: only for contenttree_id, right?
+  // CONTENTTREE
+  inject: ["contenttreeID", "popup_content_form"], // is injecting CONTENTTREE needed: only for contenttree_id, right?
   data() {
     return {
       confirm_deletion: false,
@@ -252,7 +253,7 @@ export default {
       console.log("deleteEntry");
       var identifier = runtimeStore.assemblyIdentifier;
       console.assert(identifier);
-      let url = `${process.env.ENV_APISERVER_URL}/assembly/${identifier}/contenttree/${QUASAR_TREE.contenttreeID}/content/${content.id}`;
+      let url = `${process.env.ENV_APISERVER_URL}/assembly/${identifier}/contenttree/${this.contenttreeID}/content/${content.id}`;
       var data = { justification: justification };
       ApiService.delete(url, data).then((response) => {
         console.log("RESPONSE RECEIVED");
@@ -262,7 +263,7 @@ export default {
         if (response.data.OK) {
           // update the whole tree
           this.add_or_update_contenttree({
-            contenttreeID: QUASAR_TREE.contenttreeID,
+            contenttreeID: this.contenttreeID,
             contenttree: response.data.contenttree,
           });
 

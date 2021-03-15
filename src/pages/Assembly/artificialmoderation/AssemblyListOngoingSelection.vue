@@ -45,7 +45,7 @@
       <template v-if="oauth.authorized && (!assemblyAcls || !assemblyAcls.length)">
         Wir können Sie im Moment nicht zu der Veranstaltung zulassen.
       </template>
-      
+
       <!-- TODO: use v-else -->
       <template v-if="!oauth.authorized && (!assemblyAcls || !assemblyAcls.length)">
         {{$t('assemblies.am.invitation_to_authenticate')}}
@@ -111,12 +111,17 @@ export default {
   props: ["assembly", "ongoing"],
   inject: ["clickAssemblyLink"],
   computed: {
-      ...mapGetters(
-        'assemblystore', ['assemblyAcls', 'IsDelegate',  'IsExpert', 'IsContributor', 'IsObserver', 'IsManager']
-      )
-  //   assemblyAcls: function () {
-  //     return this.oauth.acls(this.assembly.identifier);
-  //   },
+    ...mapGetters("assemblystore", [
+      "assemblyAcls",
+      "IsDelegate",
+      "IsExpert",
+      "IsContributor",
+      "IsObserver",
+      "IsManager",
+    ]),
+    //   assemblyAcls: function () {
+    //     return this.oauth.acls(this.assembly.identifier);
+    //   },
   },
 
   methods: {
@@ -131,7 +136,7 @@ export default {
         params: { assemblyIdentifier },
       };
       this.oauth.login(destination_route);
-    }
-  }
+    },
+  },
 };
 </script>

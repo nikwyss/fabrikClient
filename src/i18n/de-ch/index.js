@@ -172,7 +172,7 @@ export default {
       welcome_empty_schedule: 'Super! Ich glaube für heute haben wir keine konkreten Fragen mehr an sie.',
       enter_first: 'Wir fangen hier an. Sind Sie bereit?',
       enter_continue: 'Wir fahren hier nun weiter. Sind Sie bereit?',
-      enter_end: 'Das ist nun mein letzter Wunsch für heute. Folgen Sie mir bitte.',
+      enter_end: 'Das ist nun mein letzter Wunsch für heute. Folgen Sie mir bitte folgen.',
       already_seen: 'Das haben Sie sich schon angesehen. Jetzt brauchen wir Sie andernorts. Kommen Sie mit?',
       all_stages_already_seen: 'Wenn Sie möchten, können Sie sich das natürlich noch einmal ansehen?',
       already_completed: 'Dieser Bereich haben Sie bereits abgeschlossen.',

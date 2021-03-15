@@ -15,7 +15,8 @@
         v-if="menu"
         caption
       >{{ $t('auth.registered_as') }}</q-item-label>
-      <q-item-label>{{ username }} <slot name="extrainfos"></slot>
+      <q-item-label>
+        {{ username }} <slot name="extrainfos"></slot>
       </q-item-label>
 
     </q-item-section>

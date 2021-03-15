@@ -53,7 +53,7 @@ const getters = {
     }
 
     if (assembly_roles.includes('delegate')) {
-      assemblyAcls.push('delegate', 'contribute', 'observe')
+      assemblyAcls.push('delegate', 'contribution_modify', 'contribution_add', 'observe')
     }
 
     if (assembly_roles.includes('contributor')) {
