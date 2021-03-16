@@ -134,7 +134,8 @@ export default {
   },
 
   mounted() {
-    if (this.items) {
+    if (this.items?.length && this.items[0].anchor) {
+      // console.log(this.items[0]);
       this.scrollSelectedItemAnchor = this.items[0].anchor;
       this.enabledAnchors = this.getEnabledAnchors();
     }

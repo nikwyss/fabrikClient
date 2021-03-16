@@ -108,14 +108,26 @@ export default {
     gotoNextStageNr: function (stage) {
       console.assert(stage)
       console.log("gotoNextStageNr")
+      const currentStageGroup = stage.stage.group
 
       const nextStage = this.find_next_accessible_stage(stage)
       if (!nextStage) {
+        console.log("NOTE: Assembly seems to be completed!")
         return (null)
       }
-      // console.log(this.stage_nr_last_visited, "old stage")
-      this.stage_nr_last_visited = this.get_stage_number_by_stage(nextStage)
-      // console.log(this.stage_nr_last_visited, "new stage")
+      const nextStageGroup = stage.stage.group
+      if (nextStageGroup !== currentStageGroup) {
+        // different group: so make a new route...
+        console.log("ROUTERROUTE")
+        this.$router.push(`${nextStage.stage.id}/${nextStage.stage.group}`)
+      } else {
+        // just update , the "stage_nr_last_visited"
+        // console.log(this.stage_nr_last_visited, "old stage")
+        this.stage_nr_last_visited = this.get_stage_number_by_stage(nextStage)
+        console.log(this.stage_nr_last_visited, "new stage")
+
+      }
+
     },
 
     gotoStage: function (stage) {

@@ -136,7 +136,7 @@ export default {
 
   mounted() {
     this.todays_first_visit = this.is_stage_alerted(this.routed_stage);
-
+    // console.log(this.todays_first_visit, "stage is still alerted?");
     // give milesone
     // TODO: one interaction more, or five seconds more?
     this.milestone("readTextsheet", 10);

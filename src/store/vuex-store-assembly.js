@@ -163,9 +163,7 @@ const getters = {
     // Every user needs to archieve 10 milestones weights for each stage a day. 
     const milestones = getters.stageMilestones
     console.assert(milestones !== null)
-
-    var weights = milestones.reduce((n, milestone) => n + milestone.weight, 0)
-    console.log("current milestone weights... ", weights)
+    var weights = milestones.reduce((n, milestone) => n + milestone['weigth'], 0)
     return weights >= 10
   },
 
@@ -460,8 +458,8 @@ const actions = {
   //   commit('update_read', { contenttreeID, contentID })
   // },
 
-  addMilestone({ getters, commit }, { label, weigth }) {
-    console.assert(weigth)
+  addMilestone({ getters, commit }, { label, weight }) {
+    console.assert(weight)
     console.assert(label)
 
 
@@ -474,16 +472,20 @@ const actions = {
     const milestones = getters.stageMilestones
     // console.log(milestones. "milestones")
     console.assert(milestones !== null)
-    console.log(milestones)
     const labels = milestones.map(milestone => milestone.label)
     // console.log(labeld. "labels")
     if (labels.includes(label)) {
       // just ignore this: milestone has been already archieved before    
       return false;
     }
-    commit('addMilestone', { label, weigth, day, stageID })
-    // abel, weigth, day, stage
+    commit('addMilestone', { label, weight, day, stageID })
+    // abel, weight, day, stage
     return true;
+  },
+
+  storeStageProgressionAlertFlag({ commit }, { stageID, alerted }) {
+    console.assert(stageID)
+    commit('storeStageProgressionAlertFlag', { stageID, alerted })
   },
 }
 
@@ -510,7 +512,6 @@ const mutations = {
     // .map(stage => stage.stage.id)
     // console.log(data.stages, "TESTTEST")
     Vue.set(state.assemblydata, assemblyIdentifier, data)
-
   },
 
 
@@ -546,6 +547,16 @@ const mutations = {
     }
     Vue.set(state.stages[stageID], 'progression', progression)
   },
+  storeStageProgressionAlertFlag(state, { stageID, alerted }) {
+    if (!state.stages[stageID]?.progression) {
+      // happens when logout
+      return null
+    }
+
+    const progression = state.stages[stageID].progression
+    progression.alerted = alerted
+    Vue.set(state.stages[stageID], 'progression', progression)
+  },
 
   deleteAssemblyStore(state) {
     Vue.set(state, 'assemblydata', {})
@@ -553,12 +564,12 @@ const mutations = {
     Vue.set(state, 'milestones', {})
   },
 
-  addMilestone(state, { label, weigth, day, stageID }) {
+  addMilestone(state, { label, weight, day, stageID }) {
     console.assert(label);
-    console.assert(weigth);
+    console.assert(weight);
     console.assert(day);
     console.assert(stageID);
-    console.log(label, weigth, day, stageID)
+    // console.log(label, weight, day, stageID)
 
 
     const stateMilestones = state.milestones
@@ -575,7 +586,7 @@ const mutations = {
     }
 
     const milestones = state.milestones[day][stageID]
-    milestones.push({ label: label, weigth: weigth })
+    milestones.push({ label: label, weight: weight })
     Vue.set(state.milestones[day], stageID, milestones)
   }
 }

@@ -35,7 +35,7 @@
         </template>
       </UserAvatar>
 
-      <span class="q-ml-sm vertical-top">
+      <!-- <span class="q-ml-sm vertical-top">
         <q-badge
           color="grey"
           class="on-left cursor-pointer "
@@ -43,18 +43,25 @@
           @click.stop="$refs.backgroundDialog.toolbar = true"
           v-if="isExpanded"
         >
-          <!-- EXPANDABLE-ALL: v-if="isExpanded !== false" -->
           <q-tooltip>Schauen Sie sich zusätzliche <br>Informationen zu diesem Beitrag an.</q-tooltip>
           Info
         </q-badge>
 
-      </span>
+      </span> -->
 
       <span class="cursor-pointer float-right ">
+        <span
+          @click.stop="$refs.backgroundDialog.toolbar = true"
+          v-if="isExpanded"
+        >
+          INFO |
+          <q-tooltip>Schauen Sie sich zusätzliche <br>Informationen zu diesem Beitrag an.</q-tooltip>
+        </span>
         <span>
           <!-- EXPANDABLE-ALL:  v-if="is_expandable(prop.node)" -->
           {{ isExpanded ? 'EINKLAPPEN' : 'AUSKLAPPEN' }}
-          <q-tooltip>Schauen Sie sich zusätzliche <br>Informationen zu diesem Beitrag an.</q-tooltip>
+          <q-tooltip v-if="isExpanded">Klicken Sie hier, um diesen Beitrag vollständig anzuzeigen.</q-tooltip>
+          <q-tooltip v-if="!isExpanded">Klicken Sie hier um diesen Diskussionsast zu schliessen.</q-tooltip>
         </span>
 
       </span>

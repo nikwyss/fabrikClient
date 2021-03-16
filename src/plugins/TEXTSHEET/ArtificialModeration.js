@@ -15,7 +15,7 @@ const AMs = {
         body: (ctx) => `Sie können sich das ruhig nochmal anschauen und bei Bedarf kommentieren.`,
         buttons: [
           {
-            action: (ctx) => ctx.gotoIndexAndMoveOn(),
+            action: (ctx) => ctx.gotoStage(ctx.next_scheduled_stage),
             label: (ctx) => 'Lass uns gleich weiterfahren!'
           }
         ]

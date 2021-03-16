@@ -44,7 +44,7 @@ export default {
     },
 
     ready() {
-      // console.log("stage loaded.... ", !!this.routed_stage?.stage?.id);
+      console.log("stage loaded.... ", !!this.routed_stage?.stage?.id);
       return !!this.routed_stage?.stage?.id;
     },
 
@@ -62,18 +62,14 @@ export default {
   methods: {
 
     milestone: function (milestoneLabel, weight) {
-      console.assert(this.routed_stage)
+
       console.log("WEIGHT", weight)
-      this.addMilestone({ label: milestoneLabel, weight })
+      this.weight({ label: milestoneLabel, weight })
       console.log("Is stageMilestonesCompleted?")
       if (this.stageMilestonesCompleted) {
-        // ignore this statement...
-        if (this.is_stage_alerted(this.routed_stage)) {
-          this.markUnAlert();
-        }
-        return;
+        alert("Milestones complete!!")
+        this.markUnAlert();
       }
-
     },
 
     gotoIndexAndMoveOn: function () {
@@ -82,16 +78,18 @@ export default {
     },
 
     markUnAlert() {
+      if (!this.is_stage_alerted(this.routed_stage)) {
+        // ignore this statement...
+        return;
+      }
+
       // Notify stage as completed
       console.log("IDLE: unalert stage")
       console.assert(this.routed_stage)
-      this.$root.monitorLog(constants.MONITOR_STAGE_UNALERT)
-      this.storeStageProgressionAlertFlag({ stageID: this.routed_stage_id, alerted: false })
+      this.$root.monitorFire(constants.MONITOR_STAGE_UNALERT)
     },
 
-    ...mapActions("assemblystore", [
-      "storeStageProgressionAlertFlag",
-      "addMilestone"
-    ]),
+    ...mapActions({ weight: 'assemblystore/weight' })
+
   }
 }
